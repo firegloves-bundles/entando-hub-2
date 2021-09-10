@@ -159,4 +159,5 @@ public class KeycloakSpringBootProperties extends AdapterConfig {
     public void setSecurityConstraints(List<SecurityConstraint> securityConstraints) {
         this.securityConstraints = securityConstraints;
     }
+    
 }

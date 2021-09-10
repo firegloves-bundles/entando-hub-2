@@ -2,10 +2,11 @@ import { Content } from "carbon-components-react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader";
-import { getSingleBundleGroup } from "../../integration/Integration";
+import { getSingleBundleGroup, getSingleCategory } from "../../integration/Integration";
 
-const DetailPage = () => {
+const BundleGroup = () => {
   const [bundleGroup, setBundleGroup] = useState({});
+  const [bundleGroupCategories, setBundleGroupCategories] = useState([]);
   const { id: bundleGroupId } = useParams();
 
   // fetches the bundle group
@@ -17,6 +18,8 @@ const DetailPage = () => {
 
     init();
   }, [bundleGroupId]);
+
+  console.log(bundleGroup);
 
   return (
     <>
@@ -45,4 +48,4 @@ const DetailPage = () => {
   );
 };
 
-export default DetailPage;
+export default BundleGroup;

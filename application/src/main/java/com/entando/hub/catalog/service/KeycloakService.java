@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
@@ -36,18 +37,34 @@ public class KeycloakService {
     }
 
     public List<UserRepresentation> listUsers() {
-        return listUsers(null);
+        return listUsers(new HashMap<>());
     }
 
     public List<UserRepresentation> listUsers(final String text) {
-        final String url = String.format("%s/admin/realms/%s/users", configuration.getAuthServerUrl(), configuration.getRealm());
         final Map<String, String> params = StringUtils.isEmpty(text)
                 ? Collections.emptyMap()
                 : Collections.singletonMap("username", text);
+        return this.listUsers(params);
+    }
+    
+    public UserRepresentation getUser(String username) {
+        if (StringUtils.isBlank(username)) {
+            return null;
+        }
+        final Map<String, String> params = Collections.singletonMap("username", username);
+        List<UserRepresentation> list = this.listUsers(params);
+        return list.stream().filter(ur -> ur.getUsername().equalsIgnoreCase(username)).findFirst().orElse(null);
+    }
+    
+    private List<UserRepresentation> listUsers(Map<String, String> params) {
+        final String url = String.format("%s/admin/realms/%s/users", configuration.getAuthServerUrl(), configuration.getRealm());
         final ResponseEntity<UserRepresentation[]> response = this.executeRequest(url,
                 HttpMethod.GET, createEntity(), UserRepresentation[].class, params);
         return response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
     }
+    
+    
+    
 /*
     public void removeUser(final String uuid) {
         final String url = String.format("%s/admin/realms/%s/users/%s", configuration.getAuthServerUrl(), configuration.getRealm(), uuid);

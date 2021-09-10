@@ -91,6 +91,13 @@ export const getAllBundles = async () => {
   return checkForErrorsAndSendResponse(data, isError, "bundleList");
 };
 
+export const getAllBundlesForABundleGroup = async (id) => {
+  const newUrl = `${urlBundles}?bundleGroupId=${id}`;
+  const { data, isError } = await getData(newUrl);
+
+  return checkForErrorsAndSendResponse(data, isError, "bundleList");
+};
+
 export const getSingleBundle = async (id) => {
   const { data, isError } = await getData(urlBundles, id);
 

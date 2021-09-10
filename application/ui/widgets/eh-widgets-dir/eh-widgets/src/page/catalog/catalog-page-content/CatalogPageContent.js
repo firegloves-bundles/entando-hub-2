@@ -4,6 +4,50 @@ import CatalogTiles from "../catalog-tiles/CatalogTiles";
 import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
 
 
+/*
+const categories = Array.from(Array(3).keys()).map(index => {
+    return {name: "name" + index, categoryId: "" + index};
+})
+*/
+
+/*
+{
+name	string
+description	string
+bundleGroups	[...]
+categoryId	string
+}
+ */
+
+/*
+BUNDLEGROUP:
+{
+name	string
+description	string
+descriptionImage	string
+documentationUrl	string
+status	string
+Enum:
+Array [ 2 ]
+children	[...]
+organisationId	string
+categories	[...]
+bundleGroupId	string
+}
+ */
+/*
+const allBundleGroups = Array.from(Array(10).keys()).map(index => {
+    return {
+        bundleGroupId: "" + index,
+        name: "name" + index,
+        description: "description" + index,
+        categories: ["" + categories[Math.floor(Math.random() * categories.length)].id],
+        image: "image" + index
+    };
+})
+*/
+
+
 const CatalogPageContent = () => {
     useEffect(() => {
         const initBGs = async () => {

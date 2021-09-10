@@ -23,6 +23,9 @@ public class Organisation {
     @OneToMany(mappedBy = "organisation", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     private Set<BundleGroup> bundleGroups;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    private Set<PortalUser> portalUsers;
+
 /*
     public void addBundleGroup(BundleGroup bundleGroup) {
         this.bundleGroups.add(bundleGroup);

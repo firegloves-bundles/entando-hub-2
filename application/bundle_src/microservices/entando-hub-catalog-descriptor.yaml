@@ -1,0 +1,8 @@
+image: germanogiudici/entando-hub-catalog-ms:0.0.1-SNAPSHOT
+dbms: none
+ingressPath: "/entando-hub-api"
+healthCheckPath: "/actuator/health"
+roles:
+  - "eh-author"
+  - "eh-manager"
+  - "eh-admin"

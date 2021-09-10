@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keycloak Test</title>
+    <script src="http://quickstart-kc-entando.192.168.64.2.nip.io/auth/js/keycloak.js"></script>
+</head>
+<body>
+<script>
+    var keycloak = new Keycloak('keycloak-local.json');
+    keycloak.init().success(function (authenticated) {
+        alert(authenticated ? 'authenticated' : 'not authenticated');
+    }).error(function () {
+        alert('failed to initialize');
+    });
+
+    async function invokeApi(url = 'http://localhost:8082/api/mymetric') {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'omit',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+keycloak.token
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        });
+        return response.text()
+    }
+
+    function getData(url) {
+        invokeApi(url).then((data)=>document.getElementById('returned-value').innerHTML = JSON.stringify(data))
+    }
+
+</script>
+
+<button onclick="keycloak.login()">LOGIN</button>
+<button onclick="keycloak.logout()">LOGOUT</button>
+<button onclick="getData()">INVOKE</button>
+<div id="returned-value">
+
+</div>
+</body>
+</html>

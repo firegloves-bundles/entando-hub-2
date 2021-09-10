@@ -1,0 +1,6 @@
+{
+  "realm": "entando",
+  "auth-server-url": "http://quickstart-kc-entando.192.168.64.2.nip.io/auth",
+  "resource": "entando-web",
+  "public-client": true
+}

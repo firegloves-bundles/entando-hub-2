@@ -40,6 +40,10 @@ public class KeycloakService {
         return listUsers(new HashMap<>());
     }
 
+    public List<UserRepresentation> searchUsers(Map<String, String> params) {
+        return listUsers(params);
+    }
+
     public List<UserRepresentation> listUsers(final String text) {
         final Map<String, String> params = StringUtils.isEmpty(text)
                 ? Collections.emptyMap()

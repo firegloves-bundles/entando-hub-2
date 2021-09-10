@@ -1,6 +1,6 @@
 import { Form } from "carbon-components-react";
 import { useEffect, useState } from "react";
-import { getAllBundlesForABundleGroup } from "../../integration/Integration";
+import { getAllBundlesForABundleGroup } from "../../../integration/Integration";
 
 const NewBundleGroup = () => {
   const [bundles, setBundles] = useState([]);

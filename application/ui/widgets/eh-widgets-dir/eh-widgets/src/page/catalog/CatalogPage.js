@@ -1,49 +1,7 @@
 import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader";
-import {Breadcrumb, BreadcrumbItem, Content} from "carbon-components-react";
+import {Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
-
-/*
-const categories = Array.from(Array(3).keys()).map(index => {
-    return {name: "name" + index, categoryId: "" + index};
-})
-*/
-
-/*
-{
-name	string
-description	string
-bundleGroups	[...]
-categoryId	string
-}
- */
-
-/*
-BUNDLEGROUP:
-{
-name	string
-description	string
-descriptionImage	string
-documentationUrl	string
-status	string
-Enum:
-Array [ 2 ]
-children	[...]
-organisationId	string
-categories	[...]
-bundleGroupId	string
-}
- */
-/*
-const allBundleGroups = Array.from(Array(10).keys()).map(index => {
-    return {
-        bundleGroupId: "" + index,
-        name: "name" + index,
-        description: "description" + index,
-        categories: ["" + categories[Math.floor(Math.random() * categories.length)].id],
-        image: "image" + index
-    };
-})
-*/
+import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 
 
 const CatalogPage = () => {
@@ -54,11 +12,7 @@ const CatalogPage = () => {
                 <div className="bx--grid bx--grid--full-width catalog-page">
                     <div className="bx--row">
                         <div className="bx--col-lg-16">
-                            <Breadcrumb aria-label="Page navigation">
-                                <BreadcrumbItem>
-                                    <a href="/">Home</a>
-                                </BreadcrumbItem>
-                            </Breadcrumb>
+                            <EhBreadcrumb/>
                         </div>
                     </div>
                     <div className="bx--row">

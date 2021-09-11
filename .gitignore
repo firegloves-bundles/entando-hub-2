@@ -159,3 +159,4 @@ Desktop.ini
 
 .ent/ent-state
 /src/main/docker/docker.yml
+/entando-data/

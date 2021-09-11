@@ -1,7 +1,8 @@
 import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader";
-import {Content} from "carbon-components-react";
+import {Button, Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
+import { Add16 } from '@carbon/icons-react';
 
 
 const CatalogPage = () => {
@@ -23,6 +24,7 @@ const CatalogPage = () => {
                             Catalog
                         </div>
                         <div className="bx--col-lg-6">
+                            <Button renderIcon={Add16}>Add</Button>
                             Search
                         </div>
                     </div>

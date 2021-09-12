@@ -30,7 +30,7 @@ bundleGroupId	string
 }
  */
 
-const NewBundleGroup = () => {
+const NewBundleGroup = ({onDataChange}) => {
     const [categories, setCategories] = useState([]);
     const [newBundleGroup, setNewBundleGroup] = useState({
         name: "",
@@ -38,9 +38,18 @@ const NewBundleGroup = () => {
         descriptionImage: "",
         documentationUrl: "",
         status: "",
-        children: [],
-        categories: [],
+        children: [""],
+        categories: [""],
     });
+
+    const changeNewBundleGroup = (field, value) => {
+        const newObj = {
+            ...newBundleGroup,
+        }
+        newObj[field] = value
+        setNewBundleGroup(newObj)
+        onDataChange(newObj)
+    }
 
     useEffect(() => {
         const init = async () => {
@@ -70,24 +79,6 @@ const NewBundleGroup = () => {
         />
     );
 
-    const submitHandler = (e) => {
-        (async () => {
-            e.preventDefault();
-            //create bundle children
-            let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
-            console.log("respArray", respArray)
-            const newChildren = respArray.map(res => res.newBundle.data.bundleId)
-            console.log("newChildren", newChildren)
-            const toSend = {
-                ...newBundleGroup,
-                children: newChildren
-            }
-            setNewBundleGroup(toSend)
-            const res = addNewBundleGroup(toSend)
-            await console.log(res)
-
-        })()
-    };
 
     const selectProps_Category = {
         id: "category",
@@ -147,43 +138,19 @@ const NewBundleGroup = () => {
     };
 
     const imagesChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                descriptionImage: value
-            }
-        })
+        changeNewBundleGroup("descriptionImage", e.target.value)
     }
 
     const nameChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                name: value
-            }
-        })
+        changeNewBundleGroup("name", e.target.value)
     }
 
     const categoryChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                categories: [value]
-            }
-        })
+        changeNewBundleGroup("categories", [e.target.value])
     }
 
     const documentationChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                documentationUrl: value
-            }
-        })
+        changeNewBundleGroup("documentationUrl", e.target.value)
     }
 
     const versionChangeHandler = (e) => {
@@ -194,35 +161,20 @@ const NewBundleGroup = () => {
         //     version: value
         //   }
         // })
+        //changeNewBundleGroup("version", e.target.value)
     }
 
     const statusChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                status: value
-            }
-        })
+        changeNewBundleGroup("status", e.target.value)
     }
 
     const descriptionChangeHandler = (e) => {
-        const value = e.target.value;
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                description: value
-            }
-        })
+        changeNewBundleGroup("description", e.target.value)
     }
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
-        setNewBundleGroup(prev => {
-            return {
-                ...prev,
-                children: newBundleList
-            }
-        })
+        changeNewBundleGroup("children", newBundleList)
+
 
     }
 
@@ -231,19 +183,19 @@ const NewBundleGroup = () => {
     return (
         <>
             <Content>
-                <Form onSubmit={submitHandler}>
-                    <FormGroup {...fieldsetFileUploaderProps_Images}>
-                        <FileUploader onChange={imagesChangeHandler} {...fileUploaderProps_Images} />
-                    </FormGroup>
-                    <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
-                    <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
-                    <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
-                    <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />
-                    <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
-                    <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
-                    <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
+                <FormGroup {...fieldsetFileUploaderProps_Images}>
+                    <FileUploader onChange={imagesChangeHandler} {...fileUploaderProps_Images} />
+                </FormGroup>
+                <TextInput value={newBundleGroup.name} onChange={nameChangeHandler} {...textInputProps_Name} />
+                <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
+                <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
+                <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />
+                <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
+                <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
+                <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
+                {/*
                     <Button type="submit">Submit</Button>
-                </Form>
+*/}
             </Content>
         </>
     );

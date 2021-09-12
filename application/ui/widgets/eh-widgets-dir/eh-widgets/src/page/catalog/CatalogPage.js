@@ -3,6 +3,7 @@ import {Button, Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 import { Add16 } from '@carbon/icons-react';
+import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 
 
 const CatalogPage = () => {
@@ -24,7 +25,7 @@ const CatalogPage = () => {
                             Catalog
                         </div>
                         <div className="bx--col-lg-6">
-                            <Button renderIcon={Add16}>Add</Button>
+                            <ModalAddNewBundleGroup/>
                             Search
                         </div>
                     </div>

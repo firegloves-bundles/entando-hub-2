@@ -5,8 +5,8 @@ import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import {useState} from "react";
-import './catalogPage.scss';
 
+import './catalogPage.scss';
 
 const CatalogPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())

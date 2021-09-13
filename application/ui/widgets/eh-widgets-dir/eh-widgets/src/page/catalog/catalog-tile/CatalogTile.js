@@ -20,6 +20,7 @@ const CatalogTile = (CatalogTileProps) => {
     const handleClick = (evt) => {
         history.push("/bundlegroup/" + bundleGroupId)
     }
+
   return <ClickableTile handleClick={handleClick} className="CatalogTile">
     <div className="CatalogTile-card-wrapper">
       <div className="CatalogTile-card-icon">

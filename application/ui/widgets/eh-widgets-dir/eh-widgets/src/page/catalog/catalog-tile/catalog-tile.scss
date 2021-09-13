@@ -1,10 +1,6 @@
-CatalogTile-card {
-
-}
-
 .CatalogTile {
   width: 31%;
-  height: 243px;
+  min-height: 223px;
   margin:0 2% 2% 0;
   float:left;
 }
@@ -28,4 +24,21 @@ CatalogTile-card {
 
 .CatalogTile-card-category {
 
+}
+@media screen and (max-width: 1240px) {
+  .CatalogTile {
+    width: 48%;
+    min-height: 223px;
+    margin:0 2% 2% 0;
+    float:left;
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .CatalogTile {
+    width: 100%;
+    min-height: 223px;
+    margin: 2% 0 0 ;
+    float:left;
+  }
 }

@@ -14,4 +14,6 @@ public interface PortalUserRepository extends JpaRepository<PortalUser, Long> {
     
     List<PortalUser> findByOrganisationsIs(Organisation organisation);
     
+    PortalUser findByUsername(String username);
+    
 }

@@ -1,0 +1,6 @@
+code: eh-app
+titles:
+  en: Entando Hub App
+  it: Entando Hub App
+group: free
+customUiPath: eh-app-widget.ftl

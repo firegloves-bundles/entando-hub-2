@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+:root {
+  --clr-blue: #002F87;
+  --clr-white: #ffffff;
+  --clr-black: #101820;
+  --clr-grey: #dadada;
+  --clr-transparent: transparent;
+}
+
+.CatalogPage {
+  padding: 0 15% 4rem;
+  background: var(--clr-grey);
+}
+
+.CatalogPage-breadcrumb {
+  margin:  2rem 0;
+}
+
+.CatalogPage-section {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 26px;
+  color: var(--clr-black);
+  margin-bottom: 20px;
+}
+
+.bx--content {
+  padding: 2rem;
+  background: var(--clr-transparent);
+  will-change: margin-left;
+}

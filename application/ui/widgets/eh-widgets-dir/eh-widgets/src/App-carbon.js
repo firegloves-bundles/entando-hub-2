@@ -3,7 +3,7 @@ import './App-carbon.scss';
 import {Route, Switch} from 'react-router-dom';
 import CatalogPage from './page/catalog/CatalogPage';
 import BundleGroupPage from './page/bundle-group/BundleGroupPage';
-import NewBundleGroup from './page/bundle-group/new-boundle-group/NewBundleGroup';
+import NewBundleGroup from './page/catalog/modal-add-new-bundle-group/new-boundle-group/NewBundleGroup';
 
 
 function AppCarbon() {

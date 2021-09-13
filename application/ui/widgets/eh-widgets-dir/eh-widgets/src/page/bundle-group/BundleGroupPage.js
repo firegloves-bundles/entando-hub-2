@@ -1,4 +1,4 @@
-import {Button, Content, Tile} from "carbon-components-react";
+import {Content, Tile} from "carbon-components-react";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router";
 import CatalogPageHeader from "../catalog/catalog-page-header/CatalogPageHeader";
@@ -9,6 +9,7 @@ import {
     getSingleOrganisation
 } from "../../integration/Integration";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
+import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation";
 
 
 /*
@@ -74,7 +75,7 @@ const BundleGroupPage = () => {
                         <div className="bx--col-lg-4">
                             <Tile>
                                 <div>image {bundleGroup && bundleGroup.bundleGroupdescriptionImage}</div>
-                                <Button>Install Button</Button>
+                                <ModalInstallInformation bundleGroup={bundleGroup} children={children}/>
                                 <div>Last Update</div>
                                 <div>Link to documentation {bundleGroup && bundleGroup.documentationUrl}</div>
                                 <div>{children && <BundleList children={children}/>}</div>
@@ -98,6 +99,7 @@ const BundleGroupPage = () => {
     );
 };
 
+/*
 const parseGitRepoAddr = (gitRepoAddress) => {
     return gitRepoAddress ? {
         name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1, gitRepoAddress.lastIndexOf(".")),
@@ -107,10 +109,11 @@ const parseGitRepoAddr = (gitRepoAddress) => {
         gitRepoAddress: ""
     }
 }
+*/
 
 const BundleList = ({children}) => {
-    const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}><a href={childrenInfo.gitRepoAddress} target={"_new"}>{childrenInfo.name}</a></li>)
+    const elemList = children.map((bundle, index) =>
+        <li key={index.toString()}><a href={bundle.gitRepoAddress} target={"_new"}>{bundle.name}</a></li>)
 
     return (<div>
         List of Bundles

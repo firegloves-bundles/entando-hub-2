@@ -2,7 +2,7 @@ import {Button, Modal} from "carbon-components-react";
 import {Add16} from '@carbon/icons-react';
 import ReactDOM from "react-dom";
 import {useState} from "react";
-import NewBundleGroup from "../../bundle-group/new-boundle-group/NewBundleGroup";
+import NewBundleGroup from "./new-boundle-group/NewBundleGroup";
 import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration";
 
 

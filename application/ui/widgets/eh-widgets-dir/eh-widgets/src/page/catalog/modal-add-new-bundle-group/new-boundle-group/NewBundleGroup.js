@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Content, FileUploader, FormGroup, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories} from "../../../integration/Integration";
+import {getAllCategories} from "../../../../integration/Integration";
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
 
 /*
@@ -42,12 +42,15 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     useEffect(() => {
-            const init = async () => {
-                const res = await getAllCategories();
+        let isMounted = true;
+        const init = async () => {
+            const res = await getAllCategories();
+            if (isMounted) {
                 setCategories(res.categoryList);
-            };
-            init();
-
+            }
+        };
+        init();
+        return () => { isMounted = false }
 
     }, []);
 
@@ -165,8 +168,6 @@ const NewBundleGroup = ({onDataChange}) => {
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
         changeNewBundleGroup("children", newBundleList)
-
-
     }
 
     console.log("NBG", newBundleGroup)

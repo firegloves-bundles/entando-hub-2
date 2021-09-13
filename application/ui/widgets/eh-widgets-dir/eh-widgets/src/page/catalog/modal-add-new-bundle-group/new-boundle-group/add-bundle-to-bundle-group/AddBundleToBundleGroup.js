@@ -25,7 +25,8 @@ const parseGitRepoAddr = (gitRepoAddress) => {
 
 const BundleList = ({children}) => {
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress} target={"_new"}>{childrenInfo.name}</a></Tag></li>)
+        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
+                                           target={"_new"}>{childrenInfo.name}</a></Tag></li>)
 
     return (<div>
         List of Bundles
@@ -46,9 +47,9 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
     }
 
     const onAddBundle = (e) => {
-        if(gitRepo==="") return
+        if (gitRepo === "") return
         let newBundleList = [...bundleList, {
-            name: gitRepo,
+            name: parseGitRepoAddr(gitRepo).name,
             description: gitRepo,
             gitRepoAddress: gitRepo,
             dependencies: [],

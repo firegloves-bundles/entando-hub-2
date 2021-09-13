@@ -6,6 +6,9 @@
   --clr-black: #101820;
   --clr-grey: #dadada;
   --clr-transparent: transparent;
+  --clr-violet: #ECF3FF;
+  --clr-light-blue: #00A0DF;
+
 }
 
 .CatalogPage {
@@ -14,7 +17,7 @@
 }
 
 .CatalogPage-breadcrumb {
-  margin:  2rem 0;
+  margin: 2rem 0;
 }
 
 .CatalogPage-section {
@@ -25,4 +28,9 @@
   line-height: 44px;
   color: var(--clr-black);
   margin-bottom: 20px;
+}
+
+.bx--grid {
+  padding-right: 0;
+  padding-left: 0;
 }

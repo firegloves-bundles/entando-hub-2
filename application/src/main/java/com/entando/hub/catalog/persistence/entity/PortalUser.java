@@ -25,6 +25,6 @@ public class PortalUser {
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Organisation> organizations = new HashSet<>();
+    private Set<Organisation> organisations = new HashSet<>();
 
 }

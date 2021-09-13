@@ -16,9 +16,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String Name;
+    private String name;
 
-    private String Description;
+    private String description;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<BundleGroup> bundleGroups = new HashSet<>();
@@ -28,8 +28,8 @@ public class Category {
     public String toString() {
         return "Category{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
-                ", Description='" + Description + '\'' +
+                ", Name='" + name + '\'' +
+                ", Description='" + description + '\'' +
                 '}';
     }
 

@@ -46,6 +46,7 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
     }
 
     const onAddBundle = (e) => {
+        if(gitRepo==="") return
         let newBundleList = [...bundleList, {
             name: gitRepo,
             description: gitRepo,

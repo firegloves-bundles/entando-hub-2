@@ -1,7 +1,7 @@
 import {Content, Tile} from "carbon-components-react";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router";
-import CatalogPageHeader from "../catalog/catalog-page-header/CatalogPageHeader";
+import CatalogPageHeaderInternal from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal";
 import {
     getAllBundlesForABundleGroup,
     getSingleBundleGroup,
@@ -10,6 +10,8 @@ import {
 } from "../../integration/Integration";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation";
+
+import "./bundle-group-page.scss"
 
 
 /*
@@ -63,7 +65,7 @@ const BundleGroupPage = () => {
 
     return (
         <>
-            <CatalogPageHeader/>
+            <CatalogPageHeaderInternal/>
             <Content>
                 <div className="bx--grid bx--grid--full-width catalog-page">
                     <div className="bx--row">

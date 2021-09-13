@@ -18,7 +18,7 @@ const CatalogPage = () => {
     return (
         <>
             <CatalogPageHeader/>
-            <Content>
+            <Content className="CatalogPage">
                 <div className="bx--grid bx--grid--full-width catalog-page">
                     <div className="bx--row">
                         <div className="bx--col-lg-16 CatalogPage-breadcrumb">
@@ -32,8 +32,10 @@ const CatalogPage = () => {
                         <div className="bx--col-lg-6 CatalogPage-section">
                             Catalog
                         </div>
-                        <div className="bx--col-lg-6 CatalogPage-section">
+                        <div className="bx--col-lg-2 CatalogPage-section">
                             <ModalAddNewBundleGroup afterSubmit={afterSubmit}/>
+                        </div>
+                        <div className="bx--col-lg-4 CatalogPage-section">
                             Search
                         </div>
                     </div>

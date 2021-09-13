@@ -1,16 +1,6 @@
 import {useEffect, useState} from "react";
-import {
-    Form,
-    FormGroup,
-    FileUploader,
-    Button,
-    TextArea,
-    TextInput,
-    Select,
-    SelectItem,
-    Content,
-} from "carbon-components-react";
-import {getAllCategories, addNewBundleGroup, addNewBundle} from "../../../integration/Integration";
+import {Content, FileUploader, FormGroup, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
+import {getAllCategories} from "../../../integration/Integration";
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
 
 /*
@@ -38,8 +28,8 @@ const NewBundleGroup = ({onDataChange}) => {
         descriptionImage: "",
         documentationUrl: "",
         status: "",
-        children: [""],
-        categories: [""],
+        children: [],
+        categories: [],
     });
 
     const changeNewBundleGroup = (field, value) => {
@@ -52,12 +42,13 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     useEffect(() => {
-        const init = async () => {
-            const res = await getAllCategories();
-            setCategories(res.categoryList);
-        };
+            const init = async () => {
+                const res = await getAllCategories();
+                setCategories(res.categoryList);
+            };
+            init();
 
-        init();
+
     }, []);
 
     let selectItems_Category = categories.map((category) => {
@@ -186,7 +177,7 @@ const NewBundleGroup = ({onDataChange}) => {
                 <FormGroup {...fieldsetFileUploaderProps_Images}>
                     <FileUploader onChange={imagesChangeHandler} {...fileUploaderProps_Images} />
                 </FormGroup>
-                <TextInput value={newBundleGroup.name} onChange={nameChangeHandler} {...textInputProps_Name} />
+                <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
                 <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
                 <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
                 <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />

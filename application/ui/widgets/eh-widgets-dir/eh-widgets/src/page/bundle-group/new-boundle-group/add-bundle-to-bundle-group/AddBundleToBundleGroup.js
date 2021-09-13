@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Button, TextInput,} from "carbon-components-react";
+import {Button, Tag, TextInput,} from "carbon-components-react";
 import {Add16} from '@carbon/icons-react';
 
 /*
@@ -25,7 +25,7 @@ const parseGitRepoAddr = (gitRepoAddress) => {
 
 const BundleList = ({children}) => {
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}><a href={childrenInfo.gitRepoAddress} target={"_new"}>{childrenInfo.name}</a></li>)
+        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress} target={"_new"}>{childrenInfo.name}</a></Tag></li>)
 
     return (<div>
         List of Bundles

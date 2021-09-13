@@ -3,11 +3,10 @@ import {Add16} from '@carbon/icons-react';
 import ReactDOM from "react-dom";
 import {useState} from "react";
 import NewBundleGroup from "../../bundle-group/new-boundle-group/NewBundleGroup";
-import onRequestSubmit from "carbon-components-react/lib/components/Modal/Modal";
 import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration";
 
 
-export const ModalAddNewBundleGroup = () => {
+export const ModalAddNewBundleGroup = ({afterSubmit}) => {
 
 
     const ModalStateManager = ({
@@ -15,28 +14,46 @@ export const ModalAddNewBundleGroup = () => {
                                    children: ModalContent,
                                }) => {
         const [open, setOpen] = useState(false);
+        const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
         const [newBundleGroup, setNewBundleGroup] = useState({})
 
         const onDataChange = (newBundleGroup)=>{
-            console.log("onDataChange",newBundleGroup)
             setNewBundleGroup(newBundleGroup)
+        }
+
+        const onRequestClose = (e) =>{
+            setOpen(false)
+            resetData()
+        }
+
+        const onRequestOpen = (e) =>{
+            setOpen(true)
+        }
+
+        const resetData = ()=>{
+            setElemKey(((new Date()).getTime()).toString())
         }
 
         const onRequestSubmit = (e) => {
             e.preventDefault();
             (async () => {
                 //create bundle children
-                let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
-                console.log("respArray", respArray)
-                const newChildren = respArray.map(res => res.newBundle.data.bundleId)
+                let newChildren = []
+                if(newBundleGroup.children && newBundleGroup.children.length) {
+                    let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
+                    console.log("respArray", respArray)
+                    newChildren = respArray.map(res => res.newBundle.data.bundleId)
+                }
                 console.log("newChildren", newChildren)
                 const toSend = {
                     ...newBundleGroup,
                     children: newChildren
                 }
+                const res = await addNewBundleGroup(toSend)
+                console.log("addNewBundleGroup", res)
                 setNewBundleGroup(toSend)
-                const res = addNewBundleGroup(toSend)
-                await console.log(res)
+                resetData()
+                afterSubmit()
 
             })()
         };
@@ -46,10 +63,10 @@ export const ModalAddNewBundleGroup = () => {
                 {!ModalContent || typeof document === 'undefined'
                     ? null
                     : ReactDOM.createPortal(
-                        <ModalContent open={open} setOpen={setOpen} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit}/>,
+                        <ModalContent open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
                         document.body
                     )}
-                {LauncherContent && <LauncherContent open={open} setOpen={setOpen}/>}
+                {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
             </>
         );
     };
@@ -60,19 +77,18 @@ export const ModalAddNewBundleGroup = () => {
 
     return (
         <ModalStateManager
-            renderLauncher={({setOpen}) => (
-                <Button onClick={() => setOpen(true)} renderIcon={Add16}>Add</Button>
+            renderLauncher={({onRequestOpen}) => (
+                <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
             )}>
-            {({open, setOpen, onDataChange, onRequestSubmit}) => (
+            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
                     modalLabel="Add"
                     primaryButtonText="Add"
                     secondaryButtonText="Cancel"
                     open={open}
-                    onRequestClose={() => setOpen(false)}
-                    onRequestSubmit={onRequestSubmit}
-                >
-                    <NewBundleGroup onDataChange={onDataChange}/>
+                    onRequestClose={onRequestClose}
+                    onRequestSubmit={onRequestSubmit}>
+                    <NewBundleGroup key={elemKey} onDataChange={onDataChange}/>
                 </Modal>
             )}
         </ModalStateManager>

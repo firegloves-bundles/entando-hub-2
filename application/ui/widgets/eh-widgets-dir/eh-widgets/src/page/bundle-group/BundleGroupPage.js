@@ -1,5 +1,5 @@
 import {Button, Content, Tile} from "carbon-components-react";
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router";
 import CatalogPageHeader from "../catalog/catalog-page-header/CatalogPageHeader";
 import {

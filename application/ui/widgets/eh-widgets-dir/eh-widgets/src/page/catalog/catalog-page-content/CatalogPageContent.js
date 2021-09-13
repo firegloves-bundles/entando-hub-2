@@ -48,7 +48,7 @@ const allBundleGroups = Array.from(Array(10).keys()).map(index => {
 */
 
 
-const CatalogPageContent = () => {
+const CatalogPageContent = (reloadToken) => {
     useEffect(() => {
         const initBGs = async () => {
             const data = await getAllBundleGroups()
@@ -62,7 +62,7 @@ const CatalogPageContent = () => {
 
         initBGs()
         initCs()
-    }, [])
+    }, [reloadToken])
 
     const [allBundleGroups, setAllBundleGroups] = useState([])
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])

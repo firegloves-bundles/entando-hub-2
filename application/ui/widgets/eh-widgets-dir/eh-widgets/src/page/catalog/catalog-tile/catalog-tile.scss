@@ -19,12 +19,18 @@
 .CatalogTile-card-description {
   font-size: 16px;
   line-height: 26px;
-  color: #72767B;
+  color: var(--clr-dark-grey);
+  margin-bottom: 10px;
 }
 
 .CatalogTile-card-category {
 
 }
+
+.CatalogPageContent-wrapper .CatalogTile {
+  margin: 0 2% 2% 0;
+}
+
 @media screen and (max-width: 1240px) {
   .CatalogTile {
     width: 48%;

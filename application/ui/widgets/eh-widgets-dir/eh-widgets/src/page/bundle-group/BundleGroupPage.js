@@ -78,9 +78,9 @@ const BundleGroupPage = () => {
       <>
         <CatalogPageHeaderInternal/>
         <Content className="BundleGroupPage">
-          <Row className="bx--grid bx--grid--full-width catalog-page">
+          <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
             <div className="bx--row">
-              <div className="bx--col-lg-16 CatalogPage-breadcrumb">
+              <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                 <EhBreadcrumb pathElements={[{
                   path: bundleGroup.name,
                   href: window.location.href

@@ -1,4 +1,4 @@
-.bx--tile {
+.BundleGroupPage-page.bx--tile {
   position: relative;
   display: block;
   min-width: 8rem;
@@ -164,4 +164,8 @@
 
 .BundleGroupPage-image-list img {
   width: 30%;
+}
+
+.BundleGroupPage-breadcrumb {
+  margin: 2rem 0;
 }

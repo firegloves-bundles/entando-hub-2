@@ -3,6 +3,7 @@ import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile";
 import CatalogTiles from "../catalog-tiles/CatalogTiles";
 import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
 
+import "./catalog-page-content.scss"
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -81,7 +82,7 @@ const CatalogPageContent = (reloadToken) => {
             <div className="bx--col-lg-4">
                 {categories.length > 0 && <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
-            <div className="bx--col-lg-12">
+            <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups}/>
             </div>
         </>

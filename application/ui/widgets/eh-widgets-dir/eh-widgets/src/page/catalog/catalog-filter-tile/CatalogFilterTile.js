@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import {Checkbox, Tile} from "carbon-components-react";
 
+import './catalog-filter-tile.scss';
+
 /**
  * renders a list of categories
  */
@@ -15,7 +17,6 @@ const CatalogFilterTile = ({categories, onFilterChange}) => {
     }
 
     let [checkboxStatuses, setCheckboxStatuses] = useState(init())
-
 
     const onChange = (value, id, event) => {
         if (id === "-1") {

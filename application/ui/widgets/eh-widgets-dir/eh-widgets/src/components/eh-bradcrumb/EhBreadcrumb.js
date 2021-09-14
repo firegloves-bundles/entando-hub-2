@@ -1,8 +1,7 @@
 import React from 'react';
 import {Breadcrumb, BreadcrumbItem} from "carbon-components-react";
 import {Link} from "react-router-dom";
-//import Link from "carbon-components-react/lib/components/UIShell/Link";
-
+import './eh-bredcrumb.scss';
 /*
 {
 path,

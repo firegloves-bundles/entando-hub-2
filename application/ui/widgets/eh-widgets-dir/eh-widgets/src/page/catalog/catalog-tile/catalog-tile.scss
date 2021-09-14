@@ -1,0 +1,50 @@
+.CatalogTile {
+  width: 31%;
+  min-height: 268px;
+  margin:0 2% 2% 0;
+  float:left;
+}
+.CatalogTile-card-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.CatalogTile-card-title {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 26px;
+  margin:16px 0 20px;
+}
+
+.CatalogTile-card-description {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--clr-dark-grey);
+  margin-bottom: 10px;
+}
+
+.CatalogTile-card-category {
+
+}
+
+.CatalogPageContent-wrapper .CatalogTile {
+  margin: 0 2% 2% 0;
+}
+
+@media screen and (max-width: 1240px) {
+  .CatalogTile {
+    width: 48%;
+    min-height: 223px;
+    margin:0 2% 2% 0;
+    float:left;
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .CatalogTile {
+    width: 100%;
+    min-height: 223px;
+    margin: 2% 0 0 ;
+    float:left;
+  }
+}

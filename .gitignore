@@ -160,3 +160,6 @@ Desktop.ini
 .ent/ent-state
 /src/main/docker/docker.yml
 /entando-data/
+/application/.ent/
+/application/bundle/
+/application/ui/widgets/eh-widgets-dir/eh-widgets/build/**

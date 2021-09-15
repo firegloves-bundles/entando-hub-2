@@ -6,8 +6,8 @@ import {useState} from "react";
 const InstallationInfo = ({bundleGroup, children}) => {
     console.log("InstallationInfo",bundleGroup)
     const elemList = children.map((bundle, index)=>(
-        <CodeSnippet key={index.toString()} type="single" feedback="Copied to clipboard">
-            {`ent ${bundle.gitRepoAddress}`}
+        <CodeSnippet key={index.toString()} type="multi" feedback="Copied to clipboard">
+            {`ent bundler from-git -r ${bundle.gitRepoAddress} -d | ent kubectl apply -n entando -f -`}
         </CodeSnippet>
     ))
 

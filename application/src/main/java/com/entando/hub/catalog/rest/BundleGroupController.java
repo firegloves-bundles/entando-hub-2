@@ -128,6 +128,7 @@ public class BundleGroupController {
             ret.setDescription(this.getDescription());
             ret.setName(this.getName());
             ret.setDescriptionImage(this.getDescriptionImage());
+            ret.setDocumentationUrl(this.getDocumentationUrl());
             ret.setStatus(this.getStatus());
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();

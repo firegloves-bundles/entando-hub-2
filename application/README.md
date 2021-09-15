@@ -23,9 +23,8 @@ BUNDLE PUBLICATION
  create the bundle folder and copy all the bundle_src files in
 
 ent prj init
-
+ent prj ba
 ent prj pbs-init
-
 ent prj fe-push (--force)
 
 ent prj generate-cr | ent kubectl apply -n entando -f -

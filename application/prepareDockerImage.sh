@@ -2,11 +2,14 @@
 
 echo ""
 echo "Building project and Docker image "
-#todo export as global variable
-#todo manage version
-export MY_IMAGE="germanogiudici/entando-hub-catalog-ms:0.0.2-SNAPSHOT"
+export MY_IMAGE=$(./mvnw -Pprod clean package jib:dockerBuild | while read i
+do
 
-docker build -t ${MY_IMAGE}  .
+	if [[ "$i" == *"Built image to Docker daemon"* ]]; then
+		echo "$i" | awk '{print $NF}'
+	fi
+done
+)
 echo "Built $MY_IMAGE"
 
 echo ""

@@ -93,7 +93,7 @@ const BundleGroupPage = () => {
               <Column lg={4}>
                 <Tile>
                   <div className="BundleGroupPage-image">
-                    <img src="/../../Logo-blue.png" alt="Entando logo"/>
+                    <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`} alt="Entando logo" />
 
                     {bundleGroup && bundleGroup.bundleGroupdescriptionImage}
                   </div>
@@ -106,10 +106,9 @@ const BundleGroupPage = () => {
                   <hr/>
                   <div className="BundleGroupPage-docs">
                     Link to documentation <br/>
-                    {bundleGroup
+                    <a href={bundleGroup
                     && bundleGroup.documentationUrl}
-                    <a href="https://github.com/GermanoGiudici/sample-composition-layer-umd-react-bundle.git"
-                       target="_new">test link fake</a>
+                       target="_new">Documentation</a>
                   </div>
                   <hr/>
                   <div>
@@ -143,30 +142,13 @@ const BundleGroupPage = () => {
                   </div>
                   <div className="BundleGroupPage-description">
                     {bundleGroup && bundleGroup.description}
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aenean non posuere elit, at venenatis lectus. Nunc euismod
-                    eu nunc malesuada porta. Nulla vulputate tristique nulla,
-                    non venenatis velit ullamcorper at. Quisque eleifend tortor
-                    et mauris egestas, id sodales metus malesuada. Pellentesque
-                    ut justo eleifend erat vulputate accumsan eu eu lorem.
-                    Praesent porttitor, quam sed tempor dignissim, odio urna
-                    consequat felis, a ullamcorper odio turpis sed dolor. Nullam
-                    eleifend facilisis risus vel ultricies. In dapibus nunc at
-                    dolor convallis, eget ornare arcu sagittis. Proin ornare
-                    dignissim dui ut auctor. Sed at egestas diam, ultrices
-                    aliquam ipsum. In rutrum est id sem tristique imperdiet.
-                    Aenean finibus quis risus et feugiat. Praesent vehicula
-                    turpis in mauris auctor gravida. Pellentesque ultrices
-                    lectus et neque consequat semper. Fusce non aliquam felis.
-                    Mauris nunc nisi, elementum sed elit eget, mollis aliquet
-                    turpis
                   </div>
                   <ul className="BundleGroupPage-image-list">
                     <li>
-                      <img src="/../../Tickets 2.png" alt="Entando logo"/>
+                      <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Tickets2.png`} alt="Entando logo" />
                     </li>
                     <li>
-                      <img src="/../../Tickets1.png" alt="Entando logo"/>
+                      <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Tickets1.png`} alt="Entando logo" />
                     </li>
                   </ul>
                 </Tile>

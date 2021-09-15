@@ -10,19 +10,21 @@
     </parent>
     <groupId>com.entando</groupId>
     <artifactId>entando-hub-catalog-ms</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <description>The BE microservice for Entando HUB</description>
     <properties>
         <problem-spring-web.version>0.25.0</problem-spring-web.version>
         <java.version>11</java.version>
         <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
+        <jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
+        <keycloak-adapter-bom.version>12.0.4</keycloak-adapter-bom.version>
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.keycloak.bom</groupId>
                 <artifactId>keycloak-adapter-bom</artifactId>
-                <version>12.0.4</version>
+                <version>${keycloak-adapter-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,7 +87,40 @@
     </dependencies>
 
     <build>
+        <defaultGoal>spring-boot:run</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven-plugin.version}</version>
+                    <configuration>
+                        <allowInsecureRegistries>true</allowInsecureRegistries>
+                        <from>
+                            <image>adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.12_7</image>
+                        </from>
+                        <to>
+                            <image>germanogiudici/${project.artifactId}:${project.version}</image>
+                        </to>
+                        <container>
+                            <mainClass>com.entando.hub.catalog.EntandoHubCatalogApplication</mainClass>
+                            <ports>
+                                <port>8081</port>
+                            </ports>
+                            <environment>
+                                <SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
+                            </environment>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,10 +1,10 @@
 import { getData, postData } from "./Http";
 
 // endpoints
-const urlOrganisations = `http://hubdev.okd-entando.org/entando-hub-api/api/organisation/`;
-const urlCategories = `http://hubdev.okd-entando.org/entando-hub-api/api/category/`;
-const urlBundles = `http://hubdev.okd-entando.org/entando-hub-api/api/bundles/`;
-const urlBundleGroups = `http://hubdev.okd-entando.org/entando-hub-api/api/bundlegroups/`;
+const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`;
+const urlCategories = `${process.env.REACT_APP_PUBLIC_API_URL}/category/`;
+const urlBundles = `${process.env.REACT_APP_PUBLIC_API_URL}/bundles/`;
+const urlBundleGroups = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/`;
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {

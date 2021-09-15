@@ -24,7 +24,7 @@ const CatalogTile = (CatalogTileProps) => {
   return <ClickableTile handleClick={handleClick} className="CatalogTile">
     <div className="CatalogTile-card-wrapper">
       <div className="CatalogTile-card-icon">
-        <img src="/../../icon.svg" alt="Entando logo"/>
+        <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>
       </div>
       <div className="CatalogTile-card-title">
         {name}

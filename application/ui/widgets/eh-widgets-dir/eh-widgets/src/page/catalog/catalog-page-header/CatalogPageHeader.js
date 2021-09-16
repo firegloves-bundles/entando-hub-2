@@ -1,5 +1,4 @@
 import React from 'react';
-import Login from "../../../components/Login/Login";
 import './catalog-page-header.scss';
 
 const CatalogPageHeader = () => {
@@ -11,7 +10,6 @@ const CatalogPageHeader = () => {
               <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo.png`} alt="Entando logo" />
             </a>
             <div className="CatalogPageHeader-header-right">
-              <Login/>
             </div>
             </div>
             <div className="CatalogPageHeader-header-bottom">

@@ -5,5 +5,5 @@ components:
     - plugins/entando-hub-catalog-plugin.yaml
   widgets:
     - ui/widgets/eh-widgets-dir/eh-widgets/eh-app-widget-descriptor.yaml
-# entando-needle-descriptor-add-widgets - Entando blueprint will add widget bundle files here
+    - ui/widgets/eh-widgets-dir/eh-widgets/eh-login-widget-descriptor.yaml
 

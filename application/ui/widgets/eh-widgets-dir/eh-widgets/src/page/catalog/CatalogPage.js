@@ -7,11 +7,12 @@ import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBu
 import {useState} from "react";
 
 import './catalogPage.scss';
+import {isHubManager, isHubUser} from "../../api/helpers";
 
 const CatalogPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
-    const afterSubmit = ()=>{
+    const afterSubmit = () => {
         setReloadToken(((new Date()).getTime()).toString())
     }
 
@@ -39,12 +40,19 @@ const CatalogPage = () => {
                             Search
                         </div>
                     </div>
+                    {isHubUser() &&
+                    <div className="bx--row">
+                        <div className="bx--col-lg-16 CatalogPage-section">
+                            Select here
+                        </div>
+                    </div>
+                    }
                     <div className="bx--row">
                         <CatalogPageContent reloadToken={reloadToken}/>
                     </div>
                 </div>
             </Content>
-         <CatalogPageFooter/>
+            <CatalogPageFooter/>
         </>
     );
 };

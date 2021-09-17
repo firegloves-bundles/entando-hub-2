@@ -175,9 +175,6 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <FormGroup {...fieldsetFileUploaderProps_Images}>
-                    <FileUploader onChange={imagesChangeHandler} {...fileUploaderProps_Images} />
-                </FormGroup>
                 <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
                 <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
                 <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
@@ -185,9 +182,6 @@ const NewBundleGroup = ({onDataChange}) => {
                 <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
                 <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
                 <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
-                {/*
-                    <Button type="submit">Submit</Button>
-*/}
             </Content>
         </>
     );

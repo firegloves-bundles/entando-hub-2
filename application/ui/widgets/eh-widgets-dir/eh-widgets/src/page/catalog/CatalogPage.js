@@ -15,7 +15,6 @@ const CatalogPage = () => {
     const [statusFilterValue, setStatusFilterValue] = useState("-1")
 
     const changeStatusFilterValue = (newValue) => {
-        debugger;
         setStatusFilterValue(newValue);
     }
 

@@ -49,7 +49,6 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
     const statusChangeHandler = (e) => {
         const value = e.target.value;
         changeSelectedStatus(value);
-        debugger
     }
 
     const render = () => {

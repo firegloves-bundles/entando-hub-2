@@ -46,7 +46,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
                 if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
                     filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
                 }
-                debugger
                 if(statusFilterValue!=="-1"){
                     filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
                 }

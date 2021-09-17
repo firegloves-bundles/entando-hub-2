@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Content, FileUploader, FormGroup, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
 import {getAllCategories} from "../../../../integration/Integration";
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
 

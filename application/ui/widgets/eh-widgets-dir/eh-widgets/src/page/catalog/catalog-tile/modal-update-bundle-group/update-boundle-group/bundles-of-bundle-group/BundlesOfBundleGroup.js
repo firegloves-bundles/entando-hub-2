@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button, Tag, TextInput,} from "carbon-components-react";
 import {Add16} from '@carbon/icons-react';
 
@@ -23,7 +23,8 @@ const parseGitRepoAddr = (gitRepoAddress) => {
     }
 }
 
-const BundleList = ({children}) => {
+const BundleList = ({children = []}) => {
+    console.log("BundleList", children)
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
         <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
                                            target={"_new"}>{childrenInfo.name}</a></Tag></li>)
@@ -36,9 +37,14 @@ const BundleList = ({children}) => {
 }
 
 
-const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList = []}) => {
+const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) => {
+    console.log("initialBundleList", initialBundleList)
 
-    const [bundleList, setBundleList] = useState(initialBundleList)
+    useEffect(()=>{
+        setBundleList(initialBundleList)
+    },[initialBundleList])
+
+    const [bundleList, setBundleList] = useState([])
     const [gitRepo, setGitRepo] = useState("")
 
     const onChangeHandler = (e) => {

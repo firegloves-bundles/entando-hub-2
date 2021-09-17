@@ -1,6 +1,10 @@
 import {useEffect, useState} from "react";
 import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories, getSingleBundleGroup} from "../../../../integration/Integration";
+import {
+    getAllBundlesForABundleGroup,
+    getAllCategories,
+    getSingleBundleGroup
+} from "../../../../../integration/Integration";
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup";
 import {useParams} from "react-router-dom";
 
@@ -21,9 +25,9 @@ bundleGroupId	string
 }
  */
 
-const UpdateBundleGroup = ({onDataChange}) => {
-    const {id: bundleGroupId} = useParams();
+const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
 
+    const [children, setChildren] = useState([]);
     const [categories, setCategories] = useState([]);
     const [bundleGroup, setBundleGroup] = useState({
         name: "",
@@ -54,8 +58,15 @@ const UpdateBundleGroup = ({onDataChange}) => {
         }
         const initBG = async () => {
             const res = await getSingleBundleGroup(bundleGroupId);
+
+            const children = res.bundleGroup.children && res.bundleGroup.children.length > 0
+                    ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
+                    : []
+
             if (isMounted) {
                 setBundleGroup(res.bundleGroup);
+                onDataChange(res.bundleGroup)
+                setChildren(children)
             }
         }
         initCG()
@@ -135,7 +146,7 @@ const UpdateBundleGroup = ({onDataChange}) => {
                 <TextArea value={bundleGroup.description} onChange={descriptionChangeHandler} id={"description"}
                           labelText={"Description"}/>
                 <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                      initialBundleList={bundleGroup.children}/>
+                                      initialBundleList={children}/>
             </Content>
         </>
     );

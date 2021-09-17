@@ -1,4 +1,4 @@
-import {ADMIN, SUPPORT, CUSTOMER, PARTNER, DOMAIN, AUTHOR, MANAGER} from './constants';
+import {ADMIN, AUTHOR, MANAGER} from './constants';
 
 export const getKeycloakToken = () => {
     if (window && window.entando && window.entando.keycloak && window.entando.keycloak.authenticated) {
@@ -31,9 +31,14 @@ export const isHubManager = () => {
 };
 
 export const isHubUser = () => {
-    debugger
     return isHubAdmin() || isHubManager() || isHubAuthor()
 };
+
+export const getHigherRole = () => {
+    if(isHubAdmin()) return ADMIN
+    if(isHubManager()) return MANAGER
+    if(isHubAuthor()) return AUTHOR
+}
 
 export const getUserName = async () => {
     if (window.entando && window.entando.keycloak && window.entando.keycloak.loadUserInfo) {

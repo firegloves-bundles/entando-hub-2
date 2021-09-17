@@ -36,51 +36,48 @@ categories	[...]
 bundleGroupId	string
 }
  */
-/*
-const allBundleGroups = Array.from(Array(10).keys()).map(index => {
-    return {
-        bundleGroupId: "" + index,
-        name: "name" + index,
-        description: "description" + index,
-        categories: ["" + categories[Math.floor(Math.random() * categories.length)].id],
-        image: "image" + index
-    };
-})
-*/
+
+const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
+    async function init(newSelectedCategoryIds) {
+            const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
+            const initBGs = async () => {
+                const data = await getAllBundleGroups()
+                let filtered = data.bundleGroupList
+                if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
+                    filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
+                }
+                debugger
+                if(statusFilterValue!=="-1"){
+                    filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
+                }
+                setFilteredBundleGroups(filtered)
+            }
+            const initCs = async () => {
+                const data = await getAllCategories()
+                setCategories(data.categoryList)
+            }
 
 
-const CatalogPageContent = (reloadToken) => {
-    useEffect(() => {
-        const initBGs = async () => {
-            const data = await getAllBundleGroups()
-            setAllBundleGroups(data.bundleGroupList)
-            setFilteredBundleGroups(data.bundleGroupList)
-        }
-        const initCs = async () => {
-            const data = await getAllCategories()
-            setCategories(data.categoryList)
-        }
+            initBGs()
+            initCs()
+    }
 
-        initBGs()
-        initCs()
-    }, [reloadToken])
+    useEffect(()=>init(), [reloadToken, statusFilterValue])
 
-    const [allBundleGroups, setAllBundleGroups] = useState([])
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
-    const onFilterChange = (selectedCategoryIds) => {
-        let filtered = allBundleGroups
-        if (selectedCategoryIds.length > 0 && selectedCategoryIds !== "-1") {
-            filtered = allBundleGroups.filter(currBundleGroup => selectedCategoryIds.includes(currBundleGroup.categories[0]));
-        }
-        setFilteredBundleGroups(filtered)
+    const onFilterChange = (newSelectedCategoryIds) => {
+        init(newSelectedCategoryIds)
+        setSelectedCategoryIds(newSelectedCategoryIds)
     }
 
     return (
         <>
             <div className="bx--col-lg-4">
-                {categories.length > 0 && <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
+                {categories.length > 0 &&
+                <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups}/>

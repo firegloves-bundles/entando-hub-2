@@ -8,9 +8,16 @@ import {useState} from "react";
 
 import './catalogPage.scss';
 import {isHubManager, isHubUser} from "../../api/helpers";
+import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter";
 
 const CatalogPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+    const [statusFilterValue, setStatusFilterValue] = useState("-1")
+
+    const changeStatusFilterValue = (newValue) => {
+        debugger;
+        setStatusFilterValue(newValue);
+    }
 
     const afterSubmit = () => {
         setReloadToken(((new Date()).getTime()).toString())
@@ -41,14 +48,10 @@ const CatalogPage = () => {
                         </div>
                     </div>
                     {isHubUser() &&
-                    <div className="bx--row">
-                        <div className="bx--col-lg-16 CatalogPage-section">
-                            Select here
-                        </div>
-                    </div>
+                        <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue}/>
                     }
                     <div className="bx--row">
-                        <CatalogPageContent reloadToken={reloadToken}/>
+                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue}/>
                     </div>
                 </div>
             </Content>

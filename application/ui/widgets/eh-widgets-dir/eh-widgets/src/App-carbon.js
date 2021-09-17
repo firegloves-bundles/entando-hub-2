@@ -9,8 +9,8 @@ function AppCarbon() {
     return (
         <HashRouter>
             <Switch>
-                <Route path="**/" component={CatalogPage}/>
                 <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
+                <Route path="**/" component={CatalogPage}/>
             </Switch>
         </HashRouter>
     );

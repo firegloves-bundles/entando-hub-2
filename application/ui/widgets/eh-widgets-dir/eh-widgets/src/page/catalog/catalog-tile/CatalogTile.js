@@ -6,7 +6,7 @@ import {getSingleCategory} from "../../../integration/Integration";
 import "./catalog-tile.scss"
 
 const CatalogTile = (CatalogTileProps) => {
-    const {bundleGroupId, name, description, categories} = CatalogTileProps
+    const {bundleGroupId, name, description, categories, status} = CatalogTileProps
     const [categoryName,setCategoryName] = useState("")
     useEffect(()=>{
         (async ()=>{
@@ -30,7 +30,7 @@ const CatalogTile = (CatalogTileProps) => {
         {name}
       </div>
       <div className="CatalogTile-card-description">
-        {description}
+        {description} - {status}
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </div>
       <div className="CatalogTile-card-category">

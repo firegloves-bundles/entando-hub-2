@@ -1,0 +1,6 @@
+code: eh-login
+titles:
+  en: Entando Hub Login
+  it: Entando Hub Login
+group: free
+customUiPath: eh-login-widget.ftl

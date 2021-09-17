@@ -67,38 +67,6 @@ public class KeycloakService {
         return response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
     }
     
-    
-    
-/*
-    public void removeUser(final String uuid) {
-        final String url = String.format("%s/admin/realms/%s/users/%s", configuration.getAuthServerUrl(), configuration.getRealm(), uuid);
-        this.executeRequest(url, HttpMethod.DELETE, createEntity());
-    }
-
-    public void resetPassword(final String uuid, final String password, final Boolean temporary) {
-        final String url = String.format("%s/admin/realms/%s/users/%s/reset-password", configuration.getAuthServerUrl(), configuration.getRealm(), uuid);
-        final Map<String, Object> body = new HashMap<>();
-        body.put("value", password);
-        body.put("temporary", temporary);
-        body.put("type", "password");
-        this.executeRequest(url, HttpMethod.PUT, createEntity(body));
-    }
-*/
-
-    //public String createUser(final UserRepresentation user) {
-    //    final String url = String.format("%s/admin/realms/%s/users", configuration.getAuthServerUrl(), configuration.getRealm());
-    //    final ResponseEntity<Void> response = this.executeRequest(url, HttpMethod.POST, createEntity(user));
-    //    return Optional.ofNullable(response.getHeaders().getLocation())
-    //            .map(location -> location.getPath().replaceAll(".*/([^/]+)$", "$1"))
-    //            .orElseThrow(() -> new RuntimeException("User id response shouldn't return null from Keycloak"));
-    //}
-    /*
-    public void updateUser(final UserRepresentation user) {
-        final String url = String.format("%s/admin/realms/%s/users/%s", configuration.getAuthServerUrl(), configuration.getRealm(), user.getId());
-        this.executeRequest(url, HttpMethod.PUT, createEntity(user));
-    }
-    */
-    
     private <T> HttpEntity<T> createEntity() {
         return createEntity(null);
     }
@@ -112,11 +80,6 @@ public class KeycloakService {
         return new HttpEntity<>(body, headers);
     }
     
-    /*
-    private <T> ResponseEntity<Void> executeRequest(final String url, final HttpMethod method, final HttpEntity<T> entity) {
-        return this.executeRequest(url, method, entity, Void.class, Collections.emptyMap());
-    }
-    */
     private <T, Y> ResponseEntity<Y> executeRequest(final String url, final HttpMethod method, final HttpEntity<T> entity,
                                                     final Class<Y> result, final Map<String, String> params) {
         return executeRequest(url, method, entity, result, params, 0);

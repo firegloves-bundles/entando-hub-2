@@ -40,30 +40,7 @@ public class OpenIDConnectService {
         final String authData = configuration.getResource() + ":" + configuration.getCredentials().get("secret");
         authToken = Base64.getEncoder().encodeToString(authData.getBytes());
     }
-    /*
-    public AuthResponse login(final String username, final String password) throws OidcException {
-        try {
-            final ResponseEntity<AuthResponse> response = request(username, password);
-            return HttpStatus.OK.equals(response.getStatusCode()) ? response.getBody() : null;
-        } catch (HttpClientErrorException e) {
-            if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
-                if (e.getResponseBodyAsString().contains("Account is not fully set up")) {
-                    throw new CredentialsExpiredException(e);
-                }
-                if (e.getResponseBodyAsString().contains("Account disabled")) {
-                    throw new AccountDisabledException(e);
-                }
-                log.error("There was an error while trying to authenticate, " +
-                        "this might indicate a misconfiguration on Keycloak {}",
-                        e.getResponseBodyAsString(), e);
-            }
-            if (HttpStatus.UNAUTHORIZED.equals(e.getStatusCode())) {
-                throw new InvalidCredentialsException(e);
-            }
-            throw new OidcException(e);
-        }
-    }
-    */
+    
     public AuthResponse authenticateAPI() throws OidcException {
         try {
             final ResponseEntity<AuthResponse> response = requestClient();
@@ -88,58 +65,14 @@ public class OpenIDConnectService {
             throw new OidcException(e);
         }
     }
-    /*
-    public String getRedirectUrl(final String redirectUri, final String state) throws UnsupportedEncodingException {
-        return new StringBuilder(configuration.getAuthServerUrl())
-                .append("/realms/").append(configuration.getRealm())
-                .append("/protocol/openid-connect/auth")
-                .append("?response_type=code")
-                .append("&client_id=").append(configuration.getResource())
-                .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"))
-                .append("&state=").append(state)
-                .append("&login=true")
-                .append("&scope=openid")
-                .toString();
-    }
-    */
-    /*
-    private ResponseEntity<AuthResponse> request(final String username, final String password) {
-        final RestTemplate restTemplate = new RestTemplate();
-        final HttpEntity<MultiValueMap<String, String>> req = createLoginRequest(username, password);
-        final String url = String.format("%s/realms/%s/protocol/openid-connect/token", configuration.getAuthServerUrl(), configuration.getRealm());
-        return restTemplate.postForEntity(url, req, AuthResponse.class);
-    }
-    */
+    
     private ResponseEntity<AuthResponse> requestClient() {
         final RestTemplate restTemplate = new RestTemplate();
         final HttpEntity<MultiValueMap<String, String>> req = createApiAuthenticationRequest();
         final String url = String.format("%s/realms/%s/protocol/openid-connect/token", configuration.getAuthServerUrl(), configuration.getRealm());
         return restTemplate.postForEntity(url, req, AuthResponse.class);
     }
-    /*
-    private HttpEntity<MultiValueMap<String, String>> createLoginRequest(final String username, final String password) {
-        final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("username", username);
-        body.add("password", password);
-        body.add("grant_type", "password");
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization", "Basic " + authToken);
-        return new HttpEntity<>(body, headers);
-    }
     
-    private HttpEntity<MultiValueMap<String, String>> createRefreshTokenRequest(final String refreshToken) {
-        final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "refresh_token");
-        body.add("refresh_token", refreshToken);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization", "Basic " + authToken);
-        return new HttpEntity<>(body, headers);
-    }
-    */
     private HttpEntity<MultiValueMap<String, String>> createApiAuthenticationRequest() {
         final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "client_credentials");
@@ -149,57 +82,5 @@ public class OpenIDConnectService {
         headers.add("Authorization", "Basic " + authToken);
         return new HttpEntity<>(body, headers);
     }
-    /*
-    public ResponseEntity<AccessToken> validateToken(final String bearerToken) {
-        final RestTemplate restTemplate = new RestTemplate();
-        final HttpEntity<MultiValueMap<String, String>> req = createValidationRequest(bearerToken);
-        final String url = String.format("%s/realms/%s/protocol/openid-connect/token/introspect", configuration.getAuthServerUrl(), configuration.getRealm());
-        return restTemplate.postForEntity(url, req, AccessToken.class);
-    }
     
-    public ResponseEntity<AuthResponse> refreshToken(final String refreshToken) {
-        final RestTemplate restTemplate = new RestTemplate();
-        final HttpEntity<MultiValueMap<String, String>> req = createRefreshTokenRequest(refreshToken);
-        final String url = String.format("%s/realms/%s/protocol/openid-connect/token", configuration.getAuthServerUrl(), configuration.getRealm());
-        return restTemplate.postForEntity(url, req, AuthResponse.class);
-    }
-    
-    public ResponseEntity<AuthResponse> requestToken(final String code, final String redirectUri) {
-        final RestTemplate restTemplate = new RestTemplate();
-        final HttpEntity<MultiValueMap<String, String>> req = createAuthorizationCodeRequest(code, redirectUri);
-        final String url = String.format("%s/realms/%s/protocol/openid-connect/token", configuration.getAuthServerUrl(), configuration.getRealm());
-        return restTemplate.postForEntity(url, req, AuthResponse.class);
-    }
-
-    private HttpEntity<MultiValueMap<String, String>> createAuthorizationCodeRequest(final String code, final String redirectUri) {
-        final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", code);
-        body.add("redirect_uri", redirectUri);
-        body.add("grant_type", "authorization_code");
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization", "Basic " + authToken);
-        return new HttpEntity<>(body, headers);
-    }
-
-    private HttpEntity<MultiValueMap<String, String>> createValidationRequest(final String bearerToken) {
-        final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("token", bearerToken);
-        body.add("client_id", configuration.getResource());
-        body.add("client_secret", String.valueOf(configuration.getCredentials().get("secret")));
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return new HttpEntity<>(body, headers);
-    }
-
-    public String getLogoutUrl(final String redirectUri) throws UnsupportedEncodingException {
-        return new StringBuilder(configuration.getAuthServerUrl())
-                .append("/realms/").append(configuration.getRealm())
-                .append("/protocol/openid-connect/logout")
-                .append("?redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"))
-                .toString();
-    }
-    */
 }

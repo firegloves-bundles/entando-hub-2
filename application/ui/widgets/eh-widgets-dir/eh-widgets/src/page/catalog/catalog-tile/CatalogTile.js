@@ -9,7 +9,7 @@ import {isHubUser} from "../../../api/helpers";
 
 const CatalogTile = (CatalogTileProps) => {
     const {bundleGroupId, name, description, categories, status} = CatalogTileProps
-    const [categoryName, setCategoryName] = useState("")
+    const [categoryName,setCategoryName] = useState("")
     useEffect(() => {
         (async () => {
             const data = await getSingleCategory(categories[0])
@@ -23,20 +23,19 @@ const CatalogTile = (CatalogTileProps) => {
         history.push("/bundlegroup/" + bundleGroupId)
     }
 
-
+    const statusToRender = status === "PUBLISHED" ? 'Published' : 'Unpublished'
     return (
         <>
             <Tile className="CatalogTile">
                 {isHubUser() && <CatalogTileOverflowMenu bundleGroupId={bundleGroupId} />}
                 <div onClick={handleClick} className="CatalogTile-card-wrapper">
                     <div className="CatalogTile-card-icon">
-                        <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>
+        <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>
                     </div>
-                    <div className="CatalogTile-card-title">
-                        {name}
-                    </div>
+        <div className="CatalogTile-card-title">{name}</div>
+        <div className="CatalogTile-card-status">{statusToRender}</div>
                     <div className="CatalogTile-card-description">
-                        {description} - {status}
+                        {description}
                     </div>
                     <div className="CatalogTile-card-category">
                         <Tag type="blue" title="Clear Filter"> {categoryName} </Tag>

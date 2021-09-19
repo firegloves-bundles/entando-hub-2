@@ -19,6 +19,7 @@ public class BundleGroup {
     private String description;
     private String documentationUrl;
     private String descriptionImage;
+    @Enumerated(EnumType.STRING)
     private Status status = Status.NOT_PUBLISHED;
 
     @ManyToOne
@@ -76,7 +77,7 @@ public class BundleGroup {
     }
 
     public  enum Status {
-        NOT_PUBLISHED, PUBLISHED
+        NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED
     }
 }
 

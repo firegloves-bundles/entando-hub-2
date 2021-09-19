@@ -24,9 +24,9 @@ const CatalogPage = () => {
     Callback when the status filter is changed
     The implementation save the user choice in the component state
      */
-    const changeStatusFilterValue = useCallback ((newValue) => {
+    const changeStatusFilterValue = useCallback((newValue) => {
         setStatusFilterValue(newValue);
-    },[])
+    }, [])
 
     /*
     Callback to the Add (New Bundle Group) modal form submit
@@ -57,7 +57,7 @@ const CatalogPage = () => {
                             {/*
                             Manage the Add (New Bundle Group) button
                             */}
-                            <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>
+                            {isHubUser() && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                         </div>
                         <div className="bx--col-lg-4 CatalogPage-section">
                             Search

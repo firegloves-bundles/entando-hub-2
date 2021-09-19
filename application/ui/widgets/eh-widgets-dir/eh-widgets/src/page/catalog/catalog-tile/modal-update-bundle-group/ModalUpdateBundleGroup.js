@@ -1,15 +1,15 @@
 import {Modal} from "carbon-components-react";
 import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 
 
 export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal}) => {
     const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
     const [bundleGroup, setBundleGroup] = useState({})
 
-    const onDataChange = (bundleGroup)=>{
+    const onDataChange = useCallback((bundleGroup)=>{
         setBundleGroup(bundleGroup)
-    }
+    },[])
 
     const onRequestClose = (e) =>{
         onCloseModal()

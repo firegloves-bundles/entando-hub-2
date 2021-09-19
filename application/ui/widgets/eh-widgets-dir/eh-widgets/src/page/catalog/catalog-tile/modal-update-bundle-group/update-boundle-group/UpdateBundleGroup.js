@@ -140,7 +140,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
                 <TextInput value={bundleGroup.name} onChange={nameChangeHandler} id={"name"} labelText={"Name"}/>
                 <Select value={bundleGroup.categories[0]} onChange={categoryChangeHandler} id={"category"}
                         labelText={"Category"}>{selectItems_Category}</Select>
-                <TextInput value={bundleGroup.documentation} onChange={documentationChangeHandler} id={"documentation"}
+                <TextInput value={bundleGroup.documentationUrl} onChange={documentationChangeHandler} id={"documentation"}
                            labelText={"Documentation Address"}/>
                 <TextInput value={bundleGroup.version} onChange={versionChangeHandler} id={"version"}
                            labelText={"Version"}/>

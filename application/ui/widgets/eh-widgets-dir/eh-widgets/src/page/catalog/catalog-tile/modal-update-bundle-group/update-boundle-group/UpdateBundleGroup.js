@@ -58,14 +58,18 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
         const initBG = async () => {
             const res = await getSingleBundleGroup(bundleGroupId);
 
-            const children = res.bundleGroup.children && res.bundleGroup.children.length > 0
+            const childrenFromDb = res.bundleGroup.children && res.bundleGroup.children.length > 0
                     ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
                     : []
 
             if (isMounted) {
-                setBundleGroup(res.bundleGroup);
-                onDataChange(res.bundleGroup)
-                setChildren(children)
+                let bg = {
+                    ...res.bundleGroup,
+                    children: childrenFromDb
+                }
+                setBundleGroup(bg);
+                setChildren(childrenFromDb)
+                onDataChange(bg)
             }
         }
         initCG()

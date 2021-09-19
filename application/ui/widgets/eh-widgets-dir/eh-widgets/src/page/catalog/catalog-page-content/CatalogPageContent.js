@@ -37,7 +37,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED"}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED", onAfterSubmit}) => {
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
     const loadData = useCallback(async (newSelectedCategoryIds) => {
@@ -79,7 +79,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED"}) => {
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
             </div>
         </>
     )

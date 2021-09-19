@@ -7,8 +7,7 @@ import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
 import {isHubUser} from "../../../api/helpers";
 
-const CatalogTile = (CatalogTileProps) => {
-    const {bundleGroupId, name, description, categories, status} = CatalogTileProps
+const CatalogTile = ({bundleGroupId, name, description, categories, status, onAfterSubmit}) => {
     const [categoryName, setCategoryName] = useState("")
     useEffect(() => {
         (async () => {
@@ -29,7 +28,7 @@ const CatalogTile = (CatalogTileProps) => {
     return (
         <>
             <Tile className="CatalogTile">
-                {isHubUser() && <CatalogTileOverflowMenu bundleGroupId={bundleGroupId}/>}
+                {isHubUser() && <CatalogTileOverflowMenu bundleGroupId={bundleGroupId} onAfterSubmit={onAfterSubmit}/>}
                 <div onClick={handleClick} className="CatalogTile-card-wrapper">
                     <div className="CatalogTile-card-icon">
                         <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>

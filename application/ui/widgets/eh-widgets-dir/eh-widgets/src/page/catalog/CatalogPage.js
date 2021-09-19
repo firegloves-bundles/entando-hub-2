@@ -29,7 +29,7 @@ const CatalogPage = () => {
     }, [])
 
     /*
-    Callback to the Add (New Bundle Group) modal form submit
+    Callback to the Add and Edit (New Bundle Group) modal form submit
     This implementation ask for bundle groups tiles reloading
      */
     const onAfterSubmit = () => {
@@ -81,7 +81,7 @@ const CatalogPage = () => {
                         {/*
                             Renders the filters on the left an the result on the main column
                         */}
-                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue}/>
+                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
                     </div>
                 </div>
             </Content>

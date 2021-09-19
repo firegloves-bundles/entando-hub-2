@@ -1,48 +1,42 @@
 import {Modal} from "carbon-components-react";
 import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup";
 import {useCallback, useState} from "react";
+import {addNewBundle, editBundleGroup} from "../../../../integration/Integration";
 
 
-export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal}) => {
-    const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
+export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAfterSubmit}) => {
     const [bundleGroup, setBundleGroup] = useState({})
 
-    const onDataChange = useCallback((bundleGroup)=>{
+    const onDataChange = useCallback((bundleGroup) => {
         setBundleGroup(bundleGroup)
-    },[])
+    }, [])
 
-    const onRequestClose = (e) =>{
+    const onRequestClose = (e) => {
         onCloseModal()
-        resetData()
     }
 
-    const resetData = ()=>{
-        setElemKey(((new Date()).getTime()).toString())
-    }
 
     const onRequestSubmit = (e) => {
         e.preventDefault();
-        console.log(bundleGroup)
         (async () => {
-/*
+            console.log("onRequestSubmit", bundleGroup)
             //create bundle children
             let newChildren = []
-            if(bundleGroup.children && bundleGroup.children.length) {
+            if (bundleGroup.children && bundleGroup.children.length) {
+                //call addNewBundle rest api, saving every bundle
+                //the call is async in respArray there will be the new bundles id
                 let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-                console.log("respArray", respArray)
                 newChildren = respArray.map(res => res.newBundle.data.bundleId)
             }
-            console.log("newChildren", newChildren)
             const toSend = {
                 ...bundleGroup,
                 children: newChildren
             }
-            const res = await addNewBundleGroup(toSend)
-            console.log("addNewBundleGroup", res)
-            setBundleGroup(toSend)
-            resetData()
-            afterSubmit()
-*/
+            const res = await editBundleGroup(toSend, toSend.bundleGroupId)
+            console.log("editBundleGroup", res)
+            setBundleGroup({})
+            onCloseModal()
+            onAfterSubmit()
 
         })()
     };
@@ -55,7 +49,7 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal}) => {
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>
-            <UpdateBundleGroup key={elemKey} onDataChange={onDataChange} bundleGroupId={bundleGroupId}/>
+            <UpdateBundleGroup onDataChange={onDataChange} bundleGroupId={bundleGroupId}/>
         </Modal>
     )
 }

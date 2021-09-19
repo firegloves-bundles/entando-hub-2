@@ -1,6 +1,5 @@
 import {Modal} from "carbon-components-react";
 import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup";
-import {addNewBundle, addNewBundleGroup} from "../../../../integration/Integration";
 import {useState} from "react";
 
 

@@ -6,7 +6,11 @@ import NewBundleGroup from "./new-boundle-group/NewBundleGroup";
 import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration";
 
 
-export const ModalAddNewBundleGroup = ({afterSubmit}) => {
+/*
+    TODO code cut and pasted from the crabon documentation can be semplified
+    This component manages the modal for adding a new bundle group
+*/
+export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
 
     const ModalStateManager = ({
@@ -15,6 +19,8 @@ export const ModalAddNewBundleGroup = ({afterSubmit}) => {
                                }) => {
         const [open, setOpen] = useState(false);
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
+
+        //Warning newBundleGroup will contain the entire bundle info in the children array, not only the bundle id
         const [newBundleGroup, setNewBundleGroup] = useState({})
 
         const onDataChange = (newBundleGroup)=>{
@@ -34,17 +40,21 @@ export const ModalAddNewBundleGroup = ({afterSubmit}) => {
             setElemKey(((new Date()).getTime()).toString())
         }
 
+        //Manage the modal submit
         const onRequestSubmit = (e) => {
-            e.preventDefault();
+            e.preventDefault(); //TODO check if needed
+            //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 //create bundle children
-                let newChildren = []
+                let newChildren = [] //children are the bundles
                 if(newBundleGroup.children && newBundleGroup.children.length) {
+                    //call addNewBundle rest api, saving every bundle
+                    //the call is async in respArray there will be the new bundles id
                     let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
-                    console.log("respArray", respArray)
+                    //new children will be an array of bundle ids
                     newChildren = respArray.map(res => res.newBundle.data.bundleId)
                 }
-                console.log("newChildren", newChildren)
+                //build a new bundleGroup object with only the ids in the children array
                 const toSend = {
                     ...newBundleGroup,
                     children: newChildren
@@ -53,7 +63,7 @@ export const ModalAddNewBundleGroup = ({afterSubmit}) => {
                 console.log("addNewBundleGroup", res)
                 setNewBundleGroup(toSend)
                 resetData()
-                afterSubmit()
+                onAfterSubmit()
 
             })()
         };

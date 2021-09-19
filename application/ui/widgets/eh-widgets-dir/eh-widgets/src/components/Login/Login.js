@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {authenticationChanged, getUserName, isAuthenticated, isHubUser, isPortalUser} from "../../api/helpers";
+import {authenticationChanged, getUserName, isAuthenticated} from "../../api/helpers";
 import withKeycloak from "../../auth/withKeycloak";
 
 const KEYCLOAK_EVENT_ID = 'keycloak';
@@ -54,6 +54,7 @@ class Login extends Component {
         window.removeEventListener(KEYCLOAK_EVENT_ID, this.keycloakEventHandler);
     }
 
+
     render() {
         const {keycloak} = this.props;
         const loginUrl = window.location;
@@ -64,10 +65,10 @@ class Login extends Component {
                 <span className="entando-login">
           {!isAuthenticated(this.props) ? (
               <>
-                  <a className="log-in" href="#" onClick={handleLogin}
+                  <button className="log-in" onClick={handleLogin}
                      title={"Login"}>
                       {"Login"}<i className="fas fa-sign-in-alt"/>
-                  </a>
+                  </button>
               </>
           ) : (
               <>
@@ -76,10 +77,10 @@ class Login extends Component {
                           {this.state.currentUserName}
                       </div>
                   )}
-                  <a className="log-out" href="#" onClick={handleLogout}
+                  <button className="log-out" href="#" onClick={handleLogout}
                      title={"Logout"}>
                       {"Logout"}<i className="fas fa-sign-out-alt"/>
-                  </a>
+                  </button>
               </>
           )}
         </span>

@@ -6,7 +6,6 @@ import {
     getSingleBundleGroup
 } from "../../../../../integration/Integration";
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup";
-import {useParams} from "react-router-dom";
 
 /*
 BUNDLEGROUP:
@@ -75,7 +74,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
             isMounted = false
         }
 
-    }, []);
+    }, [bundleGroupId, onDataChange]);
 
     let selectItems_Category = categories.map((category) => {
         return (

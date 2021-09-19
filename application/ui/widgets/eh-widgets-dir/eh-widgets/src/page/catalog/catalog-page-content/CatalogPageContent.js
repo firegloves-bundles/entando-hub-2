@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile";
 import CatalogTiles from "../catalog-tiles/CatalogTiles";
 import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
@@ -37,8 +37,10 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
-    async function init(newSelectedCategoryIds) {
+const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED"}) => {
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
+
+    const loadData = useCallback(async (newSelectedCategoryIds) => {
             const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
             const initBGs = async () => {
                 const data = await getAllBundleGroups()
@@ -55,20 +57,18 @@ const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
                 const data = await getAllCategories()
                 setCategories(data.categoryList)
             }
-
-
             initBGs()
             initCs()
-    }
+    },[statusFilterValue,selectedCategoryIds])
 
-    useEffect(()=>init(), [reloadToken, statusFilterValue])
+
+    useEffect(()=>loadData(), [reloadToken, loadData])
 
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])
-    const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
     const onFilterChange = (newSelectedCategoryIds) => {
-        init(newSelectedCategoryIds)
+        loadData(newSelectedCategoryIds)
         setSelectedCategoryIds(newSelectedCategoryIds)
     }
 

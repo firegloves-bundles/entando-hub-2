@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +25,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/users")
-@Slf4j
 public class PortalUserController {
     
+    private final Logger logger = LoggerFactory.getLogger(PortalUserController.class);
+
     @Autowired
     private PortalUserService portalUserService;
     
     @CrossOrigin
     @GetMapping("/{organisationName}")
     public ResponseEntity<List<RestUserRepresentation>> getUsersByOrganisation(@PathVariable String organisationName) {
+        logger.debug("REST request to get users by organisation name: {}", organisationName);
         List<UserRepresentation> users = this.portalUserService.getUsersByOrganisazion(organisationName);
         if (null == users) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -43,6 +46,7 @@ public class PortalUserController {
     @CrossOrigin
     @PostMapping("/{organisationName}")
     public ResponseEntity<Map<String, Boolean>> addUserByOrganisation(@PathVariable String organisationName, @RequestBody UserOrganisationRequest request) {
+        logger.debug("REST request to add user to organisation name: {}", organisationName);
         if (!organisationName.equals(request.getOrganisationName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "organisationName invalid");
         }
@@ -54,7 +58,8 @@ public class PortalUserController {
     
     @CrossOrigin
     @DeleteMapping("/{organisationName}/user/{username}")
-    public ResponseEntity<Map<String, Boolean>> addUserByOrganisation(@PathVariable String organisationName, @PathVariable String username) {
+    public ResponseEntity<Map<String, Boolean>> deleteUserFromOrganisation(@PathVariable String organisationName, @PathVariable String username) {
+        logger.debug("REST request to delete user from organisation name: {}", organisationName);
         boolean result = this.portalUserService.removeUserFromOrganization(username, organisationName);
         Map<String, Boolean> mapResult = new HashMap<>();
         mapResult.put("result", result);

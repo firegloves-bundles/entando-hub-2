@@ -3,7 +3,6 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.CategoryService;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,30 +10,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/category")
-@Slf4j
 public class CategoryController {
-
-
+    
+    private final Logger logger = LoggerFactory.getLogger(CategoryController.class);
+    
     private final CategoryService categoryService;
-
+    
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-
+    
     //@RolesAllowed("codemotion-bff-admin")
     //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
     @CrossOrigin
     @GetMapping("/")
     public List<Category> getCategories() {
+        logger.debug("REST request to get Categories");
         return categoryService.getCategories().stream().map(Category::new).collect(Collectors.toList());
     }
 
     @CrossOrigin
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
+        logger.debug("REST request to get Category Id: {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (categoryOptional.isPresent()) {
             return new ResponseEntity<>(categoryOptional.map(Category::new).get(), HttpStatus.OK);
@@ -46,6 +49,7 @@ public class CategoryController {
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
+        logger.debug("REST request to create Category: {}", category);
         com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
         return new ResponseEntity<>(new Category(entity), HttpStatus.CREATED);
     }
@@ -53,6 +57,7 @@ public class CategoryController {
     @CrossOrigin
     @PostMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {
+        logger.debug("REST request to update Category {}: {}", categoryId, category);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

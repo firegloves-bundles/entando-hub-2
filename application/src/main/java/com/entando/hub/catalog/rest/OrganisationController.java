@@ -2,7 +2,6 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.service.OrganisationService;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/organisation")
-@Slf4j
 public class OrganisationController {
+    
+    private final Logger logger = LoggerFactory.getLogger(OrganisationController.class);
 
-    final private OrganisationService organisationService;
+    private final OrganisationService organisationService;
 
     public OrganisationController(OrganisationService organisationService) {
         this.organisationService = organisationService;
@@ -27,12 +29,14 @@ public class OrganisationController {
     @CrossOrigin
     @GetMapping("/")
     public List<Organisation> getOrganisations() {
+        logger.debug("REST request to get organisations");
         return organisationService.getOrganisations().stream().map(Organisation::new).collect(Collectors.toList());
     }
 
     @CrossOrigin
     @GetMapping("/{organisationId}")
     public ResponseEntity<Organisation> getOrganisation(@PathVariable String organisationId) {
+        logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (organisationOptional.isPresent()) {
             return new ResponseEntity<>(organisationOptional.map(Organisation::new).get(), HttpStatus.OK);
@@ -44,6 +48,7 @@ public class OrganisationController {
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
+        logger.debug("REST request to create new organisation: {}", organisation);
         com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
         return new ResponseEntity<>(new Organisation(entity), HttpStatus.CREATED);
     }
@@ -51,6 +56,7 @@ public class OrganisationController {
     @CrossOrigin
     @PostMapping("/{organisationId}")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
+        logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

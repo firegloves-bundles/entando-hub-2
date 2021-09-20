@@ -15,13 +15,16 @@ public class Organisation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //@Column(unique = true)
-    private String Name;
+    @Column(unique = true)
+    private String name;
 
-    private String Description;
+    private String description;
 
     @OneToMany(mappedBy = "organisation", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     private Set<BundleGroup> bundleGroups;
+
+    @ManyToMany(mappedBy = "organisations", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    private Set<PortalUser> portalUsers;
 
 /*
     public void addBundleGroup(BundleGroup bundleGroup) {
@@ -62,8 +65,8 @@ public class Organisation {
     public String toString() {
         return "Organisation{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
-                ", Description='" + Description + '\'' +
+                ", Name='" + name + '\'' +
+                ", Description='" + description + '\'' +
                 '}';
     }
 }

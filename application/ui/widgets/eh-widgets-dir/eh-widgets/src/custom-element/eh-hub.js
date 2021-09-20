@@ -4,8 +4,6 @@ import '../index.css'
 import AppCarbon from '../App-carbon';
 import {HashRouter as Router} from "react-router-dom";
 
-import KeycloakContext from '../auth/KeycloakContext';
-
 import {subscribeToWidgetEvent} from '../helpers/widgetEvents';
 import {KEYCLOAK_EVENT_TYPE} from './widgetEventTypes';
 

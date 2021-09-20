@@ -4,22 +4,35 @@ import {Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import {useState} from "react";
+import React, {useCallback, useState} from "react";
 
 import './catalogPage.scss';
-import {isHubManager, isHubUser} from "../../api/helpers";
+import {isHubUser} from "../../api/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter";
+
+/*
+This is the HUB landing page
+*/
 
 const CatalogPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
-    const [statusFilterValue, setStatusFilterValue] = useState("-1")
 
-    const changeStatusFilterValue = (newValue) => {
-        debugger;
+    //filter the BG query by status (only published by default)
+    const [statusFilterValue, setStatusFilterValue] = useState("PUBLISHED")
+
+    /*
+    Callback when the status filter is changed
+    The implementation save the user choice in the component state
+     */
+    const changeStatusFilterValue = useCallback((newValue) => {
         setStatusFilterValue(newValue);
-    }
+    }, [])
 
-    const afterSubmit = () => {
+    /*
+    Callback to the Add and Edit (New Bundle Group) modal form submit
+    This implementation ask for bundle groups tiles reloading
+     */
+    const onAfterSubmit = () => {
         setReloadToken(((new Date()).getTime()).toString())
     }
 
@@ -41,17 +54,34 @@ const CatalogPage = () => {
                             Catalog
                         </div>
                         <div className="bx--col-lg-2 CatalogPage-section">
-                            <ModalAddNewBundleGroup afterSubmit={afterSubmit}/>
+                            {/*
+                            Manage the Add (New Bundle Group) button
+                            */}
+                            {isHubUser() && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                         </div>
                         <div className="bx--col-lg-4 CatalogPage-section">
                             Search
                         </div>
                     </div>
+                    {/*
+                        If the user is an HUB authenticated one (has HUB roles)
+                        can see the status filter
+                    */}
+
                     {isHubUser() &&
-                        <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue}/>
+                    <div className="bx--row">
+                        <div className="bx--col-lg-4 CatalogPage-section">
+                        </div>
+                        <div className="bx--col-lg-12 CatalogPage-section">
+                            <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue}/>
+                        </div>
+                    </div>
                     }
                     <div className="bx--row">
-                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue}/>
+                        {/*
+                            Renders the filters on the left an the result on the main column
+                        */}
+                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
                     </div>
                 </div>
             </Content>

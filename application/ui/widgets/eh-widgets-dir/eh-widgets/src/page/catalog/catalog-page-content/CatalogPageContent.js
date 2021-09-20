@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile";
 import CatalogTiles from "../catalog-tiles/CatalogTiles";
 import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
@@ -37,8 +37,10 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
-    async function init(newSelectedCategoryIds) {
+const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED", onAfterSubmit}) => {
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
+
+    const loadData = useCallback(async (newSelectedCategoryIds) => {
             const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
             const initBGs = async () => {
                 const data = await getAllBundleGroups()
@@ -46,7 +48,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
                 if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
                     filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
                 }
-                debugger
                 if(statusFilterValue!=="-1"){
                     filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
                 }
@@ -56,20 +57,18 @@ const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
                 const data = await getAllCategories()
                 setCategories(data.categoryList)
             }
-
-
             initBGs()
             initCs()
-    }
+    },[statusFilterValue,selectedCategoryIds])
 
-    useEffect(()=>init(), [reloadToken, statusFilterValue])
+
+    useEffect(()=>loadData(), [reloadToken, loadData])
 
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])
-    const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
     const onFilterChange = (newSelectedCategoryIds) => {
-        init(newSelectedCategoryIds)
+        loadData(newSelectedCategoryIds)
         setSelectedCategoryIds(newSelectedCategoryIds)
     }
 
@@ -80,7 +79,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue}) => {
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
             </div>
         </>
     )

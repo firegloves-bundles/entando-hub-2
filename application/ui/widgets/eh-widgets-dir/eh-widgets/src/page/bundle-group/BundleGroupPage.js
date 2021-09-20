@@ -143,14 +143,6 @@ const BundleGroupPage = () => {
                   <div className="BundleGroupPage-description">
                     {bundleGroup && bundleGroup.description}
                   </div>
-                  <ul className="BundleGroupPage-image-list">
-                    <li>
-                      <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Tickets2.png`} alt="Entando logo" />
-                    </li>
-                    <li>
-                      <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Tickets1.png`} alt="Entando logo" />
-                    </li>
-                  </ul>
                 </Tile>
               </Column>
             </Row>

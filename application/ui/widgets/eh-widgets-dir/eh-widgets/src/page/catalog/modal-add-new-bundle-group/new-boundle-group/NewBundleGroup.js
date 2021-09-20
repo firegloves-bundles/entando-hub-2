@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Content, FileUploader, FormGroup, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
 import {getAllCategories} from "../../../../integration/Integration";
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
 
@@ -120,21 +120,6 @@ const NewBundleGroup = ({onDataChange}) => {
         rows: 4,
     };
 
-    const fileUploaderProps_Images = {
-        id: "images",
-        buttonLabel: "Add Files",
-        labelDescription:
-            "Max file size is 500kb. Max 4 images. Supported file types are .jpg, .png, and .pdf",
-    };
-
-    const fieldsetFileUploaderProps_Images = {
-        legendText: "Upload Images",
-    };
-
-    const imagesChangeHandler = (e) => {
-        changeNewBundleGroup("descriptionImage", e.target.value)
-    }
-
     const nameChangeHandler = (e) => {
         changeNewBundleGroup("name", e.target.value)
     }
@@ -166,28 +151,30 @@ const NewBundleGroup = ({onDataChange}) => {
         changeNewBundleGroup("description", e.target.value)
     }
 
+    /*
+        NewBundleList will contain the array of bundle object
+    */
     const onAddOrRemoveBundleFromList = (newBundleList) => {
+        //Warning in NewBundleGroup children field there will be the whole bundle object not
+        //only the id
         changeNewBundleGroup("children", newBundleList)
     }
-
-    console.log("NBG", newBundleGroup)
 
     return (
         <>
             <Content>
-                <FormGroup {...fieldsetFileUploaderProps_Images}>
-                    <FileUploader onChange={imagesChangeHandler} {...fileUploaderProps_Images} />
-                </FormGroup>
                 <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
                 <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
                 <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
                 <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />
                 <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
                 <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
-                <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
                 {/*
-                    <Button type="submit">Submit</Button>
-*/}
+                    Renders the bundle list of children allowing
+                    the user to add/delete them. Whenever a user
+                    performs an action on that list onAddOrRemoveBundleFromList will be called
+                */}
+                <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
             </Content>
         </>
     );

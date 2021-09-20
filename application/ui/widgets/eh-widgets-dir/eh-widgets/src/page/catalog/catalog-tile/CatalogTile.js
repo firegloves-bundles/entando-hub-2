@@ -11,11 +11,19 @@ import {textFromStatus} from "../../../helpers/profiling";
 const CatalogTile = ({bundleGroupId, name, description, categories, status, onAfterSubmit}) => {
     const [categoryName, setCategoryName] = useState("")
     useEffect(() => {
+        let isMounted = true;
         (async () => {
             const data = await getSingleCategory(categories[0])
-            setCategoryName(data.category.name)
-        })(categories)
-    })
+            if (isMounted) {
+                setCategoryName(data.category.name)
+            }
+
+        })()
+
+        return () => {
+            isMounted = false
+        }
+    },[categories])
 
     const history = useHistory()
 

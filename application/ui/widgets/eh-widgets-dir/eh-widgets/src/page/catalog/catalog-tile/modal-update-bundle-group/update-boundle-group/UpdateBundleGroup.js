@@ -26,10 +26,10 @@ bundleGroupId	string
 }
  */
 
-const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
+const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
     const [selectOptions, setSelectOptions] = useState([]);
-    const [selectDisabled, setSelectDisabled] = useState(false);
+    const [disabled, setDisabled] = useState(false);
     const [children, setChildren] = useState([]);
     const [categories, setCategories] = useState([]);
     const [bundleGroup, setBundleGroup] = useState({
@@ -53,10 +53,11 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
 
     const createSelectOptionsForRoleAndSetSelectStatus = useCallback((bundleGroup) => {
         const selectValuesInfo = getProfiledUpdateSelectStatusInfo(getHigherRole(), bundleGroup.status)
-        setSelectDisabled(selectValuesInfo.disabled)
+        setDisabled(selectValuesInfo.disabled)
+        onPassiveModal(selectValuesInfo.disabled)
         const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
         setSelectOptions(options)
-    }, [])
+    }, [onPassiveModal])
 
 
     useEffect(() => {
@@ -144,21 +145,21 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange}) => {
     return (
         <>
             <Content>
-                <TextInput value={bundleGroup.name} onChange={nameChangeHandler} id={"name"} labelText={"Name"}/>
-                <Select value={bundleGroup.categories[0]} onChange={categoryChangeHandler} id={"category"}
+                <TextInput disabled={disabled} value={bundleGroup.name} onChange={nameChangeHandler} id={"name"} labelText={"Name"}/>
+                <Select disabled={disabled} value={bundleGroup.categories[0]} onChange={categoryChangeHandler} id={"category"}
                         labelText={"Category"}>{selectItems_Category}</Select>
-                <TextInput value={bundleGroup.documentationUrl} onChange={documentationChangeHandler}
+                <TextInput disabled={disabled} value={bundleGroup.documentationUrl} onChange={documentationChangeHandler}
                            id={"documentation"}
                            labelText={"Documentation Address"}/>
-                <TextInput value={bundleGroup.version} onChange={versionChangeHandler} id={"version"}
+                <TextInput disabled={disabled} value={bundleGroup.version} onChange={versionChangeHandler} id={"version"}
                            labelText={"Version"}/>
-                <Select disabled={selectDisabled} value={bundleGroup.status} onChange={statusChangeHandler}
+                <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
                         id={"status"}
                         labelText={"Status"}>{selectOptions}</Select>
-                <TextArea value={bundleGroup.description} onChange={descriptionChangeHandler} id={"description"}
+                <TextArea disabled={disabled} value={bundleGroup.description} onChange={descriptionChangeHandler} id={"description"}
                           labelText={"Description"}/>
                 <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                      initialBundleList={children}/>
+                                      initialBundleList={children} disabled={disabled}/>
             </Content>
         </>
     );

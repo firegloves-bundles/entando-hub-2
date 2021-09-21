@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {authenticationChanged, getUserName, isAuthenticated} from "../../api/helpers";
+import {authenticationChanged, getUserName, isAuthenticated} from "../../helpers/helpers";
 import withKeycloak from "../../auth/withKeycloak";
 
 const KEYCLOAK_EVENT_ID = 'keycloak';

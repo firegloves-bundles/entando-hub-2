@@ -7,7 +7,7 @@ import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBu
 import React, {useCallback, useState} from "react";
 
 import './catalogPage.scss';
-import {isHubUser} from "../../api/helpers";
+import {isHubUser} from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter";
 
 /*

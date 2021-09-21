@@ -44,6 +44,7 @@ public class BundleController {
         if (bundleOptional.isPresent()) {
             return new ResponseEntity<>(bundleOptional.map(Bundle::new).get(), HttpStatus.OK);
         } else {
+            logger.warn("Requested bundle '{}' does not exists", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -64,6 +65,7 @@ public class BundleController {
         if (!bundleOptional.isPresent()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
+            logger.warn("Bundle '{}' does not exists", bundleId);
             com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(Optional.of(bundleId)));
             return new ResponseEntity<>(new Bundle(entity), HttpStatus.OK);
         }

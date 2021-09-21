@@ -42,9 +42,9 @@ public class BundleGroupController {
         if (bundleGroupOptional.isPresent()) {
             return new ResponseEntity<>(bundleGroupOptional.map(BundleGroup::new).get(), HttpStatus.OK);
         } else {
+            logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
     }
 
 
@@ -62,6 +62,7 @@ public class BundleGroupController {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {
+            logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);

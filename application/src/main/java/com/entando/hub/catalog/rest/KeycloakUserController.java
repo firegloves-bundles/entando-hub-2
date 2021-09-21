@@ -42,6 +42,7 @@ public class KeycloakUserController {
         logger.debug("REST request to get user by username: {}", username);
         UserRepresentation user = this.keycloakService.getUser(username);
         if (null == user) {
+            logger.warn("Requested user '{}' does not exists", username);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new RestUserRepresentation(user), HttpStatus.OK);

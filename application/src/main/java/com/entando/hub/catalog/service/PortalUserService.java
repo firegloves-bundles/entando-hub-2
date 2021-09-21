@@ -34,6 +34,7 @@ public class PortalUserService {
     public List<UserRepresentation> getUsersByOrganisazion(String orgName) {
         Organisation org = this.organisationRepository.findByName(orgName);
         if (null == org) {
+            logger.warn("Requested organisation '{}' does not exists", orgName);
             return null;
         }
         Set<PortalUser> users = org.getPortalUsers();
@@ -86,6 +87,7 @@ public class PortalUserService {
         }
         PortalUser portalUser = this.portalUserRepository.findByUsername(username);
         if (null == portalUser) {
+            logger.info("Organisation '{}' doesn't include User '" + username + "'", orgName, username);
             return false;
         }
         portalUser.setEmail(user.getEmail());

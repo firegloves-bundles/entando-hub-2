@@ -7,12 +7,15 @@ services:
           '-b',
           '0.0.0.0',
           '-Dkeycloak.profile.feature.scripts=enabled',
-          '-Dkeycloak.profile.feature.upload_scripts=enabled',
-          '-Dkeycloak.migration.action=import',
           '-Dkeycloak.migration.provider=dir',
           '-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config',
-          '-Dkeycloak.migration.strategy=IGNORE_EXISTING', # use 'OVERWRITE_EXISTING' instead if you want to reset your current configuration
           '-Djboss.socket.binding.port-offset=1000',
+#         Enable the next lines to import the realm-config
+          '-Dkeycloak.profile.feature.upload_scripts=enabled',
+          '-Dkeycloak.migration.action=import',
+          '-Dkeycloak.migration.strategy=IGNORE_EXISTING', #Use 'OVERWRITE_EXISTING' instead if you want to reset your current configuration
+#         Enable the next line to export the current realm-config
+#          '-Dkeycloak.migration.action=export',
       ]
     volumes:
       - ./realm-config:/opt/jboss/keycloak/realm-config

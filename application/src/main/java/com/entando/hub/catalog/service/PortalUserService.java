@@ -37,7 +37,7 @@ public class PortalUserService {
             Long orgIdLong = Long.valueOf(orgId);
             Optional<Organisation> org = this.organisationRepository.findById(orgIdLong);
             if (!org.isPresent()) {
-                logger.warn("Organisation '" + orgIdLong + "' does not exists");
+                logger.warn("Organisation '{}' does not exists", orgIdLong);
                 return null;
             }
             users = org.get().getPortalUsers();
@@ -102,6 +102,7 @@ public class PortalUserService {
         }
         PortalUser portalUser = this.portalUserRepository.findByUsername(username);
         if (null == portalUser) {
+            logger.info("Organisation '{}' doesn't include User '" + username + "'", orgId, username);
             return false;
         }
         portalUser.setEmail(user.getEmail());

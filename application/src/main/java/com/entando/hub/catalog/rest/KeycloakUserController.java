@@ -7,19 +7,21 @@ import com.entando.hub.catalog.service.model.UserRepresentation;
 import java.util.*;
 
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/keycloack")
-@Slf4j
 public class KeycloakUserController {
+    
+    private final Logger logger = LoggerFactory.getLogger(KeycloakUserController.class);
 
-    final private KeycloakService keycloakService;
+    private final KeycloakService keycloakService;
 
     public KeycloakUserController(KeycloakService keycloakService) {
         this.keycloakService = keycloakService;
@@ -28,6 +30,7 @@ public class KeycloakUserController {
     @CrossOrigin
     @GetMapping("/users")
     public List<RestUserRepresentation> searchUsers(SearchKeycloackUserRequest request) {
+        logger.debug("REST request to get users by filters: {}", request);
         Map<String, String> map = (null != request) ? request.getParams() : new HashMap<>();
         return this.keycloakService.searchUsers(map).stream().map(RestUserRepresentation::new).collect(Collectors.toList());
     }
@@ -35,8 +38,10 @@ public class KeycloakUserController {
     @CrossOrigin
     @GetMapping("/users/{username}")
     public ResponseEntity<RestUserRepresentation> getUser(@PathVariable String username) {
+        logger.debug("REST request to get user by username: {}", username);
         UserRepresentation user = this.keycloakService.getUser(username);
         if (null == user) {
+            logger.warn("Requested user '{}' does not exists", username);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new RestUserRepresentation(user), HttpStatus.OK);

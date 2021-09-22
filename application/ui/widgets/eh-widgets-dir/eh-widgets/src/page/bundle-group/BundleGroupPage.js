@@ -1,10 +1,6 @@
 import {Content, Tile, Grid, Row, Column} from "carbon-components-react";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router";
-import CatalogPageHeaderInternal
-  from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal";
-import CatalogPageFooter
-  from "../catalog/catalog-page-footer/CatalogPageFooter";
 
 import {
   getAllBundlesForABundleGroup,
@@ -76,7 +72,6 @@ const BundleGroupPage = () => {
 
   return (
       <>
-        <CatalogPageHeaderInternal/>
         <Content className="BundleGroupPage">
           <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
             <div className="bx--row">
@@ -148,7 +143,6 @@ const BundleGroupPage = () => {
             </Row>
           </Grid>
         </Content>
-        <CatalogPageFooter/>
       </>
   )
       ;

@@ -1,5 +1,3 @@
-import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader";
-import CatalogPageFooter from "./catalog-page-footer/CatalogPageFooter";
 import {Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
@@ -38,7 +36,6 @@ const CatalogPage = () => {
 
     return (
         <>
-            <CatalogPageHeader/>
             <Content className="CatalogPage">
                 <div className="bx--grid bx--grid--full-width catalog-page">
                     <div className="bx--row">
@@ -85,7 +82,6 @@ const CatalogPage = () => {
                     </div>
                 </div>
             </Content>
-            <CatalogPageFooter/>
         </>
     );
 };

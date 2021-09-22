@@ -1,6 +1,7 @@
+# Deployment and installation
+
 build docker image:
 ./prepareDockerImage.sh
-
 
 actuator enabled by default:
 http://<url>/actuator/health
@@ -23,7 +24,7 @@ BUNDLE PUBLICATION
  create the bundle folder and copy all the bundle_src files in
 
 ent prj init
-ent prj ba
+ent prj build
 ent prj pbs-init
 ent prj fe-push (--force)
 
@@ -35,3 +36,24 @@ or ent deploy / ent install
 BE
 https://<entando-url>/entando-hub-api/swagger-ui.html
 
+# Development tips
+## Roles
+* Three roles are currently created for the Hub project - eh-author, eh-manager, eh-admin
+
+## Local testing of the project
+You can use the following commands to test the microservices 
+* `ent prj keycloak start` - or stop to shutdown keycloak again.
+* `ent prj be-test-run`
+
+Local setup
+* Access Keycloak at http://localhost:9080/auth/
+* Access Springboot at http://localhost:8081/swagger-ui.html
+* Use client web_app when authorizing the microservices
+
+## Misc
+* Four users are included in the keycloak realm config
+  * admin/admin - eh-admin role plus has access to the realm to manage users
+  * author/author - eh-author role
+  * manager/manager - eh-manager role
+  * user/user - regular user
+* Removing the src/main/docker/keycloak-db directory will result in the realm from src/main/docker/realm-config being reloaded on the next restart.

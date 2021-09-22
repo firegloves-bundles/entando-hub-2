@@ -3,16 +3,15 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
-import java.util.Date;
-import java.util.HashMap;
+
+import java.util.*;
+
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,6 +55,7 @@ public class KeycloakUserController {
         private String firstName;
         private String lastName;
         private String email;
+        private Set<String> organisationIds;
 
         public RestUserRepresentation(com.entando.hub.catalog.service.model.UserRepresentation user) {
             this.id = user.getId();
@@ -65,6 +65,7 @@ public class KeycloakUserController {
             this.firstName = user.getFirstName();
             this.lastName = user.getLastName();
             this.email = user.getEmail();
+            this. organisationIds = user.getOrganisationIds().stream().map(Object::toString).collect(Collectors.toSet());
         }
     }
 

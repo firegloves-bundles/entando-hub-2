@@ -1,7 +1,9 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
 import {getAllCategories} from "../../../../integration/Integration";
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
+import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling";
+import {getHigherRole} from "../../../../helpers/helpers";
 
 /*
 BUNDLEGROUP:
@@ -21,6 +23,7 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
+    const [selectOptions, setSelectOptions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [newBundleGroup, setNewBundleGroup] = useState({
         name: "",
@@ -41,18 +44,39 @@ const NewBundleGroup = ({onDataChange}) => {
         onDataChange(newObj)
     }
 
+    const createSelectOptionsForRole = useCallback(() => {
+        const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
+        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
+        setSelectOptions(options)
+    }, [])
+
+
     useEffect(() => {
         let isMounted = true;
         const init = async () => {
             const res = await getAllCategories();
             if (isMounted) {
-                setCategories(res.categoryList);
+                createSelectOptionsForRole()
+                setCategories(res.categoryList)
+                //default values
+                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId;
+                const newObj ={
+                    name: "",
+                    description: "",
+                    descriptionImage: "",
+                    documentationUrl: "",
+                    children: [],
+                    categories: [defaultCategoryId],
+                    status: "NOT_PUBLISHED"
+                }
+
+                setNewBundleGroup(newObj)
             }
         };
         init();
         return () => { isMounted = false }
 
-    }, []);
+    }, [createSelectOptionsForRole]);
 
     let selectItems_Category = categories.map((category) => {
         return (
@@ -63,62 +87,8 @@ const NewBundleGroup = ({onDataChange}) => {
             />
         );
     });
-    selectItems_Category.unshift(
-        <SelectItem
-            key="-1"
-            disabled
-            hidden
-            value="placeholder-item"
-            text="Choose an option"
-        />
-    );
 
 
-    const selectProps_Category = {
-        id: "category",
-        defaultValue: "placeholder-item",
-        labelText: "Category",
-    };
-
-    const selectItems_Status = [
-        <SelectItem
-            key="-1"
-            disabled
-            hidden
-            value="placeholder-item"
-            text="Choose an option"
-        />,
-        <SelectItem key="0" value="NOT_PUBLISHED" text="Not Published"/>,
-        <SelectItem key="1" value="PUBLISHED" text="Published"/>,
-    ];
-
-    const selectProps_Status = {
-        id: "status",
-        defaultValue: "placeholder-item",
-        labelText: "Status",
-    };
-
-    const textInputProps_Name = {
-        id: "name",
-        labelText: "Name",
-    };
-
-    const textInputProps_Documentation = {
-        id: "documentation",
-        labelText: "Documentation Address",
-    };
-
-    const textInputProps_Version = {
-        id: "version",
-        labelText: "Version",
-    };
-
-    const textAreaProps_Description = {
-        id: "description",
-        labelText: "Description",
-        cols: 50,
-        rows: 4,
-    };
 
     const nameChangeHandler = (e) => {
         changeNewBundleGroup("name", e.target.value)
@@ -163,12 +133,12 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
-                <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
-                <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
-                <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />
-                <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
-                <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
+                <TextInput id="name" labelText="Name" onChange={nameChangeHandler} />
+                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]} onChange={categoryChangeHandler} >{selectItems_Category}</Select>
+                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler} />
+                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}  />
+                <Select id="status" labelText="Status" value={newBundleGroup.status} onChange={statusChangeHandler} >{selectOptions}</Select>
+                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50} rows={4} />
                 {/*
                     Renders the bundle list of children allowing
                     the user to add/delete them. Whenever a user

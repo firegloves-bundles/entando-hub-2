@@ -1,6 +1,8 @@
 package com.entando.hub.catalog.service.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserRepresentation {
 
@@ -14,6 +16,7 @@ public class UserRepresentation {
     private String lastName;
     private String email;
     private List<String> requiredActions;
+    private Set<Long> organisationIds = new HashSet<>();
 
     public String getId() {
         return id;
@@ -93,5 +96,13 @@ public class UserRepresentation {
 
     public void setRequiredActions(final List<String> requiredActions) {
         this.requiredActions = requiredActions;
+    }
+
+    public Set<Long> getOrganisationIds() {
+        return organisationIds;
+    }
+
+    public void setOrganisationIds(Set<Long> organisationIds) {
+        this.organisationIds = organisationIds;
     }
 }

@@ -37,7 +37,7 @@ const BundleList = ({children = []}) => {
 }
 
 
-const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) => {
+const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList, disabled = false}) => {
     console.log("initialBundleList", initialBundleList)
 
     useEffect(()=>{
@@ -75,7 +75,7 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) 
     return (
         <>
             <TextInput value={gitRepo} onChange={onChangeHandler} {...textInputProps} />
-            <Button onClick={onAddBundle} renderIcon={Add16}>Add</Button>
+            <Button disabled={disabled} onClick={onAddBundle} renderIcon={Add16}>Add</Button>
             <BundleList children={bundleList}/>
         </>
     )

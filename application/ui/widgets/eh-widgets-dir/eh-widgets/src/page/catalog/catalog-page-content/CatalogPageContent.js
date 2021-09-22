@@ -4,6 +4,8 @@ import CatalogTiles from "../catalog-tiles/CatalogTiles";
 import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
 
 import "./catalog-page-content.scss"
+import {getHigherRole, isHubUser} from "../../../helpers/helpers";
+import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling";
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -37,32 +39,39 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue="PUBLISHED", onAfterSubmit}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAfterSubmit}) => {
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
     const loadData = useCallback(async (newSelectedCategoryIds) => {
-            const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
-            const initBGs = async () => {
-                const data = await getAllBundleGroups()
-                let filtered = data.bundleGroupList
-                if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
-                    filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
-                }
-                if(statusFilterValue!=="-1"){
-                    filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
-                }
-                setFilteredBundleGroups(filtered)
+        const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
+        const initBGs = async () => {
+            const data = await getAllBundleGroups()
+            let filtered = data.bundleGroupList
+            if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
+                filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
             }
-            const initCs = async () => {
-                const data = await getAllCategories()
-                setCategories(data.categoryList)
+            //status filter === -1 is all
+            //the BG statuses to filter depend on user role
+            if (statusFilterValue !== "-1") {
+                filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
+            } else if (isHubUser()) {
+                //the user must be authenticated to get there
+                //check for be sure
+                const allStatuses = getProfiledStatusSelectAllValues(getHigherRole())
+                filtered = filtered.filter(bg => bg.status && allStatuses.includes(bg.status))
             }
-            initBGs()
-            initCs()
-    },[statusFilterValue,selectedCategoryIds])
+            setFilteredBundleGroups(filtered)
+        }
+        const initCs = async () => {
+            const data = await getAllCategories()
+            setCategories(data.categoryList)
+        }
+        initBGs()
+        initCs()
+    }, [statusFilterValue, selectedCategoryIds])
 
 
-    useEffect(()=>loadData(), [reloadToken, loadData])
+    useEffect(() => loadData(), [reloadToken, loadData])
 
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])

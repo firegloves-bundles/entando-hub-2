@@ -1,19 +1,42 @@
-# Entando Hub
+# Entando Hub - Getting Started
 
-## Getting started
+## 1. Install and Configure Requestly
 
-To run the container:
+- Add [Requestly extension](https://chrome.google.com/webstore/detail/requestly-redirect-url-mo/mdnleldcmiljblolnjhpnblkcekpdkpa) to Chrome
+- Open Requestly, click on the kebab button and choose **New Group**
+- Create a new group named **entando-hub**
+- Click on the **New Rule** button and then on **Redirect Request**
+- Click on **Ungrouped** and choose **entando-hub** from the dropdown menu
+- Fill up the empty fields as follows:
+    - Rule Name: `entando-hub-0.1.0.js`
+    - If request `URL` `Contains` `http://hubdev.okd-entando.org/entando-de-app/cmsresources/entando-hub-bundle/static/js/entando-hub-0.1.0.js`
+    - Destination: `http://localhost:3000/static/js/entando-hub-0.1.0.js`
+- Click on **Save Rule**
 
-1. `docker run -d -p 8081:8081 --name entando-hub-catalog germanogiudici/entando-hub-catalog-ms:0.0.1-SNAPSHOT`
-2. `docker stop entando-hub-catalog`
-3. `docker start entando-hub-catalog`
+## 2. Install Disable Content-Security-Policy
+- Add [Disable Content-Security-Policy](https://chrome.google.com/webstore/detail/disable-content-security/ieelmcmcagommplceebfedjlakkhpden) to Chrome
 
-APIs url: http://127.0.0.1:8081/swagger-ui.html
+## 3. Clone GitHub Repository
+- Clone the [GitHub repository](https://github.com/entando-ps/entando-hub) of the project
+- Checkout to master branch
 
-H2 console url: http://localhost:8081/h2-console/
+## 4. Set Up the Environment Variables
+- Browse to the directory **application/ui/widgets/eh-widgets-dir/eh-widgets**
+- If not already present, create a file named `.env` and copy the following code into it:
+    ```
+    SASS_PATH=./node_modules;./src
+    REACT_APP_PUBLIC_API_URL=http://hubdev.okd-entando.org/entando-hub-api/api
+    REACT_APP_PUBLIC_ASSETS_URL=http://localhost:3000
+    ```
 
-To access the H2 console use these credentials:
+## 5. Set Up node_modules Folder
+- Browse to the directory **application/ui/widgets/eh-widgets-dir/eh-widgets**
+- Run ``npm i`` command
+- Copy ``webpack.config.js`` and ``webpackDevServer.config.js`` and paste them into **application/ui/widgets/eh-widgets-dir/eh-widgets/node_modules/react-scripts/config**
 
-- JDBC URL: `jdbc:h2:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE`
-- User Name: `sa`
-- Password: `password`
+## 6. Run the Project
+- Browse to the directory **application/ui/widgets/eh-widgets-dir/eh-widgets**
+- Run ``npm start`` command
+- Once the compiling is complete, navigate to the following address: ``http://hubdev.okd-entando.org/entando-de-app/en/eh_onecolumn.page#/``
+- Activate the **Requestly rule** created in 1. and the **Content-Security-Policy** extension installed in 2.
+- Refresh the page

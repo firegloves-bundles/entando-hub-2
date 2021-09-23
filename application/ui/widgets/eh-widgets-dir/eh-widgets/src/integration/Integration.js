@@ -154,9 +154,12 @@ export const editBundleGroup = async (bundleGroupData, id) => {
 // req body: username
 export const createAUserForAnOrganisation = async (organisationId, userData) => {
   const newUrl = `${urlUsers}${organisationId}`
-  const { data, isError } = await postData(newUrl, userData)
+  const userDataObject = {
+    "username": userData
+  }
+  const { data, isError } = await postData(newUrl, userDataObject)
 
-  return checkForErrorsAndSendResponse(data, isError, "newUser")
+  return data
 }
 
 // GET input: nothing -> get all the users

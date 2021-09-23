@@ -20,6 +20,8 @@ export const getData = async (url, id) => {
 export const postData = async (url, payload, id) => {
   url = mergeUrl(url, id)
 
+  console.log("post url", url)
+
   const data = await axios
     .post(url, payload)
     .then((res) => {

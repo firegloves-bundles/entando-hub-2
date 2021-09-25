@@ -1,8 +1,7 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState} from "react"
 
 
 import {
-    Button,
     DataTable,
     Table,
     TableBody,
@@ -10,11 +9,13 @@ import {
     TableContainer,
     TableHead,
     TableHeader,
-    TableRow, TableToolbar, TableToolbarContent,
-} from 'carbon-components-react';
-import UserManagementOverflowMenu from "./overflow-menu/UserManagementOverflowMenu";
-import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser";
-import {getAllUsers, getSingleOrganisation} from "../../integration/Integration";
+    TableRow,
+    TableToolbar,
+    TableToolbarContent,
+} from 'carbon-components-react'
+import UserManagementOverflowMenu from "./overflow-menu/UserManagementOverflowMenu"
+import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser"
+import {getAllUsers, getSingleOrganisation} from "../../integration/Integration"
 
 /*
 BUNDLEGROUP:
@@ -44,15 +45,6 @@ bundleId	string
 }
  */
 
-const rows = [
-    {
-        id: "my",
-        username: 'my',
-        email: 'email',
-        organisation: 'org',
-    },
-];
-
 const headers = [
     {
         key: 'username',
@@ -70,7 +62,7 @@ const headers = [
         key: 'overflow',
         header: 'overflow',
     }
-];
+]
 
 /*
 {
@@ -89,7 +81,8 @@ const headers = [
 
 
 const UserManagementPage = () => {
-    const [users, setUsers] = useState([]);
+    const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+    const [users, setUsers] = useState([])
 
     // fetches the users to show
     useEffect(() => {
@@ -103,16 +96,13 @@ const UserManagementPage = () => {
                     //get the current organisation name
                     const organisations = await Promise.all(user.organisationIds.map((async (oid) => {
                             const organisation = (await getSingleOrganisation(oid)).organisation
-                            console.log(organisation)
                             return organisation
                         }
                     )))
 
-                    console.log("organisations", organisations)
-
                     return {
                         ...user,
-                        organisation: organisations[0].name
+                        organisation: organisations[0]
                     }
                 }
 
@@ -121,13 +111,16 @@ const UserManagementPage = () => {
                     organisation: null
                 }
             })))
-
-            console.log(userListWithOrganisation)
             setUsers(userListWithOrganisation)
         }
 
         init()
-    }, []);
+    }, [reloadToken])
+
+    const onAfterSubmit = () => {
+        setReloadToken(((new Date()).getTime()).toString())
+    }
+
 
     return (
         <DataTable rows={users} headers={headers}>
@@ -135,7 +128,7 @@ const UserManagementPage = () => {
                 <TableContainer title="Users Management">
                     <TableToolbar>
                         <TableToolbarContent>
-                            <ModalAddNewUser/>
+                            <ModalAddNewUser onAfterSubmit={onAfterSubmit}/>
                         </TableToolbarContent>
                     </TableToolbar>
                     <Table {...getTableProps()}>
@@ -151,11 +144,14 @@ const UserManagementPage = () => {
                         <TableBody>
                             {rows.map(row => (
                                 <TableRow {...getRowProps({row})}>
-                                    {row.cells.map((cell) => {
+                                    {row.cells.map((cell, index) => {
                                             if (cell.id !== row.id + ":overflow") return <TableCell
-                                                key={cell.id}>{cell.value}</TableCell>
-
-                                            return <TableCell key={cell.id}><UserManagementOverflowMenu/></TableCell>
+                                                key={cell.id}>{index === 2 ? cell.value ? cell.value.name: "---" : cell.value}</TableCell>
+                                            return <TableCell key={cell.id}><UserManagementOverflowMenu userObj={{
+                                                username: row.cells[0].value,
+                                                email: row.cells[1].value,
+                                                organisation: row.cells[2].value
+                                            }} onAfterSubmit={onAfterSubmit}/></TableCell>
                                         }
                                     )}
                                 </TableRow>
@@ -166,7 +162,7 @@ const UserManagementPage = () => {
             )}
         </DataTable>
     )
-};
+}
 
 
-export default UserManagementPage;
+export default UserManagementPage

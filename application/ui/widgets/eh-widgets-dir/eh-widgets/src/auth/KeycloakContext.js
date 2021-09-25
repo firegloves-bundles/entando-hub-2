@@ -1,5 +1,5 @@
-import React from 'react';
+import React from 'react'
 
-const KeycloakContext = React.createContext(null);
+const KeycloakContext = React.createContext(null)
 
-export default KeycloakContext;
+export default KeycloakContext

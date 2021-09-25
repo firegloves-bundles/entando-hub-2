@@ -1,14 +1,14 @@
-import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader";
-import CatalogPageFooter from "./catalog-page-footer/CatalogPageFooter";
-import {Content} from "carbon-components-react";
-import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
-import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, {useCallback, useState} from "react";
+import CatalogPageHeader from "./catalog-page-header/CatalogPageHeader"
+import CatalogPageFooter from "./catalog-page-footer/CatalogPageFooter"
+import {Content} from "carbon-components-react"
+import CatalogPageContent from "./catalog-page-content/CatalogPageContent"
+import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup"
+import React, {useCallback, useState} from "react"
 
-import './catalogPage.scss';
-import {isHubUser} from "../../helpers/helpers";
-import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter";
+import './catalogPage.scss'
+import {isHubUser} from "../../helpers/helpers"
+import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 
 /*
 This is the HUB landing page
@@ -25,7 +25,7 @@ const CatalogPage = () => {
     The implementation save the user choice in the component state
      */
     const changeStatusFilterValue = useCallback((newValue) => {
-        setStatusFilterValue(newValue);
+        setStatusFilterValue(newValue)
     }, [])
 
     /*
@@ -87,7 +87,7 @@ const CatalogPage = () => {
             </Content>
             <CatalogPageFooter/>
         </>
-    );
-};
+    )
+}
 
-export default CatalogPage;
+export default CatalogPage

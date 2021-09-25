@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const Organisation = ({ name, description }) => {
   return (
@@ -6,7 +6,7 @@ const Organisation = ({ name, description }) => {
       <h3>{name}</h3>
       <p>{description}</p>
     </div>
-  );
-};
+  )
+}
 
-export default Organisation;
+export default Organisation

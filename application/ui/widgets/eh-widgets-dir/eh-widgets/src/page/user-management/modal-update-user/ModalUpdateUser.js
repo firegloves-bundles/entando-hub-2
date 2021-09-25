@@ -1,10 +1,21 @@
-import {Modal} from "carbon-components-react";
-import {useCallback, useState} from "react";
+import {Modal} from "carbon-components-react"
+import {useCallback, useState} from "react"
+import UpdateUser from "./update-user/UpdateUser"
+import {
+    createAUserForAnOrganisation,
+    getAllOrganisations,
+    removeUserFromOrganisation
+} from "../../../integration/Integration"
 
 
-export const ModalUpdateUser = ({userName, open, onCloseModal, onAfterSubmit}) => {
+export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
-    const onDataChange = useCallback((user) => {
+    console.log("Param ModalUpdateUser", userObj)
+    const [user, setUser] = useState(userObj)
+
+    const onDataChange = useCallback((userObj) => {
+        console.log("Onchange ModalUpdateUser", userObj)
+        setUser(userObj)
     }, [])
 
     const onRequestClose = (e) => {
@@ -13,9 +24,21 @@ export const ModalUpdateUser = ({userName, open, onCloseModal, onAfterSubmit}) =
 
 
     const onRequestSubmit = (e) => {
-        onCloseModal()
-        onAfterSubmit()
+        (async () => {
+            //delete all the organisations for the user
+            await Promise.all((await getAllOrganisations()).organisationList.map(async (oId) => {
+                    await removeUserFromOrganisation(oId.organisationId, user.username)
+                }
+            ))
 
+            let organisationId = user.organisation.organisationId
+            await createAUserForAnOrganisation(organisationId, user.username)
+
+
+            onCloseModal()
+            onAfterSubmit()
+
+        })()
     }
 
     return (
@@ -26,6 +49,7 @@ export const ModalUpdateUser = ({userName, open, onCloseModal, onAfterSubmit}) =
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>
+            <UpdateUser userObj={user} onDataChange={onDataChange}/>
         </Modal>
     )
 }

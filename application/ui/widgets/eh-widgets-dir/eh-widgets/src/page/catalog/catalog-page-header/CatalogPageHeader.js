@@ -1,5 +1,5 @@
-import React from 'react';
-import './catalog-page-header.scss';
+import React from 'react'
+import './catalog-page-header.scss'
 
 const CatalogPageHeader = () => {
   return (
@@ -29,4 +29,4 @@ const CatalogPageHeader = () => {
   )
 }
 
-export default CatalogPageHeader;
+export default CatalogPageHeader

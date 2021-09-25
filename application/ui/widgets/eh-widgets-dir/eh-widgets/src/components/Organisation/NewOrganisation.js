@@ -1,10 +1,10 @@
-import axios from "axios";
-import { useFormik } from "formik";
-import React from "react";
-import * as Yup from "yup";
+import axios from "axios"
+import { useFormik } from "formik"
+import React from "react"
+import * as Yup from "yup"
 
 const NewOrganisation = () => {
-  const urlPostOrganisation = `http://hubdev.okd-entando.org/entando-hub-api/api/organisation/`;
+  const urlPostOrganisation = `http://hubdev.okd-entando.org/entando-hub-api/api/organisation/`
 
   const formik = useFormik({
     initialValues: { orgName: "", orgDescription: "" },
@@ -22,12 +22,12 @@ const NewOrganisation = () => {
             description: values.orgDescription,
             bundleGroups: []
         }).then(res => {
-            console.log(res);
+            console.log(res)
         }).catch(e => {
-            console.log(e.toJSON());
+            console.log(e.toJSON())
         })
     }
-  });
+  })
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -47,7 +47,7 @@ const NewOrganisation = () => {
       {formik.touched.orgDescription && formik.errors.orgDescription ? <div>{formik.errors.orgDescription}</div> : null}
       <button type="submit">Submit</button>
     </form>
-  );
-};
+  )
+}
 
-export default NewOrganisation;
+export default NewOrganisation

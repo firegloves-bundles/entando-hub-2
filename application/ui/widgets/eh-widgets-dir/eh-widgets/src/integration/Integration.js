@@ -1,4 +1,4 @@
-import { getData, postData, deleteData } from "./Http"
+import {deleteData, getData, postData} from "./Http"
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -6,6 +6,7 @@ const urlCategories = `${process.env.REACT_APP_PUBLIC_API_URL}/category/`
 const urlBundles = `${process.env.REACT_APP_PUBLIC_API_URL}/bundles/`
 const urlBundleGroups = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/`
 const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
+const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloack/`
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
@@ -184,7 +185,7 @@ export const deleteUser = async (username) => {
   const newUrl = `${urlUsers}${username}`
   const { data } = await deleteData(newUrl)
 
-  return data;
+  return data
 }
 
 // DELETE input: organization id and username -> remove the user from that organization
@@ -194,5 +195,31 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
   const { data } = await deleteData(newUrl)
 
-  return data;
+  return data
 }
+
+
+/*********************
+ * KC *************
+ *********************/
+/*
+        {
+            "id": "e7a0ae5d-59ab-40c7-a510-ae4756cc5044",
+            "created": "2021-09-02T21:49:36.409+00:00",
+            "username": "admin",
+            "enabled": true,
+            "firstName": null,
+            "lastName": null,
+            "email": null,
+            "organisationIds": []
+        }
+}
+*/
+export const getAllKCUsers = async () => {
+  const newUrl = `${urlKC}users`
+  const { data, isError } = await getData(newUrl)
+
+  return checkForErrorsAndSendResponse(data, isError, "kcUsers")
+}
+
+

@@ -27,7 +27,7 @@ public  enum Status {
 //ADMIN
 
 
-import {ADMIN, AUTHOR, MANAGER} from "./constants";
+import {ADMIN, AUTHOR, MANAGER} from "./constants"
 
 //SELECT CATALOG FILTER STATUS
 let STATUS = (() => {
@@ -73,7 +73,7 @@ export const getProfiledStatusSelectInfo = (role) => {
 export const getProfiledStatusSelectAllValues = (role) => {
     let map = STATUS[role].filter(statusEntry => statusEntry.text === "All").flatMap(statusEntry => {
         return statusEntry.value
-    });
+    })
     console.log(map)
     return map
 }

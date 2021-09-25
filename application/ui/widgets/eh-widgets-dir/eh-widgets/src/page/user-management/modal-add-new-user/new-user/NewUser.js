@@ -1,8 +1,7 @@
-import {useCallback, useEffect, useState} from "react";
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories} from "../../../../integration/Integration";
-import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling";
-import {getHigherRole} from "../../../../helpers/helpers";
+import {useEffect, useState} from "react"
+import {Content, Select, SelectItem,} from "carbon-components-react"
+import {getAllOrganisations} from "../../../../integration/Integration"
+import {getAvailableKcUsers} from "../../../../integration/api-adapters"
 
 /*
 BUNDLEGROUP:
@@ -22,130 +21,93 @@ bundleGroupId	string
  */
 
 const NewUser = ({onDataChange}) => {
-    const [selectOptions, setSelectOptions] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [newBundleGroup, setNewBundleGroup] = useState({
-        name: "",
-        description: "",
-        descriptionImage: "",
-        documentationUrl: "",
-        status: "",
-        children: [],
-        categories: [],
-    });
 
-    const changeNewBundleGroup = (field, value) => {
+
+    const [user, setUser] = useState({
+        username: "",
+        email: "",
+        organisation: {}
+    })
+    const [organisations, setOrganisations] = useState([])
+    const [availableUsers, setAvailableUsers] = useState([])
+
+    const changeUser = (field, value, user) => {
         const newObj = {
-            ...newBundleGroup,
+            ...user,
         }
         newObj[field] = value
-        setNewBundleGroup(newObj)
+        setUser(newObj)
         onDataChange(newObj)
     }
 
-    const createSelectOptionsForRole = useCallback(() => {
-        const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
-        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
-        setSelectOptions(options)
+    useEffect(() => {
+        let isMounted = true
+        (async () => {
+            const organisations = (await getAllOrganisations()).organisationList
+            const availableUsers = (await getAvailableKcUsers())
+            if (isMounted) {
+                setOrganisations(organisations)
+                setAvailableUsers(availableUsers)
+                setUser({
+                    username: "nousername",
+                    email: "",
+                    organisation: organisations[0]
+                })
+            }
+        })()
+        return () => { isMounted = false }
+
     }, [])
 
 
-    useEffect(() => {
-        let isMounted = true;
-        const init = async () => {
-            const res = await getAllCategories();
-            if (isMounted) {
-                createSelectOptionsForRole()
-                setCategories(res.categoryList)
-                //default values
-                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId;
-                const newObj ={
-                    name: "",
-                    description: "",
-                    descriptionImage: "",
-                    documentationUrl: "",
-                    children: [],
-                    categories: [defaultCategoryId],
-                    status: "NOT_PUBLISHED"
-                }
-
-                setNewBundleGroup(newObj)
-            }
-        };
-        init();
-        return () => { isMounted = false }
-
-    }, [createSelectOptionsForRole]);
-
-    let selectItems_Category = categories.map((category) => {
+    const selectItems_Organisations = organisations.map((organisation) => {
         return (
             <SelectItem
-                key={category.categoryId}
-                value={category.categoryId}
-                text={category.name}
+                key={organisation.organisationId}
+                value={organisation.organisationId}
+                text={organisation.name}
             />
-        );
-    });
-
+        )
+    })
+    const selectItems_AvailableUsers = availableUsers.map((user) => {
+        return (
+            <SelectItem
+                key={user.username}
+                value={user.username}
+                text={user.username}
+            />
+        )
+    })
 
 
     const nameChangeHandler = (e) => {
-        changeNewBundleGroup("name", e.target.value)
+        changeUser("username", e.target.value, user)
     }
 
-    const categoryChangeHandler = (e) => {
-        changeNewBundleGroup("categories", [e.target.value])
-    }
-
-    const documentationChangeHandler = (e) => {
-        changeNewBundleGroup("documentationUrl", e.target.value)
-    }
-
-    const versionChangeHandler = (e) => {
-        // const value = e.target.value;
-        // setNewBundleGroup(prev => {
-        //   return {
-        //     ...prev,
-        //     version: value
-        //   }
-        // })
-        //changeNewBundleGroup("version", e.target.value)
-    }
-
-    const statusChangeHandler = (e) => {
-        changeNewBundleGroup("status", e.target.value)
-    }
-
-    const descriptionChangeHandler = (e) => {
-        changeNewBundleGroup("description", e.target.value)
-    }
-
-    /*
-        NewBundleList will contain the array of bundle object
-    */
-    const onAddOrRemoveBundleFromList = (newBundleList) => {
-        //Warning in NewBundleGroup children field there will be the whole bundle object not
-        //only the id
-        changeNewBundleGroup("children", newBundleList)
+    const organisationChangeHandler = (e) => {
+        const selectedOrganisation = organisations.filter(o => o.organisationId === e.target.value)[0]
+        changeUser("organisation", selectedOrganisation, user)
     }
 
     return (
         <>
             <Content>
-                <TextInput id="name" labelText="Name" onChange={nameChangeHandler} />
-                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]} onChange={categoryChangeHandler} >{selectItems_Category}</Select>
-                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler} />
-                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}  />
-                <Select id="status" labelText="Status" value={newBundleGroup.status} onChange={statusChangeHandler} >{selectOptions}</Select>
-                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50} rows={4} />
-                {/*
-                    Renders the bundle list of children allowing
-                    the user to add/delete them. Whenever a user
-                    performs an action on that list onAddOrRemoveBundleFromList will be called
-                */}
+                <Select value={user.name} onChange={nameChangeHandler}
+                        id={"name"}
+                        labelText={"Name"}>
+                    <SelectItem
+                        key="nousername"
+                        value="nousername"
+                        text={"Select one Username"}
+                    />
+                    {selectItems_AvailableUsers}
+                </Select>
+                <Select value={user.organisation.organisationId} onChange={organisationChangeHandler}
+                        id={"organisation"}
+                        labelText={"Organisation"}>{selectItems_Organisations}</Select>
             </Content>
         </>
-    );
-};
+    )
 
-export default NewUser;
+}
+export default NewUser

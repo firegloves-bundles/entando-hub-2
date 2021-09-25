@@ -1,13 +1,11 @@
-import {Button, Modal} from "carbon-components-react";
-import {Add16} from '@carbon/icons-react';
-import ReactDOM from "react-dom";
-import {useState} from "react";
+import {Button, Modal} from "carbon-components-react"
+import {Add16} from '@carbon/icons-react'
+import ReactDOM from "react-dom"
+import {useState} from "react"
+import NewUser from "./new-user/NewUser"
+import {createAUserForAnOrganisation} from "../../../integration/Integration"
 
 
-/*
-    TODO code cut and pasted from the crabon documentation can be semplified
-    This component manages the modal for adding a new bundle group
-*/
 export const ModalAddNewUser = ({onAfterSubmit}) => {
 
 
@@ -15,16 +13,18 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,
                                }) => {
-        const [open, setOpen] = useState(false);
+        const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
-
+        const [user, setUser] = useState({})
 
         const onDataChange = (newUser)=>{
+            setUser(newUser)
         }
 
+
         const onRequestClose = (e) =>{
-            setOpen(false)
             resetData()
+            setOpen(false)
         }
 
         const onRequestOpen = (e) =>{
@@ -37,9 +37,12 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-                resetData()
+            (async () => {
+                let organisationId = user.organisation.organisationId
+                await createAUserForAnOrganisation(organisationId, user.username)
+                onRequestClose()
                 onAfterSubmit()
-
+            })()
         }
 
         return (
@@ -52,8 +55,8 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
             </>
-        );
-    };
+        )
+    }
 
 
 
@@ -72,9 +75,9 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-
+                    <NewUser key={elemKey} onDataChange={onDataChange}/>
                 </Modal>
             )}
         </ModalStateManager>
-    );
-};
+    )
+}

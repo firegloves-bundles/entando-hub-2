@@ -1,19 +1,19 @@
-import {Content, Tile, Grid, Row, Column} from "carbon-components-react";
-import {useEffect, useState} from "react";
-import {useParams} from "react-router";
+import {Content, Tile, Grid, Row, Column} from "carbon-components-react"
+import {useEffect, useState} from "react"
+import {useParams} from "react-router"
 import CatalogPageHeaderInternal
-  from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal";
+  from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal"
 import CatalogPageFooter
-  from "../catalog/catalog-page-footer/CatalogPageFooter";
+  from "../catalog/catalog-page-footer/CatalogPageFooter"
 
 import {
   getAllBundlesForABundleGroup,
   getSingleBundleGroup,
   getSingleCategory,
   getSingleOrganisation
-} from "../../integration/Integration";
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
-import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation";
+} from "../../integration/Integration"
+import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation"
 
 import "./bundle-group-page.scss"
 
@@ -46,17 +46,17 @@ bundleId	string
  */
 
 const BundleGroupPage = () => {
-  const [bundleGroup, setBundleGroup] = useState({});
-  const [organisation, setOrganisation] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [children, setChildren] = useState([]);
-  const {id: bundleGroupId} = useParams();
+  const [bundleGroup, setBundleGroup] = useState({})
+  const [organisation, setOrganisation] = useState(null)
+  const [category, setCategory] = useState(null)
+  const [children, setChildren] = useState([])
+  const {id: bundleGroupId} = useParams()
 
   // fetches the bundle group
   useEffect(() => {
     const init = async () => {
       const fetchedBundleGroup = (await getSingleBundleGroup(
-          bundleGroupId)).bundleGroup;
+          bundleGroupId)).bundleGroup
       setOrganisation(
           fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
               fetchedBundleGroup.organisationId)).organisation : null)
@@ -68,11 +68,11 @@ const BundleGroupPage = () => {
           fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
               ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
               : [])
-      setBundleGroup(fetchedBundleGroup);
-    };
+      setBundleGroup(fetchedBundleGroup)
+    }
 
-    init();
-  }, [bundleGroupId]);
+    init()
+  }, [bundleGroupId])
 
   return (
       <>
@@ -151,8 +151,8 @@ const BundleGroupPage = () => {
         <CatalogPageFooter/>
       </>
   )
-      ;
-};
+      
+}
 
 /*
 const parseGitRepoAddr = (gitRepoAddress) =>
@@ -188,4 +188,4 @@ const BundleList = (
 
 }
 
-export default BundleGroupPage;
+export default BundleGroupPage

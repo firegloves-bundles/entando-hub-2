@@ -1,13 +1,13 @@
-import {useCallback, useEffect, useState} from "react";
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
+import {useCallback, useEffect, useState} from "react"
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
 import {
     getAllBundlesForABundleGroup,
     getAllCategories,
     getSingleBundleGroup
-} from "../../../../../integration/Integration";
-import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup";
-import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling";
-import {getHigherRole} from "../../../../../helpers/helpers";
+} from "../../../../../integration/Integration"
+import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
+import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling"
+import {getHigherRole} from "../../../../../helpers/helpers"
 
 /*
 BUNDLEGROUP:
@@ -28,10 +28,10 @@ bundleGroupId	string
 
 const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
-    const [selectOptions, setSelectOptions] = useState([]);
-    const [disabled, setDisabled] = useState(false);
-    const [children, setChildren] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [selectOptions, setSelectOptions] = useState([])
+    const [disabled, setDisabled] = useState(false)
+    const [children, setChildren] = useState([])
+    const [categories, setCategories] = useState([])
     const [bundleGroup, setBundleGroup] = useState({
         name: "",
         description: "",
@@ -40,7 +40,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
         status: "",
         children: [],
         categories: [],
-    });
+    })
 
     const changeBundleGroup = (field, value) => {
         const newObj = {
@@ -61,15 +61,15 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
 
     useEffect(() => {
-        let isMounted = true;
+        let isMounted = true
         const initCG = async () => {
-            const res = await getAllCategories();
+            const res = await getAllCategories()
             if (isMounted) {
-                setCategories(res.categoryList);
+                setCategories(res.categoryList)
             }
         }
         const initBG = async () => {
-            const res = await getSingleBundleGroup(bundleGroupId);
+            const res = await getSingleBundleGroup(bundleGroupId)
 
             const childrenFromDb = res.bundleGroup.children && res.bundleGroup.children.length > 0
                 ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
@@ -80,7 +80,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                     ...res.bundleGroup,
                     children: childrenFromDb
                 }
-                setBundleGroup(bg);
+                setBundleGroup(bg)
                 setChildren(childrenFromDb)
                 onDataChange(bg)
                 createSelectOptionsForRoleAndSetSelectStatus(bg)
@@ -92,17 +92,17 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
             isMounted = false
         }
 
-    }, [bundleGroupId, onDataChange, createSelectOptionsForRoleAndSetSelectStatus]);
+    }, [bundleGroupId, onDataChange, createSelectOptionsForRoleAndSetSelectStatus])
 
-    let selectItems_Category = categories.map((category) => {
+    const selectItems_Category = categories.map((category) => {
         return (
             <SelectItem
                 key={category.categoryId}
                 value={category.categoryId}
                 text={category.name}
             />
-        );
-    });
+        )
+    })
 
 
     const nameChangeHandler = (e) => {
@@ -118,7 +118,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
     }
 
     const versionChangeHandler = (e) => {
-        // const value = e.target.value;
+        // const value = e.target.value
         // setNewBundleGroup(prev => {
         //   return {
         //     ...prev,
@@ -162,7 +162,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                                       initialBundleList={children} disabled={disabled}/>
             </Content>
         </>
-    );
-};
+    )
+}
 
-export default UpdateBundleGroup;
+export default UpdateBundleGroup

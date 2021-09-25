@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useState} from "react";
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories} from "../../../../integration/Integration";
-import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
-import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling";
-import {getHigherRole} from "../../../../helpers/helpers";
+import {useCallback, useEffect, useState} from "react"
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {getAllCategories} from "../../../../integration/Integration"
+import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
+import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
+import {getHigherRole} from "../../../../helpers/helpers"
 
 /*
 BUNDLEGROUP:
@@ -23,8 +23,8 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
-    const [selectOptions, setSelectOptions] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [selectOptions, setSelectOptions] = useState([])
+    const [categories, setCategories] = useState([])
     const [newBundleGroup, setNewBundleGroup] = useState({
         name: "",
         description: "",
@@ -33,7 +33,7 @@ const NewBundleGroup = ({onDataChange}) => {
         status: "",
         children: [],
         categories: [],
-    });
+    })
 
     const changeNewBundleGroup = (field, value) => {
         const newObj = {
@@ -52,14 +52,14 @@ const NewBundleGroup = ({onDataChange}) => {
 
 
     useEffect(() => {
-        let isMounted = true;
+        let isMounted = true
         const init = async () => {
-            const res = await getAllCategories();
+            const res = await getAllCategories()
             if (isMounted) {
                 createSelectOptionsForRole()
                 setCategories(res.categoryList)
                 //default values
-                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId;
+                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId
                 const newObj ={
                     name: "",
                     description: "",
@@ -72,11 +72,11 @@ const NewBundleGroup = ({onDataChange}) => {
 
                 setNewBundleGroup(newObj)
             }
-        };
-        init();
+        }
+        init()
         return () => { isMounted = false }
 
-    }, [createSelectOptionsForRole]);
+    }, [createSelectOptionsForRole])
 
     let selectItems_Category = categories.map((category) => {
         return (
@@ -85,8 +85,8 @@ const NewBundleGroup = ({onDataChange}) => {
                 value={category.categoryId}
                 text={category.name}
             />
-        );
-    });
+        )
+    })
 
 
 
@@ -103,7 +103,7 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     const versionChangeHandler = (e) => {
-        // const value = e.target.value;
+        // const value = e.target.value
         // setNewBundleGroup(prev => {
         //   return {
         //     ...prev,
@@ -147,7 +147,7 @@ const NewBundleGroup = ({onDataChange}) => {
                 <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
             </Content>
         </>
-    );
-};
+    )
+}
 
-export default NewBundleGroup;
+export default NewBundleGroup

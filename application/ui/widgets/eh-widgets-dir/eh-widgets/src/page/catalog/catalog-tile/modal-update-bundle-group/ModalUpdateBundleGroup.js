@@ -1,7 +1,7 @@
-import {Modal} from "carbon-components-react";
-import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup";
-import {useCallback, useState} from "react";
-import {addNewBundle, editBundleGroup} from "../../../../integration/Integration";
+import {Modal} from "carbon-components-react"
+import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup"
+import {useCallback, useState} from "react"
+import {addNewBundle, editBundleGroup} from "../../../../integration/Integration"
 
 
 export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAfterSubmit}) => {
@@ -22,7 +22,7 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
 
 
     const onRequestSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         (async () => {
             console.log("onRequestSubmit", bundleGroup)
             //create bundle children
@@ -44,7 +44,7 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
             onAfterSubmit()
 
         })()
-    };
+    }
 
     return (
         <Modal

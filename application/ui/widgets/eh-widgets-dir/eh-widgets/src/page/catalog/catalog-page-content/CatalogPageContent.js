@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile";
-import CatalogTiles from "../catalog-tiles/CatalogTiles";
-import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration";
+import React, {useCallback, useEffect, useState} from 'react'
+import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
+import CatalogTiles from "../catalog-tiles/CatalogTiles"
+import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
-import {getHigherRole, isHubUser} from "../../../helpers/helpers";
-import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling";
+import {getHigherRole, isHubUser} from "../../../helpers/helpers"
+import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
-    return {name: "name" + index, categoryId: "" + index};
+    return {name: "name" + index, categoryId: "" + index}
 })
 */
 
@@ -94,4 +94,4 @@ const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAft
     )
 }
 
-export default CatalogPageContent;
+export default CatalogPageContent

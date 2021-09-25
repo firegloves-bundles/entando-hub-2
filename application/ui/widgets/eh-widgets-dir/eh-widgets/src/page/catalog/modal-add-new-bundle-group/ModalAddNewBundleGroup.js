@@ -1,9 +1,9 @@
-import {Button, Modal} from "carbon-components-react";
-import {Add16} from '@carbon/icons-react';
-import ReactDOM from "react-dom";
-import {useState} from "react";
-import NewBundleGroup from "./new-boundle-group/NewBundleGroup";
-import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration";
+import {Button, Modal} from "carbon-components-react"
+import {Add16} from '@carbon/icons-react'
+import ReactDOM from "react-dom"
+import {useState} from "react"
+import NewBundleGroup from "./new-boundle-group/NewBundleGroup"
+import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration"
 
 
 /*
@@ -17,7 +17,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,
                                }) => {
-        const [open, setOpen] = useState(false);
+        const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
 
         //Warning newBundleGroup will contain the entire bundle info in the children array, not only the bundle id
@@ -42,7 +42,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            e.preventDefault(); //TODO check if needed
+            e.preventDefault() //TODO check if needed
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 //create bundle children
@@ -66,7 +66,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 onAfterSubmit()
 
             })()
-        };
+        }
 
         return (
             <>
@@ -78,8 +78,8 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
             </>
-        );
-    };
+        )
+    }
 
 
 
@@ -102,5 +102,5 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 </Modal>
             )}
         </ModalStateManager>
-    );
-};
+    )
+}

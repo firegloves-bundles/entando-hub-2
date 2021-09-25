@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Checkbox, Tile} from "carbon-components-react";
+import React, {useState} from 'react'
+import {Checkbox, Tile} from "carbon-components-react"
 
-import './catalog-filter-tile.scss';
+import './catalog-filter-tile.scss'
 
 /**
  * renders a list of categories
@@ -30,7 +30,7 @@ const CatalogFilterTile = ({categories, onFilterChange}) => {
         setCheckboxStatuses(checkboxStatuses)
         onFilterChange(Object.keys(checkboxStatuses).filter(key => (key!=="-1" && checkboxStatuses[key])))
     }
-    const prefix = "catalog-filter";
+    const prefix = "catalog-filter"
     const listItems = categories.map((category) => <Checkbox checked={checkboxStatuses[category.categoryId]} onChange={onChange} key={category.categoryId}
                                                              labelText={category.name} id={category.categoryId}/>)
     return (
@@ -44,4 +44,4 @@ const CatalogFilterTile = ({categories, onFilterChange}) => {
     )
 }
 
-export default CatalogFilterTile;
+export default CatalogFilterTile

@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {Tag, Tile} from "carbon-components-react";
-import {useHistory} from "react-router-dom";
-import {getSingleCategory} from "../../../integration/Integration";
+import React, {useEffect, useState} from 'react'
+import {Tag, Tile} from "carbon-components-react"
+import {useHistory} from "react-router-dom"
+import {getSingleCategory} from "../../../integration/Integration"
 
 import "./catalog-tile.scss"
-import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
-import {isHubUser} from "../../../helpers/helpers";
-import {textFromStatus} from "../../../helpers/profiling";
+import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
+import {isHubUser} from "../../../helpers/helpers"
+import {textFromStatus} from "../../../helpers/profiling"
 
 const CatalogTile = ({bundleGroupId, name, description, categories, status, onAfterSubmit}) => {
     const [categoryName, setCategoryName] = useState("")
     useEffect(() => {
-        let isMounted = true;
+        let isMounted = true
         (async () => {
             const data = await getSingleCategory(categories[0])
             if (isMounted) {
@@ -56,4 +56,4 @@ const CatalogTile = ({bundleGroupId, name, description, categories, status, onAf
     )
 }
 
-export default CatalogTile;
+export default CatalogTile

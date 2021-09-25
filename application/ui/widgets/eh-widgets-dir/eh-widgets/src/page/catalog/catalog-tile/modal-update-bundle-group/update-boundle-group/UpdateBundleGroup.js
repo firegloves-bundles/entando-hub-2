@@ -8,6 +8,7 @@ import {
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
 import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling"
 import {getHigherRole} from "../../../../../helpers/helpers"
+import {getCurrentUserOrganisation} from "../../../../../integration/api-adapters";
 
 /*
 BUNDLEGROUP:
@@ -28,6 +29,7 @@ bundleGroupId	string
 
 const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
+    const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [disabled, setDisabled] = useState(false)
     const [children, setChildren] = useState([])
@@ -69,6 +71,8 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
             }
         }
         const initBG = async () => {
+            const userOrganisation = await getCurrentUserOrganisation()
+
             const res = await getSingleBundleGroup(bundleGroupId)
 
             const childrenFromDb = res.bundleGroup.children && res.bundleGroup.children.length > 0
@@ -76,9 +80,11 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                 : []
 
             if (isMounted) {
+                if (userOrganisation) setUserOrganisation(userOrganisation)
                 let bg = {
                     ...res.bundleGroup,
-                    children: childrenFromDb
+                    children: childrenFromDb,
+                    organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
                 setBundleGroup(bg)
                 setChildren(childrenFromDb)
@@ -153,6 +159,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                            labelText={"Documentation Address"}/>
                 <TextInput disabled={disabled} value={bundleGroup.version} onChange={versionChangeHandler} id={"version"}
                            labelText={"Version"}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
                 <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
                         id={"status"}
                         labelText={"Status"}>{selectOptions}</Select>

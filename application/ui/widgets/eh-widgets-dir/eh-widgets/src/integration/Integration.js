@@ -122,8 +122,10 @@ export const editBundle = async (bundleData, id) => {
  * BUNDLE GROUPS *****
  *********************/
 
-export const getAllBundleGroups = async () => {
-  const { data, isError } = await getData(urlBundleGroups)
+export const getAllBundleGroups = async (organisationId) => {
+  let url = urlBundleGroups
+  if(organisationId) url=urlBundleGroups+"?organisationId="+organisationId
+  const { data, isError } = await getData(url)
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }

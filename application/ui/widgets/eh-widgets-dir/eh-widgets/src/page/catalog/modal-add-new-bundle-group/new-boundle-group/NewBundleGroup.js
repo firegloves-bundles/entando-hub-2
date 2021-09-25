@@ -4,6 +4,7 @@ import {getAllCategories} from "../../../../integration/Integration"
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
 import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
 import {getHigherRole} from "../../../../helpers/helpers"
+import {getCurrentUserOrganisation} from "../../../../integration/api-adapters";
 
 /*
 BUNDLEGROUP:
@@ -23,6 +24,7 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
+    const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [categories, setCategories] = useState([])
     const [newBundleGroup, setNewBundleGroup] = useState({
@@ -32,7 +34,7 @@ const NewBundleGroup = ({onDataChange}) => {
         documentationUrl: "",
         status: "",
         children: [],
-        categories: [],
+        categories: []
     })
 
     const changeNewBundleGroup = (field, value) => {
@@ -46,7 +48,8 @@ const NewBundleGroup = ({onDataChange}) => {
 
     const createSelectOptionsForRole = useCallback(() => {
         const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
-        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
+        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                 text={curr.text}/>)
         setSelectOptions(options)
     }, [])
 
@@ -55,26 +58,31 @@ const NewBundleGroup = ({onDataChange}) => {
         let isMounted = true
         const init = async () => {
             const res = await getAllCategories()
+            const userOrganisation = await getCurrentUserOrganisation()
             if (isMounted) {
                 createSelectOptionsForRole()
                 setCategories(res.categoryList)
+                if (userOrganisation) setUserOrganisation(userOrganisation)
                 //default values
-                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId
-                const newObj ={
+                let defaultCategoryId = res.categoryList.filter(cat => cat.name === "Solution Template")[0].categoryId
+                const newObj = {
                     name: "",
                     description: "",
                     descriptionImage: "",
                     documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
-                    status: "NOT_PUBLISHED"
+                    status: "NOT_PUBLISHED",
+                    organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
 
                 setNewBundleGroup(newObj)
             }
         }
         init()
-        return () => { isMounted = false }
+        return () => {
+            isMounted = false
+        }
 
     }, [createSelectOptionsForRole])
 
@@ -87,7 +95,6 @@ const NewBundleGroup = ({onDataChange}) => {
             />
         )
     })
-
 
 
     const nameChangeHandler = (e) => {
@@ -133,12 +140,16 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <TextInput id="name" labelText="Name" onChange={nameChangeHandler} />
-                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]} onChange={categoryChangeHandler} >{selectItems_Category}</Select>
-                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler} />
-                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}  />
-                <Select id="status" labelText="Status" value={newBundleGroup.status} onChange={statusChangeHandler} >{selectOptions}</Select>
-                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50} rows={4} />
+                <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
+                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
+                        onChange={categoryChangeHandler}>{selectItems_Category}</Select>
+                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler}/>
+                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
+                <Select id="status" labelText="Status" value={newBundleGroup.status}
+                        onChange={statusChangeHandler}>{selectOptions}</Select>
+                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50}
+                          rows={4}/>
                 {/*
                     Renders the bundle list of children allowing
                     the user to add/delete them. Whenever a user

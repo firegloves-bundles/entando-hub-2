@@ -41,7 +41,7 @@ const NewUser = ({onDataChange}) => {
     }
 
     useEffect(() => {
-        let isMounted = true
+        let isMounted = true;
         (async () => {
             const organisations = (await getAllOrganisations()).organisationList
             const availableUsers = (await getAvailableKcUsers())

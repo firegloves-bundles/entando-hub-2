@@ -1,37 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 
 :root {
-  --clr-blue: #002F87
-  --clr-white: #ffffff
-  --clr-black: #101820
-  --clr-grey: #dadada
-  --clr-dark-grey: #72767B
-  --clr-transparent: transparent
-  --clr-violet: #ECF3FF
-  --clr-light-blue: #00A0DF
+  --clr-blue: #002F87;
+  --clr-white: #ffffff;
+  --clr-black: #101820;
+  --clr-grey: #dadada;
+  --clr-dark-grey: #72767B;
+  --clr-transparent: transparent;
+  --clr-violet: #ECF3FF;
+  --clr-light-blue: #00A0DF;
 
 }
 
 .CatalogPage {
-  padding: 0 15% 4rem
-  background: var(--clr-grey)
+  padding: 0 15% 4rem;
+  background: var(--clr-grey);
 }
 
 .CatalogPage-breadcrumb {
-  margin: 2rem 0
+  margin: 2rem 0;
 }
 
 .CatalogPage-section {
-  font-family: Roboto
-  font-style: normal
-  font-weight: 500
-  font-size: 22px
-  line-height: 44px
-  color: var(--clr-black)
-  margin-bottom: 20px
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 44px;
+  color: var(--clr-black);
+  margin-bottom: 20px;
 }
 
 .bx--grid {
-  padding-right: 0
-  padding-left: 0
+  padding-right: 0;
+  padding-left: 0;
 }

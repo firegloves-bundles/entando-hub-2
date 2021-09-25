@@ -22,7 +22,7 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
 
 
     const onRequestSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         (async () => {
             console.log("onRequestSubmit", bundleGroup)
             //create bundle children

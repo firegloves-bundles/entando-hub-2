@@ -42,7 +42,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            e.preventDefault() //TODO check if needed
+            e.preventDefault(); //TODO check if needed
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 //create bundle children

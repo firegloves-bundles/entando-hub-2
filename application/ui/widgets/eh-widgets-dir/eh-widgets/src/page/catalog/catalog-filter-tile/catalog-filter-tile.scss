@@ -1,16 +1,16 @@
 .bx--tile {
-  position: relative
-  display: block
-  min-width: 8rem
-  min-height: 4rem
-  padding: 1rem 1rem 1rem
-  background-color: var(clr-white)
-  outline: 2px solid transparent
-  outline-offset: -2px
+  position: relative;
+  display: block;
+  min-width: 8rem;
+  min-height: 4rem;
+  padding: 1rem 1rem 1rem;
+  background-color: var(clr-white);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
 }
 
 .bx--checkbox:checked + .bx--checkbox-label::before, .bx--checkbox:indeterminate + .bx--checkbox-label::before, .bx--checkbox-label[data-contained-checkbox-state='true']::before, .bx--checkbox-label[data-contained-checkbox-state='mixed']::before {
-  border-width: 1px
-  border-color: var(--clr-blue)
-  background-color: var(--clr-blue)
+  border-width: 1px;
+  border-color: var(--clr-blue);
+  background-color: var(--clr-blue);
 }

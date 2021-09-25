@@ -99,6 +99,16 @@ export const getProfiledNewSelecSatustInfo = (higherRole) => {
         }
     }
 
+    if (higherRole === ADMIN) {
+        return {
+            values: [
+                {value: "NOT_PUBLISHED", text: textFromStatus("NOT_PUBLISHED")},
+                {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
+                {value: "PUBLISH_REQ", text: textFromStatus("PUBLISH_REQ")},
+            ]
+        }
+    }
+
 }
 
 

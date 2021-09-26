@@ -18,6 +18,7 @@ public class BundleGroup {
     private String name;
     private String description;
     private String documentationUrl;
+    @Lob
     private String descriptionImage;
     @Enumerated(EnumType.STRING)
     private Status status = Status.NOT_PUBLISHED;

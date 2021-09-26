@@ -8,7 +8,7 @@ import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
 import {isHubUser} from "../../../helpers/helpers"
 import {textFromStatus} from "../../../helpers/profiling"
 
-const CatalogTile = ({bundleGroupId, name, description, categories, status, onAfterSubmit}) => {
+const CatalogTile = ({bundleGroupId, name, description, descriptionImage, categories, status, onAfterSubmit}) => {
     const [categoryName, setCategoryName] = useState("")
     useEffect(() => {
         let isMounted = true;
@@ -39,7 +39,10 @@ const CatalogTile = ({bundleGroupId, name, description, categories, status, onAf
                 {isHubUser() && <CatalogTileOverflowMenu bundleGroupId={bundleGroupId} onAfterSubmit={onAfterSubmit}/>}
                 <div onClick={handleClick} className="CatalogTile-card-wrapper">
                     <div className="CatalogTile-card-icon">
+                        {descriptionImage?<img src={descriptionImage} alt="Logo" width = "45" height = "45"/>:<img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Logo"/>}
+{/*
                         <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>
+*/}
                     </div>
                     <div className="CatalogTile-card-title">{name}</div>
                     {isHubUser() && <div className="CatalogTile-card-status">{textFromStatus(status)}</div>}

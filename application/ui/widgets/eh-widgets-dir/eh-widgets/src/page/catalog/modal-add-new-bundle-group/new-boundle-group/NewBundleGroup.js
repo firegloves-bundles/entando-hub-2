@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useState} from "react"
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {Content, FileUploader, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
 import {getAllCategories} from "../../../../integration/Integration"
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
 import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
 import {getHigherRole} from "../../../../helpers/helpers"
-import {getCurrentUserOrganisation} from "../../../../integration/api-adapters";
+import {getCurrentUserOrganisation} from "../../../../integration/api-adapters"
 
 /*
 BUNDLEGROUP:
@@ -24,6 +24,7 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
+    const [filenameStatus,setFilenameStatus] = useState("edit")
     const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [categories, setCategories] = useState([])
@@ -86,6 +87,13 @@ const NewBundleGroup = ({onDataChange}) => {
 
     }, [createSelectOptionsForRole])
 
+    const fileUploaderProps_Images = {
+        id: "images",
+        buttonLabel: "Add Files",
+        labelDescription:
+            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+    }
+
     let selectItems_Category = categories.map((category) => {
         return (
             <SelectItem
@@ -96,6 +104,32 @@ const NewBundleGroup = ({onDataChange}) => {
         )
     })
 
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result)
+            }
+            fileReader.onerror = (error) => {
+                reject(error)
+            }
+        })
+    }
+
+    const imagesChangeHandler = (e) => {
+        setFilenameStatus("uploading");
+        (async () => {
+            const file = e.target.files[0]
+            const base64 = await convertToBase64(file)
+            changeNewBundleGroup("descriptionImage", base64)
+            setFilenameStatus("edit")
+        })()
+    }
+    const imagesDeleteHandler = (e) => {
+        changeNewBundleGroup("descriptionImage", "")
+
+    }
 
     const nameChangeHandler = (e) => {
         changeNewBundleGroup("name", e.target.value)
@@ -140,6 +174,10 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
+                <div>
+                    {newBundleGroup.descriptionImage && <img src={newBundleGroup.descriptionImage} alt={""} width = "45" height = "45"/>}
+                </div>
+                <FileUploader onChange={imagesChangeHandler} onDelete={imagesDeleteHandler} {...fileUploaderProps_Images} filenameStatus={filenameStatus}/>
                 <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
                 <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
                         onChange={categoryChangeHandler}>{selectItems_Category}</Select>

@@ -36,22 +36,22 @@ let STATUS = (() => {
         {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "PUBLISH_REQ", text: "Request for Publishing"},
-        {value: "DELETE_REQ", text: "Request for Deleting"}
+        {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     ret[MANAGER] = [
         {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "PUBLISH_REQ", text: "Request for Publishing"},
-        {value: "DELETE_REQ", text: "Request for Deleting"}
+        {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     ret[AUTHOR] = [
         {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "PUBLISH_REQ", text: "Request for Publishing"},
-        {value: "DELETE_REQ", text: "Request for Deleting"}
+        {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     return ret
 })()
@@ -170,7 +170,7 @@ export const getProfiledInsertSelectInfo = (role, bundleGroupStatus) => {
 export const textFromStatus = (bundleGroupStatus) => {
     if (bundleGroupStatus === "NOT_PUBLISHED") return "Draft"
     if (bundleGroupStatus === "PUBLISHED") return "Published"
-    if (bundleGroupStatus === "PUBLISH_REQ") return "Request for Publishing"
-    if (bundleGroupStatus === "DELETE_REQ") return "Request for Deleting"
+    if (bundleGroupStatus === "PUBLISH_REQ") return "Publication Request"
+    if (bundleGroupStatus === "DELETE_REQ") return "Deletion Request"
     if (bundleGroupStatus === "DELETED") return "Deleted"
 }

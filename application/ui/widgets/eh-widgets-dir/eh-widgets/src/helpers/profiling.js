@@ -137,7 +137,7 @@ export const getProfiledUpdateSelectStatusInfo = (higherRole, bundleGroupStatus)
         }
     }
 
-    if (higherRole === MANAGER) {
+    if (higherRole === MANAGER || higherRole === ADMIN) {
         return {
             disabled: false,
             values: [

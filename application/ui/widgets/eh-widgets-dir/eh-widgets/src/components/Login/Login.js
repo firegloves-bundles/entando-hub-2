@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import {authenticationChanged, getUserName, isAuthenticated} from "../../helpers/helpers"
+import {authenticationChanged, getHigherRole, getUserName, isAuthenticated} from "../../helpers/helpers"
 import withKeycloak from "../../auth/withKeycloak"
 import {HashRouter, Link} from "react-router-dom"
 import {getPortalUserDetails} from "../../integration/api-adapters"
+import {ADMIN} from "../../helpers/constants";
 
 const KEYCLOAK_EVENT_ID = 'keycloak'
 
@@ -91,9 +92,13 @@ class Login extends Component {
                           <div>
                               {this.state.portalUser && this.state.portalUser.organisation && this.state.portalUser.organisation.name}
                           </div>
-                          <HashRouter>
-                              <Link to="/admin">Admin</Link>
-                          </HashRouter>
+                          {getHigherRole() === ADMIN &&
+                          <div>
+                              <HashRouter>
+                                  <Link to="/admin">Admin</Link>
+                              </HashRouter>
+                          </div>
+                          }
                       </>
                   )}
                   <button className="log-out" href="#" onClick={handleLogout}

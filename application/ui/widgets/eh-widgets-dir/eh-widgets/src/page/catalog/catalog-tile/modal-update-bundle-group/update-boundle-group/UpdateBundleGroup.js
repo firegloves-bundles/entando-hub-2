@@ -3,12 +3,12 @@ import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-componen
 import {
     getAllBundlesForABundleGroup,
     getAllCategories,
-    getSingleBundleGroup
+    getSingleBundleGroup, getSingleOrganisation
 } from "../../../../../integration/Integration"
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
 import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling"
 import {getHigherRole} from "../../../../../helpers/helpers"
-import {getCurrentUserOrganisation} from "../../../../../integration/api-adapters";
+import IconUploader from "./icon-uploader/IconUploader";
 
 /*
 BUNDLEGROUP:
@@ -28,8 +28,8 @@ bundleGroupId	string
  */
 
 const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
-
-    const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
+    const [loading, setLoading] = useState(true)
+    const [organisation, setOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [disabled, setDisabled] = useState(false)
     const [children, setChildren] = useState([])
@@ -57,12 +57,14 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
         const selectValuesInfo = getProfiledUpdateSelectStatusInfo(getHigherRole(), bundleGroup.status)
         setDisabled(selectValuesInfo.disabled)
         onPassiveModal(selectValuesInfo.disabled)
-        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
+        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                 text={curr.text}/>)
         setSelectOptions(options)
     }, [onPassiveModal])
 
 
     useEffect(() => {
+        setLoading(true)
         let isMounted = true
         const initCG = async () => {
             const res = await getAllCategories()
@@ -71,7 +73,6 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
             }
         }
         const initBG = async () => {
-            const userOrganisation = await getCurrentUserOrganisation()
 
             const res = await getSingleBundleGroup(bundleGroupId)
 
@@ -79,12 +80,12 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                 ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
                 : []
 
+            const organisation = (await getSingleOrganisation(res.bundleGroup.organisationId)).organisation
             if (isMounted) {
-                if (userOrganisation) setUserOrganisation(userOrganisation)
+                if (organisation) setOrganisation(organisation)
                 let bg = {
                     ...res.bundleGroup,
                     children: childrenFromDb,
-                    organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
                 setBundleGroup(bg)
                 setChildren(childrenFromDb)
@@ -92,8 +93,11 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                 createSelectOptionsForRoleAndSetSelectStatus(bg)
             }
         }
-        initCG()
-        initBG()
+
+        (async ()=>{
+            await Promise.all([initCG(),initBG()])
+            setLoading(false)
+        })()
         return () => {
             isMounted = false
         }
@@ -134,6 +138,41 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
         //changeNewBundleGroup("version", e.target.value)
     }
 
+    const fileUploaderProps_Images = {
+        id: "images",
+        buttonLabel: "Add Files",
+        labelDescription:
+            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+    }
+
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result)
+            }
+            fileReader.onerror = (error) => {
+                reject(error)
+            }
+        })
+    }
+
+
+    const imagesChangeHandler = (e) => {
+        (async () => {
+            const file = e.target.files[0]
+            const base64 = await convertToBase64(file)
+            changeBundleGroup("descriptionImage", base64)
+        })()
+    }
+    const imagesDeleteHandler = (e) => {
+        changeBundleGroup("descriptionImage", "")
+
+    }
+
+
     const statusChangeHandler = (e) => {
         changeBundleGroup("status", e.target.value)
     }
@@ -150,24 +189,30 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
     return (
         <>
-            <Content>
-                <TextInput disabled={disabled} value={bundleGroup.name} onChange={nameChangeHandler} id={"name"} labelText={"Name"}/>
-                <Select disabled={disabled} value={bundleGroup.categories[0]} onChange={categoryChangeHandler} id={"category"}
+            {!loading && <Content>
+                <IconUploader descriptionImage={bundleGroup.descriptionImage} disabled={disabled} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
+                <TextInput disabled={disabled} value={bundleGroup.name} onChange={nameChangeHandler} id={"name"}
+                           labelText={"Name"}/>
+                <Select disabled={disabled} value={bundleGroup.categories[0]} onChange={categoryChangeHandler}
+                        id={"category"}
                         labelText={"Category"}>{selectItems_Category}</Select>
-                <TextInput disabled={disabled} value={bundleGroup.documentationUrl} onChange={documentationChangeHandler}
+                <TextInput disabled={disabled} value={bundleGroup.documentationUrl}
+                           onChange={documentationChangeHandler}
                            id={"documentation"}
                            labelText={"Documentation Address"}/>
-                <TextInput disabled={disabled} value={bundleGroup.version} onChange={versionChangeHandler} id={"version"}
+                <TextInput disabled={disabled} value={bundleGroup.version} onChange={versionChangeHandler}
+                           id={"version"}
                            labelText={"Version"}/>
-                <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={organisation.name}/>
                 <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
                         id={"status"}
                         labelText={"Status"}>{selectOptions}</Select>
-                <TextArea disabled={disabled} value={bundleGroup.description} onChange={descriptionChangeHandler} id={"description"}
+                <TextArea disabled={disabled} value={bundleGroup.description} onChange={descriptionChangeHandler}
+                          id={"description"}
                           labelText={"Description"}/>
                 <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                       initialBundleList={children} disabled={disabled}/>
-            </Content>
+            </Content>}
         </>
     )
 }

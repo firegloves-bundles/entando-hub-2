@@ -1,10 +1,11 @@
 import {useCallback, useEffect, useState} from "react"
-import {Content, FileUploader, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
 import {getAllCategories} from "../../../../integration/Integration"
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
 import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
 import {getHigherRole} from "../../../../helpers/helpers"
 import {getCurrentUserOrganisation} from "../../../../integration/api-adapters"
+import IconUploader from "../../catalog-tile/modal-update-bundle-group/update-boundle-group/icon-uploader/IconUploader";
 
 /*
 BUNDLEGROUP:
@@ -24,7 +25,6 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
-    const [filenameStatus,setFilenameStatus] = useState("edit")
     const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [categories, setCategories] = useState([])
@@ -118,12 +118,10 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     const imagesChangeHandler = (e) => {
-        setFilenameStatus("uploading");
         (async () => {
             const file = e.target.files[0]
             const base64 = await convertToBase64(file)
             changeNewBundleGroup("descriptionImage", base64)
-            setFilenameStatus("edit")
         })()
     }
     const imagesDeleteHandler = (e) => {
@@ -174,10 +172,7 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <div>
-                    {newBundleGroup.descriptionImage && <img src={newBundleGroup.descriptionImage} alt={""} width = "45" height = "45"/>}
-                </div>
-                <FileUploader onChange={imagesChangeHandler} onDelete={imagesDeleteHandler} {...fileUploaderProps_Images} filenameStatus={filenameStatus}/>
+                <IconUploader descriptionImage={newBundleGroup.descriptionImage} disabled={false} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
                 <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
                 <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
                         onChange={categoryChangeHandler}>{selectItems_Category}</Select>

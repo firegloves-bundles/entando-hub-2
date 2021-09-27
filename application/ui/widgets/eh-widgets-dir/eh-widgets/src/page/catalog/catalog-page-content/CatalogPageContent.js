@@ -41,6 +41,7 @@ bundleGroupId	string
  */
 
 const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAfterSubmit}) => {
+    const [loading, setLoading] = useState(true)
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
 
@@ -73,30 +74,42 @@ const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAft
             const data = await getAllCategories()
             setCategories(data.categoryList)
         }
-        initBGs(organisationId)
-        initCs()
+        return Promise.all([initBGs(organisationId), initCs()])
     }, [statusFilterValue, selectedCategoryIds])
 
 
-    useEffect(() => loadData(), [reloadToken, loadData])
+    useEffect(() => {
+        (async () => {
+            setLoading(true)
+            await loadData()
+            setLoading(false)
+
+        })()
+    }, [reloadToken, loadData])
 
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])
 
     const onFilterChange = (newSelectedCategoryIds) => {
-        loadData(newSelectedCategoryIds)
-        setSelectedCategoryIds(newSelectedCategoryIds)
+        (async () => {
+            setLoading(true)
+            await loadData(newSelectedCategoryIds)
+            setSelectedCategoryIds(newSelectedCategoryIds)
+            setLoading(false)
+
+        })()
     }
 
+    console.log("loading", loading)
     return (
         <>
             <div className="bx--col-lg-4">
                 {categories.length > 0 &&
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
-            <div className="bx--col-lg-12 CatalogPageContent-wrapper">
+            {!loading && <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
-            </div>
+            </div>}
         </>
     )
 }

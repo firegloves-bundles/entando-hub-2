@@ -1,5 +1,5 @@
-import React from 'react';
-import './catalog-page-footer.scss';
+import React from 'react'
+import './catalog-page-footer.scss'
 
 const CatalogPageFooter = () => {
   return (
@@ -13,4 +13,4 @@ const CatalogPageFooter = () => {
   )
 }
 
-export default CatalogPageFooter;
+export default CatalogPageFooter

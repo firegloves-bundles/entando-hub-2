@@ -1,11 +1,23 @@
 import axios from "axios"
+import {getDefaultOptions, getKeycloakToken, isAuthenticated} from "../helpers/helpers";
+
+const addAuthorizationRequestConfig = (config={})=>{
+  let defaultOptions = getDefaultOptions();
+  console.log(defaultOptions)
+    return {
+    ...config,
+    ...defaultOptions
+  }
+}
+
+
 
 // retrieves the data (organisations, categories, bundles and bundles group) from the BE. If an ID is provided it retrieves a single element (the one with the same ID)
 export const getData = async (url, id) => {
   url = mergeUrl(url, id)
 
   const data = await axios
-    .get(url)
+    .get(url, addAuthorizationRequestConfig())
     .then((res) => {
       return res.data
     })

@@ -1,9 +1,11 @@
-import {useCallback, useEffect, useState} from "react";
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories} from "../../../../integration/Integration";
-import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
-import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling";
-import {getHigherRole} from "../../../../helpers/helpers";
+import {useCallback, useEffect, useState} from "react"
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {getAllCategories} from "../../../../integration/Integration"
+import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
+import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
+import {getHigherRole} from "../../../../helpers/helpers"
+import {getCurrentUserOrganisation} from "../../../../integration/api-adapters"
+import IconUploader from "../../catalog-tile/modal-update-bundle-group/update-boundle-group/icon-uploader/IconUploader";
 
 /*
 BUNDLEGROUP:
@@ -23,8 +25,9 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
-    const [selectOptions, setSelectOptions] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
+    const [selectOptions, setSelectOptions] = useState([])
+    const [categories, setCategories] = useState([])
     const [newBundleGroup, setNewBundleGroup] = useState({
         name: "",
         description: "",
@@ -32,8 +35,8 @@ const NewBundleGroup = ({onDataChange}) => {
         documentationUrl: "",
         status: "",
         children: [],
-        categories: [],
-    });
+        categories: []
+    })
 
     const changeNewBundleGroup = (field, value) => {
         const newObj = {
@@ -46,37 +49,50 @@ const NewBundleGroup = ({onDataChange}) => {
 
     const createSelectOptionsForRole = useCallback(() => {
         const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
-        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value} text={curr.text}/>)
+        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                 text={curr.text}/>)
         setSelectOptions(options)
     }, [])
 
 
     useEffect(() => {
-        let isMounted = true;
+        let isMounted = true
         const init = async () => {
-            const res = await getAllCategories();
+            const res = await getAllCategories()
+            const userOrganisation = await getCurrentUserOrganisation()
             if (isMounted) {
                 createSelectOptionsForRole()
                 setCategories(res.categoryList)
+                if (userOrganisation) setUserOrganisation(userOrganisation)
                 //default values
-                let defaultCategoryId = res.categoryList.filter(cat=>cat.name==="Solution Template")[0].categoryId;
-                const newObj ={
+                let defaultCategoryId = res.categoryList.filter(cat => cat.name === "Solution Template")[0].categoryId
+                const newObj = {
                     name: "",
                     description: "",
                     descriptionImage: "",
                     documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
-                    status: "NOT_PUBLISHED"
+                    status: "NOT_PUBLISHED",
+                    organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
 
                 setNewBundleGroup(newObj)
             }
-        };
-        init();
-        return () => { isMounted = false }
+        }
+        init()
+        return () => {
+            isMounted = false
+        }
 
-    }, [createSelectOptionsForRole]);
+    }, [createSelectOptionsForRole])
+
+    const fileUploaderProps_Images = {
+        id: "images",
+        buttonLabel: "Add Files",
+        labelDescription:
+            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+    }
 
     let selectItems_Category = categories.map((category) => {
         return (
@@ -85,10 +101,33 @@ const NewBundleGroup = ({onDataChange}) => {
                 value={category.categoryId}
                 text={category.name}
             />
-        );
-    });
+        )
+    })
 
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result)
+            }
+            fileReader.onerror = (error) => {
+                reject(error)
+            }
+        })
+    }
 
+    const imagesChangeHandler = (e) => {
+        (async () => {
+            const file = e.target.files[0]
+            const base64 = await convertToBase64(file)
+            changeNewBundleGroup("descriptionImage", base64)
+        })()
+    }
+    const imagesDeleteHandler = (e) => {
+        changeNewBundleGroup("descriptionImage", "")
+
+    }
 
     const nameChangeHandler = (e) => {
         changeNewBundleGroup("name", e.target.value)
@@ -103,7 +142,7 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     const versionChangeHandler = (e) => {
-        // const value = e.target.value;
+        // const value = e.target.value
         // setNewBundleGroup(prev => {
         //   return {
         //     ...prev,
@@ -133,12 +172,17 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <TextInput id="name" labelText="Name" onChange={nameChangeHandler} />
-                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]} onChange={categoryChangeHandler} >{selectItems_Category}</Select>
-                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler} />
-                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}  />
-                <Select id="status" labelText="Status" value={newBundleGroup.status} onChange={statusChangeHandler} >{selectOptions}</Select>
-                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50} rows={4} />
+                <IconUploader descriptionImage={newBundleGroup.descriptionImage} disabled={false} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
+                <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
+                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
+                        onChange={categoryChangeHandler}>{selectItems_Category}</Select>
+                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler}/>
+                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
+                <Select id="status" labelText="Status" value={newBundleGroup.status}
+                        onChange={statusChangeHandler}>{selectOptions}</Select>
+                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50}
+                          rows={4}/>
                 {/*
                     Renders the bundle list of children allowing
                     the user to add/delete them. Whenever a user
@@ -147,7 +191,7 @@ const NewBundleGroup = ({onDataChange}) => {
                 <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
             </Content>
         </>
-    );
-};
+    )
+}
 
-export default NewBundleGroup;
+export default NewBundleGroup

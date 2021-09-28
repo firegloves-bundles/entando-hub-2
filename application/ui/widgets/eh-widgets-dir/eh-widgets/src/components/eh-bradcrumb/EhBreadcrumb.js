@@ -1,7 +1,7 @@
-import React from 'react';
-import {Breadcrumb, BreadcrumbItem} from "carbon-components-react";
-import {Link} from "react-router-dom";
-import './eh-bredcrumb.scss';
+import React from 'react'
+import {Breadcrumb, BreadcrumbItem} from "carbon-components-react"
+import {Link} from "react-router-dom"
+import './eh-bredcrumb.scss'
 /*
 {
 path,
@@ -31,4 +31,4 @@ const EhBreadcrumb = ({pathElements = []}) => {
     )
 }
 
-export default EhBreadcrumb;
+export default EhBreadcrumb

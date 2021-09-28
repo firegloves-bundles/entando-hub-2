@@ -21,6 +21,7 @@ keycloak:
   auth-url: http://localhost:9080/auth
   client-id: web_app
   client-secret: web_app
+  ssl-required: none
   auth-server-url: ${keycloak.auth-url}
   bearer-only: true
   credentials:

@@ -35,9 +35,9 @@ export const isHubUser = () => {
 }
 
 export const getHigherRole = () => {
-    if(isHubAdmin()) return ADMIN
-    if(isHubManager()) return MANAGER
-    if(isHubAuthor()) return AUTHOR
+    if (isHubAdmin()) return ADMIN
+    if (isHubManager()) return MANAGER
+    if (isHubAuthor()) return AUTHOR
 }
 
 export const getUserName = async () => {
@@ -66,10 +66,14 @@ export const hasKeycloakClientRole = clientRole => {
     return false
 }
 
-export const getDefaultOptions = () => ({
-    headers: new Headers({
-        Authorization: `Bearer ${getKeycloakToken()}`,
-        'Content-Type': 'application/json',
-    }),
-})
+
+export const getDefaultOptions = () => {
+    const token = getKeycloakToken()
+    if (!token) return {}
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+}
 

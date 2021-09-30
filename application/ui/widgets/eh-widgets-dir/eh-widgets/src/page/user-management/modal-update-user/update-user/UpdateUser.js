@@ -78,8 +78,6 @@ const UpdateUser = ({userObj, onDataChange}) => {
     }
 
 
-    console.log("UpdateUser render userObj", userObj)
-
     return (
         <>
             <Content>

@@ -51,7 +51,6 @@ class Login extends Component {
                 })
 
                 getPortalUserDetails(username).then(portalUser => {
-                    console.log(portalUser)
                     this.setState({
                         portalUser: portalUser
                     })

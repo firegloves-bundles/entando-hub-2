@@ -24,7 +24,6 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
     const onRequestSubmit = (e) => {
         e.preventDefault();
         (async () => {
-            console.log("onRequestSubmit", bundleGroup)
             //create bundle children
             let newChildren = []
             if (bundleGroup.children && bundleGroup.children.length) {
@@ -38,7 +37,6 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
                 children: newChildren
             }
             const res = await editBundleGroup(toSend, toSend.bundleGroupId)
-            console.log("editBundleGroup", res)
             setBundleGroup({})
             onCloseModal()
             onAfterSubmit()

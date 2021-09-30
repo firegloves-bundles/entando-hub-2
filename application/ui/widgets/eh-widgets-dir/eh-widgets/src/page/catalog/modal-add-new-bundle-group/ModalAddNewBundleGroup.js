@@ -60,7 +60,6 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                     children: newChildren
                 }
                 const res = await addNewBundleGroup(toSend)
-                console.log("addNewBundleGroup", res)
                 setNewBundleGroup(toSend)
                 resetData()
                 onAfterSubmit()

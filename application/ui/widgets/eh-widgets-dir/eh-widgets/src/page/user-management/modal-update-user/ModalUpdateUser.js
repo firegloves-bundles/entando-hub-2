@@ -10,11 +10,9 @@ import {
 
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
-    console.log("Param ModalUpdateUser", userObj)
     const [user, setUser] = useState(userObj)
 
     const onDataChange = useCallback((userObj) => {
-        console.log("Onchange ModalUpdateUser", userObj)
         setUser(userObj)
     }, [])
 

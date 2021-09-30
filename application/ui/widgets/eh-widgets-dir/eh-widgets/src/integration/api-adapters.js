@@ -24,10 +24,8 @@ export const getPortalUserDetails = async (username) => {
 export const getAvailableKcUsers = async (username) => {
     const kcUsers = (await getAllKCUsers()).kcUsers
     const portalUserUsernames = (await getAllUsers()).userList.map(u=>u.username)
-    console.log("portalUserUsernames",portalUserUsernames)
 
     const availableUsers = kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
-    console.log("availableUsers",availableUsers)
 
     return availableUsers
 }

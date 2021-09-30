@@ -40,7 +40,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAfterSubmit}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => {
     const [loading, setLoading] = useState(true)
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
 
@@ -52,6 +52,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAft
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
 
 
+/*
         const initBGs = async (organisationId) => {
             const data = await getAllBundleGroups(organisationId)
             let filtered = data.bundleGroupList
@@ -67,6 +68,31 @@ const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAft
                 //check for be sure
                 const allStatuses = getProfiledStatusSelectAllValues(getHigherRole())
                 filtered = filtered.filter(bg => bg.status && allStatuses.includes(bg.status))
+            }
+            setFilteredBundleGroups(filtered)
+        }
+*/
+
+        const initBGs = async (organisationId) => {
+            let sfv = statusFilterValue
+            let hubUser = isHubUser();
+            console.log("statusFilterValue {} isHubUser() {}", sfv, hubUser)
+            if (statusFilterValue === "LOADING" && hubUser) return //skip everything, waiting for status filter loading
+            const data = await getAllBundleGroups(organisationId)
+            let filtered = data.bundleGroupList
+            if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
+                filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
+            }
+            if (!hubUser) { //GUEST user no status filter
+                sfv = "PUBLISHED" //default for not hub users. the status filter component will be not loaded
+                filtered = filtered.filter(bg => bg.status && bg.status === sfv)
+            }else{ //authenticated user
+                if(statusFilterValue === "-1"){
+                    const allStatuses = getProfiledStatusSelectAllValues(getHigherRole())
+                    filtered = filtered.filter(bg => bg.status && allStatuses.includes(bg.status))
+                }else{
+                    filtered = filtered.filter(bg => bg.status && bg.status === sfv)
+                }
             }
             setFilteredBundleGroups(filtered)
         }
@@ -100,7 +126,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue = "PUBLISHED", onAft
         })()
     }
 
-    console.log("loading", loading)
     return (
         <>
             <div className="bx--col-lg-4">

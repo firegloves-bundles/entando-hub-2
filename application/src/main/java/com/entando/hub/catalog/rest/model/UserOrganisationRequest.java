@@ -14,6 +14,4 @@ import lombok.Setter;
 public class UserOrganisationRequest {
     @NotEmpty
     private String username;
-    @NotEmpty
-    private String organisationName;
 }

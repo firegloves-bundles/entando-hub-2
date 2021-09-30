@@ -1,11 +1,12 @@
-import {Modal} from "carbon-components-react";
-import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup";
-import {useCallback, useState} from "react";
-import {addNewBundle, editBundleGroup} from "../../../../integration/Integration";
+import {Modal} from "carbon-components-react"
+import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup"
+import {useCallback, useState} from "react"
+import {addNewBundle, editBundleGroup} from "../../../../integration/Integration"
 
 
 export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAfterSubmit}) => {
     const [bundleGroup, setBundleGroup] = useState({})
+    const [passiveModal, setPassiveModal] = useState(false)
 
     const onDataChange = useCallback((bundleGroup) => {
         setBundleGroup(bundleGroup)
@@ -14,6 +15,10 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
     const onRequestClose = (e) => {
         onCloseModal()
     }
+
+    const onPassiveModal= useCallback((passive)=>{
+        setPassiveModal(passive)
+    },[])
 
 
     const onRequestSubmit = (e) => {
@@ -39,17 +44,18 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
             onAfterSubmit()
 
         })()
-    };
+    }
 
     return (
         <Modal
+            passiveModal = {passiveModal}
             modalLabel="Edit"
             primaryButtonText="Save"
             secondaryButtonText="Cancel"
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>
-            <UpdateBundleGroup onDataChange={onDataChange} bundleGroupId={bundleGroupId}/>
+            <UpdateBundleGroup onDataChange={onDataChange} bundleGroupId={bundleGroupId} onPassiveModal={onPassiveModal}/>
         </Modal>
     )
 }

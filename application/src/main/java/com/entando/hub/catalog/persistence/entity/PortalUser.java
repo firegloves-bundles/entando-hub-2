@@ -2,12 +2,8 @@ package com.entando.hub.catalog.persistence.entity;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +16,7 @@ public class PortalUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(unique=true)
     private String username;
 
     private String email;

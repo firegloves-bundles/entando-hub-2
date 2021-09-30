@@ -1,6 +1,6 @@
-import {useState} from "react";
-import {Button, Tag, TextInput,} from "carbon-components-react";
-import {Add16} from '@carbon/icons-react';
+import {useState} from "react"
+import {Button, Tag, TextInput,} from "carbon-components-react"
+import {Add16} from '@carbon/icons-react'
 
 /*
 BUNDLE:
@@ -42,7 +42,7 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
     const [gitRepo, setGitRepo] = useState("")
 
     const onChangeHandler = (e) => {
-        const value = e.target.value;
+        const value = e.target.value
         setGitRepo(value)
     }
 
@@ -54,7 +54,7 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
             gitRepoAddress: gitRepo,
             dependencies: [],
             bundleGroups: []
-        }];
+        }]
         setBundleList(newBundleList)
         onAddOrRemoveBundleFromList(newBundleList)
         setGitRepo("")
@@ -64,7 +64,7 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
     const textInputProps = {
         id: "bundle",
         labelText: "Add Url Bundle",
-    };
+    }
 
     return (
         <>
@@ -77,5 +77,5 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
 }
 
 
-export default AddBundleToBundleGroup;
+export default AddBundleToBundleGroup
 

@@ -3,7 +3,6 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
-@Slf4j
 public class BundleGroupController {
+
+    private final Logger logger = LoggerFactory.getLogger(BundleGroupController.class);
 
     private final BundleGroupService bundleGroupService;
 
@@ -28,26 +30,28 @@ public class BundleGroupController {
     @CrossOrigin
     @GetMapping("/")
     public List<BundleGroup> getBundleGroups(@RequestParam(required = false) String organisationId) {
-        //TODO add here other filters such as categories
+        logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
     }
 
     @CrossOrigin
     @GetMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
+        logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (bundleGroupOptional.isPresent()) {
             return new ResponseEntity<>(bundleGroupOptional.map(BundleGroup::new).get(), HttpStatus.OK);
         } else {
+            logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
     }
 
 
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
+        logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()),bundleGroup);
         return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
     }
@@ -55,8 +59,10 @@ public class BundleGroupController {
     @CrossOrigin
     @PostMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> updateBundle(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
+        logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {
+            logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);

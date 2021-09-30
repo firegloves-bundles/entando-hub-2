@@ -46,54 +46,42 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
 
 
     const loadData = useCallback(async (newSelectedCategoryIds) => {
-        const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds
+        const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds //when the user select new categories ==>newSelectedCategoryIds otherwise no parameter is sent and we get the last filter selection
 
         const userOrganisation = await getCurrentUserOrganisation()
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
 
 
-/*
-        const initBGs = async (organisationId) => {
+        const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
             const data = await getAllBundleGroups(organisationId)
             let filtered = data.bundleGroupList
-            if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
-                filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
+            if (categoryIds) {
+                filtered = data.bundleGroupList.filter(currBundleGroup => categoryIds.includes(currBundleGroup.categories[0]))
             }
-            //status filter === -1 is all
-            //the BG statuses to filter depend on user role
-            if (statusFilterValue !== "-1") {
-                filtered = filtered.filter(bg => bg.status && bg.status === statusFilterValue)
-            } else if (isHubUser()) {
-                //the user must be authenticated to get there
-                //check for be sure
-                const allStatuses = getProfiledStatusSelectAllValues(getHigherRole())
-                filtered = filtered.filter(bg => bg.status && allStatuses.includes(bg.status))
+            if (statuses) {
+                filtered = filtered.filter(bg => bg.status && statuses.includes(bg.status))
             }
-            setFilteredBundleGroups(filtered)
+            return filtered
         }
-*/
 
         const initBGs = async (organisationId) => {
-            let sfv = statusFilterValue
             let hubUser = isHubUser();
-            console.log("statusFilterValue {} isHubUser() {}", sfv, hubUser)
-            if (statusFilterValue === "LOADING" && hubUser) return //skip everything, waiting for status filter loading
-            const data = await getAllBundleGroups(organisationId)
-            let filtered = data.bundleGroupList
-            if (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") {
-                filtered = data.bundleGroupList.filter(currBundleGroup => localSelectedCategoryIds.includes(currBundleGroup.categories[0]))
-            }
-            if (!hubUser) { //GUEST user no status filter
-                sfv = "PUBLISHED" //default for not hub users. the status filter component will be not loaded
-                filtered = filtered.filter(bg => bg.status && bg.status === sfv)
-            }else{ //authenticated user
-                if(statusFilterValue === "-1"){
-                    const allStatuses = getProfiledStatusSelectAllValues(getHigherRole())
-                    filtered = filtered.filter(bg => bg.status && allStatuses.includes(bg.status))
-                }else{
-                    filtered = filtered.filter(bg => bg.status && bg.status === sfv)
+            console.log("statusFilterValue {} isHubUser() {}", statusFilterValue, hubUser)
+            if (hubUser && statusFilterValue === "LOADING") return //skip everything, waiting for status filter loading
+            //get the selected categories if -1 no filtering at all on them
+            const categoryIds = (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") ? localSelectedCategoryIds : undefined
+
+            let statuses = [] //filter values for the status
+            if (!hubUser) { //GUEST user no status filter, only categories one
+                statuses = ["PUBLISHED"]
+            } else { //authenticated user
+                if (statusFilterValue === "-1") { //all the statuses
+                    statuses = getProfiledStatusSelectAllValues(getHigherRole())
+                } else {
+                    statuses = [statusFilterValue]
                 }
             }
+            const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
             setFilteredBundleGroups(filtered)
         }
         const initCs = async () => {
@@ -107,7 +95,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     useEffect(() => {
         (async () => {
             setLoading(true)
-            await loadData()
+            await loadData() //first load
             setLoading(false)
 
         })()
@@ -119,7 +107,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     const onFilterChange = (newSelectedCategoryIds) => {
         (async () => {
             setLoading(true)
-            await loadData(newSelectedCategoryIds)
+            await loadData(newSelectedCategoryIds) //filters data based on the selected categories
             setSelectedCategoryIds(newSelectedCategoryIds)
             setLoading(false)
 

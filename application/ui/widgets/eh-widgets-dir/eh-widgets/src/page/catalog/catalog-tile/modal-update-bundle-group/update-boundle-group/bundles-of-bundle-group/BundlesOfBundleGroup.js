@@ -24,7 +24,6 @@ const parseGitRepoAddr = (gitRepoAddress) => {
 }
 
 const BundleList = ({children = []}) => {
-    console.log("BundleList", children)
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
         <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
                                            target={"_new"}>{childrenInfo.name}</a></Tag></li>)
@@ -38,7 +37,6 @@ const BundleList = ({children = []}) => {
 
 
 const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList, disabled = false}) => {
-    console.log("initialBundleList", initialBundleList)
 
     useEffect(()=>{
         setBundleList(initialBundleList)

@@ -3,7 +3,6 @@ import {getDefaultOptions, getKeycloakToken, isAuthenticated} from "../helpers/h
 
 const addAuthorizationRequestConfig = (config={})=>{
   let defaultOptions = getDefaultOptions();
-  console.log(defaultOptions)
     return {
     ...config,
     ...defaultOptions
@@ -31,8 +30,6 @@ export const getData = async (url, id) => {
 // creates a new record of any type (organisation, category, bundle or bundle group). If an ID is provided it modifies the record with the same ID
 export const postData = async (url, payload, id) => {
   url = mergeUrl(url, id)
-
-  console.log("post url", url)
 
   const data = await axios
     .post(url, payload)

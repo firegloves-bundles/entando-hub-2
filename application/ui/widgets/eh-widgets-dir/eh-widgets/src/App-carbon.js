@@ -10,7 +10,7 @@ function AppCarbon() {
         <HashRouter>
             <Switch>
                 <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
-                <Route path="**/admin" component={UserManagementPage}/>
+                <Route path="**/admin*" component={UserManagementPage}/>
                 <Route path="**/" component={CatalogPage}/>
             </Switch>
         </HashRouter>

@@ -40,31 +40,34 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
             setElemKey(((new Date()).getTime()).toString())
         }
 
+        //TODO BE QUERY REFACTORING
+        const createNewBundleGroup = async (bundleGroup)=>{
+            let newChildren = [] //children are the bundles
+            if(bundleGroup.children && bundleGroup.children.length) {
+                //call addNewBundle rest api, saving every bundle
+                //the call is async in respArray there will be the new bundles id
+                let respArray = await Promise.all(bundleGroup.children.map(addNewBundle)) //addNewBundle creates a new bundle in the DB
+                //new children will be an array of bundle ids
+                newChildren = respArray.map(res => res.newBundle.data.bundleId)
+            }
+            //build a new bundleGroup object with only the ids in the children array
+            const toSend = {
+                ...bundleGroup,
+                children: newChildren
+            }
+            await addNewBundleGroup(toSend)
+            return toSend
+        }
+
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            e.preventDefault(); //TODO check if needed
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
-                //create bundle children
-                let newChildren = [] //children are the bundles
-                if(newBundleGroup.children && newBundleGroup.children.length) {
-                    //call addNewBundle rest api, saving every bundle
-                    //the call is async in respArray there will be the new bundles id
-                    let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
-                    //new children will be an array of bundle ids
-                    newChildren = respArray.map(res => res.newBundle.data.bundleId)
-                }
-                //build a new bundleGroup object with only the ids in the children array
-                const toSend = {
-                    ...newBundleGroup,
-                    children: newChildren
-                }
-                const res = await addNewBundleGroup(toSend)
-                console.log("addNewBundleGroup", res)
+                const toSend = await createNewBundleGroup(newBundleGroup)
+                //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setNewBundleGroup(toSend)
                 resetData()
                 onAfterSubmit()
-
             })()
         }
 

@@ -24,6 +24,10 @@ bundleGroupId	string
 }
  */
 
+/**
+ *
+ * @param onDataChange callback functions (newBundleGroup)=>{} newBundleGroup will contain the updated object
+ */
 const NewBundleGroup = ({onDataChange}) => {
     const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
@@ -128,36 +132,12 @@ const NewBundleGroup = ({onDataChange}) => {
         changeNewBundleGroup("descriptionImage", "")
 
     }
-
-    const nameChangeHandler = (e) => {
-        changeNewBundleGroup("name", e.target.value)
-    }
-
     const categoryChangeHandler = (e) => {
         changeNewBundleGroup("categories", [e.target.value])
     }
 
-    const documentationChangeHandler = (e) => {
-        changeNewBundleGroup("documentationUrl", e.target.value)
-    }
-
-    const versionChangeHandler = (e) => {
-        // const value = e.target.value
-        // setNewBundleGroup(prev => {
-        //   return {
-        //     ...prev,
-        //     version: value
-        //   }
-        // })
-        //changeNewBundleGroup("version", e.target.value)
-    }
-
-    const statusChangeHandler = (e) => {
-        changeNewBundleGroup("status", e.target.value)
-    }
-
-    const descriptionChangeHandler = (e) => {
-        changeNewBundleGroup("description", e.target.value)
+    const onChangeHandler = (e,fieldName) => {
+        changeNewBundleGroup(fieldName, e.target.value)
     }
 
     /*
@@ -173,15 +153,15 @@ const NewBundleGroup = ({onDataChange}) => {
         <>
             <Content>
                 <IconUploader descriptionImage={newBundleGroup.descriptionImage} disabled={false} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
-                <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
+                <TextInput id="name" labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
                 <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
                         onChange={categoryChangeHandler}>{selectItems_Category}</Select>
-                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler}/>
-                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}/>
+                <TextInput id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
+                <TextInput id="version" labelText="Version" onChange={(e)=>onChangeHandler(e,"version")}/>
                 <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
                 <Select id="status" labelText="Status" value={newBundleGroup.status}
-                        onChange={statusChangeHandler}>{selectOptions}</Select>
-                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50}
+                        onChange={(e)=>onChangeHandler(e,"status")}>{selectOptions}</Select>
+                <TextArea id="description" labelText="Description" onChange={(e)=>onChangeHandler(e,"description")} cols={50}
                           rows={4}/>
                 {/*
                     Renders the bundle list of children allowing

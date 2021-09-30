@@ -15,10 +15,12 @@ This is the HUB landing page
 */
 
 const CatalogPage = () => {
+    //signals the reloading need of the right side
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
     //filter the BG query by status (only published by default)
-    const [statusFilterValue, setStatusFilterValue] = useState("PUBLISHED")
+    //LOADING means ho use the filter value has to wait
+    const [statusFilterValue, setStatusFilterValue] = useState("LOADING")
 
     /*
     Callback when the status filter is changed

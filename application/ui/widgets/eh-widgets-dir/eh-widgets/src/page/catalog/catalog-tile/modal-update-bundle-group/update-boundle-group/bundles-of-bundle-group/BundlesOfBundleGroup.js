@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
-import {Button, Tag, TextInput,} from "carbon-components-react";
-import {Add16} from '@carbon/icons-react';
+import {useEffect, useState} from "react"
+import {Button, Tag, TextInput,} from "carbon-components-react"
+import {Add16} from '@carbon/icons-react'
 
 /*
 BUNDLE:
@@ -37,7 +37,7 @@ const BundleList = ({children = []}) => {
 }
 
 
-const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) => {
+const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList, disabled = false}) => {
     console.log("initialBundleList", initialBundleList)
 
     useEffect(()=>{
@@ -48,7 +48,7 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) 
     const [gitRepo, setGitRepo] = useState("")
 
     const onChangeHandler = (e) => {
-        const value = e.target.value;
+        const value = e.target.value
         setGitRepo(value)
     }
 
@@ -60,7 +60,7 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) 
             gitRepoAddress: gitRepo,
             dependencies: [],
             bundleGroups: []
-        }];
+        }]
         setBundleList(newBundleList)
         onAddOrRemoveBundleFromList(newBundleList)
         setGitRepo("")
@@ -70,12 +70,12 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) 
     const textInputProps = {
         id: "bundle",
         labelText: "Add Url Bundle",
-    };
+    }
 
     return (
         <>
             <TextInput value={gitRepo} onChange={onChangeHandler} {...textInputProps} />
-            <Button onClick={onAddBundle} renderIcon={Add16}>Add</Button>
+            <Button disabled={disabled} onClick={onAddBundle} renderIcon={Add16}>Add</Button>
             <BundleList children={bundleList}/>
         </>
     )
@@ -83,5 +83,5 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList}) 
 }
 
 
-export default BundlesOfBundleGroup;
+export default BundlesOfBundleGroup
 

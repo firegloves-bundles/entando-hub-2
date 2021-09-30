@@ -1,3 +1,3 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
-export default PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.elementType }), PropTypes.shape(null)]);
+export default PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.elementType }), PropTypes.shape(null)])

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 const customerType = PropTypes.shape({
   id: PropTypes.number,
@@ -9,6 +9,6 @@ const customerType = PropTypes.shape({
   contactPhone: PropTypes.string,
   contactEmail: PropTypes.string,
   notes: PropTypes.string,
-});
+})
 
-export default customerType;
+export default customerType

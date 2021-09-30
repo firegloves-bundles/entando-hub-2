@@ -1,7 +1,11 @@
-import {useEffect, useState} from "react";
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react";
-import {getAllCategories} from "../../../../integration/Integration";
-import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup";
+import {useCallback, useEffect, useState} from "react"
+import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {getAllCategories} from "../../../../integration/Integration"
+import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
+import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"
+import {getHigherRole} from "../../../../helpers/helpers"
+import {getCurrentUserOrganisation} from "../../../../integration/api-adapters"
+import IconUploader from "../../catalog-tile/modal-update-bundle-group/update-boundle-group/icon-uploader/IconUploader";
 
 /*
 BUNDLEGROUP:
@@ -21,7 +25,9 @@ bundleGroupId	string
  */
 
 const NewBundleGroup = ({onDataChange}) => {
-    const [categories, setCategories] = useState([]);
+    const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
+    const [selectOptions, setSelectOptions] = useState([])
+    const [categories, setCategories] = useState([])
     const [newBundleGroup, setNewBundleGroup] = useState({
         name: "",
         description: "",
@@ -29,8 +35,8 @@ const NewBundleGroup = ({onDataChange}) => {
         documentationUrl: "",
         status: "",
         children: [],
-        categories: [],
-    });
+        categories: []
+    })
 
     const changeNewBundleGroup = (field, value) => {
         const newObj = {
@@ -41,18 +47,52 @@ const NewBundleGroup = ({onDataChange}) => {
         onDataChange(newObj)
     }
 
-    useEffect(() => {
-        let isMounted = true;
-        const init = async () => {
-            const res = await getAllCategories();
-            if (isMounted) {
-                setCategories(res.categoryList);
-            }
-        };
-        init();
-        return () => { isMounted = false }
+    const createSelectOptionsForRole = useCallback(() => {
+        const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
+        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                 text={curr.text}/>)
+        setSelectOptions(options)
+    }, [])
 
-    }, []);
+
+    useEffect(() => {
+        let isMounted = true
+        const init = async () => {
+            const res = await getAllCategories()
+            const userOrganisation = await getCurrentUserOrganisation()
+            if (isMounted) {
+                createSelectOptionsForRole()
+                setCategories(res.categoryList)
+                if (userOrganisation) setUserOrganisation(userOrganisation)
+                //default values
+                let defaultCategoryId = res.categoryList.filter(cat => cat.name === "Solution Template")[0].categoryId
+                const newObj = {
+                    name: "",
+                    description: "",
+                    descriptionImage: "",
+                    documentationUrl: "",
+                    children: [],
+                    categories: [defaultCategoryId],
+                    status: "NOT_PUBLISHED",
+                    organisationId: userOrganisation ? userOrganisation.organisationId : undefined
+                }
+
+                setNewBundleGroup(newObj)
+            }
+        }
+        init()
+        return () => {
+            isMounted = false
+        }
+
+    }, [createSelectOptionsForRole])
+
+    const fileUploaderProps_Images = {
+        id: "images",
+        buttonLabel: "Add Files",
+        labelDescription:
+            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+    }
 
     let selectItems_Category = categories.map((category) => {
         return (
@@ -61,64 +101,33 @@ const NewBundleGroup = ({onDataChange}) => {
                 value={category.categoryId}
                 text={category.name}
             />
-        );
-    });
-    selectItems_Category.unshift(
-        <SelectItem
-            key="-1"
-            disabled
-            hidden
-            value="placeholder-item"
-            text="Choose an option"
-        />
-    );
+        )
+    })
 
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result)
+            }
+            fileReader.onerror = (error) => {
+                reject(error)
+            }
+        })
+    }
 
-    const selectProps_Category = {
-        id: "category",
-        defaultValue: "placeholder-item",
-        labelText: "Category",
-    };
+    const imagesChangeHandler = (e) => {
+        (async () => {
+            const file = e.target.files[0]
+            const base64 = await convertToBase64(file)
+            changeNewBundleGroup("descriptionImage", base64)
+        })()
+    }
+    const imagesDeleteHandler = (e) => {
+        changeNewBundleGroup("descriptionImage", "")
 
-    const selectItems_Status = [
-        <SelectItem
-            key="-1"
-            disabled
-            hidden
-            value="placeholder-item"
-            text="Choose an option"
-        />,
-        <SelectItem key="0" value="NOT_PUBLISHED" text="Not Published"/>,
-        <SelectItem key="1" value="PUBLISHED" text="Published"/>,
-    ];
-
-    const selectProps_Status = {
-        id: "status",
-        defaultValue: "placeholder-item",
-        labelText: "Status",
-    };
-
-    const textInputProps_Name = {
-        id: "name",
-        labelText: "Name",
-    };
-
-    const textInputProps_Documentation = {
-        id: "documentation",
-        labelText: "Documentation Address",
-    };
-
-    const textInputProps_Version = {
-        id: "version",
-        labelText: "Version",
-    };
-
-    const textAreaProps_Description = {
-        id: "description",
-        labelText: "Description",
-        cols: 50,
-        rows: 4,
-    };
+    }
 
     const nameChangeHandler = (e) => {
         changeNewBundleGroup("name", e.target.value)
@@ -133,7 +142,7 @@ const NewBundleGroup = ({onDataChange}) => {
     }
 
     const versionChangeHandler = (e) => {
-        // const value = e.target.value;
+        // const value = e.target.value
         // setNewBundleGroup(prev => {
         //   return {
         //     ...prev,
@@ -163,12 +172,17 @@ const NewBundleGroup = ({onDataChange}) => {
     return (
         <>
             <Content>
-                <TextInput onChange={nameChangeHandler} {...textInputProps_Name} />
-                <Select onChange={categoryChangeHandler} {...selectProps_Category}>{selectItems_Category}</Select>
-                <TextInput onChange={documentationChangeHandler} {...textInputProps_Documentation} />
-                <TextInput onChange={versionChangeHandler} {...textInputProps_Version} />
-                <Select onChange={statusChangeHandler} {...selectProps_Status}>{selectItems_Status}</Select>
-                <TextArea onChange={descriptionChangeHandler} {...textAreaProps_Description} />
+                <IconUploader descriptionImage={newBundleGroup.descriptionImage} disabled={false} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
+                <TextInput id="name" labelText="Name" onChange={nameChangeHandler}/>
+                <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
+                        onChange={categoryChangeHandler}>{selectItems_Category}</Select>
+                <TextInput id="documentation" labelText="Documentation Address" onChange={documentationChangeHandler}/>
+                <TextInput id="version" labelText="Version" onChange={versionChangeHandler}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
+                <Select id="status" labelText="Status" value={newBundleGroup.status}
+                        onChange={statusChangeHandler}>{selectOptions}</Select>
+                <TextArea id="description" labelText="Description" onChange={descriptionChangeHandler} cols={50}
+                          rows={4}/>
                 {/*
                     Renders the bundle list of children allowing
                     the user to add/delete them. Whenever a user
@@ -177,7 +191,7 @@ const NewBundleGroup = ({onDataChange}) => {
                 <AddBundleToBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}/>
             </Content>
         </>
-    );
-};
+    )
+}
 
-export default NewBundleGroup;
+export default NewBundleGroup

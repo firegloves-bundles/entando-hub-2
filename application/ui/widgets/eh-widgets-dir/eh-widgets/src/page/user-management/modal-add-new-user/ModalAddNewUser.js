@@ -2,15 +2,11 @@ import {Button, Modal} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import {useState} from "react"
-import NewBundleGroup from "./new-boundle-group/NewBundleGroup"
-import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration"
+import NewUser from "./new-user/NewUser"
+import {createAUserForAnOrganisation} from "../../../integration/Integration"
 
 
-/*
-    TODO code cut and pasted from the crabon documentation can be semplified
-    This component manages the modal for adding a new bundle group
-*/
-export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
+export const ModalAddNewUser = ({onAfterSubmit}) => {
 
 
     const ModalStateManager = ({
@@ -19,17 +15,16 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                                }) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
+        const [user, setUser] = useState({})
 
-        //Warning newBundleGroup will contain the entire bundle info in the children array, not only the bundle id
-        const [newBundleGroup, setNewBundleGroup] = useState({})
-
-        const onDataChange = (newBundleGroup)=>{
-            setNewBundleGroup(newBundleGroup)
+        const onDataChange = (newUser)=>{
+            setUser(newUser)
         }
 
+
         const onRequestClose = (e) =>{
-            setOpen(false)
             resetData()
+            setOpen(false)
         }
 
         const onRequestOpen = (e) =>{
@@ -42,29 +37,11 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            e.preventDefault(); //TODO check if needed
-            //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
-                //create bundle children
-                let newChildren = [] //children are the bundles
-                if(newBundleGroup.children && newBundleGroup.children.length) {
-                    //call addNewBundle rest api, saving every bundle
-                    //the call is async in respArray there will be the new bundles id
-                    let respArray = await Promise.all(newBundleGroup.children.map(addNewBundle))
-                    //new children will be an array of bundle ids
-                    newChildren = respArray.map(res => res.newBundle.data.bundleId)
-                }
-                //build a new bundleGroup object with only the ids in the children array
-                const toSend = {
-                    ...newBundleGroup,
-                    children: newChildren
-                }
-                const res = await addNewBundleGroup(toSend)
-                console.log("addNewBundleGroup", res)
-                setNewBundleGroup(toSend)
-                resetData()
+                let organisationId = user.organisation.organisationId
+                await createAUserForAnOrganisation(organisationId, user.username)
+                onRequestClose()
                 onAfterSubmit()
-
             })()
         }
 
@@ -88,7 +65,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>Add User</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
@@ -98,7 +75,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <NewBundleGroup key={elemKey} onDataChange={onDataChange}/>
+                    <NewUser key={elemKey} onDataChange={onDataChange}/>
                 </Modal>
             )}
         </ModalStateManager>

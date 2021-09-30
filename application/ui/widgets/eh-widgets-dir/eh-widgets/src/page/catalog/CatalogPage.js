@@ -4,38 +4,35 @@ import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, {useCallback, useState} from "react";
 
-import './catalogPage.scss';
-
-import {isHubUser} from "../../api/helpers";
-import BundleGroupStatusFilter
-  from "./bundle-group-status-filter/BundleGroupStatusFilter";
+import './catalogPage.scss'
+import {isHubUser} from "../../helpers/helpers"
+import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 
 /*
 This is the HUB landing page
 */
 
 const CatalogPage = () => {
-  const [reloadToken, setReloadToken] = useState(
-      ((new Date()).getTime()).toString())
+    const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
-  //filter the BG query by status (only published by default)
-  const [statusFilterValue, setStatusFilterValue] = useState("PUBLISHED")
+    //filter the BG query by status (only published by default)
+    const [statusFilterValue, setStatusFilterValue] = useState("PUBLISHED")
 
-  /*
-  Callback when the status filter is changed
-  The implementation save the user choice in the component state
-   */
-  const changeStatusFilterValue = useCallback((newValue) => {
-    setStatusFilterValue(newValue);
-  }, [])
+    /*
+    Callback when the status filter is changed
+    The implementation save the user choice in the component state
+     */
+    const changeStatusFilterValue = useCallback((newValue) => {
+        setStatusFilterValue(newValue)
+    }, [])
 
-  /*
-  Callback to the Add and Edit (New Bundle Group) modal form submit
-  This implementation ask for bundle groups tiles reloading
-   */
-  const onAfterSubmit = () => {
-    setReloadToken(((new Date()).getTime()).toString())
-  }
+    /*
+    Callback to the Add and Edit (New Bundle Group) modal form submit
+    This implementation ask for bundle groups tiles reloading
+     */
+    const onAfterSubmit = () => {
+        setReloadToken(((new Date()).getTime()).toString())
+    }
 
   return (
       <>
@@ -58,8 +55,7 @@ const CatalogPage = () => {
                   {/*
                             Manage the Add (New Bundle Group) button
                             */}
-                  {isHubUser() && <ModalAddNewBundleGroup
-                      onAfterSubmit={onAfterSubmit}/>}
+                            {isHubUser() && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Search
@@ -75,18 +71,15 @@ const CatalogPage = () => {
                 <div className="bx--col-lg-4 CatalogPage-section">
                 </div>
                 <div className="bx--col-lg-12 CatalogPage-section">
-                  <BundleGroupStatusFilter
-                      onFilterValueChange={changeStatusFilterValue}/>
+                   <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue}/>
                 </div>
               </div>
               }
               <div className="bx--row">
-                {/*
+                        {/*
                             Renders the filters on the left an the result on the main column
                         */}
-                <CatalogPageContent reloadToken={reloadToken}
-                                    statusFilterValue={statusFilterValue}
-                                    onAfterSubmit={onAfterSubmit}/>
+                        <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
               </div>
             </div>
           </div>
@@ -95,4 +88,4 @@ const CatalogPage = () => {
   );
 };
 
-export default CatalogPage;
+export default CatalogPage

@@ -1,6 +1,6 @@
-import {Button, CodeSnippet, Modal} from "carbon-components-react";
-import ReactDOM from "react-dom";
-import {useState} from "react";
+import {Button, CodeSnippet, Modal} from "carbon-components-react"
+import ReactDOM from "react-dom"
+import {useState} from "react"
 
 
 const InstallationInfo = ({bundleGroup, children}) => {
@@ -26,9 +26,9 @@ export const ModalInstallInformation = (props) => {
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,
                                }) => {
-        const [open, setOpen] = useState(false);
-        const [bundleGroup] = useState(props.bundleGroup);
-        const [children] = useState(props.children);
+        const [open, setOpen] = useState(false)
+        const [bundleGroup] = useState(props.bundleGroup)
+        const [children] = useState(props.children)
 
         const onRequestClose = (e) => {
             setOpen(false)
@@ -48,8 +48,8 @@ export const ModalInstallInformation = (props) => {
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
             </>
-        );
-    };
+        )
+    }
 
 
     return (
@@ -67,5 +67,5 @@ export const ModalInstallInformation = (props) => {
                 </Modal>
             )}
         </ModalStateManager>
-    );
-};
+    )
+}

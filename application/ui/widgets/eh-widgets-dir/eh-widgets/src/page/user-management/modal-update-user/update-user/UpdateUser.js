@@ -46,6 +46,7 @@ const UpdateUser = ({userObj, onDataChange}) => {
 
     useEffect(() => {
         (async () => {
+            //TODO load the organisation from the db together with the userobj
             const organisations = (await getAllOrganisations()).organisationList
             setOrganisations(organisations)
             const userObjWithDefaultOrganisation = userObj.organisation ? userObj : {

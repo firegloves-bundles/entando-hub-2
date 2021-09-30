@@ -41,7 +41,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         }
 
         //TODO BE QUERY REFACTORING
-        const updateBundleGroup = async (bundleGroup)=>{
+        const createNewBundleGroup = async (bundleGroup)=>{
             let newChildren = [] //children are the bundles
             if(bundleGroup.children && bundleGroup.children.length) {
                 //call addNewBundle rest api, saving every bundle
@@ -63,8 +63,8 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const onRequestSubmit = (e) => {
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
-                const toSend = updateBundleGroup(newBundleGroup)
-                //WARNING type changed children (bundle) in new bundle group after the update contains only the id
+                const toSend = await createNewBundleGroup(newBundleGroup)
+                //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setNewBundleGroup(toSend)
                 resetData()
                 onAfterSubmit()

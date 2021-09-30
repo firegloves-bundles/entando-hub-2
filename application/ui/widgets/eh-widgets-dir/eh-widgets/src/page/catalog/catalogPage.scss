@@ -4,17 +4,19 @@
   --clr-blue: #002F87;
   --clr-white: #ffffff;
   --clr-black: #101820;
-  --clr-grey: #dadada;
+  --clr-grey: #EAF0F5;
   --clr-dark-grey: #72767B;
   --clr-transparent: transparent;
   --clr-violet: #ECF3FF;
   --clr-light-blue: #00A0DF;
-
 }
 
 .CatalogPage {
-  padding: 0 15% 4rem;
   background: var(--clr-grey);
+}
+
+.CatalogPage-wrapper {
+  padding: 0 15% 4rem;
 }
 
 .CatalogPage-breadcrumb {

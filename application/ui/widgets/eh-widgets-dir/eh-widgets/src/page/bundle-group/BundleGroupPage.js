@@ -73,7 +73,8 @@ const BundleGroupPage = () => {
   return (
       <>
         <Content className="BundleGroupPage">
-          <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
+          <div className="BundleGroupPage-wrapper">
+          <div className="bx--grid bx--grid--full-width BundleGroupPage-page">
             <div className="bx--row">
               <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                 <EhBreadcrumb pathElements={[{
@@ -82,7 +83,7 @@ const BundleGroupPage = () => {
                 }]}/>
               </div>
             </div>
-          </Row>
+          </div>
           <Grid condensed>
             <Row>
               <Column lg={4}>
@@ -142,6 +143,7 @@ const BundleGroupPage = () => {
               </Column>
             </Row>
           </Grid>
+          </div>
         </Content>
       </>
   )

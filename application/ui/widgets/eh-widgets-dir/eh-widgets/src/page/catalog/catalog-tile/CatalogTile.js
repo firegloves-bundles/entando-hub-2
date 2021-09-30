@@ -28,7 +28,7 @@ const CatalogTile = ({bundleGroupId, name, description, descriptionImage, catego
     const history = useHistory()
 
     //manage the bundle group detail
-    const handleClick = (evt) => {
+    const handleClick = () => {
         history.push("/bundlegroup/" + bundleGroupId)
     }
 
@@ -40,9 +40,6 @@ const CatalogTile = ({bundleGroupId, name, description, descriptionImage, catego
                 <div onClick={handleClick} className="CatalogTile-card-wrapper">
                     <div className="CatalogTile-card-icon">
                         {descriptionImage?<img src={descriptionImage} alt="Logo" width = "45" height = "45"/>:<img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Logo"/>}
-{/*
-                        <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Entando logo"/>
-*/}
                     </div>
                     <div className="CatalogTile-card-title">{name}</div>
                     {isHubUser() && <div className="CatalogTile-card-status">{textFromStatus(status)}</div>}

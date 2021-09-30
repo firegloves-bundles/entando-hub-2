@@ -55,7 +55,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 ...bundleGroup,
                 children: newChildren
             }
-            const res = await addNewBundleGroup(toSend)
+            await addNewBundleGroup(toSend)
             return toSend
         }
 

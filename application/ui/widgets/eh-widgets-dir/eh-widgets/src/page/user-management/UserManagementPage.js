@@ -17,9 +17,7 @@ import {
 import UserManagementOverflowMenu from "./overflow-menu/UserManagementOverflowMenu"
 import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser"
 import {getAllUsers, getSingleOrganisation} from "../../integration/Integration"
-import CatalogPageHeader from "../catalog/catalog-page-header/CatalogPageHeader";
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
-import CatalogPageFooter from "../catalog/catalog-page-footer/CatalogPageFooter";
 
 /*
 BUNDLEGROUP:
@@ -128,7 +126,6 @@ const UserManagementPage = () => {
 
     return (
         <>
-            <CatalogPageHeader/>
             <Content className="CatalogPage">
                 <div className="bx--grid bx--grid--full-width catalog-page">
                     <div className="bx--row">
@@ -181,9 +178,7 @@ const UserManagementPage = () => {
                     </div>
                 </div>
             </Content>
-            <CatalogPageFooter/>
         </>
-
 
     )
 }

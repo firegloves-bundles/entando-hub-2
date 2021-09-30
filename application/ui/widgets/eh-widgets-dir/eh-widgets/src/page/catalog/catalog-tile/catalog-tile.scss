@@ -1,8 +1,19 @@
-.CatalogTile {
-  width: 31%;
-  min-height: 268px;
-  margin: 0 2% 2% 0;
+.CatalogPageContent-wrapper .CatalogTile {
+  position: relative;
   float: left;
+  width: 31%;
+  margin: 0 2% 2% 0;
+  display: flex;
+  background: #fff;
+  padding: 2rem;
+  min-height: 306px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.CatalogPageContent-wrapper .CatalogTile:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .CatalogTile-card-icon {
@@ -40,15 +51,6 @@
   line-height: 26px;
   color: #0050E5;
   margin-bottom: 10px;
-}
-
-.CatalogPageContent-wrapper .CatalogTile {
-  position: relative;
-  margin: 0 2% 2% 0;
-  display: flex;
-  background: #fff;
-  padding: 2rem;
-  min-height: 306px;
 }
 
 .CatalogTile-dropmenu {

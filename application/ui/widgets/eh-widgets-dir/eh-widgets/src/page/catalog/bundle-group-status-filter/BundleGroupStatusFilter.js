@@ -3,6 +3,7 @@ import {Select, SelectItem} from "carbon-components-react"
 import {getHigherRole} from "../../../helpers/helpers"
 import {getProfiledStatusSelectInfo} from "../../../helpers/profiling"
 
+import './bundle-group-status-filter.scss'
 
 const BundleGroupStatusFilter = ({onFilterValueChange}) => {
     const [selectedStatus, setSelectedStatus] = useState("")
@@ -33,9 +34,11 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
         const itemList = statusArray.map((s, index) => <SelectItem key={index} value={s.value} text={s.text}/>)
 
         return (
-            <Select value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
+            <div className="BundleGroupStatusFilter-select">
+            <Select  value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
                 {itemList}
             </Select>
+            </div>
         )
     }
     return <div>{render()}</div>

@@ -71,6 +71,7 @@ const CatalogPage = () => {
               {isHubUser() &&
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
+                  {/*Empty col4 over checkbox filters */}
                 </div>
                 <div className="bx--col-lg-12 CatalogPage-section">
                   <BundleGroupStatusFilter

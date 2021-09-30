@@ -6,6 +6,7 @@
   --clr-black: #101820;
   --clr-grey: #EAF0F5;
   --clr-dark-grey: #72767B;
+  --clr-darkest-grey: #4f5153;
   --clr-transparent: transparent;
   --clr-violet: #ECF3FF;
   --clr-light-blue: #00A0DF;
@@ -36,4 +37,29 @@
 .bx--grid {
   padding-right: 0;
   padding-left: 0;
+}
+
+button:focus, button {
+  outline:0;
+}
+
+::-webkit-scrollbar {
+  width: 1.5em;
+  height: 1.3em;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clr-grey);
+  border-radius: 0;
+  margin-block: 0.1em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-dark-grey);
+  border: 0.25em solid var(--clr-grey);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-darkest-grey);
 }

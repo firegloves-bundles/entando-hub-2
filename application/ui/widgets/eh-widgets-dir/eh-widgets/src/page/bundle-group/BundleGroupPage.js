@@ -73,79 +73,81 @@ const BundleGroupPage = () => {
   return (
       <>
         <Content className="BundleGroupPage">
-          <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
-            <div className="bx--row">
-              <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
-                <EhBreadcrumb pathElements={[{
-                  path: bundleGroup.name,
-                  href: window.location.href
-                }]}/>
+          <div className="BundleGroupPage-wrapper">
+            <div className="bx--grid bx--grid--full-width BundleGroupPage-page">
+              <div className="bx--row">
+                <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
+                  <EhBreadcrumb pathElements={[{
+                    path: bundleGroup.name,
+                    href: window.location.href
+                  }]}/>
+                </div>
               </div>
+              <Row className="bx--grid bx--grid--full-width">
+                <Column lg={4} className="BundleGroupPage-tile">
+                  <Tile>
+                    <div className="BundleGroupPage-image">
+                      <img
+                          src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`}
+                          alt="Entando logo"/>
+
+                      {bundleGroup && bundleGroup.bundleGroupdescriptionImage}
+                    </div>
+                    <ModalInstallInformation bundleGroup={bundleGroup}
+                                             children={children}/>
+                    <div className="BundleGroupPage-last-update">
+                      Last Update
+                      <p>09/01/2017, 09:00 </p>
+                    </div>
+                    <hr/>
+                    <div className="BundleGroupPage-docs">
+                      Link to documentation <br/>
+                      <a href={bundleGroup
+                      && bundleGroup.documentationUrl}
+                         target="_new">Documentation</a>
+                    </div>
+                    <hr/>
+                    <div>
+                      {children && <BundleList children={children}/>}
+                    </div>
+                  </Tile>
+                </Column>
+                <Column lg={12}>
+                  <Tile>
+                    <p className="BundleGroupPage-title">
+                      {bundleGroup && bundleGroup.name}
+                    </p>
+
+                    <div className="BundleGroupPage-flex">
+                      <Column className="BundleGroupPage-specs">
+                        Version
+                        <p>1.2.0</p>
+
+                      </Column>
+                      <Column className="BundleGroupPage-specs">
+                        Category
+                        <p>{category && category.name}</p>
+
+                      </Column>
+                      <Column className="BundleGroupPage-specs">
+                        Organization
+                        <p>{organisation && organisation.name}</p>
+
+                      </Column>
+
+                    </div>
+                    <div className="BundleGroupPage-description">
+                      {bundleGroup && bundleGroup.description}
+                    </div>
+                  </Tile>
+                </Column>
+              </Row>
             </div>
-          </Row>
-          <Grid condensed>
-            <Row>
-              <Column lg={4}>
-                <Tile>
-                  <div className="BundleGroupPage-image">
-                    <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`} alt="Entando logo" />
-
-                    {bundleGroup && bundleGroup.bundleGroupdescriptionImage}
-                  </div>
-                  <ModalInstallInformation bundleGroup={bundleGroup}
-                                           children={children}/>
-                  <div className="BundleGroupPage-last-update">
-                    Last Update
-                    <p>09/01/2017, 09:00 </p>
-                  </div>
-                  <hr/>
-                  <div className="BundleGroupPage-docs">
-                    Link to documentation <br/>
-                    <a href={bundleGroup
-                    && bundleGroup.documentationUrl}
-                       target="_new">Documentation</a>
-                  </div>
-                  <hr/>
-                  <div>
-                    {children && <BundleList children={children}/>}
-                  </div>
-                </Tile>
-              </Column>
-              <Column lg={12}>
-                <Tile>
-                  <p className="BundleGroupPage-title">
-                    {bundleGroup && bundleGroup.name}
-                  </p>
-
-                  <div className="BundleGroupPage-flex">
-                    <Column className="BundleGroupPage-specs">
-                      Version
-                      <p>1.2.0</p>
-
-                    </Column>
-                    <Column className="BundleGroupPage-specs">
-                      Category
-                      <p>{category && category.name}</p>
-
-                    </Column>
-                    <Column className="BundleGroupPage-specs">
-                      Organization
-                      <p>{organisation && organisation.name}</p>
-
-                    </Column>
-
-                  </div>
-                  <div className="BundleGroupPage-description">
-                    {bundleGroup && bundleGroup.description}
-                  </div>
-                </Tile>
-              </Column>
-            </Row>
-          </Grid>
+          </div>
         </Content>
       </>
   )
-      
+
 }
 
 /*

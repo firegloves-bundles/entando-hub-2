@@ -22,10 +22,15 @@
 
 .BundleGroupPage {
   background: var(--clr-white);
+  padding: 0;
 }
 
 .BundleGroupPage-wrapper {
-  padding: 0 15% 4rem;
+  padding: 0 15% 1rem;
+}
+
+.BundleGroupPage-content {
+  padding: 0 14%;
 }
 
 .BundleGroupPage hr {
@@ -171,4 +176,9 @@
 
 .BundleGroupPage-breadcrumb {
   margin: 2rem 0;
+}
+
+.BundleGroupPage-tile.bx--col-lg-4 {
+  padding-left: 0;
+  padding-right: 0;
 }

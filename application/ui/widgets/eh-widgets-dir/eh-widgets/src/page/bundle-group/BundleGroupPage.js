@@ -2,15 +2,15 @@ import {Content, Tile, Grid, Row, Column} from "carbon-components-react"
 import {useEffect, useState} from "react"
 import {useParams} from "react-router"
 import CatalogPageHeaderInternal
-  from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal"
+    from "../catalog/catalog-page-header-internal/CatalogPageHeaderInternal"
 import CatalogPageFooter
-  from "../catalog/catalog-page-footer/CatalogPageFooter"
+    from "../catalog/catalog-page-footer/CatalogPageFooter"
 
 import {
-  getAllBundlesForABundleGroup,
-  getSingleBundleGroup,
-  getSingleCategory,
-  getSingleOrganisation
+    getAllBundlesForABundleGroup,
+    getSingleBundleGroup,
+    getSingleCategory,
+    getSingleOrganisation
 } from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
 import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation"
@@ -46,145 +46,142 @@ bundleId	string
  */
 
 const BundleGroupPage = () => {
-  const [bundleGroup, setBundleGroup] = useState({})
-  const [organisation, setOrganisation] = useState(null)
-  const [category, setCategory] = useState(null)
-  const [children, setChildren] = useState([])
-  const {id: bundleGroupId} = useParams()
+    const [pageModel, setPageModel] = useState({
+        bundleGroup: {},
+        organisation: null,
+        category: null,
+        children: []
+    })
 
-  // fetches the bundle group
-  useEffect(() => {
-    const init = async () => {
-      const fetchedBundleGroup = (await getSingleBundleGroup(
-          bundleGroupId)).bundleGroup
-      setOrganisation(
-          fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
-              fetchedBundleGroup.organisationId)).organisation : null)
-      setCategory(
-          fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
-          > 0 ? (await getSingleCategory(
-              fetchedBundleGroup.categories[0])).category : null)
-      setChildren(
-          fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
-              ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
-              : [])
-      setBundleGroup(fetchedBundleGroup)
-    }
+    const {id: bundleGroupId} = useParams()
 
-    init()
-  }, [bundleGroupId])
 
-  return (
-      <>
-        <CatalogPageHeaderInternal/>
-        <Content className="BundleGroupPage">
-          <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
-            <div className="bx--row">
-              <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
-                <EhBreadcrumb pathElements={[{
-                  path: bundleGroup.name,
-                  href: window.location.href
-                }]}/>
-              </div>
-            </div>
-          </Row>
-          <Grid condensed>
-            <Row>
-              <Column lg={4}>
-                <Tile>
-                  <div className="BundleGroupPage-image">
-                    <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`} alt="Entando logo" />
+    // fetches the bundle group
+    useEffect(() => {
+        //TODO BE QUERY REFACTORING
+        const getBundleGroupDetail = async (bundleGroupId) => {
+            const pageModel = {}
+            const fetchedBundleGroup = (await getSingleBundleGroup(
+                bundleGroupId)).bundleGroup
+            pageModel["bundleGroup"] = fetchedBundleGroup
+            pageModel["organisation"] =
+                fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
+                    fetchedBundleGroup.organisationId)).organisation : null
+            pageModel["category"] =
+                fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
+                > 0 ? (await getSingleCategory(
+                    fetchedBundleGroup.categories[0])).category : null
+            pageModel["children"] =
+                fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
+                    ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
+                    : []
+            console.log("pageModel", pageModel)
+            return pageModel
+        };
 
-                    {bundleGroup && bundleGroup.bundleGroupdescriptionImage}
-                  </div>
-                  <ModalInstallInformation bundleGroup={bundleGroup}
-                                           children={children}/>
-                  <div className="BundleGroupPage-last-update">
-                    Last Update
-                    <p>09/01/2017, 09:00 </p>
-                  </div>
-                  <hr/>
-                  <div className="BundleGroupPage-docs">
-                    Link to documentation <br/>
-                    <a href={bundleGroup
-                    && bundleGroup.documentationUrl}
-                       target="_new">Documentation</a>
-                  </div>
-                  <hr/>
-                  <div>
-                    {children && <BundleList children={children}/>}
-                  </div>
-                </Tile>
-              </Column>
-              <Column lg={12}>
-                <Tile>
-                  <p className="BundleGroupPage-title">
-                    {bundleGroup && bundleGroup.name}
-                  </p>
+        (async () => {
+            const indexOf = bundleGroupId.indexOf("&") === -1 ? bundleGroupId.length : bundleGroupId.indexOf("&")
+            const sanitizedId = bundleGroupId.substring(0, indexOf)
+            setPageModel(await getBundleGroupDetail(sanitizedId))
+        })()
+    }, [bundleGroupId])
 
-                  <div className="BundleGroupPage-flex">
-                    <Column className="BundleGroupPage-specs">
-                      Version
-                      <p>1.2.0</p>
 
-                    </Column>
-                    <Column className="BundleGroupPage-specs">
-                      Category
-                      <p>{category && category.name}</p>
+    return (
+        <>
+            <CatalogPageHeaderInternal/>
+            <Content className="BundleGroupPage">
+                <Row className="bx--grid bx--grid--full-width BundleGroupPage-page">
+                    <div className="bx--row">
+                        <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
+                            <EhBreadcrumb pathElements={[{
+                                path: pageModel.bundleGroup.name,
+                                href: window.location.href
+                            }]}/>
+                        </div>
+                    </div>
+                </Row>
+                <Grid condensed>
+                    <Row>
+                        <Column lg={4}>
+                            <Tile>
+                                <div className="BundleGroupPage-image">
+                                    <img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`}
+                                         alt="Entando logo"/>
 
-                    </Column>
-                    <Column className="BundleGroupPage-specs">
-                      Organization
-                      <p>{organisation && organisation.name}</p>
+                                    {pageModel.bundleGroup && pageModel.bundleGroup.bundleGroupdescriptionImage}
+                                </div>
+                                <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
+                                                         children={pageModel.children}/>
+                                <div className="BundleGroupPage-last-update">
+                                    Last Update
+                                    <p>09/01/2017, 09:00 </p>
+                                </div>
+                                <hr/>
+                                <div className="BundleGroupPage-docs">
+                                    Link to documentation <br/>
+                                    <a href={pageModel.bundleGroup
+                                    && pageModel.bundleGroup.documentationUrl}
+                                       target="_new">Documentation</a>
+                                </div>
+                                <hr/>
+                                <div>
+                                    {pageModel.children && <BundleList children={pageModel.children}/>}
+                                </div>
+                            </Tile>
+                        </Column>
+                        <Column lg={12}>
+                            <Tile>
+                                <p className="BundleGroupPage-title">
+                                    {pageModel.bundleGroup && pageModel.bundleGroup.name}
+                                </p>
 
-                    </Column>
+                                <div className="BundleGroupPage-flex">
+                                    <Column className="BundleGroupPage-specs">
+                                        Version
+                                        <p>1.2.0</p>
 
-                  </div>
-                  <div className="BundleGroupPage-description">
-                    {bundleGroup && bundleGroup.description}
-                  </div>
-                </Tile>
-              </Column>
-            </Row>
-          </Grid>
-        </Content>
-        <CatalogPageFooter/>
-      </>
-  )
-      
+                                    </Column>
+                                    <Column className="BundleGroupPage-specs">
+                                        Category
+                                        <p>{pageModel.category && pageModel.category.name}</p>
+
+                                    </Column>
+                                    <Column className="BundleGroupPage-specs">
+                                        Organization
+                                        <p>{pageModel.organisation && pageModel.organisation.name}</p>
+
+                                    </Column>
+
+                                </div>
+                                <div className="BundleGroupPage-description">
+                                    {pageModel.bundleGroup && pageModel.bundleGroup.description}
+                                </div>
+                            </Tile>
+                        </Column>
+                    </Row>
+                </Grid>
+            </Content>
+            <CatalogPageFooter/>
+        </>
+    )
+
 }
 
-/*
-const parseGitRepoAddr = (gitRepoAddress) =>
-  {
-    return gitRepoAddress ? {
-      name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1,
-          gitRepoAddress.lastIndexOf(".")),
-      gitRepoAddress
-    } : {
-      name: "",
-      gitRepoAddress: ""
-    }
-  }
-*/
 
-const BundleList = (
-    {
-      children
-    }
-) => {
-  const elemList = children.map((bundle, index) =>
-      <li key={index.toString()}><a href={bundle.gitRepoAddress}
-                                    target={"_new"}>{bundle.name}</a></li>)
+const BundleList = ({children}) => {
+    const elemList = children.map((bundle, index) =>
+        <li key={index.toString()}><a href={bundle.gitRepoAddress}
+                                      target={"_new"}>{bundle.name}</a></li>)
 
-  return (
-      <div className="BundleGroupPage-list-wrapper">
-        <div className="BundleGroupPage-list">
-          List of Bundles
+    return (
+        <div className="BundleGroupPage-list-wrapper">
+            <div className="BundleGroupPage-list">
+                List of Bundles
+            </div>
+            <ul>{elemList}</ul>
         </div>
-        <ul>{elemList}</ul>
-      </div>
-  )
+    )
 
 }
 

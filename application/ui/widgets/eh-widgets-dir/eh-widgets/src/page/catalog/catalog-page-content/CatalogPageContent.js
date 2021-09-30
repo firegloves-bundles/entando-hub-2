@@ -52,6 +52,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
 
 
+        //TODO BE QUERY REFACTORING
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
             const data = await getAllBundleGroups(organisationId)
             let filtered = data.bundleGroupList

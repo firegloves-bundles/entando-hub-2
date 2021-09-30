@@ -52,6 +52,7 @@ const UpdateUser = ({userObj, onDataChange}) => {
                 ...userObj,
                 organisation: organisations[0]
             }
+            console.log(userObjWithDefaultOrganisation)
             setUser(userObjWithDefaultOrganisation)
             onDataChange(userObjWithDefaultOrganisation) //put the initial object in the father state
         })()
@@ -85,6 +86,8 @@ const UpdateUser = ({userObj, onDataChange}) => {
                            labelText={"Name"}/>
                 <TextInput disabled={true} value={user.email} id={"email"}
                            labelText={"Email"}/>
+{/*
+*/}
                 <Select value={user.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
                         labelText={"Organisation"}>{selectItems_Organisations}</Select>

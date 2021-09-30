@@ -1,4 +1,4 @@
-import {getAllKCUsers, getAllUsers, getSingleOrganisation} from "./Integration"
+import {getAllUsers, getSingleOrganisation} from "./Integration"
 import {getUserName, isHubUser} from "../helpers/helpers";
 
 //portal user
@@ -21,14 +21,6 @@ export const getPortalUserDetails = async (username) => {
     return undefined
 }
 
-export const getAvailableKcUsers = async (username) => {
-    const kcUsers = (await getAllKCUsers()).kcUsers
-    const portalUserUsernames = (await getAllUsers()).userList.map(u=>u.username)
-
-    const availableUsers = kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
-
-    return availableUsers
-}
 
 
 export const getCurrentUserOrganisation= async ()=>{

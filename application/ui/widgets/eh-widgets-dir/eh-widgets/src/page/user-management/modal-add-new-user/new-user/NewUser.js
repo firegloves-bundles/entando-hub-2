@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react"
 import {Content, Select, SelectItem,} from "carbon-components-react"
-import {getAllOrganisations} from "../../../../integration/Integration"
-import {getAvailableKcUsers} from "../../../../integration/api-adapters"
+import {getAllKCUsers, getAllOrganisations, getAllUsers} from "../../../../integration/Integration"
 
 /*
 BUNDLEGROUP:
@@ -38,6 +37,14 @@ const NewUser = ({onDataChange}) => {
         newObj[field] = value
         setUser(newObj)
         onDataChange(newObj)
+    }
+
+    //TODO BE QUERY REFACTORING
+    const getAvailableKcUsers = async () => {
+        const kcUsers = (await getAllKCUsers()).kcUsers
+        const portalUserUsernames = (await getAllUsers()).userList.map(u=>u.username)
+
+        return kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
     }
 
     useEffect(() => {

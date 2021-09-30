@@ -53,6 +53,12 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
 
 
         //TODO BE QUERY REFACTORING
+        /**
+         *Get all the bundle groups having categoryIds and statuses
+         * @param organisationId
+         * @param categoryIds
+         * @param statuses
+         */
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
             const data = await getAllBundleGroups(organisationId)
             let filtered = data.bundleGroupList

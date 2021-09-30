@@ -34,7 +34,7 @@ const CatalogFilterTile = ({categories, onFilterChange}) => {
     const listItems = categories.map((category) => <Checkbox checked={checkboxStatuses[category.categoryId]} onChange={onChange} key={category.categoryId}
                                                              labelText={category.name} id={category.categoryId}/>)
     return (
-        <Tile>
+        <Tile className="CatalogFilterTile">
             <fieldset className={`${prefix}--fieldset`}>
                 <Checkbox checked={checkboxStatuses["-1"]} onChange={onChange} key={"-1"} labelText={"All"}
                           id={"-1"}/>

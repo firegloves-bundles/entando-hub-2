@@ -35,8 +35,8 @@ const CatalogTile = ({bundleGroupId, name, description, descriptionImage, catego
     //TODO refactor into an utility function
     return (
         <>
-            <Tile className="CatalogTile">
-                {isHubUser() && <CatalogTileOverflowMenu bundleGroupId={bundleGroupId} onAfterSubmit={onAfterSubmit}/>}
+            <div className="CatalogTile">
+                {isHubUser() && <div className="CatalogTile-dropmenu"><CatalogTileOverflowMenu bundleGroupId={bundleGroupId} onAfterSubmit={onAfterSubmit}/></div>}
                 <div onClick={handleClick} className="CatalogTile-card-wrapper">
                     <div className="CatalogTile-card-icon">
                         {descriptionImage?<img src={descriptionImage} alt="Logo" width = "45" height = "45"/>:<img src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`} alt="Logo"/>}
@@ -53,7 +53,7 @@ const CatalogTile = ({bundleGroupId, name, description, descriptionImage, catego
                         <Tag type="blue" title="Clear Filter"> {categoryName} </Tag>
                     </div>
                 </div>
-            </Tile>
+            </div>
         </>
 
     )

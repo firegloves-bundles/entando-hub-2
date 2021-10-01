@@ -5,6 +5,7 @@
   --clr-white: #ffffff;
   --clr-black: #101820;
   --clr-grey: #EAF0F5;
+  --clr-light-grey: #F4F4F4;
   --clr-dark-grey: #72767B;
   --clr-darkest-grey: #4f5153;
   --clr-transparent: transparent;
@@ -40,7 +41,7 @@
 }
 
 button:focus, button {
-  outline:0;
+  outline: 0;
 }
 
 ::-webkit-scrollbar {
@@ -62,4 +63,18 @@ button:focus, button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--clr-darkest-grey);
+}
+
+.bx--form-item {
+  margin: 20px 0;
+}
+
+.bx--modal .bx--text-area {
+  outline-offset: -2px;
+  background-color: var(--clr-light-grey);
+}
+
+.bx--text-area:focus, .bx--text-area:active {
+  outline-offset: -2px;
+  background: var(--clr-white);
 }

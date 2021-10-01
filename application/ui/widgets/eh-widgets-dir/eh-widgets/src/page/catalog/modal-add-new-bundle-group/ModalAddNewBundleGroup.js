@@ -4,6 +4,7 @@ import ReactDOM from "react-dom"
 import {useState} from "react"
 import NewBundleGroup from "./new-boundle-group/NewBundleGroup"
 import {addNewBundle, addNewBundleGroup} from "../../../integration/Integration"
+import './modal-add-new-bundle-group.scss'
 
 
 /*
@@ -92,6 +93,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
+                    className="Modal-Add-New-bundle-group"
                     modalLabel="Add"
                     primaryButtonText="Add"
                     secondaryButtonText="Cancel"

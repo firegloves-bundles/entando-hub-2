@@ -1,0 +1,28 @@
+.AddBundleToBundleGroup-Bundle-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.AddBundleToBundleGroup-Bundle-list p {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.32px;
+  color: #525252;
+  margin-bottom: 10px;
+}
+
+.AddBundleToBundleGroup-Bundle-list-ul {
+  display: flex;
+  flex-direction: row;
+}
+
+.AddBundleToBundleGroup-add-button {
+  position: relative;
+}
+
+.AddBundleToBundleGroup-add-button button {
+  position: absolute;
+  right: 0;
+  top: 27px;
+  width: 50%;
+}

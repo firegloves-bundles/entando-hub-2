@@ -80,7 +80,7 @@ const CatalogPage = () => {
               <div className="bx--row">
                 {/* Renders the filters on the left an the result on the main column
                         */}
-                CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
+                <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
               </div>
             </div>
           </div>

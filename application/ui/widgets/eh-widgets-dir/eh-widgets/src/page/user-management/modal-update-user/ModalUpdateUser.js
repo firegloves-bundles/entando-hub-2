@@ -10,11 +10,9 @@ import {
 
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
-    console.log("Param ModalUpdateUser", userObj)
     const [user, setUser] = useState(userObj)
 
     const onDataChange = useCallback((userObj) => {
-        console.log("Onchange ModalUpdateUser", userObj)
         setUser(userObj)
     }, [])
 
@@ -23,18 +21,23 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
     }
 
 
+    //TODO BE QUERY REFACTORING
+    const updateUser = async (user) => {
+        //delete all the organisations for the user
+        await Promise.all((await getAllOrganisations()).organisationList.map(async (oId) => {
+                await removeUserFromOrganisation(oId.organisationId, user.username)
+            }
+        ))
+
+        let organisationId = user.organisation.organisationId
+        await createAUserForAnOrganisation(organisationId, user.username)
+
+    }
+
+
     const onRequestSubmit = (e) => {
         (async () => {
-            //delete all the organisations for the user
-            await Promise.all((await getAllOrganisations()).organisationList.map(async (oId) => {
-                    await removeUserFromOrganisation(oId.organisationId, user.username)
-                }
-            ))
-
-            let organisationId = user.organisation.organisationId
-            await createAUserForAnOrganisation(organisationId, user.username)
-
-
+            await updateUser(user)
             onCloseModal()
             onAfterSubmit()
 

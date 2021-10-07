@@ -42,33 +42,46 @@ bundleId	string
  */
 
 const BundleGroupPage = () => {
-  const [bundleGroup, setBundleGroup] = useState({})
-  const [organisation, setOrganisation] = useState(null)
-  const [category, setCategory] = useState(null)
-  const [children, setChildren] = useState([])
-  const {id: bundleGroupId} = useParams()
+    const [pageModel, setPageModel] = useState({
+        bundleGroup: {},
+        organisation: null,
+        category: null,
+        children: []
+    })
 
-  // fetches the bundle group
-  useEffect(() => {
-    const init = async () => {
-      const fetchedBundleGroup = (await getSingleBundleGroup(
-          bundleGroupId)).bundleGroup
-      setOrganisation(
-          fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
-              fetchedBundleGroup.organisationId)).organisation : null)
-      setCategory(
-          fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
-          > 0 ? (await getSingleCategory(
-              fetchedBundleGroup.categories[0])).category : null)
-      setChildren(
-          fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
-              ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
-              : [])
-      setBundleGroup(fetchedBundleGroup)
-    }
+    const {id: bundleGroupId} = useParams()
 
-    init()
-  }, [bundleGroupId])
+
+    // fetches the bundle group
+    useEffect(() => {
+        //TODO BE QUERY REFACTORING
+        const getBundleGroupDetail = async (bundleGroupId) => {
+            const pageModel = {}
+            const fetchedBundleGroup = (await getSingleBundleGroup(
+                bundleGroupId)).bundleGroup
+            pageModel["bundleGroup"] = fetchedBundleGroup
+            pageModel["organisation"] =
+                fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
+                    fetchedBundleGroup.organisationId)).organisation : null
+            pageModel["category"] =
+                fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
+                > 0 ? (await getSingleCategory(
+                    fetchedBundleGroup.categories[0])).category : null
+            pageModel["children"] =
+                fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
+                    ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
+                    : []
+            console.log("pageModel", pageModel)
+            return pageModel
+        };
+        
+        (async () => {
+            const indexOf = bundleGroupId.indexOf("&") === -1 ? bundleGroupId.length : bundleGroupId.indexOf("&")
+            const sanitizedId = bundleGroupId.substring(0, indexOf)
+            setPageModel(await getBundleGroupDetail(sanitizedId))
+        })()
+    }, [bundleGroupId])
+
 
   return (
       <>
@@ -78,9 +91,9 @@ const BundleGroupPage = () => {
               <div className="bx--row">
                 <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                   <EhBreadcrumb pathElements={[{
-                    path: bundleGroup.name,
-                    href: window.location.href
-                  }]}/>
+                                path: pageModel.bundleGroup.name,
+                                href: window.location.href
+                            }]}/>
                 </div>
               </div>
               <Row className="bx--grid bx--grid--full-width">
@@ -91,10 +104,10 @@ const BundleGroupPage = () => {
                           src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`}
                           alt="Entando logo"/>
 
-                      {bundleGroup && bundleGroup.bundleGroupdescriptionImage}
+                      {pageModel.bundleGroup && pageModel.bundleGroup.bundleGroupdescriptionImage}
                     </div>
-                    <ModalInstallInformation bundleGroup={bundleGroup}
-                                             children={children}/>
+                    <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
+                                                         children={pageModel.children}/>
                     <div className="BundleGroupPage-last-update">
                       Last Update
                       <p>09/01/2017, 09:00 </p>
@@ -102,20 +115,20 @@ const BundleGroupPage = () => {
                     <hr/>
                     <div className="BundleGroupPage-docs">
                       Link to documentation <br/>
-                      <a href={bundleGroup
-                      && bundleGroup.documentationUrl}
-                         target="_new">Documentation</a>
+                       <a href={pageModel.bundleGroup
+                                    && pageModel.bundleGroup.documentationUrl}
+                                       target="_new">Documentation</a>
                     </div>
                     <hr/>
                     <div>
-                      {children && <BundleList children={children}/>}
+                      {pageModel.children && <BundleList children={pageModel.children}/>}
                     </div>
                   </Tile>
                 </Column>
                 <Column lg={12}>
                   <Tile>
                     <p className="BundleGroupPage-title">
-                      {bundleGroup && bundleGroup.name}
+                      {pageModel.bundleGroup && pageModel.bundleGroup.name}
                     </p>
 
                     <div className="BundleGroupPage-flex">
@@ -126,18 +139,18 @@ const BundleGroupPage = () => {
                       </Column>
                       <Column className="BundleGroupPage-specs">
                         Category
-                        <p>{category && category.name}</p>
+                        <p>{pageModel.category && pageModel.category.name}</p>
 
                       </Column>
                       <Column className="BundleGroupPage-specs">
                         Organization
-                        <p>{organisation && organisation.name}</p>
+                        <p>{pageModel.organisation && pageModel.organisation.name}</p>
 
                       </Column>
 
                     </div>
                     <div className="BundleGroupPage-description">
-                      {bundleGroup && bundleGroup.description}
+                     {pageModel.bundleGroup && pageModel.bundleGroup.description}
                     </div>
                   </Tile>
                 </Column>
@@ -150,28 +163,11 @@ const BundleGroupPage = () => {
 
 }
 
-/*
-const parseGitRepoAddr = (gitRepoAddress) =>
-  {
-    return gitRepoAddress ? {
-      name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1,
-          gitRepoAddress.lastIndexOf(".")),
-      gitRepoAddress
-    } : {
-      name: "",
-      gitRepoAddress: ""
-    }
-  }
-*/
 
-const BundleList = (
-    {
-      children
-    }
-) => {
-  const elemList = children.map((bundle, index) =>
-      <li key={index.toString()}><a href={bundle.gitRepoAddress}
-                                    target={"_new"}>{bundle.name}</a></li>)
+const BundleList = ({children}) => {
+    const elemList = children.map((bundle, index) =>
+        <li key={index.toString()}><a href={bundle.gitRepoAddress}
+                                      target={"_new"}>{bundle.name}</a></li>)
 
   return (
       <div className="BundleGroupPage-list-wrapper">

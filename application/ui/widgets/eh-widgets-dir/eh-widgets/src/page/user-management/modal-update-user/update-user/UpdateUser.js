@@ -46,12 +46,14 @@ const UpdateUser = ({userObj, onDataChange}) => {
 
     useEffect(() => {
         (async () => {
+            //TODO load the organisation from the db together with the userobj
             const organisations = (await getAllOrganisations()).organisationList
             setOrganisations(organisations)
             const userObjWithDefaultOrganisation = userObj.organisation ? userObj : {
                 ...userObj,
                 organisation: organisations[0]
             }
+            console.log(userObjWithDefaultOrganisation)
             setUser(userObjWithDefaultOrganisation)
             onDataChange(userObjWithDefaultOrganisation) //put the initial object in the father state
         })()
@@ -78,8 +80,6 @@ const UpdateUser = ({userObj, onDataChange}) => {
     }
 
 
-    console.log("UpdateUser render userObj", userObj)
-
     return (
         <>
             <Content>
@@ -87,6 +87,8 @@ const UpdateUser = ({userObj, onDataChange}) => {
                            labelText={"Name"}/>
                 <TextInput disabled={true} value={user.email} id={"email"}
                            labelText={"Email"}/>
+{/*
+*/}
                 <Select value={user.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
                         labelText={"Organisation"}>{selectItems_Organisations}</Select>

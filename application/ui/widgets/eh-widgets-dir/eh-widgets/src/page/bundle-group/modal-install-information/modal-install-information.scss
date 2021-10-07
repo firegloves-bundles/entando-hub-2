@@ -11,7 +11,7 @@
   margin: 12px 0px;
 }
 
-.Modal-install-information  .bx--snippet--multi {
+.Modal-install-information .bx--snippet--multi {
   font-family: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
   font-size: 1rem;
   line-height: 1.33333;
@@ -47,11 +47,11 @@
 
 .Modal-install-information .bx--snippet--multi .bx--copy-btn {
   z-index: 10;
-  top: 20px;
-  right: 0.5rem;
+  top: 29px;
+  right: 22px;
   width: 2rem;
   height: 2rem;
-  background: #eaf0f5;
+  background: var(--clr-transparent);
 }
 
 .Modal-install-information.bx--modal.is-visible .bx--modal-container {

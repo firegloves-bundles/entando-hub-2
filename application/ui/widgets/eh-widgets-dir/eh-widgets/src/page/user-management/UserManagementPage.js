@@ -19,6 +19,7 @@ import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser"
 import {getAllUsers, getSingleOrganisation} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
 
+
 /*
 BUNDLEGROUP:
 {
@@ -62,36 +63,23 @@ const headers = [
     },
     {
         key: 'overflow',
-        header: 'overflow',
+        header: '',
     }
 ]
-
-/*
-{
-    "id": "string",
-    "created": "2021-09-22T13:37:39.364Z",
-    "username": "string",
-    "enabled": true,
-    "firstName": "string",
-    "lastName": "string",
-    "email": "string",
-    "organisationIds": [
-      "string"
-    ]
-  }
-*/
 
 
 const UserManagementPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
     const [users, setUsers] = useState([])
 
+
+
     // fetches the users to show
     useEffect(() => {
-        const init = async () => {
-            //users already inserted in the portalUsers
-            const userList = (await getAllUsers()).userList
 
+        //TODO BE QUERY REFACTORING
+        const getAllPortalUsers = async ()=>{
+            const userList = (await getAllUsers()).userList
             //for every user get the organisations name
             const userListWithOrganisation = await Promise.all(userList.map((async (user) => {
                 if (user.organisationIds) {
@@ -104,26 +92,27 @@ const UserManagementPage = () => {
 
                     return {
                         ...user,
+                        email: user.email?user.email:"",
                         organisation: organisations[0]
                     }
                 }
-
                 return {
                     ...user,
+                    email: user.email?user.email:"",
                     organisation: null
                 }
             })))
-            setUsers(userListWithOrganisation)
-        }
 
-        init()
+            return userListWithOrganisation
+        };
+        (async () => {
+            setUsers(await getAllPortalUsers())
+        })()
     }, [reloadToken])
 
     const onAfterSubmit = () => {
         setReloadToken(((new Date()).getTime()).toString())
     }
-
-
     return (
         <>
             <Content className="CatalogPage">
@@ -179,6 +168,7 @@ const UserManagementPage = () => {
                 </div>
             </Content>
         </>
+
 
     )
 }

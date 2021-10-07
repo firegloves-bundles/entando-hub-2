@@ -16,29 +16,32 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
         onCloseModal()
     }
 
-    const onPassiveModal= useCallback((passive)=>{
+    const onPassiveModal = useCallback((passive) => {
         setPassiveModal(passive)
-    },[])
+    }, [])
 
+
+    //TODO BE QUERY REFACTORING
+    const updateBundleGroup = async (bundleGroup) => {
+        let newChildren = []
+        if (bundleGroup.children && bundleGroup.children.length) {
+            //call addNewBundle rest api, saving every bundle
+            //WARNING a new bundle is created even if already exists
+            //the call is async in respArray there will be the new bundles id
+            let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
+            newChildren = respArray.map(res => res.newBundle.data.bundleId)
+        }
+        const toSend = {
+            ...bundleGroup,
+            children: newChildren
+        }
+        await editBundleGroup(toSend, toSend.bundleGroupId)
+    }
 
     const onRequestSubmit = (e) => {
-        e.preventDefault();
         (async () => {
-            console.log("onRequestSubmit", bundleGroup)
+            await updateBundleGroup(bundleGroup)
             //create bundle children
-            let newChildren = []
-            if (bundleGroup.children && bundleGroup.children.length) {
-                //call addNewBundle rest api, saving every bundle
-                //the call is async in respArray there will be the new bundles id
-                let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-                newChildren = respArray.map(res => res.newBundle.data.bundleId)
-            }
-            const toSend = {
-                ...bundleGroup,
-                children: newChildren
-            }
-            const res = await editBundleGroup(toSend, toSend.bundleGroupId)
-            console.log("editBundleGroup", res)
             setBundleGroup({})
             onCloseModal()
             onAfterSubmit()
@@ -48,14 +51,15 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
 
     return (
         <Modal
-            passiveModal = {passiveModal}
+            passiveModal={passiveModal}
             modalLabel="Edit"
             primaryButtonText="Save"
             secondaryButtonText="Cancel"
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>
-            <UpdateBundleGroup onDataChange={onDataChange} bundleGroupId={bundleGroupId} onPassiveModal={onPassiveModal}/>
+            <UpdateBundleGroup onDataChange={onDataChange} bundleGroupId={bundleGroupId}
+                               onPassiveModal={onPassiveModal}/>
         </Modal>
     )
 }

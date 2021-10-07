@@ -35,7 +35,7 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
 
         return (
             <div className="BundleGroupStatusFilter-select">
-            <Select  value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
+              <Select value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
                 {itemList}
             </Select>
             </div>

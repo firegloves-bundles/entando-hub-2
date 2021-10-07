@@ -185,7 +185,6 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
         changeBundleGroup("children", newBundleList)
     }
 
-    console.log("UBG", bundleGroup)
 
     return (
         <>

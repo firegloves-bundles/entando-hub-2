@@ -3,7 +3,7 @@ import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup"
 import {useCallback, useState} from "react"
 import {addNewBundle, editBundleGroup} from "../../../../integration/Integration"
 
-
+import "./modal-update-bundle-group.scss"
 export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAfterSubmit}) => {
     const [bundleGroup, setBundleGroup] = useState({})
     const [passiveModal, setPassiveModal] = useState(false)
@@ -51,6 +51,7 @@ export const ModalUpdateBundleGroup = ({bundleGroupId, open, onCloseModal, onAft
 
     return (
         <Modal
+            className="Modal-edit-bundle-group"
             passiveModal={passiveModal}
             modalLabel="Edit"
             primaryButtonText="Save"

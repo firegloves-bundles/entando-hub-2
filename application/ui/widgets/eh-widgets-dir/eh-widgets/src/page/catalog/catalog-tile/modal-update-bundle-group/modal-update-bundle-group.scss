@@ -1,0 +1,20 @@
+.Modal-edit-bundle-group .bx--modal-header__label {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}
+
+.Modal-edit-bundle-group.bx--modal.is-visible .bx--modal-container {
+  background-color: var(--clr-white);
+}
+
+.Modal-edit-bundle-group .bx--modal-container .bx--modal-header, .bx--modal-container .bx--modal-content, .bx--modal-container .bx--modal-content__regular-content {
+  padding-right: 2%;
+}
+
+.Modal-edit-bundle-group .bx--modal-container .bx--col-lg-16 {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}

@@ -1,9 +1,9 @@
-.AddBundleToBundleGroup-Bundle-list {
+.BundlesOfBundleGroup-Bundle-list {
   display: flex;
   flex-direction: column;
 }
 
-.AddBundleToBundleGroup-Bundle-list p {
+.BundlesOfBundleGroup-Bundle-list p {
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.32px;
@@ -11,18 +11,18 @@
   margin-bottom: 10px;
 }
 
-.AddBundleToBundleGroup-Bundle-list-ul {
+.BundlesOfBundleGroup-Bundle-list-ul {
   display: flex;
   flex-direction: row;
   width: 100%;
   flex-wrap: wrap;
 }
 
-.AddBundleToBundleGroup-add-button {
+.BundlesOfBundleGroup-add-button {
   position: relative;
 }
 
-.AddBundleToBundleGroup-add-button button {
+.BundlesOfBundleGroup-add-button button {
   position: absolute;
   right: 0;
   top: 34px;

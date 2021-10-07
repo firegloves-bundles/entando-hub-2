@@ -177,15 +177,19 @@ const NewBundleGroup = ({onDataChange}) => {
                 <Select id="category" labelText="Categories" value={newBundleGroup.categories[0]}
                         onChange={categoryChangeHandler}>{selectItems_Category}</Select>
               </Column>
+
               <Column sm={16} md={8} lg={8}>
                  <TextInput id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
               </Column>
+
               <Column sm={16} md={8} lg={8}>
                  <TextInput id="version" labelText="Version" onChange={(e)=>onChangeHandler(e,"version")}/>
               </Column>
+
               <Column sm={16} md={16} lg={16}>
                  <TextInput disabled={true} id="organisation" labelText="Organisation" value={userOrganisation.name}/>
               </Column>
+
               <Column sm={16} md={16} lg={16}>
                 <Select id="status" labelText="Status" value={newBundleGroup.status}
                         onChange={(e)=>onChangeHandler(e,"status")}>{selectOptions}</Select>

@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react"
-import {Button, Tag, TextInput,} from "carbon-components-react"
+import {Button, Tag, TextInput, Row, Column} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 
+import "./bundles-of-bundle-group.scss"
 /*
 BUNDLE:
 {
@@ -14,72 +15,101 @@ bundleId	string
 } */
 
 const parseGitRepoAddr = (gitRepoAddress) => {
-    return gitRepoAddress ? {
-        name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1, gitRepoAddress.lastIndexOf(".")),
-        gitRepoAddress
-    } : {
-        name: "",
-        gitRepoAddress: ""
-    }
+  return gitRepoAddress ? {
+    name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1,
+        gitRepoAddress.lastIndexOf(".")),
+    gitRepoAddress
+  } : {
+    name: "",
+    gitRepoAddress: ""
+  }
 }
 
 const BundleList = ({children = []}) => {
-    const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
-                                           target={"_new"}>{childrenInfo.name}</a></Tag></li>)
+  const elemList = children.map(bundle => bundle.gitRepoAddress).map(
+      parseGitRepoAddr).map((childrenInfo, index) =>
+      <li key={index.toString()}>
+        <Tag>
+          <a href={childrenInfo.gitRepoAddress}
+             target={"_new"}>{childrenInfo.name}
+          </a>
+        </Tag>
+      </li>)
 
-    return (<div>
-        List of Bundles
-        <ul>{elemList}</ul>
-    </div>)
-
+  return (
+      <div className="BundlesOfBundleGroup-Bundle-list">
+        {/*List of Bundles*/}
+        <ul className="BundlesOfBundleGroup-Bundle-list-ul">
+          {elemList}
+        </ul>
+      </div>
+  )
 }
 
+const BundlesOfBundleGroup = ({
+  onAddOrRemoveBundleFromList,
+  initialBundleList,
+  disabled = false
+}) => {
 
-const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList, disabled = false}) => {
+  useEffect(() => {
+    setBundleList(initialBundleList)
+  }, [initialBundleList])
 
-    useEffect(()=>{
-        setBundleList(initialBundleList)
-    },[initialBundleList])
+  const [bundleList, setBundleList] = useState([])
+  const [gitRepo, setGitRepo] = useState("")
 
-    const [bundleList, setBundleList] = useState([])
-    const [gitRepo, setGitRepo] = useState("")
+  const onChangeHandler = (e) => {
+    const value = e.target.value
+    setGitRepo(value)
+  }
 
-    const onChangeHandler = (e) => {
-        const value = e.target.value
-        setGitRepo(value)
+  const onAddBundle = (e) => {
+    if (gitRepo === "") {
+      return
     }
+    let newBundleList = [...bundleList, {
+      name: parseGitRepoAddr(gitRepo).name,
+      description: gitRepo,
+      gitRepoAddress: gitRepo,
+      dependencies: [],
+      bundleGroups: []
+    }]
+    setBundleList(newBundleList)
+    onAddOrRemoveBundleFromList(newBundleList)
+    setGitRepo("")
+  }
 
-    const onAddBundle = (e) => {
-        if (gitRepo === "") return
-        let newBundleList = [...bundleList, {
-            name: parseGitRepoAddr(gitRepo).name,
-            description: gitRepo,
-            gitRepoAddress: gitRepo,
-            dependencies: [],
-            bundleGroups: []
-        }]
-        setBundleList(newBundleList)
-        onAddOrRemoveBundleFromList(newBundleList)
-        setGitRepo("")
-    }
+  const textInputProps = {
+    id: "bundle",
+    labelText: "Add Url Bundle",
+  }
 
-
-    const textInputProps = {
-        id: "bundle",
-        labelText: "Add Url Bundle",
-    }
-
-    return (
-        <>
-            <TextInput value={gitRepo} onChange={onChangeHandler} {...textInputProps} />
-            <Button disabled={disabled} onClick={onAddBundle} renderIcon={Add16}>Add</Button>
-            <BundleList children={bundleList}/>
-        </>
-    )
+  return (
+      <>
+        <Row>
+          <Column sm={16} md={8} lg={8}>
+            <TextInput value={gitRepo}
+                       onChange={onChangeHandler} {...textInputProps} />
+          </Column>
+          <Column sm={16} md={8} lg={8}>
+            <div className="BundlesOfBundleGroup-add-button">
+              <Button disabled={disabled} onClick={onAddBundle}
+                      renderIcon={Add16}>
+                Add
+              </Button>
+            </div>
+          </Column>
+          <Column sm={16} md={16} lg={16}>
+            <div>
+              <BundleList children={bundleList}/>
+            </div>
+          </Column>
+        </Row>
+      </>
+  )
 
 }
-
 
 export default BundlesOfBundleGroup
 

@@ -5,10 +5,6 @@ import {HashRouter, Link} from "react-router-dom"
 import {getPortalUserDetails} from "../../integration/api-adapters"
 import {ADMIN} from "../../helpers/constants";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import { faCode, faHighlighter } from '@fortawesome/free-solid-svg-icons';
-import { faHome } from "@fortawesome/free-solid-svg-icons";
 import "./login.scss"
 
 
@@ -86,9 +82,6 @@ class Login extends Component {
                   <button className="log-in" onClick={handleLogin}
                           title={"Login"}>
                       {"Login"}<i className="fas fa-sign-in-alt"/>
-                      {/*<FontAwesomeIcon icon={faCoffee} />*/}
-                      {/*<FontAwesomeIcon icon={['fas', 'boxing-glove']} />*/}
-                      {/*<FontAwesomeIcon icon={faHome} />*/}
                   </button>
                   <div style={{ width: 400 }}>
                   </div>

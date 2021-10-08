@@ -18,7 +18,7 @@
 }
 
 .CatalogPage-wrapper {
-  padding: 0 15% 4rem;
+  padding: 0 15.8% 4rem;
 }
 
 .CatalogPage-breadcrumb {
@@ -77,4 +77,13 @@ button:focus, button {
 .bx--text-area:focus, .bx--text-area:active {
   outline-offset: -2px;
   background: var(--clr-white);
+}
+
+.bx--modal-footer {
+  justify-content: space-between;
+}
+
+.bx--modal-footer .bx--btn {
+  height: 4rem;
+  flex: 0 1 33%;
 }

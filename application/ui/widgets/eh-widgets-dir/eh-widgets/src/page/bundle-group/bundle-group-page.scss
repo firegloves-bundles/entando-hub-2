@@ -1,14 +1,14 @@
-.BundleGroupPage-page.bx--tile {
-  position: relative;
-  display: block;
-  min-width: 8rem;
-  min-height: 4rem;
-  padding: 1rem 1rem 1rem;
-  background-color: var(clr-white);
-  outline: 2px solid transparent;
-  outline-offset: -2px;
-  margin: 0 -1px;
-}
+//.BundleGroupPage-page.bx--tile {
+//  position: relative;
+//  display: block;
+//  min-width: 8rem;
+//  min-height: 4rem;
+//  padding: 1rem 1rem 1rem;
+//  background-color: var(clr-white);
+//  outline: 2px solid transparent;
+//  outline-offset: -2px;
+//  margin: 0 -1px;
+//}
 
 .bx--row--condensed .bx--col-lg-4, .bx--grid--condensed .bx--col-lg-4 {
   padding-right: 0;
@@ -26,7 +26,7 @@
 }
 
 .BundleGroupPage-wrapper {
-  padding: 0 15% 1rem;
+  padding: 0 15.8% 1rem;
 }
 
 .BundleGroupPage-content {
@@ -181,4 +181,9 @@
 .BundleGroupPage-tile.bx--col-lg-4 {
   padding-left: 0;
   padding-right: 0;
+}
+
+.BundleGroupPage .bx--col-lg-16.BundleGroupPage-breadcrumb {
+  padding-right: 1rem;
+  padding-left: 1rem;
 }

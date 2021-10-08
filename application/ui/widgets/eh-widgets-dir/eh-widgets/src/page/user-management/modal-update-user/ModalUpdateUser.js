@@ -7,7 +7,7 @@ import {
     removeUserFromOrganisation
 } from "../../../integration/Integration"
 
-
+import "./modal-update-user.scss"
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
     const [user, setUser] = useState(userObj)
@@ -46,6 +46,7 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
 
     return (
         <Modal
+            className="ModalUpdateUser"
             modalLabel="Edit"
             primaryButtonText="Save"
             secondaryButtonText="Cancel"

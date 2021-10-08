@@ -14,7 +14,7 @@
 }
 
 .CatalogPage {
-  background: var(--clr-transparent);
+  background: var(--clr-grey);
 }
 
 .CatalogPage-wrapper {
@@ -86,4 +86,11 @@ button:focus, button {
 .bx--modal-footer .bx--btn {
   height: 4rem;
   flex: 0 1 33%;
+}
+
+.bx--data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 3rem;
 }

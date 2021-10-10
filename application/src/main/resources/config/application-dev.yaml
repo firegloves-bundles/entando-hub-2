@@ -1,3 +1,18 @@
+logging:
+  level:
+    ROOT: DEBUG
+    com:
+      entando: DEBUG
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+        SQL: DEBUG
+      springframework:
+        security: DEBUG
+
 spring:
   h2:
     console:

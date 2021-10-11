@@ -1,16 +1,10 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.CategoryService;
 import lombok.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +45,8 @@ public class BundleGroupController {
     //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
     @CrossOrigin
     @GetMapping("/filtered")
-    public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
-        Integer sanitizedPageNum = pageNum >=1 ? pageNum-1 : 0;
+    public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+        Integer sanitizedPageNum = page >=1 ? page -1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
         if(categoryIdFilterValues==null){

@@ -38,7 +38,12 @@ public class BundleGroupService {
     }
 
     public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
-        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable paging;
+        if(pageSize == 0){
+            paging = Pageable.unpaged();
+        }else{
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        }
         Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
             Category category = new Category();
             category.setId(Long.valueOf(cid));

@@ -24,7 +24,12 @@ public class BundleService {
 
 
     public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId) {
-        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable paging;
+        if(pageSize == 0){
+            paging = Pageable.unpaged();
+        }else{
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        }
         Page<Bundle> response;
         if (bundleGroupId.isPresent()) {
             Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());

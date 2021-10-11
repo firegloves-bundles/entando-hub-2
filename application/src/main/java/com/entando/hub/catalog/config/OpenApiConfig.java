@@ -4,6 +4,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.*;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,5 +48,16 @@ public class OpenApiConfig {
                                 .addSecurityItem(new SecurityRequirement().addList("keycloak",
                                                 Arrays.asList("read", "write")));
         }
- 
+
+
+        @Bean
+        GroupedOpenApi appBuilderApis() {
+                return GroupedOpenApi.builder().group("appbuilder").pathsToMatch("/**/appbuilder/**").build();
+        }
+
+        @Bean
+        GroupedOpenApi hubApis() { // group all APIs with `admin` in the path
+                return GroupedOpenApi.builder().group("hub").pathsToMatch("/**/api/**").build();
+        }
+
 }

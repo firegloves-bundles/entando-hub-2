@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/api/bundles")
+@RequestMapping("/api/bundles/")
 public class BundleController {
     
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
@@ -92,6 +92,11 @@ public class BundleController {
     public static class BundleNoId {
         protected final String name;
         protected final String description;
+
+        @Setter(AccessLevel.PUBLIC)
+        protected String descriptionImage;
+
+
         protected final String gitRepoAddress;
         protected final List<String> dependencies;
         protected final List<String> bundleGroups;

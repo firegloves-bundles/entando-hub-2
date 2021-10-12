@@ -1,12 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
 import CatalogTiles from "../catalog-tiles/CatalogTiles"
-import {getAllBundleGroups, getAllCategories} from "../../../integration/Integration"
+import {getAllBundleGroupsFilteredPaged, getAllCategories} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
+import {Loading} from "carbon-components-react";
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -60,20 +61,21 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
          * @param statuses
          */
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
-            const data = await getAllBundleGroups(organisationId)
-            let filtered = data.bundleGroupList
+            const data = await getAllBundleGroupsFilteredPaged(1, 0, organisationId, categoryIds, statuses)
+            let filtered = data.bundleGroupList.payload
+/*
             if (categoryIds) {
                 filtered = data.bundleGroupList.filter(currBundleGroup => categoryIds.includes(currBundleGroup.categories[0]))
             }
             if (statuses) {
                 filtered = filtered.filter(bg => bg.status && statuses.includes(bg.status))
             }
+*/
             return filtered
         }
 
         const initBGs = async (organisationId) => {
             let hubUser = isHubUser();
-            console.log("statusFilterValue {} isHubUser() {}", statusFilterValue, hubUser)
             if (hubUser && statusFilterValue === "LOADING") return //skip everything, waiting for status filter loading
             //get the selected categories if -1 no filtering at all on them
             const categoryIds = (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") ? localSelectedCategoryIds : undefined
@@ -130,6 +132,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             {!loading && <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
             </div>}
+            {loading && <Loading/>}
         </>
     )
 }

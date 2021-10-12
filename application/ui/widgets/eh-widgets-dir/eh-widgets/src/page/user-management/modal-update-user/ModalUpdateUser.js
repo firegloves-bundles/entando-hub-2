@@ -1,5 +1,5 @@
-import {Modal} from "carbon-components-react"
-import {useCallback, useState} from "react"
+import {Loading, Modal} from "carbon-components-react"
+import {useCallback, useEffect, useState} from "react"
 import UpdateUser from "./update-user/UpdateUser"
 import {
     createAUserForAnOrganisation,
@@ -11,6 +11,25 @@ import {
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
     const [user, setUser] = useState(userObj)
+    const [visible, setVisible] = useState(false)
+    const [organisations, setOrganisations] = useState([])
+
+
+
+    useEffect(() => {
+        (async () => {
+            //TODO load the organisation from the db together with the userobj
+            const organisations = (await getAllOrganisations()).organisationList
+            setOrganisations(organisations)
+            const userObjWithDefaultOrganisation = userObj.organisation ? userObj : {
+                ...userObj,
+                organisation: organisations[0]
+            }
+            setUser(userObjWithDefaultOrganisation)
+            setVisible(true)
+        })()
+    }, [userObj])
+
 
     const onDataChange = useCallback((userObj) => {
         setUser(userObj)
@@ -45,14 +64,18 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
     }
 
     return (
-        <Modal
-            modalLabel="Edit"
-            primaryButtonText="Save"
-            secondaryButtonText="Cancel"
-            open={open}
-            onRequestClose={onRequestClose}
-            onRequestSubmit={onRequestSubmit}>
-            <UpdateUser userObj={user} onDataChange={onDataChange}/>
-        </Modal>
+        <>
+            {!visible && <Loading/>}
+            <Modal
+                style={{display: !visible?"none":""}}
+                modalLabel="Edit"
+                primaryButtonText="Save"
+                secondaryButtonText="Cancel"
+                open={open}
+                onRequestClose={onRequestClose}
+                onRequestSubmit={onRequestSubmit}>
+                <UpdateUser userObj={user} organisations={organisations} onDataChange={onDataChange}/>
+            </Modal>
+        </>
     )
 }

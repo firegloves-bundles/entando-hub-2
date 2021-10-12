@@ -1,13 +1,5 @@
-import {useCallback, useEffect, useState} from "react"
 import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
-import {
-    getAllBundlesForABundleGroup,
-    getAllCategories,
-    getSingleBundleGroup, getSingleOrganisation
-} from "../../../../../integration/Integration"
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
-import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling"
-import {getHigherRole} from "../../../../../helpers/helpers"
 import IconUploader from "./icon-uploader/IconUploader";
 
 /*
@@ -27,82 +19,21 @@ bundleGroupId	string
 }
  */
 
-const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
-    const [loading, setLoading] = useState(true)
-    const [organisation, setOrganisation] = useState({organisationId: "", name: ""})
-    const [selectOptions, setSelectOptions] = useState([])
-    const [disabled, setDisabled] = useState(false)
-    const [children, setChildren] = useState([])
-    const [categories, setCategories] = useState([])
-    const [bundleGroup, setBundleGroup] = useState({
-        name: "",
-        description: "",
-        descriptionImage: "",
-        documentationUrl: "",
-        status: "",
-        children: [],
-        categories: [],
-    })
+const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onDataChange, selectValuesInfo}) => {
 
     const changeBundleGroup = (field, value) => {
         const newObj = {
             ...bundleGroup,
         }
         newObj[field] = value
-        setBundleGroup(newObj)
         onDataChange(newObj)
     }
 
-    const createSelectOptionsForRoleAndSetSelectStatus = useCallback((bundleGroup) => {
-        const selectValuesInfo = getProfiledUpdateSelectStatusInfo(getHigherRole(), bundleGroup.status)
-        setDisabled(selectValuesInfo.disabled)
-        onPassiveModal(selectValuesInfo.disabled)
-        const options = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
-                                                                                 text={curr.text}/>)
-        setSelectOptions(options)
-    }, [onPassiveModal])
 
+    const disabled = selectValuesInfo.disabled
+    const createSelectOptionsForRoleAndSetSelectStatus = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                                                  text={curr.text}/>)
 
-    useEffect(() => {
-        setLoading(true)
-        let isMounted = true
-        const initCG = async () => {
-            const res = await getAllCategories()
-            if (isMounted) {
-                setCategories(res.categoryList)
-            }
-        }
-        const initBG = async () => {
-
-            const res = await getSingleBundleGroup(bundleGroupId)
-
-            const childrenFromDb = res.bundleGroup.children && res.bundleGroup.children.length > 0
-                ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
-                : []
-
-            const organisation = (await getSingleOrganisation(res.bundleGroup.organisationId)).organisation
-            if (isMounted) {
-                if (organisation) setOrganisation(organisation)
-                let bg = {
-                    ...res.bundleGroup,
-                    children: childrenFromDb,
-                }
-                setBundleGroup(bg)
-                setChildren(childrenFromDb)
-                onDataChange(bg)
-                createSelectOptionsForRoleAndSetSelectStatus(bg)
-            }
-        }
-
-        (async ()=>{
-            await Promise.all([initCG(),initBG()])
-            setLoading(false)
-        })()
-        return () => {
-            isMounted = false
-        }
-
-    }, [bundleGroupId, onDataChange, createSelectOptionsForRoleAndSetSelectStatus])
 
     const selectItems_Category = categories.map((category) => {
         return (
@@ -188,7 +119,7 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
 
     return (
         <>
-            {!loading && <Content>
+            <Content>
                 <IconUploader descriptionImage={bundleGroup.descriptionImage} disabled={disabled} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
                 <TextInput disabled={disabled} value={bundleGroup.name} onChange={nameChangeHandler} id={"name"}
                            labelText={"Name"}/>
@@ -205,13 +136,13 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
                 <TextInput disabled={true} id="organisation" labelText="Organisation" value={organisation.name}/>
                 <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
                         id={"status"}
-                        labelText={"Status"}>{selectOptions}</Select>
+                        labelText={"Status"}>{createSelectOptionsForRoleAndSetSelectStatus}</Select>
                 <TextArea disabled={disabled} value={bundleGroup.description} onChange={descriptionChangeHandler}
                           id={"description"}
                           labelText={"Description"}/>
                 <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                       initialBundleList={children} disabled={disabled}/>
-            </Content>}
+            </Content>
         </>
     )
 }

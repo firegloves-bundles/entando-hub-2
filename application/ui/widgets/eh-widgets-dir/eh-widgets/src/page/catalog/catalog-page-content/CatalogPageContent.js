@@ -7,7 +7,7 @@ import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
-import {Loading} from "carbon-components-react";
+import {Loading, Pagination} from "carbon-components-react";
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -42,12 +42,23 @@ bundleGroupId	string
  */
 
 const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => {
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
+    const [totalItems, setTotalItems] = useState(10)
     const [loading, setLoading] = useState(true)
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
+    const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
+    const [categories, setCategories] = useState([])
+    const [localStatusFilterValue, setLocalStatusFilerValue] = useState(null)
+
+    if(localStatusFilterValue!==statusFilterValue){
+        setLocalStatusFilerValue(statusFilterValue)
+        setPage(1)
+    }
 
 
-    const loadData = useCallback(async (newSelectedCategoryIds) => {
-        const localSelectedCategoryIds = newSelectedCategoryIds || selectedCategoryIds //when the user select new categories ==>newSelectedCategoryIds otherwise no parameter is sent and we get the last filter selection
+
+    const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
 
         const userOrganisation = await getCurrentUserOrganisation()
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
@@ -56,40 +67,21 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         //TODO BE QUERY REFACTORING
         /**
          *Get all the bundle groups having categoryIds and statuses
-         * @param organisationId
-         * @param categoryIds
-         * @param statuses
          */
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
-            const data = await getAllBundleGroupsFilteredPaged(1, 0, organisationId, categoryIds, statuses)
+            const data = await getAllBundleGroupsFilteredPaged(page, pageSize, organisationId, categoryIds, statuses)
             let filtered = data.bundleGroupList.payload
-/*
-            if (categoryIds) {
-                filtered = data.bundleGroupList.filter(currBundleGroup => categoryIds.includes(currBundleGroup.categories[0]))
-            }
-            if (statuses) {
-                filtered = filtered.filter(bg => bg.status && statuses.includes(bg.status))
-            }
-*/
+            const metadata = data.bundleGroupList.metadata
+            setPage(metadata.page)
+            setPageSize(metadata.pageSize)
+            setTotalItems(metadata.totalItems)
             return filtered
         }
 
-        const initBGs = async (organisationId) => {
-            let hubUser = isHubUser();
-            if (hubUser && statusFilterValue === "LOADING") return //skip everything, waiting for status filter loading
+        const initBGs = async (organisationId, statuses) => {
             //get the selected categories if -1 no filtering at all on them
-            const categoryIds = (localSelectedCategoryIds && localSelectedCategoryIds.length > 0 && localSelectedCategoryIds[0] !== "-1") ? localSelectedCategoryIds : undefined
+            const categoryIds = (selectedCategoryIds && selectedCategoryIds.length > 0 && selectedCategoryIds[0] !== "-1") ? selectedCategoryIds : undefined
 
-            let statuses = [] //filter values for the status
-            if (!hubUser) { //GUEST user no status filter, only categories one
-                statuses = ["PUBLISHED"]
-            } else { //authenticated user
-                if (statusFilterValue === "-1") { //all the statuses
-                    statuses = getProfiledStatusSelectAllValues(getHigherRole())
-                } else {
-                    statuses = [statusFilterValue]
-                }
-            }
             const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
             setFilteredBundleGroups(filtered)
         }
@@ -97,30 +89,40 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             const data = await getAllCategories()
             setCategories(data.categoryList)
         }
-        return Promise.all([initBGs(organisationId), initCs()])
-    }, [statusFilterValue, selectedCategoryIds])
-
+        return Promise.all([initBGs(organisationId, statuses), initCs()])
+    }, [])
 
     useEffect(() => {
+        const hubUser = isHubUser();
+        if (hubUser && localStatusFilterValue === "LOADING") return //skip everything, waiting for status filter loading
+        let statuses = [] //filter values for the status
+        if (!hubUser) { //GUEST user no status filter, only categories one
+            statuses = ["PUBLISHED"]
+        } else { //authenticated user
+            if (localStatusFilterValue === "-1") { //all the statuses
+                statuses = getProfiledStatusSelectAllValues(getHigherRole())
+            } else {
+                statuses = [localStatusFilterValue]
+            }
+        }
+
         (async () => {
             setLoading(true)
-            await loadData() //first load
+            await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses)
             setLoading(false)
 
         })()
-    }, [reloadToken, loadData])
+    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData])
 
-    const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
-    const [categories, setCategories] = useState([])
 
     const onFilterChange = (newSelectedCategoryIds) => {
-        (async () => {
-            setLoading(true)
-            await loadData(newSelectedCategoryIds) //filters data based on the selected categories
-            setSelectedCategoryIds(newSelectedCategoryIds)
-            setLoading(false)
+        setPage(1)
+        setSelectedCategoryIds(newSelectedCategoryIds)
+    }
 
-        })()
+    const onPaginationChange = ({page, pageSize}) => {
+        setPageSize(pageSize)
+        setPage(page)
     }
 
     return (
@@ -129,9 +131,11 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
                 {categories.length > 0 &&
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
-            {!loading && <div className="bx--col-lg-12 CatalogPageContent-wrapper">
+            <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
-            </div>}
+                <Pagination pageSizes={[5, 10, 15]} page={page} pageSize={pageSize} totalItems={totalItems}
+                            onChange={onPaginationChange}/>
+            </div>
             {loading && <Loading/>}
         </>
     )

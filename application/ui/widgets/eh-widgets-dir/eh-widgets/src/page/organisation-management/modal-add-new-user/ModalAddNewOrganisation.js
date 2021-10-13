@@ -3,7 +3,7 @@ import {Add16} from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import {useState} from "react"
 import NewOrganisation from "./new-organisation/NewOrganisation"
-import {createAUserForAnOrganisation} from "../../../integration/Integration"
+import {addNewOrganisation} from "../../../integration/Integration"
 
 
 export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
@@ -15,10 +15,10 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                                }) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
-        const [user, setUser] = useState({})
+        const [organisation, setOrganisation] = useState({})
 
-        const onDataChange = (newUser)=>{
-            setUser(newUser)
+        const onDataChange = (newOrganisation)=>{
+            setOrganisation(newOrganisation)
         }
 
 
@@ -38,8 +38,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             (async () => {
-                let organisationId = user.organisation.organisationId
-                await createAUserForAnOrganisation(organisationId, user.username)
+                await addNewOrganisation(organisation)
                 onRequestClose()
                 onAfterSubmit()
             })()
@@ -65,7 +64,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add User</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Organisation</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal

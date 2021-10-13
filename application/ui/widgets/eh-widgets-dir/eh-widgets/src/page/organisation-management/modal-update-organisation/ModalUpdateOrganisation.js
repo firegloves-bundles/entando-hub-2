@@ -1,19 +1,15 @@
 import {Modal} from "carbon-components-react"
 import {useCallback, useState} from "react"
 import UpdateOrganisation from "./update-organisation/UpdateOrganisation"
-import {
-    createAUserForAnOrganisation,
-    getAllOrganisations,
-    removeUserFromOrganisation
-} from "../../../integration/Integration"
+import {editOrganisation} from "../../../integration/Integration"
 
 
-export const ModalUpdateOrganisation = ({userObj, open, onCloseModal, onAfterSubmit}) => {
+export const ModalUpdateOrganisation = ({organisationObj, open, onCloseModal, onAfterSubmit}) => {
 
-    const [user, setUser] = useState(userObj)
+    const [organisation, setOrganisation] = useState(organisationObj)
 
-    const onDataChange = useCallback((userObj) => {
-        setUser(userObj)
+    const onDataChange = useCallback((newOrganisationObj) => {
+        setOrganisation(newOrganisationObj)
     }, [])
 
     const onRequestClose = (e) => {
@@ -21,23 +17,12 @@ export const ModalUpdateOrganisation = ({userObj, open, onCloseModal, onAfterSub
     }
 
 
-    //TODO BE QUERY REFACTORING
-    const updateUser = async (user) => {
-        //delete all the organisations for the user
-        await Promise.all((await getAllOrganisations()).organisationList.map(async (oId) => {
-                await removeUserFromOrganisation(oId.organisationId, user.username)
-            }
-        ))
-
-        let organisationId = user.organisation.organisationId
-        await createAUserForAnOrganisation(organisationId, user.username)
-
-    }
-
-
     const onRequestSubmit = (e) => {
         (async () => {
-            await updateUser(user)
+            await editOrganisation({
+                name: organisation.name,
+                description: organisation.description
+            }, organisation.organisationId)
             onCloseModal()
             onAfterSubmit()
 
@@ -52,7 +37,7 @@ export const ModalUpdateOrganisation = ({userObj, open, onCloseModal, onAfterSub
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>
-            <UpdateOrganisation userObj={user} onDataChange={onDataChange}/>
+            <UpdateOrganisation organisationObj={organisation} onDataChange={onDataChange}/>
         </Modal>
     )
 }

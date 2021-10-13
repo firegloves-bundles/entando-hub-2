@@ -17,11 +17,12 @@ class XEhApp extends HTMLElement {
     connectedCallback() {
         this.mountPoint = document.createElement('span')
         this.keycloak = {...getKeycloakInstance(), initialized: true}
-        this.unsubscribeFromKeycloakEvent = subscribeToWidgetEvent(KEYCLOAK_EVENT_TYPE, () => {
-            this.keycloak = {...getKeycloakInstance(), initialized: true}
-            this.render()
+        this.unsubscribeFromKeycloakEvent = subscribeToWidgetEvent(KEYCLOAK_EVENT_TYPE, (e) => {
+            if(e.detail.eventType==="onReady"){
+                this.keycloak = {...getKeycloakInstance(), initialized: true}
+                this.render()
+            }
         })
-        this.render()
     }
 
     render() {

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react"
 
 import {
     Content,
-    DataTable,
+    DataTable, DataTableSkeleton,
     Table,
     TableBody,
     TableCell,
@@ -72,7 +72,7 @@ const headers = [
 const UserManagementPage = () => {
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
     const [users, setUsers] = useState([])
-
+    const [loading,setLoading] = useState(true)
 
 
     // fetches the users to show
@@ -80,6 +80,7 @@ const UserManagementPage = () => {
 
         //TODO BE QUERY REFACTORING
         const getAllPortalUsers = async ()=>{
+            setLoading(true)
             const userList = (await getAllUsers()).userList
             //for every user get the organisations name
             const userListWithOrganisation = await Promise.all(userList.map((async (user) => {
@@ -108,6 +109,7 @@ const UserManagementPage = () => {
         };
         (async () => {
             setUsers(await getAllPortalUsers())
+            setLoading(false)
         })()
     }, [reloadToken])
 
@@ -126,7 +128,9 @@ const UserManagementPage = () => {
                     </div>
                     <div className="bx--row">
                         <div className="bx--col-lg-16 CatalogPage-section">
-                            <DataTable rows={users} headers={headers}>
+                            {loading && <DataTableSkeleton columnCount={4} rowCount={4} />}
+
+                            {!loading && <DataTable rows={users} headers={headers}>
                                 {({rows, headers, getTableProps, getHeaderProps, getRowProps}) => (
                                     <TableContainer title="Users Management">
                                         <TableToolbar>
@@ -164,7 +168,7 @@ const UserManagementPage = () => {
                                         </Table>
                                     </TableContainer>
                                 )}
-                            </DataTable>
+                            </DataTable>}
                         </div>
                     </div>
                 </div>

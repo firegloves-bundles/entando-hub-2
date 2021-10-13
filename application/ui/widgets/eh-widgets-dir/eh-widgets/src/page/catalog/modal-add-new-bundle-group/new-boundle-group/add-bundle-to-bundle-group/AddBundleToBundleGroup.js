@@ -23,10 +23,11 @@ const parseGitRepoAddr = (gitRepoAddress) => {
     }
 }
 
-const BundleList = ({children}) => {
+const BundleList = ({children, onDeleteBundle}) => {
+
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
         <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
-                                           target={"_new"}>{childrenInfo.name}</a></Tag></li>)
+                                           target={"_new"}>{childrenInfo.name}</a><span onClick={()=>onDeleteBundle(childrenInfo.gitRepoAddress)}> X </span></Tag></li>)
 
     return (<div>
         List of Bundles
@@ -61,6 +62,12 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
     }
 
 
+    const onDeleteBundle = (gitRepoAddress) => {
+        const newBundleList = bundleList.filter(bundle=>bundle.gitRepoAddress!==gitRepoAddress)
+        setBundleList(newBundleList)
+        onAddOrRemoveBundleFromList(newBundleList)
+    }
+
     const textInputProps = {
         id: "bundle",
         labelText: "Add Url Bundle",
@@ -70,7 +77,7 @@ const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList 
         <>
             <TextInput value={gitRepo} onChange={onChangeHandler} {...textInputProps} />
             <Button onClick={onAddBundle} renderIcon={Add16}>Add</Button>
-            <BundleList children={bundleList}/>
+            <BundleList children={bundleList} onDeleteBundle={onDeleteBundle}/>
         </>
     )
 

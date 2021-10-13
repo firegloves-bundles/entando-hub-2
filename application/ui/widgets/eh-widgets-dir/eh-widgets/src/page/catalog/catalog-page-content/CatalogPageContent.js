@@ -51,6 +51,8 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     const [categories, setCategories] = useState([])
     const [localStatusFilterValue, setLocalStatusFilerValue] = useState(null)
 
+    //if the statusFilter change value we need to set the page to 1
+    //and query the BE
     if(localStatusFilterValue!==statusFilterValue){
         setLocalStatusFilerValue(statusFilterValue)
         setPage(1)
@@ -64,7 +66,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
 
 
-        //TODO BE QUERY REFACTORING
         /**
          *Get all the bundle groups having categoryIds and statuses
          */

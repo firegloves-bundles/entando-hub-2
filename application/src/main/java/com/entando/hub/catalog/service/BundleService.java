@@ -37,7 +37,7 @@ public class BundleService {
             bundleGroupEntity.setId(bundleGroupEntityId);
             response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity, paging);
         } else {
-            response = bundleRepository.findAll(paging);
+            response = bundleRepository.findByBundleGroupsIsNotNull(paging);
         }
         return response;
     }

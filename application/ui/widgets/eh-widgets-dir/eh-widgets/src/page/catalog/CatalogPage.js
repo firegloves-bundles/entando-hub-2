@@ -1,6 +1,6 @@
 import {Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, {useCallback, useState} from "react";
 

@@ -26,14 +26,27 @@ const parseGitRepoAddr = (gitRepoAddress) => {
 const BundleList = ({children, onDeleteBundle}) => {
 
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
-                                           target={"_new"}>{childrenInfo.name}</a><span onClick={()=>onDeleteBundle(childrenInfo.gitRepoAddress)}> X </span></Tag></li>)
+        <li key={index.toString()}>
+          <Tag>
+            <a href={childrenInfo.gitRepoAddress}
+                                           target={"_new"}>{childrenInfo.name}
+            </a>
+            <span className="button-delete"
+                onClick={()=>onDeleteBundle(childrenInfo.gitRepoAddress)}>
+              X
+            </span>
+          </Tag>
+        </li>
+    )
 
-    return (<div>
-        List of Bundles
-        <ul>{elemList}</ul>
-    </div>)
-
+  return (
+      <div className="AddBundleToBundleGroup-Bundle-list">
+        {/*<p>List of Bundles</p>*/}
+        <ul className="AddBundleToBundleGroup-Bundle-list-ul">
+          {elemList}
+        </ul>
+      </div>
+  )
 }
 
 

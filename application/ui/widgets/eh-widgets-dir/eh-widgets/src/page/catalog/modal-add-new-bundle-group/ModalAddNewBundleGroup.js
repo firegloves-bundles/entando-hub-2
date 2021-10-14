@@ -37,7 +37,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
 
         //Warning newBundleGroup will contain the entire bundle info in the children array, not only the bundle id
-        const [newBundleGroup, setNewBundleGroup] = useState()
+        const [newBundleGroup, setNewBundleGroup] = useState(initialStateBundleGroup)
         const [validationResult, setValidationResult] = useState({})
 
         const onDataChange = (newBundleGroup)=>{

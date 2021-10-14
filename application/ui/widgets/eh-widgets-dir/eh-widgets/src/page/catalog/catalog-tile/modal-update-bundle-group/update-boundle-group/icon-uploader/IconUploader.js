@@ -1,4 +1,4 @@
-import {Row, Column} from "carbon-components-react";
+import {Column} from "carbon-components-react";
 import './icon-uploader.scss';
 
 const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}) => {

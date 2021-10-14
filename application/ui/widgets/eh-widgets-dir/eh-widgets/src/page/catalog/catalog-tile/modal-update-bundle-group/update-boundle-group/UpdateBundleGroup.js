@@ -1,14 +1,4 @@
-import {useCallback, useEffect, useState} from "react"
-import {
-    Content,
-    Select,
-    SelectItem,
-    TextArea,
-    TextInput,
-    Column,
-    Grid,
-    Row
-} from "carbon-components-react"
+import {Column, Content, Grid, Row, Select, SelectItem, TextArea, TextInput} from "carbon-components-react"
 import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
 import IconUploader from "./icon-uploader/IconUploader";
 
@@ -80,13 +70,6 @@ const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onD
         //   }
         // })
         //changeNewBundleGroup("version", e.target.value)
-    }
-
-    const fileUploaderProps_Images = {
-        id: "images",
-        buttonLabel: "Add Files",
-        labelDescription:
-            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
     }
 
 

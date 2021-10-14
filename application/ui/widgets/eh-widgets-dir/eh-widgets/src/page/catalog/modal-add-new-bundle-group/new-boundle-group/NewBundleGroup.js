@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react"
-import {Content, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
+import {Column, Content, Grid, Row, Select, SelectItem, TextArea, TextInput,} from "carbon-components-react"
 import {getAllCategories} from "../../../../integration/Integration"
 import AddBundleToBundleGroup from "./add-bundle-to-bundle-group/AddBundleToBundleGroup"
 import {getProfiledNewSelecSatustInfo} from "../../../../helpers/profiling"

@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react"
 import {
   Content,
   DataTable,
+  DataTableSkeleton,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +15,7 @@ import {
   TableToolbarContent,
 } from "carbon-components-react"
 import OrganisationManagementOverflowMenu from "./overflow-menu/OrganisationManagementOverflowMenu"
-import {ModalAddNewOrganisation} from "./modal-add-new-user/ModalAddNewOrganisation"
+import {ModalAddNewOrganisation} from "./modal-add-new-organisation/ModalAddNewOrganisation"
 import {getAllOrganisations,} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
@@ -70,10 +71,12 @@ const OrganisationManagementPage = () => {
     new Date().getTime().toString()
   )
   const [organisations, setOrganisations] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
 
   // fetches the users to show
   useEffect(() => {
     (async () => {
+      setIsLoading(true)
       const organisationList = (await getAllOrganisations()).organisationList;
       setOrganisations(organisationList.map(organisation=>{
         return {
@@ -81,6 +84,7 @@ const OrganisationManagementPage = () => {
           ...organisation
         }
       }))
+      setIsLoading(false)
     })()
   }, [reloadToken])
 
@@ -98,7 +102,8 @@ const OrganisationManagementPage = () => {
           </div>
           <div className="bx--row">
             <div className="bx--col-lg-16 UserManagementPage-section">
-              <DataTable rows={organisations} headers={headers}>
+              {isLoading && <DataTableSkeleton columnCount={3} rowCount={4}/>}
+              {!isLoading && (<DataTable rows={organisations} headers={headers}>
                 {({
                   rows,
                   headers,
@@ -153,7 +158,7 @@ const OrganisationManagementPage = () => {
                     </Table>
                   </TableContainer>
                 )}
-              </DataTable>
+              </DataTable>)}
             </div>
           </div>
         </div>

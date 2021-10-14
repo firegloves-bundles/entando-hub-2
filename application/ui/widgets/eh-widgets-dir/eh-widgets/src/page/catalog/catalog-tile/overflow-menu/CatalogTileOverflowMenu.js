@@ -3,6 +3,7 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 
 const CatalogTileOverflowMenu = ({bundleGroupId, onAfterSubmit}) => {
+
     const [openModal, setOpenModal] = useState(false)
     return (
         <>

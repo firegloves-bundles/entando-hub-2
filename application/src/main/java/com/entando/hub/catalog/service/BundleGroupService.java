@@ -6,14 +6,16 @@ import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +31,49 @@ public class BundleGroupService {
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
+        if (organisationId.isPresent()) {
+            return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
+        }
+        return bundleGroupRepository.findAll();
+    }
+
+    public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
+        Pageable paging;
+        if(pageSize == 0){
+            paging = Pageable.unpaged();
+        }else{
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        }
+        Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
+            Category category = new Category();
+            category.setId(Long.valueOf(cid));
+            return category;
+        }).collect(Collectors.toSet());
+
+        Set<BundleGroup.Status> statusSet = Arrays.stream(statuses).map(BundleGroup.Status::valueOf).collect(Collectors.toSet());
+        if (organisationId.isPresent()) {
+            Organisation organisation = new Organisation();
+            organisation.setId(Long.valueOf(organisationId.get()));
+            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesInAndStatusIn(
+                    organisation,
+                    categories,
+                    statusSet
+                    , paging);
+            return page;
+        }
+
+        return bundleGroupRepository.findDistinctByCategoriesInAndStatusIn(
+                categories,
+                statusSet
+                , paging);
+    }
+
+    public Page<BundleGroup> findByOrganisationId(String organisationId, Pageable pageable) {
+        return bundleGroupRepository.findByOrganisationId(Long.valueOf(organisationId), pageable);
+
+    }
+
+    public List<BundleGroup> getBundleGroups(Optional<String> organisationId, Optional<String[]> categoryIds, Optional<String[]> statuses) {
         if (organisationId.isPresent()) {
             return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
         }

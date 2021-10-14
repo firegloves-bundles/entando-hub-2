@@ -5,7 +5,8 @@
 
 .CatalogPageContent {
   flex: 1 0 auto;
-  background: #EAF0F5;
+  background: #fff;
+  min-height: calc(83vh - 70px);
 }
 
 .CatalogPageFooterWrapper {
@@ -14,7 +15,7 @@
 
 .CatalogPageHeader {
   background: #002f87;
-  padding: 3rem 15% 4rem;
+  padding: 3rem 15% 0;
   color: #fff;
 }
 
@@ -41,6 +42,7 @@
   line-height: 30px;
   letter-spacing: 0.02em;
   text-transform: capitalize;
+  margin-bottom: 4rem;
 }
 
 .CatalogPageHeader-header-content h2 {
@@ -86,7 +88,7 @@
 .CatalogPageFooter {
   display: block;
   background: #002f87;
-  padding: 3rem 15% 4rem;
+  padding: 3rem 15.8% 4rem;
   color: #fff;
 }
 

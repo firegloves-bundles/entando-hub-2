@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Tag, Tile} from "carbon-components-react"
+import {Tag} from "carbon-components-react"
 import {useHistory} from "react-router-dom"
 import {getSingleCategory} from "../../../integration/Integration"
 

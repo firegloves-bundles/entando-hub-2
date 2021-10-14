@@ -1,4 +1,4 @@
-import {Content, Tile, Grid, Row, Column} from "carbon-components-react"
+import {Content, Tile, Row, Column} from "carbon-components-react"
 import {useEffect, useState} from "react"
 import {useParams} from "react-router"
 
@@ -71,7 +71,6 @@ const BundleGroupPage = () => {
                 fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
                     ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
                     : []
-            console.log("pageModel", pageModel)
             return pageModel
         };
         
@@ -87,7 +86,7 @@ const BundleGroupPage = () => {
       <>
         <Content className="BundleGroupPage">
           <div className="BundleGroupPage-wrapper">
-            <div className="bx--grid bx--grid--full-width BundleGroupPage-page">
+            <div className="BundleGroupPage-page">
               <div className="bx--row">
                 <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                   <EhBreadcrumb pathElements={[{

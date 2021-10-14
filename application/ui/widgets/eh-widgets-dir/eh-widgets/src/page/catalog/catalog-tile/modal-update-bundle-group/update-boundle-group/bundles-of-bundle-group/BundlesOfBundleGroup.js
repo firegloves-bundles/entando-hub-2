@@ -25,16 +25,21 @@ const parseGitRepoAddr = (gitRepoAddress) => {
   }
 }
 
-const BundleList = ({children = []}) => {
+const BundleList = ({children = [], onDeleteBundle}) => {
   const elemList = children.map(bundle => bundle.gitRepoAddress).map(
       parseGitRepoAddr).map((childrenInfo, index) =>
-      <li key={index.toString()}>
-        <Tag>
-          <a href={childrenInfo.gitRepoAddress}
-             target={"_new"}>{childrenInfo.name}
-          </a>
-        </Tag>
-      </li>)
+          <li key={index.toString()}>
+            <Tag>
+              <a href={childrenInfo.gitRepoAddress}
+                 target={"_new"}>{childrenInfo.name}</a>
+              <span
+                  className="button-delete"
+                  onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
+                x
+              </span>
+            </Tag>
+          </li>
+  )
 
   return (
       <div className="BundlesOfBundleGroup-Bundle-list">
@@ -80,6 +85,13 @@ const BundlesOfBundleGroup = ({
     setGitRepo("")
   }
 
+  const onDeleteBundle = (gitRepoAddress) => {
+    const newBundleList = bundleList.filter(
+        bundle => bundle.gitRepoAddress !== gitRepoAddress)
+    setBundleList(newBundleList)
+    onAddOrRemoveBundleFromList(newBundleList)
+  }
+
   const textInputProps = {
     id: "bundle",
     labelText: "Add Url Bundle",
@@ -102,7 +114,8 @@ const BundlesOfBundleGroup = ({
           </Column>
           <Column sm={16} md={16} lg={16}>
             <div>
-              <BundleList children={bundleList}/>
+              <BundleList children={bundleList}
+                          onDeleteBundle={onDeleteBundle}/>
             </div>
           </Column>
         </Row>
@@ -112,4 +125,5 @@ const BundlesOfBundleGroup = ({
 }
 
 export default BundlesOfBundleGroup
+
 

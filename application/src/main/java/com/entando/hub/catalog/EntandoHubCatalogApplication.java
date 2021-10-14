@@ -13,10 +13,5 @@ public class EntandoHubCatalogApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EntandoHubCatalogApplication.class, args);
 	}
-	@Bean
-	public CommandLineRunner demo(OrganisationRepository repository) {
-		return (args) -> {
-		};
-	}
 
 }

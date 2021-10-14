@@ -1,5 +1,5 @@
 import axios from "axios"
-import {getDefaultOptions, getKeycloakToken, isAuthenticated} from "../helpers/helpers";
+import {getDefaultOptions} from "../helpers/helpers";
 
 const addAuthorizationRequestConfig = (config={})=>{
   let defaultOptions = getDefaultOptions();

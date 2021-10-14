@@ -192,7 +192,7 @@ const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onD
 
             </Row>
           </Grid>
-        </Content>}
+        </Content>
       </>
   )
 }

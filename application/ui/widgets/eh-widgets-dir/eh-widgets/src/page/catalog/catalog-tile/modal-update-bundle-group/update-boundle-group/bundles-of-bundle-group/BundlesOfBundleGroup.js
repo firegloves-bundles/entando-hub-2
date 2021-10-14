@@ -101,7 +101,7 @@ const BundlesOfBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList, d
           </Column>
           <Column sm={16} md={16} lg={16}>
             <div>
-              <BundleList children={bundleList}/>
+                <BundleList children={bundleList} onDeleteBundle={onDeleteBundle}/>
             </div>
           </Column>
         </Row>

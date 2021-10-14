@@ -1,53 +1,34 @@
-import {Button, FileUploader, Row, Column} from "carbon-components-react";
+import {Row, Column} from "carbon-components-react";
 import './icon-uploader.scss';
 
-const IconUploader = ({disabled, descriptionImage, onImageDelete, fileUploaderProps_Images, onImageChange}) => {
+const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}) => {
+
     return (
-      <>
-        <div className="IconUploader">
-          <Row>
+        <div className="IconUploader-image">
             {descriptionImage &&
-            <div className="IconUploader-image">
-
-              <Column sm={8} md={8} lg={8}>
-                <p className="IconUploader-load-title">Upload image</p>
-                <p className="IconUploader-load-subtitle">Max file size is
-                  500kb. Max
-                  4 images. Supported file types are .jpg, .png, and .pdf.</p>
-              </Column>
-              <Column sm={8} md={8} lg={8}>
+            <div>
                 <img src={descriptionImage} alt={""} width="45" height="45"/>
-              </Column>
-
+                {!disabled && <button onClick={onImageDelete}>X</button>}
             </div>
             }
-            {descriptionImage && !disabled &&
-            <div className="IconUploader-delete">
-              <Button kind="ghost" onClick={onImageDelete}>Remove</Button>
-            </div>
+            {!disabled &&
+                <Column sm={8} md={8} lg={8}>
+                    <div className="bx--form-item" id="images">
+                        <p className="bx--file--label"></p>
+                        {/*
+                <p className="bx--label-description">Max file size is 500kb. Supported file types are .jpg, .png,
+                    and.pdf</p>
+*/}
+                        <label tabIndex="0" className="bx--btn bx--btn--primary bx--btn--sm" htmlFor="id14">
+                            <span role="button" aria-disabled="false">Add Files</span>
+                        </label>
+                        <input className="bx--visually-hidden" id="id14" type="file" tabIndex="-1" accept=""
+                               onChange={onImageChange}></input>
+                        <div className="bx--file-container"></div>
+                    </div>
+                </Column>
             }
-          </Row>
         </div>
-        {!disabled && !descriptionImage &&
-        <div className="IconUploader-load-image">
-          <Row>
-            <Column sm={8} md={8} lg={8}>
-              <p className="IconUploader-load-title">Upload image</p>
-              <p className="IconUploader-load-subtitle">Max file size is 500kb.
-                Max
-                4 images. Supported file types are .jpg, .png, and .pdf.</p>
-            </Column>
-          </Row>
-          <Row>
-            <Column sm={8} md={8} lg={8}>
-              <FileUploader onChange={onImageChange}
-                            {...fileUploaderProps_Images}/>
-            </Column>
-          </Row>
-        </div>
-        }
-      </>
-  )
+    )
 }
-
 export default IconUploader

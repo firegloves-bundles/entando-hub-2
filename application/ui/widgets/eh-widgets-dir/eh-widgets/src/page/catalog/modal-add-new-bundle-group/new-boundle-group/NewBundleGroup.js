@@ -32,7 +32,10 @@ const standardIcon = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0i
  *
  * @param onDataChange callback functions (newBundleGroup)=>{} newBundleGroup will contain the updated object
  */
-const NewBundleGroup = ({onDataChange}) => {
+const NewBundleGroup = ({onDataChange, validationResult}) => {
+    console.log(validationResult)
+
+
     const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [categories, setCategories] = useState([])
@@ -156,7 +159,7 @@ const NewBundleGroup = ({onDataChange}) => {
             </Row>
             <Row>
               <Column sm={16} md={8} lg={8}>
-                <TextInput id="name" labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
+                <TextInput invalid={!!validationResult["name"]} invalidText={validationResult["name"] && validationResult["name"].join("; ")} id="name" labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
               </Column>
 
               <Column sm={16} md={8} lg={8}>

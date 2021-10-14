@@ -14,72 +14,67 @@ bundleId	string
 } */
 
 const parseGitRepoAddr = (gitRepoAddress) => {
-  return gitRepoAddress ? {
-    name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1,
-        gitRepoAddress.lastIndexOf(".")),
-    gitRepoAddress
-  } : {
-    name: "",
-    gitRepoAddress: ""
-  }
-}
-
-const BundleList = ({children}) => {
-  const elemList = children.map(bundle => bundle.gitRepoAddress).map(
-      parseGitRepoAddr).map((childrenInfo, index) =>
-      <li key={index.toString()}>
-        <Tag>
-          <a href={childrenInfo.gitRepoAddress}
-             target={"_new"}>{childrenInfo.name}
-          </a>
-        </Tag>
-      </li>)
-
-  return (
-      <div className="AddBundleToBundleGroup-Bundle-list">
-        {/*<p>List of Bundles</p>*/}
-        <ul className="AddBundleToBundleGroup-Bundle-list-ul">
-          {elemList}
-        </ul>
-      </div>
-  )
-}
-
-const AddBundleToBundleGroup = ({
-  onAddOrRemoveBundleFromList,
-  initialBundleList = []
-}) => {
-
-  const [bundleList, setBundleList] = useState(initialBundleList)
-  const [gitRepo, setGitRepo] = useState("")
-
-  const onChangeHandler = (e) => {
-    const value = e.target.value
-    setGitRepo(value)
-  }
-
-  const onAddBundle = (e) => {
-    if (gitRepo === "") {
-      return
+    return gitRepoAddress ? {
+        name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1, gitRepoAddress.lastIndexOf(".")),
+        gitRepoAddress
+    } : {
+        name: "",
+        gitRepoAddress: ""
     }
-    let newBundleList = [...bundleList, {
-      name: parseGitRepoAddr(gitRepo).name,
-      description: gitRepo,
-      gitRepoAddress: gitRepo,
-      dependencies: [],
-      bundleGroups: []
-    }]
-    setBundleList(newBundleList)
-    onAddOrRemoveBundleFromList(newBundleList)
-    setGitRepo("")
-  }
+}
 
-  const textInputProps = {
-    id: "bundle",
-    labelText: "Add Url Bundle",
-  }
+const BundleList = ({children, onDeleteBundle}) => {
 
-  return (
+    const elemList = children.map(bundle => bundle.gitRepoAddress).map(parseGitRepoAddr).map((childrenInfo, index) =>
+        <li key={index.toString()}><Tag><a href={childrenInfo.gitRepoAddress}
+                                           target={"_new"}>{childrenInfo.name}</a><span onClick={()=>onDeleteBundle(childrenInfo.gitRepoAddress)}> X </span></Tag></li>)
+
+    return (<div>
+        List of Bundles
+        <ul>{elemList}</ul>
+    </div>)
+
+}
+
+
+const AddBundleToBundleGroup = ({onAddOrRemoveBundleFromList, initialBundleList = []}) => {
+
+    const [bundleList, setBundleList] = useState(initialBundleList)
+    const [gitRepo, setGitRepo] = useState("")
+
+    const onChangeHandler = (e) => {
+        const value = e.target.value
+        setGitRepo(value)
+    }
+
+    const onAddBundle = (e) => {
+        if (gitRepo === "") return
+        let newBundleList = [...bundleList, {
+            name: parseGitRepoAddr(gitRepo).name,
+            description: gitRepo,
+            gitRepoAddress: gitRepo,
+            dependencies: [],
+            bundleGroups: []
+        }]
+        setBundleList(newBundleList)
+        onAddOrRemoveBundleFromList(newBundleList)
+        setGitRepo("")
+    }
+
+
+    const onDeleteBundle = (gitRepoAddress) => {
+        const newBundleList = bundleList.filter(bundle=>bundle.gitRepoAddress!==gitRepoAddress)
+        setBundleList(newBundleList)
+        onAddOrRemoveBundleFromList(newBundleList)
+    }
+
+    const textInputProps = {
+        id: "bundle",
+        labelText: "Add Url Bundle",
+    }
+
+
+   return (
       <>
         <Row>
           <Column sm={16} md={8} lg={8}>

@@ -2,14 +2,18 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.CategoryService;
 import lombok.*;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +24,11 @@ public class BundleGroupController {
     private final Logger logger = LoggerFactory.getLogger(BundleGroupController.class);
 
     private final BundleGroupService bundleGroupService;
+    private final CategoryService categoryService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService) {
         this.bundleGroupService = bundleGroupService;
+        this.categoryService = categoryService;
     }
 
     //@RolesAllowed("codemotion-bff-admin")
@@ -33,6 +39,31 @@ public class BundleGroupController {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
     }
+
+
+    //@RolesAllowed("codemotion-bff-admin")
+    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
+    @CrossOrigin
+    @GetMapping("/filtered")
+    public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+        Integer sanitizedPageNum = page >=1 ? page -1 : 0;
+
+        String[] categoryIdFilterValues = categoryIds;
+        if(categoryIdFilterValues==null){
+            categoryIdFilterValues = categoryService.getCategories().stream().map(c->c.getId().toString()).toArray(String[]::new);
+        }
+
+        String[] statusFilterValues = statuses;
+        if(statusFilterValues == null){
+            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.values()).map(Enum::toString).toArray(String[]::new);
+        }
+
+        logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
+        Page<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupsPage = bundleGroupService.getBundleGroups(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
+        PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroup::new).collect(Collectors.toList()),bundleGroupsPage);
+        return pagedContent;
+    }
+
 
     @CrossOrigin
     @GetMapping("/{bundleGroupId}")
@@ -52,7 +83,7 @@ public class BundleGroupController {
     @PostMapping("/")
     public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
-        com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()),bundleGroup);
+        com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup);
         return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
     }
 

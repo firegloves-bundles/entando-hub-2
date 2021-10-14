@@ -71,7 +71,6 @@ const BundleGroupPage = () => {
                 fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0
                     ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
                     : []
-            console.log("pageModel", pageModel)
             return pageModel
         };
         

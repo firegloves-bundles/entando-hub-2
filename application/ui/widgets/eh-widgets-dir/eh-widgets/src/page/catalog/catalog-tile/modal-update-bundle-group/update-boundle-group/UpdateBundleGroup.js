@@ -9,15 +9,7 @@ import {
   Grid,
   Row
 } from "carbon-components-react"
-import {
-  getAllBundlesForABundleGroup,
-  getAllCategories,
-  getSingleBundleGroup, getSingleOrganisation
-} from "../../../../../integration/Integration"
-import BundlesOfBundleGroup
-  from "./bundles-of-bundle-group/BundlesOfBundleGroup"
-import {getProfiledUpdateSelectStatusInfo} from "../../../../../helpers/profiling"
-import {getHigherRole} from "../../../../../helpers/helpers"
+import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
 import IconUploader from "./icon-uploader/IconUploader";
 
 import "./update-bundle-group.scss";
@@ -38,179 +30,111 @@ bundleGroupId	string
 }
  */
 
-const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
-  const [loading, setLoading] = useState(true)
-  const [organisation, setOrganisation] = useState(
-      {organisationId: "", name: ""})
-  const [selectOptions, setSelectOptions] = useState([])
-  const [disabled, setDisabled] = useState(false)
-  const [children, setChildren] = useState([])
-  const [categories, setCategories] = useState([])
-  const [bundleGroup, setBundleGroup] = useState({
-    name: "",
-    description: "",
-    descriptionImage: "",
-    documentationUrl: "",
-    status: "",
-    children: [],
-    categories: [],
-  })
+const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onDataChange, selectValuesInfo}) => {
 
-  const changeBundleGroup = (field, value) => {
-    const newObj = {
-      ...bundleGroup,
-    }
-    newObj[field] = value
-    setBundleGroup(newObj)
-    onDataChange(newObj)
-  }
-
-  const createSelectOptionsForRoleAndSetSelectStatus = useCallback(
-      (bundleGroup) => {
-        const selectValuesInfo = getProfiledUpdateSelectStatusInfo(
-            getHigherRole(), bundleGroup.status)
-        setDisabled(selectValuesInfo.disabled)
-        onPassiveModal(selectValuesInfo.disabled)
-        const options = selectValuesInfo.values.map(
-            (curr, index) => <SelectItem key={index} value={curr.value}
-                                         text={curr.text}/>)
-        setSelectOptions(options)
-      }, [onPassiveModal])
-
-  useEffect(() => {
-    setLoading(true)
-    let isMounted = true
-    const initCG = async () => {
-      const res = await getAllCategories()
-      if (isMounted) {
-        setCategories(res.categoryList)
-      }
-    }
-    const initBG = async () => {
-
-      const res = await getSingleBundleGroup(bundleGroupId)
-
-      const childrenFromDb = res.bundleGroup.children
-      && res.bundleGroup.children.length > 0
-          ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
-          : []
-
-      const organisation = (await getSingleOrganisation(
-          res.bundleGroup.organisationId)).organisation
-      if (isMounted) {
-        if (organisation) {
-          setOrganisation(organisation)
+    const changeBundleGroup = (field, value) => {
+        const newObj = {
+            ...bundleGroup,
         }
-        let bg = {
-          ...res.bundleGroup,
-          children: childrenFromDb,
-        }
-        setBundleGroup(bg)
-        setChildren(childrenFromDb)
-        onDataChange(bg)
-        createSelectOptionsForRoleAndSetSelectStatus(bg)
-      }
+        newObj[field] = value
+        onDataChange(newObj)
     }
 
-    (async () => {
-      await Promise.all([initCG(), initBG()])
-      setLoading(false)
-    })()
-    return () => {
-      isMounted = false
-    }
 
-  }, [bundleGroupId, onDataChange,
-    createSelectOptionsForRoleAndSetSelectStatus])
+    const disabled = selectValuesInfo.disabled
+    const createSelectOptionsForRoleAndSetSelectStatus = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
+                                                                                                                  text={curr.text}/>)
 
-  const selectItems_Category = categories.map((category) => {
-    return (
-        <SelectItem
-            key={category.categoryId}
-            value={category.categoryId}
-            text={category.name}
-        />
-    )
-  })
 
-  const nameChangeHandler = (e) => {
-    changeBundleGroup("name", e.target.value)
-  }
-
-  const categoryChangeHandler = (e) => {
-    changeBundleGroup("categories", [e.target.value])
-  }
-
-  const documentationChangeHandler = (e) => {
-    changeBundleGroup("documentationUrl", e.target.value)
-  }
-
-  const versionChangeHandler = (e) => {
-    // const value = e.target.value
-    // setNewBundleGroup(prev => {
-    //   return {
-    //     ...prev,
-    //     version: value
-    //   }
-    // })
-    //changeNewBundleGroup("version", e.target.value)
-  }
-
-  const fileUploaderProps_Images = {
-    id: "images",
-    buttonLabel: "Add Files",
-    labelDescription:
-        "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
-  }
-
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader()
-      fileReader.readAsDataURL(file)
-      fileReader.onload = () => {
-        resolve(fileReader.result)
-      }
-      fileReader.onerror = (error) => {
-        reject(error)
-      }
+    const selectItems_Category = categories.map((category) => {
+        return (
+            <SelectItem
+                key={category.categoryId}
+                value={category.categoryId}
+                text={category.name}
+            />
+        )
     })
-  }
 
-  const imagesChangeHandler = (e) => {
-    (async () => {
-      const file = e.target.files[0]
-      const base64 = await convertToBase64(file)
-      changeBundleGroup("descriptionImage", base64)
-    })()
-  }
-  const imagesDeleteHandler = (e) => {
-    changeBundleGroup("descriptionImage", "")
 
-  }
+    const nameChangeHandler = (e) => {
+        changeBundleGroup("name", e.target.value)
+    }
 
-  const statusChangeHandler = (e) => {
-    changeBundleGroup("status", e.target.value)
-  }
+    const categoryChangeHandler = (e) => {
+        changeBundleGroup("categories", [e.target.value])
+    }
 
-  const descriptionChangeHandler = (e) => {
-    changeBundleGroup("description", e.target.value)
-  }
+    const documentationChangeHandler = (e) => {
+        changeBundleGroup("documentationUrl", e.target.value)
+    }
 
-  const onAddOrRemoveBundleFromList = (newBundleList) => {
-    changeBundleGroup("children", newBundleList)
-  }
+    const versionChangeHandler = (e) => {
+        // const value = e.target.value
+        // setNewBundleGroup(prev => {
+        //   return {
+        //     ...prev,
+        //     version: value
+        //   }
+        // })
+        //changeNewBundleGroup("version", e.target.value)
+    }
+
+    const fileUploaderProps_Images = {
+        id: "images",
+        buttonLabel: "Add Files",
+        labelDescription:
+            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+    }
+
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result)
+            }
+            fileReader.onerror = (error) => {
+                reject(error)
+            }
+        })
+    }
+
+
+    const imagesChangeHandler = (e) => {
+        (async () => {
+            const file = e.target.files[0]
+            const base64 = await convertToBase64(file)
+            changeBundleGroup("descriptionImage", base64)
+        })()
+    }
+    const imagesDeleteHandler = (e) => {
+        changeBundleGroup("descriptionImage", "")
+
+    }
+
+
+    const statusChangeHandler = (e) => {
+        changeBundleGroup("status", e.target.value)
+    }
+
+    const descriptionChangeHandler = (e) => {
+        changeBundleGroup("description", e.target.value)
+    }
+
+    const onAddOrRemoveBundleFromList = (newBundleList) => {
+        changeBundleGroup("children", newBundleList)
+    }
+
 
   return (
       <>
-        {!loading && <Content className="Edit-bundle-group">
+        <Content className="Edit-bundle-group">
           <Grid>
             <Row>
               <Column sm={16} md={8} lg={8}>
-                <IconUploader descriptionImage={bundleGroup.descriptionImage}
-                              disabled={disabled}
-                              fileUploaderProps_Images={fileUploaderProps_Images}
-                              onImageChange={imagesChangeHandler}
-                              onImageDelete={imagesDeleteHandler}/>
+                <IconUploader descriptionImage={bundleGroup.descriptionImage} disabled={disabled} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
               </Column>
             </Row>
             <Row>
@@ -243,22 +167,19 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <TextInput disabled={true} id="organisation"
-                           labelText="Organisation" value={organisation.name}/>
+                <TextInput disabled={true} id="organisation" labelText="Organisation" value={organisation.name}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <Select disabled={disabled} value={bundleGroup.status}
-                        onChange={statusChangeHandler}
+                <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
                         id={"status"}
-                        labelText={"Status"}>{selectOptions}
-                </Select>
+                        labelText={"Status"}>
+                        {createSelectOptionsForRoleAndSetSelectStatus}</Select>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <BundlesOfBundleGroup
-                    onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                    initialBundleList={children} disabled={disabled}/>
+                <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
+                                      initialBundleList={children} disabled={disabled}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
@@ -273,6 +194,5 @@ const UpdateBundleGroup = ({bundleGroupId, onDataChange, onPassiveModal}) => {
         </Content>}
       </>
   )
-}
 
 export default UpdateBundleGroup

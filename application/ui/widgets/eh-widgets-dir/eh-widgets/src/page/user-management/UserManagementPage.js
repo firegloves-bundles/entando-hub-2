@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
 
+
 import {
   Content,
   DataTable,
@@ -13,8 +14,7 @@ import {
   TableToolbar,
   TableToolbarContent,
 } from 'carbon-components-react'
-import UserManagementOverflowMenu
-  from "./overflow-menu/UserManagementOverflowMenu"
+import UserManagementOverflowMenu from "./overflow-menu/UserManagementOverflowMenu"
 import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser"
 import {getAllUsers, getSingleOrganisation} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
@@ -49,76 +49,76 @@ bundleId	string
  */
 
 const headers = [
-  {
-    key: 'username',
-    header: 'Username',
-  },
-  {
-    key: 'email',
-    header: 'Email',
-  },
-  {
-    key: 'organisation',
-    header: 'Organisation',
-  },
-  {
-    key: 'overflow',
-    header: '',
-  }
+    {
+        key: 'username',
+        header: 'Username',
+    },
+    {
+        key: 'email',
+        header: 'Email',
+    },
+    {
+        key: 'organisation',
+        header: 'Organisation',
+    },
+    {
+        key: 'overflow',
+        header: '',
+    }
 ]
 
+
 const UserManagementPage = () => {
-  const [reloadToken, setReloadToken] = useState(
-      ((new Date()).getTime()).toString())
-  const [users, setUsers] = useState([])
+    const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+    const [users, setUsers] = useState([])
+    const [loading,setLoading] = useState(true)
 
-  // fetches the users to show
-  useEffect(() => {
 
-    //TODO BE QUERY REFACTORING
-    const getAllPortalUsers = async () => {
-      const userList = (await getAllUsers()).userList
-      //for every user get the organisations name
-      const userListWithOrganisation = await Promise.all(
-          userList.map((async (user) => {
-            if (user.organisationIds) {
-              //get the current organisation name
-              const organisations = await Promise.all(
-                  user.organisationIds.map((async (oid) => {
-                        const organisation = (await getSingleOrganisation(
-                            oid)).organisation
-                        return organisation
-                      }
-                  )))
+    // fetches the users to show
+    useEffect(() => {
 
-              return {
-                ...user,
-                email: user.email ? user.email : "",
-                organisation: organisations[0]
-              }
-            }
-            return {
-              ...user,
-              email: user.email ? user.email : "",
-              organisation: null
-            }
-          })))
+        //TODO BE QUERY REFACTORING
+        const getAllPortalUsers = async ()=>{
+            setLoading(true)
+            const userList = (await getAllUsers()).userList
+            //for every user get the organisations name
+            const userListWithOrganisation = await Promise.all(userList.map((async (user) => {
+                if (user.organisationIds) {
+                    //get the current organisation name
+                    const organisations = await Promise.all(user.organisationIds.map((async (oid) => {
+                            const organisation = (await getSingleOrganisation(oid)).organisation
+                            return organisation
+                        }
+                    )))
 
-      return userListWithOrganisation
-    };
-    (async () => {
-      setUsers(await getAllPortalUsers())
-    })()
-  }, [reloadToken])
+                    return {
+                        ...user,
+                        email: user.email?user.email:"",
+                        organisation: organisations[0]
+                    }
+                }
+                return {
+                    ...user,
+                    email: user.email?user.email:"",
+                    organisation: null
+                }
+            })))
 
-  const onAfterSubmit = () => {
-    setReloadToken(((new Date()).getTime()).toString())
-  }
+            return userListWithOrganisation
+        };
+        (async () => {
+            setUsers(await getAllPortalUsers())
+            setLoading(false)
+        })()
+    }, [reloadToken])
+
+    const onAfterSubmit = () => {
+        setReloadToken(((new Date()).getTime()).toString())
+    }
   return (
       <>
         <Content className="UserManagementPage">
-          <div
-              className="UserManagementPage-wrapper">
+          <div className="UserManagementPage-wrapper">
             <div className="bx--row">
               <div className="bx--col-lg-16 UserManagementPage-breadcrumb">
                 <EhBreadcrumb/>

@@ -11,6 +11,25 @@ import "./modal-update-user.scss"
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
     const [user, setUser] = useState(userObj)
+    const [visible, setVisible] = useState(false)
+    const [organisations, setOrganisations] = useState([])
+
+
+
+    useEffect(() => {
+        (async () => {
+            //TODO load the organisation from the db together with the userobj
+            const organisations = (await getAllOrganisations()).organisationList
+            setOrganisations(organisations)
+            const userObjWithDefaultOrganisation = userObj.organisation ? userObj : {
+                ...userObj,
+                organisation: organisations[0]
+            }
+            setUser(userObjWithDefaultOrganisation)
+            setVisible(true)
+        })()
+    }, [userObj])
+
 
     const onDataChange = useCallback((userObj) => {
         setUser(userObj)
@@ -45,15 +64,19 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
     }
 
     return (
-        <Modal
-            className="ModalUpdateUser"
-            modalLabel="Edit"
-            primaryButtonText="Save"
-            secondaryButtonText="Cancel"
-            open={open}
-            onRequestClose={onRequestClose}
-            onRequestSubmit={onRequestSubmit}>
-            <UpdateUser userObj={user} onDataChange={onDataChange}/>
-        </Modal>
+        <>
+            {!visible && <Loading/>}
+            <Modal
+                style={{display: !visible?"none":""}}
+                className="ModalUpdateUser"
+                modalLabel="Edit"
+                primaryButtonText="Save"
+                secondaryButtonText="Cancel"
+                open={open}
+                onRequestClose={onRequestClose}
+                onRequestSubmit={onRequestSubmit}>
+                <UpdateUser userObj={user} organisations={organisations} onDataChange={onDataChange}/>
+            </Modal>
+        </>
     )
 }

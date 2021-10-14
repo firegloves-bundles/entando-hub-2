@@ -1,20 +1,30 @@
-import {Button, FileUploader} from "carbon-components-react";
 
-const IconUploader = ({disabled, descriptionImage, onImageDelete, fileUploaderProps_Images, onImageChange}) => {
+
+const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}) => {
+
     return (
         <>
+            {descriptionImage &&
             <div>
-                {descriptionImage &&
                 <img src={descriptionImage} alt={""} width="45" height="45"/>
-                }
-                {descriptionImage && !disabled && <Button kind="ghost" onClick={onImageDelete}>Remove</Button>}
+                {!disabled && <button onClick={onImageDelete}>X</button>}
             </div>
-            {!disabled && !descriptionImage &&
-            <FileUploader onChange={onImageChange}
-                          {...fileUploaderProps_Images}/>}
-
+            }
+            {!disabled &&
+            <div className="bx--form-item" id="images">
+                <p className="bx--file--label"></p>
+{/*
+                <p className="bx--label-description">Max file size is 500kb. Supported file types are .jpg, .png,
+                    and.pdf</p>
+*/}
+                <label tabIndex="0" className="bx--btn bx--btn--primary bx--btn--sm" htmlFor="id14">
+                    <span role="button" aria-disabled="false">Add Files</span>
+                </label>
+                <input className="bx--visually-hidden" id="id14" type="file" tabIndex="-1" accept="" onChange={onImageChange}></input>
+                <div className="bx--file-container"></div>
+            </div>
+            }
         </>
     )
 }
-
 export default IconUploader

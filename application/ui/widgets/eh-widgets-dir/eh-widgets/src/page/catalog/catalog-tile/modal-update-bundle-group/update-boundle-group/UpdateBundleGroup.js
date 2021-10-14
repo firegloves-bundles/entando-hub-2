@@ -32,101 +32,95 @@ bundleGroupId	string
 
 const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onDataChange, selectValuesInfo}) => {
 
-    const changeBundleGroup = (field, value) => {
-        const newObj = {
-            ...bundleGroup,
-        }
-        newObj[field] = value
-        onDataChange(newObj)
+  const changeBundleGroup = (field, value) => {
+    const newObj = {
+      ...bundleGroup,
     }
+    newObj[field] = value
+    onDataChange(newObj)
+  }
 
+  const disabled = selectValuesInfo.disabled
+  const createSelectOptionsForRoleAndSetSelectStatus = selectValuesInfo.values.map(
+      (curr, index) => <SelectItem key={index} value={curr.value}
+                                   text={curr.text}/>)
 
-    const disabled = selectValuesInfo.disabled
-    const createSelectOptionsForRoleAndSetSelectStatus = selectValuesInfo.values.map((curr, index) => <SelectItem key={index} value={curr.value}
-                                                                                                                  text={curr.text}/>)
+  const selectItems_Category = categories.map((category) => {
+    return (
+        <SelectItem
+            key={category.categoryId}
+            value={category.categoryId}
+            text={category.name}
+        />
+    )
+  })
 
+  const nameChangeHandler = (e) => {
+    changeBundleGroup("name", e.target.value)
+  }
 
-    const selectItems_Category = categories.map((category) => {
-        return (
-            <SelectItem
-                key={category.categoryId}
-                value={category.categoryId}
-                text={category.name}
-            />
-        )
+  const categoryChangeHandler = (e) => {
+    changeBundleGroup("categories", [e.target.value])
+  }
+
+  const documentationChangeHandler = (e) => {
+    changeBundleGroup("documentationUrl", e.target.value)
+  }
+
+  const versionChangeHandler = (e) => {
+    // const value = e.target.value
+    // setNewBundleGroup(prev => {
+    //   return {
+    //     ...prev,
+    //     version: value
+    //   }
+    // })
+    //changeNewBundleGroup("version", e.target.value)
+  }
+
+  const fileUploaderProps_Images = {
+    id: "images",
+    buttonLabel: "Add Files",
+    labelDescription:
+        "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
+  }
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
     })
+  }
 
+  const imagesChangeHandler = (e) => {
+    (async () => {
+      const file = e.target.files[0]
+      const base64 = await convertToBase64(file)
+      changeBundleGroup("descriptionImage", base64)
+    })()
+  }
+  const imagesDeleteHandler = (e) => {
+    changeBundleGroup("descriptionImage", "")
 
-    const nameChangeHandler = (e) => {
-        changeBundleGroup("name", e.target.value)
-    }
+  }
 
-    const categoryChangeHandler = (e) => {
-        changeBundleGroup("categories", [e.target.value])
-    }
+  const statusChangeHandler = (e) => {
+    changeBundleGroup("status", e.target.value)
+  }
 
-    const documentationChangeHandler = (e) => {
-        changeBundleGroup("documentationUrl", e.target.value)
-    }
+  const descriptionChangeHandler = (e) => {
+    changeBundleGroup("description", e.target.value)
+  }
 
-    const versionChangeHandler = (e) => {
-        // const value = e.target.value
-        // setNewBundleGroup(prev => {
-        //   return {
-        //     ...prev,
-        //     version: value
-        //   }
-        // })
-        //changeNewBundleGroup("version", e.target.value)
-    }
-
-    const fileUploaderProps_Images = {
-        id: "images",
-        buttonLabel: "Add Files",
-        labelDescription:
-            "Max file size is 500kb. Supported file types are .jpg, .png, and .pdf",
-    }
-
-
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const fileReader = new FileReader()
-            fileReader.readAsDataURL(file)
-            fileReader.onload = () => {
-                resolve(fileReader.result)
-            }
-            fileReader.onerror = (error) => {
-                reject(error)
-            }
-        })
-    }
-
-
-    const imagesChangeHandler = (e) => {
-        (async () => {
-            const file = e.target.files[0]
-            const base64 = await convertToBase64(file)
-            changeBundleGroup("descriptionImage", base64)
-        })()
-    }
-    const imagesDeleteHandler = (e) => {
-        changeBundleGroup("descriptionImage", "")
-
-    }
-
-
-    const statusChangeHandler = (e) => {
-        changeBundleGroup("status", e.target.value)
-    }
-
-    const descriptionChangeHandler = (e) => {
-        changeBundleGroup("description", e.target.value)
-    }
-
-    const onAddOrRemoveBundleFromList = (newBundleList) => {
-        changeBundleGroup("children", newBundleList)
-    }
-
+  const onAddOrRemoveBundleFromList = (newBundleList) => {
+    changeBundleGroup("children", newBundleList)
+  }
 
   return (
       <>
@@ -134,7 +128,11 @@ const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onD
           <Grid>
             <Row>
               <Column sm={16} md={8} lg={8}>
-                <IconUploader descriptionImage={bundleGroup.descriptionImage} disabled={disabled} fileUploaderProps_Images={fileUploaderProps_Images} onImageChange={imagesChangeHandler} onImageDelete={imagesDeleteHandler}/>
+                <IconUploader descriptionImage={bundleGroup.descriptionImage}
+                              disabled={disabled}
+                              fileUploaderProps_Images={fileUploaderProps_Images}
+                              onImageChange={imagesChangeHandler}
+                              onImageDelete={imagesDeleteHandler}/>
               </Column>
             </Row>
             <Row>
@@ -167,19 +165,22 @@ const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onD
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <TextInput disabled={true} id="organisation" labelText="Organisation" value={organisation.name}/>
+                <TextInput disabled={true} id="organisation"
+                           labelText="Organisation" value={organisation.name}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <Select disabled={disabled} value={bundleGroup.status} onChange={statusChangeHandler}
+                <Select disabled={disabled} value={bundleGroup.status}
+                        onChange={statusChangeHandler}
                         id={"status"}
                         labelText={"Status"}>
-                        {createSelectOptionsForRoleAndSetSelectStatus}</Select>
+                  {createSelectOptionsForRoleAndSetSelectStatus}</Select>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <BundlesOfBundleGroup onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                      initialBundleList={children} disabled={disabled}/>
+                <BundlesOfBundleGroup
+                    onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
+                    initialBundleList={children} disabled={disabled}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
@@ -194,5 +195,5 @@ const UpdateBundleGroup = ({bundleGroup, categories, organisation, children, onD
         </Content>}
       </>
   )
-
+}
 export default UpdateBundleGroup

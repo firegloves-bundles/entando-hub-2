@@ -1,5 +1,5 @@
-import {Modal} from "carbon-components-react"
-import {useCallback, useState} from "react"
+import {Modal, Loading } from "carbon-components-react"
+import {useCallback, useState, useEffect} from "react"
 import UpdateUser from "./update-user/UpdateUser"
 import {
     createAUserForAnOrganisation,

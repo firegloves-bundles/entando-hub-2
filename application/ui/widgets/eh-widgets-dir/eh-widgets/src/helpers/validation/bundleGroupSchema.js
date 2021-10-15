@@ -16,6 +16,7 @@ export const bundleGroupSchema = Yup.object().shape({
     )
     .required("Documentation is a required field"),
   status: Yup.string().required("Status is a required field"),
+  version: Yup.string().matches(/^([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "Version must match semantic versioning format (e.g. x.x.x)").required("Version is a required field"),
   children: Yup.array().of(
     Yup.object().shape({
       bundleGroups: Yup.array().of(Yup.string()),

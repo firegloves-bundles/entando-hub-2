@@ -18,6 +18,8 @@ public class BundleGroup {
     private String name;
     private String description;
     private String documentationUrl;
+    private String version;
+
     @Lob
     private String descriptionImage;
     @Enumerated(EnumType.STRING)
@@ -74,6 +76,7 @@ public class BundleGroup {
                 ", description='" + description + '\'' +
                 ", descriptionImage='" + descriptionImage + '\'' +
                 ", organisation=" + organisation +
+                ", version=" + version +
                 '}';
     }
 

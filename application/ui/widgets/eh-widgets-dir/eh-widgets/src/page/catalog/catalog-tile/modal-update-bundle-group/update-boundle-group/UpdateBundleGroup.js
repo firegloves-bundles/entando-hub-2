@@ -79,14 +79,7 @@ const UpdateBundleGroup = ({
   }
 
   const versionChangeHandler = (e) => {
-    // const value = e.target.value
-    // setNewBundleGroup(prev => {
-    //   return {
-    //     ...prev,
-    //     version: value
-    //   }
-    // })
-    //changeNewBundleGroup("version", e.target.value)
+    changeBundleGroup("version", e.target.value)
   }
 
   const convertToBase64 = (file) => {
@@ -184,6 +177,11 @@ const UpdateBundleGroup = ({
 
             <Column sm={16} md={8} lg={8}>
               <TextInput
+                  invalid={!!validationResult["version"]}
+                  invalidText={
+                    validationResult["version"] &&
+                    validationResult["version"].join("; ")
+                  }
                 disabled={disabled}
                 value={bundleGroup.version}
                 onChange={versionChangeHandler}

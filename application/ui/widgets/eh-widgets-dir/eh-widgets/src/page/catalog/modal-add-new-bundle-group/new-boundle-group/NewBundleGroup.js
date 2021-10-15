@@ -44,6 +44,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
         description: "",
         descriptionImage: standardIcon,
         documentationUrl: "",
+        version: "",
         status: "NOT_PUBLISHED",
         children: [],
         categories: []
@@ -85,6 +86,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
                     documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
+                    version: "",
                     status: "NOT_PUBLISHED",
                     organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
@@ -173,7 +175,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
               </Column>
 
               <Column sm={16} md={8} lg={8}>
-                 <TextInput id="version" labelText="Version" onChange={(e)=>onChangeHandler(e,"version")}/>
+                 <TextInput invalid={!!validationResult["version"]} invalidText={validationResult["version"] && validationResult["version"].join("; ")} id="version" labelText="Version"  value={newBundleGroup.version} onChange={(e)=>onChangeHandler(e,"version")}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>

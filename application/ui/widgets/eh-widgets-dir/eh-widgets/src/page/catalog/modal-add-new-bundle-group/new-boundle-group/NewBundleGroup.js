@@ -73,7 +73,8 @@ const NewBundleGroup = ({onDataChange}) => {
                 setCategories(res.categoryList)
                 if (userOrganisation) setUserOrganisation(userOrganisation)
                 //default values
-                let defaultCategoryId = res.categoryList.filter(cat => cat.name === "Solution Template")[0].categoryId
+                const filtered = res.categoryList.filter(cat => cat.name === "Solution Template")
+                let defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : res.categoryList[0]
                 const newObj = {
                     name: "",
                     description: "",

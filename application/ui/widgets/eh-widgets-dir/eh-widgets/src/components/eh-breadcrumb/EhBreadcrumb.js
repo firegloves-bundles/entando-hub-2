@@ -1,7 +1,7 @@
 import React from 'react'
 import {Breadcrumb, BreadcrumbItem} from "carbon-components-react"
 import {Link} from "react-router-dom"
-import './eh-bredcrumb.scss'
+import './eh-breadcrumb.scss'
 /*
 {
 path,

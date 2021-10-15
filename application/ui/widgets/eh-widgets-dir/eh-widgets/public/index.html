@@ -20,8 +20,52 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Entando Hub</title>
+    <script src="%REACT_APP_KEYCLOAK_URL%/js/keycloak.js"></script>
+    <script>
+      const onLoad = (function() {
+        function createKcDispatcher(payload) {
+          return () => window.dispatchEvent(new CustomEvent('keycloak', { detail: payload }));
+        }
+
+        function initKeycloak() {
+          const keycloak = Keycloak({
+            url: '%REACT_APP_KEYCLOAK_URL%',
+            realm: '%REACT_APP_KEYCLOAK_REALM%',
+            clientId: '%REACT_APP_KEYCLOAK_CLIENT_ID%'
+          });
+
+          keycloak.onReady = createKcDispatcher({ eventType: 'onReady' });
+          keycloak.onAuthSuccess = createKcDispatcher({ eventType: 'onAuthSuccess' });
+          keycloak.onAuthError = createKcDispatcher({ eventType: 'onAuthError' });
+          keycloak.onAuthRefreshSuccess = createKcDispatcher({
+            eventType: 'onAuthRefreshSuccess'
+          });
+          keycloak.onAuthRefreshError = createKcDispatcher({
+            eventType: 'onAuthRefreshError'
+          });
+          keycloak.onAuthLogout = createKcDispatcher({ eventType: 'onAuthLogout' });
+          keycloak.onTokenExpired = createKcDispatcher({ eventType: 'onTokenExpired' });
+          const onInit = createKcDispatcher({ eventType: 'onInit' });
+
+          window.entando = {
+            ...(window.entando || {}),
+            keycloak
+          };
+
+          //If you are locally running the widget in isolation and you are not logged in,
+          //you are automatically redirected to keycloak login page to speed up development.
+
+          const onLoad = window.location.hostname === 'localhost' ? 'login-required' : 'check-sso';
+          const silentCheckSsoRedirectUri = window.location.origin + '/silent-check-sso.html';
+
+          window.entando.keycloak.init({ onLoad, silentCheckSsoRedirectUri }).success(onInit);
+
+        }
+        return initKeycloak;
+      })();
+    </script>
   </head>
-  <body>
+  <body onLoad="onLoad();">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <x-eh-login/>
     <x-eh-app/>

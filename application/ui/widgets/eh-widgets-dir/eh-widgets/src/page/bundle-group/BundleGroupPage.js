@@ -8,7 +8,7 @@ import {
   getSingleCategory,
   getSingleOrganisation
 } from "../../integration/Integration"
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation"
 
 import "./bundle-group-page.scss"

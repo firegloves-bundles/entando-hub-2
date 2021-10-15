@@ -68,6 +68,19 @@ public class OrganisationController {
             return new ResponseEntity<>(new Organisation(entity), HttpStatus.OK);
         }
     }
+    @CrossOrigin
+    @DeleteMapping("/{organisationId}")
+    public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {
+        logger.debug("REST request to delete organisation {}", organisationId);
+        Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
+        if (!organisationOptional.isPresent()) {
+            logger.warn("Requested organisation '{}' does not exists", organisationId);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            organisationService.deleteOrganisation(organisationId);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
 
 
     @Getter

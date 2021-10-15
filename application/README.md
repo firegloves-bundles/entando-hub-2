@@ -42,7 +42,7 @@ https://<entando-url>/entando-hub-api/swagger-ui.html
 
 ## Local testing of the project
 You can use the following commands from this folder to test the microservices 
-* `ent prj keycloak start` - or stop to shutdown keycloak again.
+* `ent prj xk start` - or stop to shutdown keycloak again.
 * `ent prj be-test-run` - to run the microservice
 * `ent prj fe-test-run` - to run the React frontend
 

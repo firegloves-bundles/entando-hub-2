@@ -109,8 +109,8 @@ public class BundleGroupController {
     public static class BundleGroup extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroup(String bundleGroupId, String name, String description, String descriptionImage) {
-            super(name, description, descriptionImage);
+        public BundleGroup(String bundleGroupId, String name, String description, String descriptionImage, String version) {
+            super(name, description, descriptionImage, version);
             this.bundleGroupId = bundleGroupId;
         }
 
@@ -126,6 +126,7 @@ public class BundleGroupController {
         protected final String description;
         protected final String descriptionImage;
         protected String documentationUrl;
+        protected String version;
         protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
 
         //the following must be merged with the entity using mappedBy
@@ -134,10 +135,11 @@ public class BundleGroupController {
         protected List<String> categories;
 
 
-        public BundleGroupNoId(String name, String description, String descriptionImage) {
+        public BundleGroupNoId(String name, String description, String descriptionImage, String version) {
             this.name = name;
             this.description = description;
             this.descriptionImage = descriptionImage;
+            this.version = version;
         }
 
 
@@ -147,6 +149,7 @@ public class BundleGroupController {
             this.name = entity.getName();
             this.status = entity.getStatus();
             this.documentationUrl = entity.getDocumentationUrl();
+            this.version = entity.getVersion();
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId().toString();
@@ -167,6 +170,7 @@ public class BundleGroupController {
             ret.setDescriptionImage(this.getDescriptionImage());
             ret.setDocumentationUrl(this.getDocumentationUrl());
             ret.setStatus(this.getStatus());
+            ret.setVersion(this.getVersion());
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
                 organisation.setId(Long.parseLong(this.organisationId));

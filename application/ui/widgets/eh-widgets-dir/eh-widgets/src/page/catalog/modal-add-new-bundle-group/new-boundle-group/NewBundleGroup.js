@@ -168,7 +168,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
               </Column>
 
               <Column sm={16} md={8} lg={8}>
-                 <TextInput id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
+                 <TextInput invalid={!!validationResult["documentationUrl"]} invalidText={validationResult["documentationUrl"] && validationResult["documentationUrl"].join("; ")} id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
               </Column>
 
               <Column sm={16} md={8} lg={8}>
@@ -180,7 +180,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <Select id="status" labelText="Status" value={newBundleGroup.status}
+                <Select invalid={!!validationResult["status"]} invalidText={validationResult["status"] && validationResult["status"].join("; ")} id="status" labelText="Status" value={newBundleGroup.status}
                         onChange={(e)=>onChangeHandler(e,"status")}>{selectOptions}</Select>
               </Column>
 
@@ -189,7 +189,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <TextArea id="description" labelText="Description" onChange={(e)=>onChangeHandler(e,"description")} cols={50}
+                <TextArea invalid={!!validationResult["description"]} invalidText={validationResult["description"] && validationResult["description"].join("; ")} id="description" labelText="Description" onChange={(e)=>onChangeHandler(e,"description")} cols={50}
                           rows={4}/>
               </Column>
               {/*

@@ -21,7 +21,7 @@ const initialStateBundleGroup=
         description: "",
     descriptionImage: standardIcon,
     documentationUrl: "",
-    status: "",
+    status: "NOT_PUBLISHED",
     children: [],
     categories: []
 }

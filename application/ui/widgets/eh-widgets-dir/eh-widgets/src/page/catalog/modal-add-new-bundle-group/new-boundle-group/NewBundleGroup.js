@@ -44,7 +44,7 @@ const NewBundleGroup = ({onDataChange, validationResult}) => {
         description: "",
         descriptionImage: standardIcon,
         documentationUrl: "",
-        status: "",
+        status: "NOT_PUBLISHED",
         children: [],
         categories: []
     })

@@ -43,7 +43,9 @@ export const postData = async (url, payload, id) => {
   return errorCheck(data)
 }
 
-export const deleteData = async (url) => {
+export const deleteData = async (url, id) => {
+  url = mergeUrl(url, id)
+
   const data = await axios
     .delete(url)
     .then((res) => {

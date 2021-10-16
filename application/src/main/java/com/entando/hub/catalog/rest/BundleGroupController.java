@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -128,6 +129,7 @@ public class BundleGroupController {
         protected String documentationUrl;
         protected String version;
         protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
+        protected LocalDateTime lastUpdate;
 
         //the following must be merged with the entity using mappedBy
         protected List<String> children;
@@ -150,6 +152,7 @@ public class BundleGroupController {
             this.status = entity.getStatus();
             this.documentationUrl = entity.getDocumentationUrl();
             this.version = entity.getVersion();
+            this.lastUpdate = entity.getLastUpdate();
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId().toString();

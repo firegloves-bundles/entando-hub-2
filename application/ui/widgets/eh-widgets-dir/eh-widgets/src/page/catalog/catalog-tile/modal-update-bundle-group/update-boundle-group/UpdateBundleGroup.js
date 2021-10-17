@@ -35,9 +35,8 @@ const UpdateBundleGroup = ({
   bundleGroup,
   categories,
   organisation,
-  children,
   onDataChange,
-  selectValuesInfo,
+  selectStatusValues,
   validationResult,
 }) => {
   console.log("UpdateBundleGroup FIRED!", validationResult)
@@ -50,9 +49,9 @@ const UpdateBundleGroup = ({
     onDataChange(newObj)
   }
 
-  const disabled = selectValuesInfo.disabled
+  const disabled = selectStatusValues.disabled
   const createSelectOptionsForRoleAndSetSelectStatus =
-    selectValuesInfo.values.map((curr, index) => (
+    selectStatusValues.values.map((curr, index) => (
       <SelectItem key={index} value={curr.value} text={curr.text} />
     ))
 
@@ -219,7 +218,7 @@ const UpdateBundleGroup = ({
             <Column sm={16} md={16} lg={16}>
               <BundlesOfBundleGroup
                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                initialBundleList={children}
+                initialBundleList={bundleGroup.children}
                 disabled={disabled}
               />
             </Column>

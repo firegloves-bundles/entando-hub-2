@@ -40,7 +40,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const [categories, setCategories] = useState([])
         const [bundleGroup, setBundleGroup] = useState({})
         const [loading, setLoading] = useState(true)
-        const [selectValuesInfo, setSelectValuesInfo] = useState([])
+        const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
 
 
@@ -63,16 +63,15 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         }
 
         useEffect(() => {
-            console.log("ModalStateManager useEffect")
             setLoading(true)
             let isMounted = true
             const init = async () => {
                 const categoryList = (await getAllCategories()).categoryList
                 const userOrganisation = await getCurrentUserOrganisation()
-                const selectValuesInfo = getProfiledNewSelecSatustInfo(getHigherRole())
+                const selectStatusValues = getProfiledNewSelecSatustInfo(getHigherRole())
                 if (isMounted) {
                     setCategories(categoryList)
-                    setSelectValuesInfo(selectValuesInfo)
+                    setSelectStatusValues(selectStatusValues)
                     if (userOrganisation) setOrganisation(userOrganisation)
                     //default values
                     const filtered = categoryList.filter(cat => cat.name === "Solution Template")
@@ -154,9 +153,8 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                                       validationResult={validationResult}
                                       organisation={organisation}
                                       categories={categories}
-                                      selectValuesInfo={selectValuesInfo}
+                                      selectStatusValues={selectStatusValues}
                                       bundleGroup={bundleGroup}
-                                      children={bundleGroup.children}
                                       loading={loading}
                         />,
                         document.body
@@ -167,7 +165,6 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
     }
 
 
-    console.log("RENDERED MANBG")
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
@@ -188,9 +185,8 @@ const ModalContent = ({
                           elemKey,
                           validationResult,
                           bundleGroup,
-                          selectValuesInfo,
+                          selectStatusValues,
                           organisation,
-                          children,
                           categories,
                           loading
                       }) => {
@@ -207,7 +203,7 @@ const ModalContent = ({
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestSubmit}>
                 <UpdateBundleGroup key={elemKey} organisation={organisation} bundleGroup={bundleGroup}
-                                   categories={categories} children={children} selectValuesInfo={selectValuesInfo}
+                                   categories={categories} selectStatusValues={selectStatusValues}
                                    onDataChange={onDataChange} validationResult={validationResult}/>
             </Modal>
             }        </>

@@ -129,7 +129,7 @@ const UpdateBundleGroup = ({
                 disabled={disabled}
                 onImageChange={imagesChangeHandler}
                 onImageDelete={imagesDeleteHandler}
-              />{" "}
+              />
             </Column>
           </Row>
           <Row>

@@ -95,7 +95,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
 
     useEffect(() => {
         const hubUser = isHubUser();
-        if (hubUser && localStatusFilterValue === "LOADING") return //skip everything, waiting for status filter loading
         let statuses = [] //filter values for the status
         if (!hubUser) { //GUEST user no status filter, only categories one
             statuses = ["PUBLISHED"]

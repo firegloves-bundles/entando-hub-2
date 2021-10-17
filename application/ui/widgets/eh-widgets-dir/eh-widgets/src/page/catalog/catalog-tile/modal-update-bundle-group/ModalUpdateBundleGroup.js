@@ -35,7 +35,7 @@ export const ModalUpdateBundleGroup = ({
 
   const [bundleGroup, setBundleGroup] = useState({})
   const [passiveModal, setPassiveModal] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [selectValuesInfo, setSelectValuesInfo] = useState([])
   const [validationResult, setValidationResult] = useState({})
@@ -46,11 +46,12 @@ export const ModalUpdateBundleGroup = ({
 
   const onRequestClose = (e) => {
     onCloseModal()
+    setValidationResult({})
   }
 
   useEffect(() => {
     let isMounted = true
-    setLoading(false)
+    setLoading(true)
 
     const initCG = async () => {
       const res = await getAllCategories()
@@ -89,7 +90,7 @@ export const ModalUpdateBundleGroup = ({
 
     ;(async () => {
       await Promise.all([initCG(), initBG()])
-      setLoading(true)
+      setLoading(false)
     })()
     return () => {
       isMounted = false
@@ -133,8 +134,8 @@ export const ModalUpdateBundleGroup = ({
 
   return (
     <>
-      {!loading && <Loading />}
-      {loading && (
+      {loading && <Loading />}
+      {!loading &&
         <Modal
           passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
@@ -155,7 +156,7 @@ export const ModalUpdateBundleGroup = ({
             validationResult={validationResult}
           />
         </Modal>
-      )}
+      }
     </>
   )
 }

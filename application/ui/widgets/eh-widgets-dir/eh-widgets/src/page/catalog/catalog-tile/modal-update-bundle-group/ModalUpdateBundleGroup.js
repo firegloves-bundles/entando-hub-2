@@ -1,5 +1,5 @@
 import { Loading, Modal } from "carbon-components-react"
-import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup"
+import BundleGroupForm from "../../../../components/forms/BundleGroupForm"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
@@ -30,14 +30,13 @@ export const ModalUpdateBundleGroup = ({
     organisationId: "",
     name: "",
   })
-  const [children, setChildren] = useState([])
   const [categories, setCategories] = useState([])
 
   const [bundleGroup, setBundleGroup] = useState({})
   const [passiveModal, setPassiveModal] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const [selectValuesInfo, setSelectValuesInfo] = useState([])
+  const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
 
   const onDataChange = useCallback((bundleGroup) => {
@@ -46,11 +45,12 @@ export const ModalUpdateBundleGroup = ({
 
   const onRequestClose = (e) => {
     onCloseModal()
+    setValidationResult({})
   }
 
   useEffect(() => {
     let isMounted = true
-    setLoading(false)
+    setLoading(true)
 
     const initCG = async () => {
       const res = await getAllCategories()
@@ -76,20 +76,19 @@ export const ModalUpdateBundleGroup = ({
           ...res.bundleGroup,
           children: childrenFromDb,
         }
-        let selectStatusInfo = getProfiledUpdateSelectStatusInfo(
+        const selectStatusValues = getProfiledUpdateSelectStatusInfo(
           getHigherRole(),
           bg.status
         )
-        setSelectValuesInfo(selectStatusInfo)
-        setPassiveModal(selectStatusInfo.disabled)
+        setSelectStatusValues(selectStatusValues)
+        setPassiveModal(selectStatusValues.disabled)
         setBundleGroup(bg)
-        setChildren(childrenFromDb)
       }
     }
 
     ;(async () => {
       await Promise.all([initCG(), initBG()])
-      setLoading(true)
+      setLoading(false)
     })()
     return () => {
       isMounted = false
@@ -133,8 +132,8 @@ export const ModalUpdateBundleGroup = ({
 
   return (
     <>
-      {!loading && <Loading />}
-      {loading && (
+      {loading && <Loading />}
+      {!loading &&
         <Modal
           passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
@@ -145,17 +144,16 @@ export const ModalUpdateBundleGroup = ({
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}
         >
-          <UpdateBundleGroup
+          <BundleGroupForm
             organisation={organisation}
             categories={categories}
-            children={children}
             onDataChange={onDataChange}
             bundleGroup={bundleGroup}
-            selectValuesInfo={selectValuesInfo}
+            selectStatusValues={selectStatusValues}
             validationResult={validationResult}
           />
         </Modal>
-      )}
+      }
     </>
   )
 }

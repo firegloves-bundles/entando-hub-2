@@ -13,6 +13,8 @@ This is the HUB landing page
 */
 
 const CatalogPage = () => {
+    const hubUser = isHubUser()
+
     //signals the reloading need of the right side
     const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
@@ -33,7 +35,7 @@ const CatalogPage = () => {
     This implementation ask for bundle groups tiles reloading
      */
     const onAfterSubmit = () => {
-        setReloadToken(((new Date()).getTime()).toString())
+        setReloadToken(((new Date()).getTime()).toString()) //internal status change will rerender this component
     }
 
   return (
@@ -56,8 +58,9 @@ const CatalogPage = () => {
                 <div className="bx--col-lg-2 CatalogPage-section">
                   {/*
                     Manage the Add (New Bundle Group) button
+                    I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {isHubUser() && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
+                  {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Search
@@ -67,7 +70,7 @@ const CatalogPage = () => {
                         can see the status filter
                 */}
 
-              {isHubUser() &&
+              {hubUser &&
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*Empty col4 over checkbox filters */}
@@ -78,9 +81,11 @@ const CatalogPage = () => {
               </div>
               }
               <div className="bx--row">
-                {/* Renders the filters on the left an the result on the main column
+                {/* Renders the filters on the left an the result on the main column.
+                If I'm not an hub user no statusFilter rendered
+                If I'm an hub user I'll wait for status filter loading
                         */}
-                <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>
+                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Loading, Modal } from "carbon-components-react"
-import UpdateBundleGroup from "./update-boundle-group/UpdateBundleGroup"
+import BundleGroupForm from "../../../../components/forms/BundleGroupForm"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
@@ -144,7 +144,7 @@ export const ModalUpdateBundleGroup = ({
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}
         >
-          <UpdateBundleGroup
+          <BundleGroupForm
             organisation={organisation}
             categories={categories}
             onDataChange={onDataChange}

@@ -12,7 +12,7 @@ import {bundleGroupSchema, fillErrors} from "../../../helpers/validation/bundleG
 import {getProfiledNewSelecSatustInfo} from "../../../helpers/profiling";
 import {getHigherRole} from "../../../helpers/helpers";
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
-import UpdateBundleGroup from "../catalog-tile/modal-update-bundle-group/update-boundle-group/UpdateBundleGroup";
+import BundleGroupForm from "../../../components/forms/BundleGroupForm";
 import values from "../../../config/common-configuration";
 
 
@@ -200,9 +200,9 @@ const ModalContent = ({
                 open={open}
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestSubmit}>
-                <UpdateBundleGroup key={elemKey} organisation={organisation} bundleGroup={bundleGroup}
-                                   categories={categories} selectStatusValues={selectStatusValues}
-                                   onDataChange={onDataChange} validationResult={validationResult}/>
+                <BundleGroupForm key={elemKey} organisation={organisation} bundleGroup={bundleGroup}
+                                 categories={categories} selectStatusValues={selectStatusValues}
+                                 onDataChange={onDataChange} validationResult={validationResult}/>
             </Modal>
             }        </>
     )

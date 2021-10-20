@@ -8,13 +8,13 @@ import {
   TextArea,
   TextInput,
 } from "carbon-components-react"
-import BundlesOfBundleGroup from "./bundles-of-bundle-group/BundlesOfBundleGroup"
-import IconUploader from "./icon-uploader/IconUploader"
+import BundlesOfBundleGroup from "../../page/catalog/catalog-tile/modal-update-bundle-group/update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup"
+import IconUploader from "../../page/catalog/catalog-tile/modal-update-bundle-group/update-boundle-group/icon-uploader/IconUploader"
 
-import "./update-bundle-group.scss"
-import values from "../../../../../config/common-configuration";
+import "../../page/catalog/catalog-tile/modal-update-bundle-group/update-boundle-group/update-bundle-group.scss"
+import values from "../../config/common-configuration";
 
-const UpdateBundleGroup = ({
+const BundleGroupForm = ({
   bundleGroup,
   categories,
   organisation,
@@ -226,4 +226,4 @@ const UpdateBundleGroup = ({
     </>
   )
 }
-export default UpdateBundleGroup
+export default BundleGroupForm

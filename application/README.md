@@ -40,15 +40,19 @@ https://<entando-url>/entando-hub-api/swagger-ui.html
 ## Roles
 * Three roles are currently created for the Hub project - eh-author, eh-manager, eh-admin
 
-## Local testing of the project
-You can use the following commands to test the microservices 
-* `ent prj keycloak start` - or stop to shutdown keycloak again.
-* `ent prj be-test-run`
-
-Local setup
+### Local setup
 * Access Keycloak at http://localhost:9080/auth/
-* Access Springboot at http://localhost:8081/swagger-ui.html
+* Access Swagger at http://localhost:8081/swagger-ui.html
+* Access the React FE via http://localhost:3000/
 * Use client web_app when authorizing the microservices
+* You'll need to update the `ui/widgets/eh-widgets-dir/eh-widgets/.env` settings to match your environment before starting the React app. See the `.env.template` file for a possible local configuration.
+* As of 2021-10-14 this time you'll need to add at least one category via the API before you can create a bundle group via the FE
+
+## Local testing of the project
+You can use the following commands from this folder to test the microservices 
+* `ent prj xk start` - or stop to shutdown keycloak again.
+* `ent prj be-test-run` - to run the microservice
+* `ent prj fe-test-run` - to run the React frontend
 
 ## Misc
 * Four users are included in the keycloak realm config

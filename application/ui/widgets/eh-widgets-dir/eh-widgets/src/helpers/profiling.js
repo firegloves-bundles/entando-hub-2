@@ -33,24 +33,24 @@ import {ADMIN, AUTHOR, MANAGER} from "./constants"
 let STATUS = (() => {
     let ret = {}
     ret[ADMIN] = [
-        {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
+        {value: ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
-        {value: "PUBLISHED", text: "Published"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "PUBLISHED", text: "Published"},
         {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     ret[MANAGER] = [
-        {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
+        {value: ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
-        {value: "PUBLISHED", text: "Published"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "PUBLISHED", text: "Published"},
         {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     ret[AUTHOR] = [
-        {value: ["NOT_PUBLISHED", "PUBLISHED", "PUBLISH_REQ", "DELETE_REQ"], text: "All"},
+        {value: ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
-        {value: "PUBLISHED", text: "Published"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
+        {value: "PUBLISHED", text: "Published"},
         {value: "DELETE_REQ", text: "Deletion Request"}
     ]
     return ret
@@ -127,8 +127,8 @@ export const getProfiledUpdateSelectStatusInfo = (higherRole, bundleGroupStatus)
                 disabled: true,
                 values: [
                     {value: "NOT_PUBLISHED", text: textFromStatus("NOT_PUBLISHED")},
-                    {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
                     {value: "PUBLISH_REQ", text: textFromStatus("PUBLISH_REQ")},
+                    {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
                     {value: "DELETE_REQ", text: textFromStatus("DELETE_REQ")},
                     {value: "DELETED", text: textFromStatus("DELETED")}
                 ]
@@ -141,8 +141,8 @@ export const getProfiledUpdateSelectStatusInfo = (higherRole, bundleGroupStatus)
             disabled: false,
             values: [
                 {value: "NOT_PUBLISHED", text: textFromStatus("NOT_PUBLISHED")},
-                {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
                 {value: "PUBLISH_REQ", text: textFromStatus("PUBLISH_REQ")},
+                {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
                 {value: "DELETE_REQ", text: textFromStatus("DELETE_REQ")}
             ]
         }
@@ -152,8 +152,8 @@ export const getProfiledUpdateSelectStatusInfo = (higherRole, bundleGroupStatus)
         disabled: true,
         values: [
             {value: "NOT_PUBLISHED", text: textFromStatus("NOT_PUBLISHED")},
-            {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
             {value: "PUBLISH_REQ", text: textFromStatus("PUBLISH_REQ")},
+            {value: "PUBLISHED", text: textFromStatus("PUBLISHED")},
             {value: "DELETE_REQ", text: textFromStatus("DELETE_REQ")},
             {value: "DELETED", text: textFromStatus("DELETED")}
         ]
@@ -168,8 +168,8 @@ export const getProfiledInsertSelectInfo = (role, bundleGroupStatus) => {
 //    NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED
 export const textFromStatus = (bundleGroupStatus) => {
     if (bundleGroupStatus === "NOT_PUBLISHED") return "Draft"
-    if (bundleGroupStatus === "PUBLISHED") return "Published"
     if (bundleGroupStatus === "PUBLISH_REQ") return "Publication Request"
+    if (bundleGroupStatus === "PUBLISHED") return "Published"
     if (bundleGroupStatus === "DELETE_REQ") return "Deletion Request"
     if (bundleGroupStatus === "DELETED") return "Deleted"
 }

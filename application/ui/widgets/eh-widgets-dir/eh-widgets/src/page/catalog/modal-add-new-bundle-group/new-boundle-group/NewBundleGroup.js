@@ -32,7 +32,10 @@ const standardIcon = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0i
  *
  * @param onDataChange callback functions (newBundleGroup)=>{} newBundleGroup will contain the updated object
  */
-const NewBundleGroup = ({onDataChange}) => {
+const NewBundleGroup = ({onDataChange, validationResult}) => {
+    console.log(validationResult)
+
+
     const [userOrganisation, setUserOrganisation] = useState({organisationId: "", name: ""})
     const [selectOptions, setSelectOptions] = useState([])
     const [categories, setCategories] = useState([])
@@ -41,7 +44,8 @@ const NewBundleGroup = ({onDataChange}) => {
         description: "",
         descriptionImage: standardIcon,
         documentationUrl: "",
-        status: "",
+        version: "",
+        status: "NOT_PUBLISHED",
         children: [],
         categories: []
     })
@@ -73,7 +77,8 @@ const NewBundleGroup = ({onDataChange}) => {
                 setCategories(res.categoryList)
                 if (userOrganisation) setUserOrganisation(userOrganisation)
                 //default values
-                let defaultCategoryId = res.categoryList.filter(cat => cat.name === "Solution Template")[0].categoryId
+                const filtered = res.categoryList.filter(cat => cat.name === "Solution Template")
+                let defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : res.categoryList[0]
                 const newObj = {
                     name: "",
                     description: "",
@@ -81,6 +86,7 @@ const NewBundleGroup = ({onDataChange}) => {
                     documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
+                    version: "",
                     status: "NOT_PUBLISHED",
                     organisationId: userOrganisation ? userOrganisation.organisationId : undefined
                 }
@@ -156,7 +162,7 @@ const NewBundleGroup = ({onDataChange}) => {
             </Row>
             <Row>
               <Column sm={16} md={8} lg={8}>
-                <TextInput id="name" labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
+                <TextInput invalid={!!validationResult["name"]} invalidText={validationResult["name"] && validationResult["name"].join("; ")} id="name" labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
               </Column>
 
               <Column sm={16} md={8} lg={8}>
@@ -165,11 +171,11 @@ const NewBundleGroup = ({onDataChange}) => {
               </Column>
 
               <Column sm={16} md={8} lg={8}>
-                 <TextInput id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
+                 <TextInput invalid={!!validationResult["documentationUrl"]} invalidText={validationResult["documentationUrl"] && validationResult["documentationUrl"].join("; ")} id="documentation" labelText="Documentation Address" onChange={(e)=>onChangeHandler(e,"documentationUrl")}/>
               </Column>
 
               <Column sm={16} md={8} lg={8}>
-                 <TextInput id="version" labelText="Version" onChange={(e)=>onChangeHandler(e,"version")}/>
+                 <TextInput invalid={!!validationResult["version"]} invalidText={validationResult["version"] && validationResult["version"].join("; ")} id="version" labelText="Version"  value={newBundleGroup.version} onChange={(e)=>onChangeHandler(e,"version")}/>
               </Column>
 
               <Column sm={16} md={16} lg={16}>
@@ -177,7 +183,7 @@ const NewBundleGroup = ({onDataChange}) => {
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <Select id="status" labelText="Status" value={newBundleGroup.status}
+                <Select invalid={!!validationResult["status"]} invalidText={validationResult["status"] && validationResult["status"].join("; ")} id="status" labelText="Status" value={newBundleGroup.status}
                         onChange={(e)=>onChangeHandler(e,"status")}>{selectOptions}</Select>
               </Column>
 
@@ -186,7 +192,7 @@ const NewBundleGroup = ({onDataChange}) => {
               </Column>
 
               <Column sm={16} md={16} lg={16}>
-                <TextArea id="description" labelText="Description" onChange={(e)=>onChangeHandler(e,"description")} cols={50}
+                <TextArea invalid={!!validationResult["description"]} invalidText={validationResult["description"] && validationResult["description"].join("; ")} id="description" labelText="Description" onChange={(e)=>onChangeHandler(e,"description")} cols={50}
                           rows={4}/>
               </Column>
               {/*

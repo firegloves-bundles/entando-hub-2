@@ -65,5 +65,9 @@ public class OrganisationService {
         updateMappedBy(entity, organisation);
         return entity;
     }
+
+    public void deleteOrganisation(String organisationId){
+        organisationRepository.deleteById(Long.valueOf(organisationId));
+    }
 }
 

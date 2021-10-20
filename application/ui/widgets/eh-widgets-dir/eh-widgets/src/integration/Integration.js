@@ -190,7 +190,7 @@ export const createAUserForAnOrganisation = async (
     }
     const {data, isError} = await postData(newUrl, userDataObject)
 
-    return data
+    return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
 
 // GET input: nothing -> get all the users

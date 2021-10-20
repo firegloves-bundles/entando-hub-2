@@ -2,8 +2,10 @@ package com.entando.hub.catalog.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,6 +20,11 @@ public class BundleGroup {
     private String name;
     private String description;
     private String documentationUrl;
+    private String version;
+
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
+
     @Lob
     private String descriptionImage;
     @Enumerated(EnumType.STRING)
@@ -74,6 +81,7 @@ public class BundleGroup {
                 ", description='" + description + '\'' +
                 ", descriptionImage='" + descriptionImage + '\'' +
                 ", organisation=" + organisation +
+                ", version=" + version +
                 '}';
     }
 

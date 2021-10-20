@@ -17,7 +17,7 @@ import {
 import OrganisationManagementOverflowMenu from "./overflow-menu/OrganisationManagementOverflowMenu"
 import {ModalAddNewOrganisation} from "./modal-add-new-organisation/ModalAddNewOrganisation"
 import {getAllOrganisations,} from "../../integration/Integration"
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
 
 /*

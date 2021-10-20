@@ -148,6 +148,7 @@ const OrganisationManagementPage = () => {
                                       description: row.cells[1].value
                                     }}
                                     onAfterSubmit={onAfterSubmit}
+                                    setReloadToken={setReloadToken}
                                   />
                                 </TableCell>
                               )

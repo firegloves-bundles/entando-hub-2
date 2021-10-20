@@ -9,13 +9,12 @@ import {
 const OrganisationManagementOverflowMenu = ({
   organisationObj,
   onAfterSubmit,
+  setReloadToken
 }) => {
   const [openModal, setOpenModal] = useState(false)
 
   const deleteHandler = async () => {
     const org = await getSingleOrganisation(organisationObj.organisationId)
-
-    console.log("ORGAAAAAAAAAAA", org.organisation.organisationId)
 
     if (
       org.organisation.bundleGroups.length > 0 &&
@@ -34,6 +33,8 @@ const OrganisationManagementOverflowMenu = ({
       )
       console.log(`${delResponse} deleted`)
     }
+
+    setReloadToken(new Date().getTime().toString())
   }
 
   return (

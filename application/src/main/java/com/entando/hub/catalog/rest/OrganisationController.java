@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+
 @RestController
 @RequestMapping("/api/organisation")
 public class OrganisationController {
@@ -46,6 +50,7 @@ public class OrganisationController {
         }
     }
 
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
@@ -54,6 +59,7 @@ public class OrganisationController {
         return new ResponseEntity<>(new Organisation(entity), HttpStatus.CREATED);
     }
 
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/{organisationId}")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
@@ -68,6 +74,8 @@ public class OrganisationController {
             return new ResponseEntity<>(new Organisation(entity), HttpStatus.OK);
         }
     }
+
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @DeleteMapping("/{organisationId}")
     public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {

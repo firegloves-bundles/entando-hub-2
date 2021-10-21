@@ -36,7 +36,6 @@ const NewOrganisation = ({onDataChange}) => {
     }
 
 
-
     const onChangeHandler = (e,fieldName) => {
         changeOrganisation(fieldName, e.target.value)
     }

@@ -2,6 +2,11 @@
 
 }
 
+.IconUploader-image div[class^="bx--col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .IconUploader-image{
 
 }
@@ -15,7 +20,15 @@
 }
 
 .IconUploader-delete {
-
+  border: none;
+  position: absolute;
+  background: #f4f4f4;
+  color: #0f62fe;
+  border-radius: 20px;
+  padding: 1px 8px;
+  transform: rotate(45deg);
+  font-size: 23px;
+  top: 2px;
 }
 
 .IconUploader-delete button {

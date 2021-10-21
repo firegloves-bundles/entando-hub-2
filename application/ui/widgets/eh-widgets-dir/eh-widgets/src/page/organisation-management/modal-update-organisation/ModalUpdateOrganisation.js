@@ -3,6 +3,7 @@ import {useCallback, useState} from "react"
 import UpdateOrganisation from "./update-organisation/UpdateOrganisation"
 import {editOrganisation} from "../../../integration/Integration"
 
+import "./modal-update-organization.scss"
 
 export const ModalUpdateOrganisation = ({organisationObj, open, onCloseModal, onAfterSubmit}) => {
 
@@ -32,6 +33,7 @@ export const ModalUpdateOrganisation = ({organisationObj, open, onCloseModal, on
     return (
         <Modal
             modalLabel="Edit"
+            className="Modal-Update-organization"
             primaryButtonText="Save"
             secondaryButtonText="Cancel"
             open={open}

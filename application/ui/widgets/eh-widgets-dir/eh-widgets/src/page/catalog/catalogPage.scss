@@ -96,5 +96,26 @@ button:focus, button {
 }
 
 .button-delete {
+  margin: 0;
+  display: inline-block;
+  transform: rotate(45deg);
+  font-size: 24px;
+  top: -1px;
+  right: 6px;
+  position: absolute;
+  cursor: pointer;
+  color: dimgrey;
+}
 
+.bx--tag span a  {
+  padding: 2px 20px 2px 2px;
+  display: inline-block;
+}
+
+.bx--tag {
+  position: relative;
+}
+
+.bx--pagination {
+  background-color: #ffffff;
 }

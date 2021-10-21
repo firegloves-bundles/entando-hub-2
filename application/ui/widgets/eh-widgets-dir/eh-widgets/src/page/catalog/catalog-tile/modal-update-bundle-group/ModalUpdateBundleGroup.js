@@ -1,5 +1,5 @@
 import { Loading, Modal } from "carbon-components-react"
-import BundleGroupForm from "../../../../components/forms/BundleGroupForm"
+import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,

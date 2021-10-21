@@ -9,7 +9,7 @@ import {
 const OrganisationManagementOverflowMenu = ({
   organisationObj,
   onAfterSubmit,
-  setReloadToken
+  setReloadToken,
 }) => {
   const [openModal, setOpenModal] = useState(false)
 
@@ -34,6 +34,10 @@ const OrganisationManagementOverflowMenu = ({
       console.log(`${delResponse} deleted`)
     }
 
+    const customEvent = new CustomEvent("delete-organisation", {
+      detail: { message: `Organisation created!` },
+    })
+    window.dispatchEvent(customEvent)
     setReloadToken(new Date().getTime().toString())
   }
 

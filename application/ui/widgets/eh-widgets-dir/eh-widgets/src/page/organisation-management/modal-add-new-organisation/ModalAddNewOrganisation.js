@@ -7,74 +7,76 @@ import {addNewOrganisation} from "../../../integration/Integration"
 import "./modal-add-new-organization.scss"
 export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
 
-  const ModalStateManager = ({
-    renderLauncher: LauncherContent,
-    children: ModalContent,
-  }) => {
-    const [open, setOpen] = useState(false)
-    const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
-    const [organisation, setOrganisation] = useState({})
 
-    const onDataChange = (newOrganisation) => {
-      setOrganisation(newOrganisation)
+    const ModalStateManager = ({
+                                   renderLauncher: LauncherContent,
+                                   children: ModalContent,
+                               }) => {
+        const [open, setOpen] = useState(false)
+        const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
+        const [organisation, setOrganisation] = useState({})
+
+        const onDataChange = (newOrganisation)=>{
+            setOrganisation(newOrganisation)
+        }
+
+
+        const onRequestClose = (e) =>{
+            resetData()
+            setOpen(false)
+        }
+
+        const onRequestOpen = (e) =>{
+            setOpen(true)
+        }
+
+        const resetData = ()=>{
+            setElemKey(((new Date()).getTime()).toString())
+        }
+
+        //Manage the modal submit
+        const onRequestSubmit = (e) => {
+            (async () => {
+                await addNewOrganisation(organisation)
+                onRequestClose()
+                onAfterSubmit()
+            })()
+        }
+
+        return (
+            <>
+                {!ModalContent || typeof document === 'undefined'
+                    ? null
+                    : ReactDOM.createPortal(
+                        <ModalContent open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
+                        document.body
+                    )}
+                {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
+            </>
+        )
     }
 
-    const onRequestClose = (e) => {
-      resetData()
-      setOpen(false)
-    }
 
-    const onRequestOpen = (e) => {
-      setOpen(true)
-    }
 
-    const resetData = () => {
-      setElemKey(((new Date()).getTime()).toString())
-    }
 
-    //Manage the modal submit
-    const onRequestSubmit = (e) => {
-      (async () => {
-        await addNewOrganisation(organisation)
-        onRequestClose()
-        onAfterSubmit()
-      })()
-    }
 
     return (
-        <>
-          {!ModalContent || typeof document === 'undefined'
-              ? null
-              : ReactDOM.createPortal(
-                  <ModalContent open={open} onRequestClose={onRequestClose}
-                                onDataChange={onDataChange}
-                                onRequestSubmit={onRequestSubmit}
-                                elemKey={elemKey}/>,
-                  document.body
-              )}
-          {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
-        </>
+        <ModalStateManager
+            renderLauncher={({onRequestOpen}) => (
+                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Organisation</Button>
+            )}>
+            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
+                <Modal
+                    modalLabel="Add"
+                    className="Modal-Add-New-organization"
+                    primaryButtonText="Add"
+                    secondaryButtonText="Cancel"
+                    open={open}
+                    onRequestClose={onRequestClose}
+                    onRequestSubmit={onRequestSubmit}>
+                    <NewOrganisation key={elemKey} onDataChange={onDataChange}/>
+                </Modal>
+            )}
+        </ModalStateManager>
     )
-  }
-
-  return (
-      <ModalStateManager
-          renderLauncher={({onRequestOpen}) => (
-              <Button onClick={onRequestOpen} renderIcon={Add16}>Add
-                Organisation</Button>
-          )}>
-        {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
-            <Modal
-                modalLabel="Add"
-                className="Modal-Add-New-organization"
-                primaryButtonText="Add"
-                secondaryButtonText="Cancel"
-                open={open}
-                onRequestClose={onRequestClose}
-                onRequestSubmit={onRequestSubmit}>
-              <NewOrganisation key={elemKey} onDataChange={onDataChange}/>
-            </Modal>
-        )}
-      </ModalStateManager>
-  )
 }

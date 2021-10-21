@@ -1,4 +1,4 @@
-import {deleteData, getData, postData} from "./Http"
+import { deleteData, getData, postData } from "./Http"
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -54,6 +54,12 @@ export const editOrganisation = async (organisationData, id) => {
     )
 
     return checkForErrorsAndSendResponse(data, isError, "editedOrganisation")
+}
+
+export const deleteOrganisation = async (id) => {
+  const { data, isError } = await deleteData(urlOrganisations, id)
+
+  return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")
 }
 
 /*********************
@@ -125,7 +131,8 @@ export const editBundle = async (bundleData, id) => {
 
 export const getAllBundleGroups = async (organisationId) => {
     let url = urlBundleGroups
-    if (organisationId) url = urlBundleGroups + "?organisationId=" + organisationId
+  if (organisationId)
+    url = urlBundleGroups + "?organisationId=" + organisationId
     const {data, isError} = await getData(url)
 
     return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
@@ -173,14 +180,17 @@ export const editBundleGroup = async (bundleGroupData, id) => {
 // POST input: username and organization id -> create a user and assign it to that organization
 // path: organization id
 // req body: username
-export const createAUserForAnOrganisation = async (organisationId, userData) => {
+export const createAUserForAnOrganisation = async (
+  organisationId,
+  userData
+) => {
     const newUrl = `${urlUsers}${organisationId}`
     const userDataObject = {
-        "username": userData
+    username: userData,
     }
     const {data, isError} = await postData(newUrl, userDataObject)
 
-    return data
+    return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
 
 // GET input: nothing -> get all the users
@@ -218,7 +228,6 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
     return data
 }
 
-
 /*********************
  * KC *************
  *********************/
@@ -241,5 +250,3 @@ export const getAllKCUsers = async () => {
 
     return checkForErrorsAndSendResponse(data, isError, "kcUsers")
 }
-
-

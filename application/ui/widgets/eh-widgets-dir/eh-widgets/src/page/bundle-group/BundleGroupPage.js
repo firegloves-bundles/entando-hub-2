@@ -8,7 +8,7 @@ import {
   getSingleCategory,
   getSingleOrganisation
 } from "../../integration/Integration"
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation"
 
 import "./bundle-group-page.scss"
@@ -40,6 +40,12 @@ bundleGroups	[...]
 bundleId	string
 }
  */
+
+const formatLastUpdate = (date)=>{
+    return new Intl.DateTimeFormat([],{ dateStyle: 'full', timeStyle: 'medium' }).format(new Date(date))
+}
+
+
 
 const BundleGroupPage = () => {
     const [pageModel, setPageModel] = useState({
@@ -99,17 +105,20 @@ const BundleGroupPage = () => {
                 <Column lg={4} className="BundleGroupPage-tile">
                   <Tile>
                     <div className="BundleGroupPage-image">
+{/*
                       <img
                           src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/Logo-blue.png`}
                           alt="Entando logo"/>
-
-                      {pageModel.bundleGroup && pageModel.bundleGroup.bundleGroupdescriptionImage}
+*/}
+                        {pageModel.bundleGroup && pageModel.bundleGroup.descriptionImage && <img
+                            src={pageModel.bundleGroup && pageModel.bundleGroup.descriptionImage}
+                            alt="BundleGroup Logo" width="100" height="100"/>}
                     </div>
                     <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
                                                          children={pageModel.children}/>
                     <div className="BundleGroupPage-last-update">
                       Last Update
-                      <p>09/01/2017, 09:00 </p>
+                      <p>{pageModel.bundleGroup && pageModel.bundleGroup.lastUpdate && formatLastUpdate(pageModel.bundleGroup.lastUpdate)}</p>
                     </div>
                     <hr/>
                     <div className="BundleGroupPage-docs">
@@ -133,7 +142,7 @@ const BundleGroupPage = () => {
                     <div className="BundleGroupPage-flex">
                       <Column className="BundleGroupPage-specs">
                         Version
-                        <p>1.2.0</p>
+                        <p>{pageModel.bundleGroup && pageModel.bundleGroup.version}</p>
 
                       </Column>
                       <Column className="BundleGroupPage-specs">

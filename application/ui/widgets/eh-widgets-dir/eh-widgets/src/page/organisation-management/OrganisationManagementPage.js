@@ -17,7 +17,7 @@ import {
 import OrganisationManagementOverflowMenu from "./overflow-menu/OrganisationManagementOverflowMenu"
 import {ModalAddNewOrganisation} from "./modal-add-new-organisation/ModalAddNewOrganisation"
 import {getAllOrganisations,} from "../../integration/Integration"
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb"
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
 
 /*
@@ -140,7 +140,7 @@ const OrganisationManagementPage = () => {
                               }
                               return (
                                 <TableCell key={cell.id}>
-                                  {console.log(row)}
+                                  {console.log("ROW!", row)}
                                   <OrganisationManagementOverflowMenu
                                     organisationObj={{
                                       organisationId: row.id,
@@ -148,6 +148,7 @@ const OrganisationManagementPage = () => {
                                       description: row.cells[1].value
                                     }}
                                     onAfterSubmit={onAfterSubmit}
+                                    setReloadToken={setReloadToken}
                                   />
                                 </TableCell>
                               )

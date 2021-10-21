@@ -17,7 +17,7 @@ import {
 import UserManagementOverflowMenu from "./overflow-menu/UserManagementOverflowMenu"
 import {ModalAddNewUser} from "./modal-add-new-user/ModalAddNewUser"
 import {getAllUsers, getSingleOrganisation} from "../../integration/Integration"
-import EhBreadcrumb from "../../components/eh-bradcrumb/EhBreadcrumb";
+import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import "./user-managment-page.scss"
 
 /*

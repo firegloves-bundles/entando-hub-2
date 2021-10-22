@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
@@ -47,6 +51,7 @@ public class CategoryController {
         }
     }
 
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
@@ -55,6 +60,7 @@ public class CategoryController {
         return new ResponseEntity<>(new Category(entity), HttpStatus.CREATED);
     }
 
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {

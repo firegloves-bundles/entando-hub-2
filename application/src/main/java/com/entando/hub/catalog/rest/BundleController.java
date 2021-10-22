@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+
 @RestController
 @RequestMapping("/api/bundles/")
 public class BundleController {
@@ -27,8 +31,6 @@ public class BundleController {
         this.bundleService = bundleService;
     }
 
-    //@RolesAllowed("codemotion-bff-admin")
-    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
     @CrossOrigin
     @GetMapping("/")
     public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupId) {
@@ -49,6 +51,7 @@ public class BundleController {
         }
     }
 
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Bundle> createBundle(@RequestBody BundleNoId bundle) {
@@ -57,6 +60,7 @@ public class BundleController {
         return new ResponseEntity<>(new Bundle(entity), HttpStatus.CREATED);
     }
 
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/{bundleId}")
     public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleNoId bundle) {

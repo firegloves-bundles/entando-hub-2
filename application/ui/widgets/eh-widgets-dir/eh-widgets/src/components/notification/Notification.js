@@ -1,9 +1,6 @@
 import { ToastNotification } from "carbon-components-react"
+import { useEffect } from 'react'
 import "carbon-components/css/carbon-components.min.css"
-
-const formatTime = (fn) => {
-  return fn < 10 ? "0" + fn : "" + fn
-}
 
 /**
  * Renders a toast notification on the screen
@@ -15,34 +12,31 @@ const formatTime = (fn) => {
  * lowContrast (boolean): enables or disables the low contrast
  * style (object): additional custom style
  */
-const Notification = ({ title, message, type, lowContrast, style }) => {
-  const today = new Date()
-  const hours = formatTime(today.getHours())
-  const minutes = formatTime(today.getMinutes())
-  const seconds = formatTime(today.getSeconds())
+
+const Notification = ({ title, message, type, lowContrast, style, setShowNotification }) => {
+  const today = new Date().toLocaleString()
+
+  const onCloseHandler = () => {
+    console.log("onCloseHandler")
+    setShowNotification(false)
+  }
 
   const toastProps = {
     kind: type ? type : "info",
     title: title ? title : "",
     subtitle: message ? message : "",
     lowContrast: lowContrast ? lowContrast : true,
-    caption: `${hours}:${minutes}:${seconds}`,
+    caption: today,
     timeout: 5000,
     style: style ? style : {},
+    onClose: onCloseHandler
   }
 
-  
-  const renderThis = () => {
-    console.log("inside notification.js")
-    return (
-      <>
-        <ToastNotification {...toastProps} />
-      </>
-    )
-  }
-
-  return renderThis()
-
+  return (
+    <>
+      <ToastNotification {...toastProps} />
+    </>
+  )
 }
 
 export default Notification

@@ -15,19 +15,15 @@ import Notification from "./Notification"
 
 const NotificationDispatcher = () => {
   const [notificationProps, setNotificationProps] = useState({})
-  // const [showNotification, setShowNotification] = useState(false)
+  const [showNotification, setShowNotification] = useState(false)
 
   const onDeleteOrganisation = (e) => {
-    // setShowNotification(true)
+    setShowNotification(true)
     console.log(e.detail)
     setNotificationProps({
       ...e.detail,
     })
-    // setTimeout(() => setShowNotification(false), 5000)
-    // setShowNotification(false)
   }
-
-  console.log("NP", notificationProps)
 
   useEffect(() => {
     window.addEventListener("delete-organisation-ok", onDeleteOrganisation)
@@ -38,8 +34,8 @@ const NotificationDispatcher = () => {
   }, [])
 
   return (
-    <div className="NOTIFICATION">
-      <Notification {...notificationProps} />
+    <div>
+      {showNotification && <Notification {...notificationProps} setShowNotification={setShowNotification} />}
     </div>
   )
 }

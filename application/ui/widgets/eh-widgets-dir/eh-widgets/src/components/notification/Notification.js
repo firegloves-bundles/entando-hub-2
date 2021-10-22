@@ -31,11 +31,18 @@ const Notification = ({ title, message, type, lowContrast, style }) => {
     style: style ? style : {},
   }
 
-  return (
-    <>
-      <ToastNotification {...toastProps} />
-    </>
-  )
+  
+  const renderThis = () => {
+    console.log("inside notification.js")
+    return (
+      <>
+        <ToastNotification {...toastProps} />
+      </>
+    )
+  }
+
+  return renderThis()
+
 }
 
 export default Notification

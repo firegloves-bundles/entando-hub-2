@@ -1,0 +1,27 @@
+.Modal-Update-organization.bx--modal-header__label {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}
+
+.Modal-Update-organization.bx--modal.is-visible .bx--modal-container {
+  background-color: var(--clr-white);
+}
+
+.Modal-Update-organization .bx--modal-container .bx--modal-header, .bx--modal-container .bx--modal-content, .bx--modal-container .bx--modal-content__regular-content {
+  padding-right: 2%;
+}
+
+.Modal-Update-organization  .bx--modal-container .bx--col-lg-16 {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.Modal-Update-organization .bx--modal-header h2 {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}

@@ -4,8 +4,7 @@ import ReactDOM from "react-dom"
 import {useState} from "react"
 import NewOrganisation from "./new-organisation/NewOrganisation"
 import {addNewOrganisation} from "../../../integration/Integration"
-
-
+import "./modal-add-new-organization.scss"
 export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
 
 
@@ -69,6 +68,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
                     modalLabel="Add"
+                    className="Modal-Add-New-organization"
                     primaryButtonText="Add"
                     secondaryButtonText="Cancel"
                     open={open}

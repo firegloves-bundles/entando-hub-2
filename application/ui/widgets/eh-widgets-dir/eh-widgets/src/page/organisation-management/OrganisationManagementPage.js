@@ -93,15 +93,15 @@ const OrganisationManagementPage = () => {
   }
   return (
     <>
-      <Content className="UserManagementPage">
-        <div className="UserManagementPage-wrapper">
+      <Content className="OrganizationManagmentPage">
+        <div className="OrganizationManagmentPage-wrapper">
           <div className="bx--row">
-            <div className="bx--col-lg-16 UserManagementPage-breadcrumb">
+            <div className="bx--col-lg-16 OrganizationManagmentPage-breadcrumb">
               <EhBreadcrumb />
             </div>
           </div>
           <div className="bx--row">
-            <div className="bx--col-lg-16 UserManagementPage-section">
+            <div className="bx--col-lg-16 OrganizationManagmentPage-section">
               {isLoading && <DataTableSkeleton columnCount={3} rowCount={4}/>}
               {!isLoading && (<DataTable rows={organisations} headers={headers}>
                 {({

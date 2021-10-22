@@ -35,7 +35,7 @@ const BundleList = ({children = [], onDeleteBundle}) => {
               <span
                   className="button-delete"
                   onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
-                x
+                +
               </span>
             </Tag>
           </li>

@@ -1,24 +1,41 @@
-import React, {useEffect} from 'react'
+import { ToastNotification } from "carbon-components-react"
+import "carbon-components/css/carbon-components.min.css"
 
-const Notification = () => {
+const formatTime = (fn) => {
+  return fn < 10 ? "0" + fn : "" + fn
+}
 
-    const handleDeleteOrganisation = (e) => {
-        console.log('Clicked on Delete Organization', e.detail)
-    }
+/**
+ * Renders a toast notification on the screen
+ *
+ * PROPS:
+ * title (string): the notification's title
+ * message (string): the notification's message
+ * type (string): the type of the notification. must be one of the following: 'error', 'info', 'info-square', 'success', 'warning', 'warning-alt'
+ * lowContrast (boolean): enables or disables the low contrast
+ * style (object): additional custom style
+ */
+const Notification = ({ title, message, type, lowContrast, style }) => {
+  const today = new Date()
+  const hours = formatTime(today.getHours())
+  const minutes = formatTime(today.getMinutes())
+  const seconds = formatTime(today.getSeconds())
 
-    useEffect(() => {
-        window.addEventListener('delete-organisation', handleDeleteOrganisation)
+  const toastProps = {
+    kind: type ? type : "info",
+    title: title ? title : "",
+    subtitle: message ? message : "",
+    lowContrast: lowContrast ? lowContrast : true,
+    caption: `${hours}:${minutes}:${seconds}`,
+    timeout: 5000,
+    style: style ? style : {},
+  }
 
-        return () => {
-            window.removeEventListener('delete-organisation', handleDeleteOrganisation)
-        }
-    }, [])
-
-    return (
-        <div>
-            
-        </div>
-    )
+  return (
+    <>
+      <ToastNotification {...toastProps} />
+    </>
+  )
 }
 
 export default Notification

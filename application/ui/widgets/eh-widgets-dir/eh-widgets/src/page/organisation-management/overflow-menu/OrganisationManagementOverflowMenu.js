@@ -31,13 +31,13 @@ const OrganisationManagementOverflowMenu = ({
       const delResponse = await deleteOrganisation(
         org.organisation.organisationId
       )
-      console.log(`${delResponse} deleted`)
+      
+      const customEvent = new CustomEvent("delete-organisation-ok", {
+        detail: { message: "Organisation deleted" },
+      })
+      window.dispatchEvent(customEvent)
     }
 
-    const customEvent = new CustomEvent("delete-organisation", {
-      detail: { message: `Organisation created!` },
-    })
-    window.dispatchEvent(customEvent)
     setReloadToken(new Date().getTime().toString())
   }
 

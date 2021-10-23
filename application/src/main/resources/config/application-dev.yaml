@@ -13,6 +13,7 @@ logging:
       springframework:
         security: DEBUG
 
+
 spring:
   h2:
     console:
@@ -20,7 +21,8 @@ spring:
         web-allow-others: true
       enabled: true
   datasource:
-    initialization-mode: never
+    continue-on-error: true
+    initialization-mode: always
     url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     username: sa

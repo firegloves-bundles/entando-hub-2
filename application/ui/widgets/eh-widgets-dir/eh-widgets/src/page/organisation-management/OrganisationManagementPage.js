@@ -140,7 +140,6 @@ const OrganisationManagementPage = () => {
                               }
                               return (
                                 <TableCell key={cell.id}>
-                                  {console.log("ROW!", row)}
                                   <OrganisationManagementOverflowMenu
                                     organisationObj={{
                                       organisationId: row.id,

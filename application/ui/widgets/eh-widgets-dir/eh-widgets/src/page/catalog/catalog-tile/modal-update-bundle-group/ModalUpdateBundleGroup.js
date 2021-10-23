@@ -24,12 +24,11 @@ export const ModalUpdateBundleGroup = ({
   onCloseModal,
   onAfterSubmit,
 }) => {
-  console.log("ModalUpdateBundleGroup FIRED!")
 
-  const [organisation, setOrganisation] = useState({
+  const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
     name: "",
-  })
+  }])
   const [categories, setCategories] = useState([])
 
   const [bundleGroup, setBundleGroup] = useState({})
@@ -65,12 +64,12 @@ export const ModalUpdateBundleGroup = ({
           ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
           : []
 
-      const organisation = (
+      const bundleGroupOrganisation = (
         await getSingleOrganisation(res.bundleGroup.organisationId)
       ).organisation
       if (isMounted) {
-        if (organisation) {
-          setOrganisation(organisation)
+        if (bundleGroupOrganisation) {
+          setAllowedOrganisations([bundleGroupOrganisation])
         }
         let bg = {
           ...res.bundleGroup,
@@ -145,7 +144,7 @@ export const ModalUpdateBundleGroup = ({
           onRequestSubmit={onRequestSubmit}
         >
           <BundleGroupForm
-            organisation={organisation}
+            allowedOrganisations={allowedOrganisations}
             categories={categories}
             onDataChange={onDataChange}
             bundleGroup={bundleGroup}

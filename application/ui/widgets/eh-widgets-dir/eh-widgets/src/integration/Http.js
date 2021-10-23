@@ -32,7 +32,7 @@ export const postData = async (url, payload, id) => {
   url = mergeUrl(url, id)
 
   const data = await axios
-    .post(url, payload)
+    .post(url, payload, addAuthorizationRequestConfig())
     .then((res) => {
       return res
     })
@@ -47,7 +47,7 @@ export const deleteData = async (url, id) => {
   url = mergeUrl(url, id)
 
   const data = await axios
-    .delete(url)
+    .delete(url, addAuthorizationRequestConfig())
     .then((res) => {
       return res.data
     })

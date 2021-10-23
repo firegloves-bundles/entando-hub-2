@@ -52,6 +52,10 @@ https://<entando-url>/entando-hub-api/swagger-ui.html
 You can use the following commands from this folder to test the microservices 
 * `ent prj xk start` - or stop to shutdown keycloak again.
 * `ent prj be-test-run` - to run the microservice
+  persistent database (entando-data) with data preload (data.sql)
+  h2 console: http://localhost:8081/h2-console/
+* 
+  
 * `ent prj fe-test-run` - to run the React frontend
 
 ## Misc

@@ -42,12 +42,13 @@ public class SecurityHelperService {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).map(this::getRoleFromAuthority).anyMatch(roles::contains);
     }
 
+    //TRUE if user is not admin AND doesn't belong to the organisation
     public Boolean userIsNotAdminAndDoesntBelongToOrg(String organisationId) {
         Boolean isAdmin = hasRoles(Set.of(ADMIN));
-        if (!isAdmin) {
-            return userIsInTheOrganisation(Long.valueOf(organisationId));
+        if (isAdmin) {
+            return false;
         }
-        return true;
+        return !userIsInTheOrganisation(Long.valueOf(organisationId));
 
     }
 

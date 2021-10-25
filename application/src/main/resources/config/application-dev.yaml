@@ -37,6 +37,7 @@ keycloak:
   auth-url: http://hubdev.okd-entando.org/auth
   client-id: germanogiudici-entando-hub-catal-server
   client-secret: d74e6f78-6ffb-4413-a43f-f4b1ea26e204
+  ssl-required: none
   auth-server-url: ${keycloak.auth-url}
   bearer-only: true
   credentials:

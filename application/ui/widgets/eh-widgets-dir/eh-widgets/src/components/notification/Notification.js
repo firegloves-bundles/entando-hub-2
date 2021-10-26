@@ -14,10 +14,9 @@ import "carbon-components/css/carbon-components.min.css"
  */
 
 const Notification = ({ title, message, type, lowContrast, style, setShowNotification }) => {
-  const today = new Date().toLocaleString()
+  const today = new Date().toLocaleTimeString()
 
   const onCloseHandler = () => {
-    console.log("onCloseHandler")
     setShowNotification(false)
   }
 
@@ -27,7 +26,7 @@ const Notification = ({ title, message, type, lowContrast, style, setShowNotific
     subtitle: message ? message : "",
     lowContrast: lowContrast ? lowContrast : true,
     caption: today,
-    timeout: 5000,
+    timeout: 10000,
     style: style ? style : {},
     onClose: onCloseHandler
   }

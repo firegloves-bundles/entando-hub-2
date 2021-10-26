@@ -17,7 +17,8 @@ const NotificationDispatcher = () => {
   const [notificationProps, setNotificationProps] = useState({})
   const [showNotification, setShowNotification] = useState(false)
 
-  const onDeleteOrganisation = (e) => {
+  /** SUCCESS EVENT */
+  const onSuccessEvent = (e) => {
     setShowNotification(true)
     console.log(e.detail)
     setNotificationProps({
@@ -26,10 +27,27 @@ const NotificationDispatcher = () => {
   }
 
   useEffect(() => {
-    window.addEventListener("delete-organisation-ok", onDeleteOrganisation)
+    window.addEventListener("success-event", onSuccessEvent)
 
     return () => {
-      window.removeEventListener("delete-organisation-ok", onDeleteOrganisation)
+      window.removeEventListener("success-event", onSuccessEvent)
+    }
+  }, [])
+
+  /** FAIL EVENT */
+  const onFailEvent = (e) => {
+    setShowNotification(true)
+    setNotificationProps({
+      ...e.detail,
+      type: "error"
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener("fail-event", onFailEvent)
+
+    return () => {
+      window.removeEventListener("fail-event", onFailEvent)
     }
   }, [])
 

@@ -5,6 +5,7 @@ import {
   getSingleOrganisation,
   deleteOrganisation,
 } from "../../../integration/Integration"
+import { fireEvent, FAIL, SUCCESS } from "../../../helpers/eventDispatcher"
 
 const OrganisationManagementOverflowMenu = ({
   organisationObj,
@@ -20,10 +21,12 @@ const OrganisationManagementOverflowMenu = ({
       org.organisation.bundleGroups.length > 0 &&
       org.organisation.bundleGroups.length < 2
     ) {
+      fireEvent(FAIL, `Impossible to delete ${org.organisation.name}: there is ${org.organisation.bundleGroups.length} bundle group linked to it.`)
       console.log(
         `Impossible to delete ${org.organisation.name}: there is ${org.organisation.bundleGroups.length} bundle group linked to it.`
       )
     } else if (org.organisation.bundleGroups.length > 1) {
+      fireEvent(FAIL, `Impossible to delete ${org.organisation.name}: there are ${org.organisation.bundleGroups.length} bundle groups linked to it.`)
       console.log(
         `Impossible to delete ${org.organisation.name}: there are ${org.organisation.bundleGroups.length} bundle groups linked to it.`
       )
@@ -31,11 +34,7 @@ const OrganisationManagementOverflowMenu = ({
       const delResponse = await deleteOrganisation(
         org.organisation.organisationId
       )
-      
-      const customEvent = new CustomEvent("delete-organisation-ok", {
-        detail: { message: "Organisation deleted" },
-      })
-      window.dispatchEvent(customEvent)
+      fireEvent(SUCCESS, "Organisation deleted")
     }
 
     setReloadToken(new Date().getTime().toString())

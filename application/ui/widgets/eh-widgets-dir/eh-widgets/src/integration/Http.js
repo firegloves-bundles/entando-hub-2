@@ -49,6 +49,7 @@ export const deleteData = async (url, id) => {
   const data = await axios
     .delete(url)
     .then((res) => {
+      console.log("DELLLLLLLLLL", res)
       return res.data
     })
     .catch((e) => {

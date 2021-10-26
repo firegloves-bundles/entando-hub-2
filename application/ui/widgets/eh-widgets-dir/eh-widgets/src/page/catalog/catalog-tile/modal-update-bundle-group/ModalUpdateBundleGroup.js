@@ -15,6 +15,7 @@ import {
   bundleGroupSchema,
   fillErrors,
 } from "../../../../helpers/validation/bundleGroupSchema"
+import { fireEvent, SUCCESS, FAIL } from "../../../../helpers/eventDispatcher"
 
 import "./modal-update-bundle-group.scss"
 
@@ -24,8 +25,6 @@ export const ModalUpdateBundleGroup = ({
   onCloseModal,
   onAfterSubmit,
 }) => {
-  console.log("ModalUpdateBundleGroup FIRED!")
-
   const [organisation, setOrganisation] = useState({
     organisationId: "",
     name: "",
@@ -109,7 +108,13 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    await editBundleGroup(toSend, toSend.bundleGroupId)
+    const bg = await editBundleGroup(toSend, toSend.bundleGroupId)
+    if (bg.isError) {
+      fireEvent(FAIL, `Impossible to update bundle group: ${bg.errorBody.message}`)
+    } else {
+      fireEvent(SUCCESS, `Bundle group ${bg.editedBundleGroup.data.name} updated`)
+    }
+    console.log("BGGGGGGGGGG", bg)
   }
 
   const onRequestSubmit = (e) => {

@@ -42,7 +42,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                 if (org.isError) {
                     fireEvent(FAIL, `Impossible to create organisation: ${org.errorBody.message}`)
                 } else {
-                    fireEvent(SUCCESS, `${org.newOrganisation.data.name} created`)
+                    fireEvent(SUCCESS, `Organisation ${org.newOrganisation.data.name} created`)
                 }
                 onRequestClose()
                 onAfterSubmit()

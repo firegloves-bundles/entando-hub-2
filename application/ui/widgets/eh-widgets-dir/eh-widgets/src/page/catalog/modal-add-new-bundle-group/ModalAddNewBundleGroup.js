@@ -14,6 +14,7 @@ import {getHigherRole} from "../../../helpers/helpers";
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
+import { fireEvent, SUCCESS, FAIL } from "../../../helpers/eventDispatcher"
 
 
 /*
@@ -113,7 +114,12 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 ...bundleGroup,
                 children: newChildren
             }
-            await addNewBundleGroup(toSend)
+            const bg = await addNewBundleGroup(toSend)
+            if (bg.isError) {
+                fireEvent(FAIL, `Impossible to create bundle group: ${bg.errorBody.message}`)
+            } else {
+                fireEvent(SUCCESS, `Bundle group ${bg.newBundleGroup.data.name} created`)
+            }
             return toSend
         }
 

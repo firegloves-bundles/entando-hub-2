@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Notification from "./Notification"
+import { SUCCESS, FAIL } from "../../helpers/eventDispatcher"
 
 /*
 { title, message, type, lowContrast, style }
@@ -23,14 +24,15 @@ const NotificationDispatcher = () => {
     console.log(e.detail)
     setNotificationProps({
       ...e.detail,
+      type: "success",
     })
   }
 
   useEffect(() => {
-    window.addEventListener("success-event", onSuccessEvent)
+    window.addEventListener(SUCCESS, onSuccessEvent)
 
     return () => {
-      window.removeEventListener("success-event", onSuccessEvent)
+      window.removeEventListener(SUCCESS, onSuccessEvent)
     }
   }, [])
 
@@ -39,21 +41,26 @@ const NotificationDispatcher = () => {
     setShowNotification(true)
     setNotificationProps({
       ...e.detail,
-      type: "error"
+      type: "error",
     })
   }
 
   useEffect(() => {
-    window.addEventListener("fail-event", onFailEvent)
+    window.addEventListener(FAIL, onFailEvent)
 
     return () => {
-      window.removeEventListener("fail-event", onFailEvent)
+      window.removeEventListener(FAIL, onFailEvent)
     }
   }, [])
 
   return (
     <div>
-      {showNotification && <Notification {...notificationProps} setShowNotification={setShowNotification} />}
+      {showNotification && (
+        <Notification
+          {...notificationProps}
+          setShowNotification={setShowNotification}
+        />
+      )}
     </div>
   )
 }

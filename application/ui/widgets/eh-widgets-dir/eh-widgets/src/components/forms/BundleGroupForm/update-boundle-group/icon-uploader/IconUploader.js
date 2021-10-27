@@ -1,5 +1,6 @@
 import {Column} from "carbon-components-react";
 import './icon-uploader.scss';
+import values from "../../../../../config/common-configuration";
 
 const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}) => {
 
@@ -8,7 +9,7 @@ const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}
             {descriptionImage &&
             <div>
                 <img src={descriptionImage} alt={""} width="45" height="45"/>
-                {!disabled && <button className="IconUploader-delete" onClick={onImageDelete}> + </button>}
+                {!disabled && descriptionImage !== values.bundleGroupForm.standardIcon && <button className="IconUploader-delete" onClick={onImageDelete}> + </button>}
             </div>
             }
             {!disabled &&
@@ -16,9 +17,7 @@ const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}
                     <div className="bx--form-item" id="images">
                         <p className="bx--file--label"></p>
                         {
-                <p className="bx--label-description">Max file size is 500kb. Supported file types are .jpg, .png,
-                    and.pdf</p>
-}
+            }
                         <label tabIndex="0" className="bx--btn bx--btn--primary bx--btn--sm" htmlFor="id14">
                             <span role="button" aria-disabled="false">Add Files</span>
                         </label>

@@ -270,12 +270,24 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
 
+  // To be refactored using eventHandler after integration refactoring
+  if (isError) {
+      fireEvent(FAIL, `Impossible to create user`)
+  } else {
+      fireEvent(SUCCESS, `User created`)
+  }
+
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
 
 // GET input: nothing -> get all the users
 export const getAllUsers = async () => {
   const { data, isError } = await getData(urlUsers)
+
+  // To be refactored using eventHandler after integration refactoring
+  if (isError) {
+    fireEvent(FAIL, `Impossible to retrieve users`)
+  }
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -286,6 +298,11 @@ export const getAllUserForAnOrganisation = async (organisationId) => {
   const newUrl = `${urlUsers}?organisationId=${organisationId}`
   const { data, isError } = await getData(newUrl)
 
+  // To be refactored using eventHandler after integration refactoring
+  if (isError) {
+    fireEvent(FAIL, `Impossible to retrieve users`)
+  }
+
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
 
@@ -293,7 +310,7 @@ export const getAllUserForAnOrganisation = async (organisationId) => {
 // path: username
 export const deleteUser = async (username) => {
   const newUrl = `${urlUsers}${username}`
-  const { data } = await deleteData(newUrl)
+  const { data, isError } = await deleteData(newUrl)
 
   return data
 }
@@ -303,7 +320,7 @@ export const deleteUser = async (username) => {
 // path: organization id
 export const removeUserFromOrganisation = async (organisationId, username) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
-  const { data } = await deleteData(newUrl)
+  const { data, isError } = await deleteData(newUrl)
 
   return data
 }

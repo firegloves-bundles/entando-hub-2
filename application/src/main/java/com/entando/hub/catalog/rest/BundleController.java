@@ -2,6 +2,7 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.BundleService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,8 @@ public class BundleController {
         this.bundleService = bundleService;
     }
 
+
+    @Operation(summary = "Get all the bundles", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles in that")
     @CrossOrigin
     @GetMapping("/")
     public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupId) {
@@ -38,6 +41,7 @@ public class BundleController {
         return bundleService.getBundles(Optional.ofNullable(bundleGroupId)).stream().map(Bundle::new).collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get the bundle details", description = "Public api, no authentication required. You have to provide the bundleId")
     @CrossOrigin
     @GetMapping("/{bundleId}")
     public ResponseEntity<Bundle> getBundle(@PathVariable() String bundleId) {
@@ -51,6 +55,7 @@ public class BundleController {
         }
     }
 
+    @Operation(summary = "Create a new bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
@@ -60,6 +65,7 @@ public class BundleController {
         return new ResponseEntity<>(new Bundle(entity), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update a bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleId identifying the bundle")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/{bundleId}")

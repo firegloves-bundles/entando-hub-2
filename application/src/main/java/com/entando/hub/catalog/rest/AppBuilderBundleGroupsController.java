@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,6 +13,8 @@ public class AppBuilderBundleGroupsController {
         this.bundleGroupController = bundleGroupController;
     }
 
+
+    @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/")
     public PagedContent<BundleGroupController.BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {

@@ -4,6 +4,7 @@ import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class BundleGroupController {
 
 
     //PUBLIC
+    @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @CrossOrigin
     @GetMapping("/")
     public List<BundleGroup> getBundleGroups(@RequestParam(required = false) String organisationId) {
@@ -49,6 +51,7 @@ public class BundleGroupController {
 
 
     //PUBLIC
+    @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
@@ -71,6 +74,7 @@ public class BundleGroupController {
     }
 
     //PUBLIC
+    @Operation(summary = "Get the bundleGroup details", description = "Public api, no authentication required. You have to provide the bundleGroupId")
     @CrossOrigin
     @GetMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
@@ -85,6 +89,7 @@ public class BundleGroupController {
     }
 
 
+    @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
@@ -99,6 +104,7 @@ public class BundleGroupController {
         return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/{bundleGroupId}")

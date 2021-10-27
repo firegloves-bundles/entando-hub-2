@@ -5,7 +5,6 @@ import {useState} from "react"
 import NewOrganisation from "./new-organisation/NewOrganisation"
 import {addNewOrganisation} from "../../../integration/Integration"
 import "./modal-add-new-organization.scss"
-import { fireEvent, SUCCESS, FAIL } from "../../../helpers/eventDispatcher"
 export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
 
 
@@ -38,12 +37,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             (async () => {
-                const org = await addNewOrganisation(organisation)
-                if (org.isError) {
-                    fireEvent(FAIL, `Impossible to create organisation: ${org.errorBody.message}`)
-                } else {
-                    fireEvent(SUCCESS, `Organisation ${org.newOrganisation.data.name} created`)
-                }
+                await addNewOrganisation(organisation)
                 onRequestClose()
                 onAfterSubmit()
             })()

@@ -114,12 +114,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 ...bundleGroup,
                 children: newChildren
             }
-            const bg = await addNewBundleGroup(toSend)
-            if (bg.isError) {
-                fireEvent(FAIL, `Impossible to create bundle group: ${bg.errorBody.message}`)
-            } else {
-                fireEvent(SUCCESS, `Bundle group ${bg.newBundleGroup.data.name} created`)
-            }
+            await addNewBundleGroup(toSend)
             return toSend
         }
 

@@ -17,19 +17,7 @@ const OrganisationManagementOverflowMenu = ({
   const deleteHandler = async () => {
     const org = await getSingleOrganisation(organisationObj.organisationId)
 
-    if (
-      org.organisation.bundleGroups.length > 0 &&
-      org.organisation.bundleGroups.length < 2
-    ) {
-      fireEvent(FAIL, `Impossible to delete ${org.organisation.name}: there is ${org.organisation.bundleGroups.length} bundle group linked to it.`)
-    } else if (org.organisation.bundleGroups.length > 1) {
-      fireEvent(FAIL, `Impossible to delete ${org.organisation.name}: there are ${org.organisation.bundleGroups.length} bundle groups linked to it.`)
-    } else {
-      const delResponse = await deleteOrganisation(
-        org.organisation.organisationId
-      )
-      fireEvent(SUCCESS, "Organisation deleted")
-    }
+    await deleteOrganisation(org.organisation.organisationId)
 
     setReloadToken(new Date().getTime().toString())
   }

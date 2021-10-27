@@ -108,13 +108,7 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    const bg = await editBundleGroup(toSend, toSend.bundleGroupId)
-    if (bg.isError) {
-      fireEvent(FAIL, `Impossible to update bundle group: ${bg.errorBody.message}`)
-    } else {
-      fireEvent(SUCCESS, `Bundle group ${bg.editedBundleGroup.data.name} updated`)
-    }
-    console.log("BGGGGGGGGGG", bg)
+    await editBundleGroup(toSend, toSend.bundleGroupId)
   }
 
   const onRequestSubmit = (e) => {

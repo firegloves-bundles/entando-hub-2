@@ -21,7 +21,6 @@ const NotificationDispatcher = () => {
   /** SUCCESS EVENT */
   const onSuccessEvent = (e) => {
     setShowNotification(true)
-    console.log(e.detail)
     setNotificationProps({
       ...e.detail,
       type: "success",

@@ -1,0 +1,9 @@
+code: entando-hub-content-bundle
+description: This is the Entando HUB content bundle
+components:
+  pageModels:
+    - pageModels/eh-silent-check-sso-page-descriptor.yaml
+  fragments:
+    - fragments/eh-keycloak-auth.yaml
+  pages:
+    - pages/eh-keycloak-silent-check-sso-descriptor.yaml

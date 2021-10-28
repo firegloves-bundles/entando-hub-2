@@ -1,0 +1,13 @@
+code: eh_keycloak_silent_check_sso
+parentCode: homepage
+titles:
+  en: HUB Keycloak Silent Check SSO
+  it: HUB Keycloak Silent Check SSO
+pageModel: eh-silent-check-sso
+ownerGroup: free
+joinGroups: [ ]
+displayedInMenu: true
+seo: false
+charset: utf-8
+status: published
+widgets: [ ]

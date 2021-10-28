@@ -6,5 +6,3 @@ components:
   widgets:
     - ui/widgets/eh-widgets-dir/eh-widgets/eh-app-widget-descriptor.yaml
     - ui/widgets/eh-widgets-dir/eh-widgets/eh-login-widget-descriptor.yaml
-  fragments:
-    - fragments/eh-keycloak-auth.yaml

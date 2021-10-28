@@ -5,12 +5,12 @@ import {useCallback, useEffect, useState} from "react"
 import {
     addNewBundle,
     addNewBundleGroup,
-    getAllCategories
+    getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import {bundleGroupSchema, fillErrors} from "../../../helpers/validation/bundleGroupSchema";
 import {getProfiledNewSelecSatustInfo} from "../../../helpers/profiling";
-import {getHigherRole} from "../../../helpers/helpers";
+import {getHigherRole, isHubAdmin} from "../../../helpers/helpers";
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
@@ -32,10 +32,10 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
 
-        const [organisation, setOrganisation] = useState({
+        const [allowedOrganisations, setAllowedOrganisations] = useState([{
             organisationId: "",
             name: "",
-        })
+        }])
         const [categories, setCategories] = useState([])
         const [bundleGroup, setBundleGroup] = useState({})
         const [loading, setLoading] = useState(true)
@@ -66,12 +66,17 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
             let isMounted = true
             const init = async () => {
                 const categoryList = (await getAllCategories()).categoryList
-                const userOrganisation = await getCurrentUserOrganisation()
+                let localAllowedOrganisations
+                if (!isHubAdmin()) {
+                    localAllowedOrganisations = [(await getCurrentUserOrganisation())]
+                } else {
+                    localAllowedOrganisations = (await getAllOrganisations()).organisationList
+                }
                 const selectStatusValues = getProfiledNewSelecSatustInfo(getHigherRole())
                 if (isMounted) {
                     setCategories(categoryList)
                     setSelectStatusValues(selectStatusValues)
-                    if (userOrganisation) setOrganisation(userOrganisation)
+                    setAllowedOrganisations(localAllowedOrganisations)
                     //default values
                     const filtered = categoryList.filter(cat => cat.name === "Solution Template")
                     let defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
@@ -84,7 +89,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                         categories: [defaultCategoryId],
                         version: "",
                         status: "NOT_PUBLISHED",
-                        organisationId: userOrganisation ? userOrganisation.organisationId : undefined
+                        organisationId: localAllowedOrganisations[0].organisationId
                     }
 
                     setBundleGroup(newObj)
@@ -150,7 +155,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                                       onRequestSubmit={onRequestSubmit}
                                       elemKey={elemKey}
                                       validationResult={validationResult}
-                                      organisation={organisation}
+                                      allowedOrganisations={allowedOrganisations}
                                       categories={categories}
                                       selectStatusValues={selectStatusValues}
                                       bundleGroup={bundleGroup}
@@ -185,7 +190,7 @@ const ModalContent = ({
                           validationResult,
                           bundleGroup,
                           selectStatusValues,
-                          organisation,
+                          allowedOrganisations,
                           categories,
                           loading
                       }) => {
@@ -201,7 +206,7 @@ const ModalContent = ({
                 open={open}
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestSubmit}>
-                <BundleGroupForm key={elemKey} organisation={organisation} bundleGroup={bundleGroup}
+                <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                                  categories={categories} selectStatusValues={selectStatusValues}
                                  onDataChange={onDataChange} validationResult={validationResult}/>
             </Modal>

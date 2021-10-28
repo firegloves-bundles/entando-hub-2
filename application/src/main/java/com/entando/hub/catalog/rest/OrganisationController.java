@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.service.OrganisationService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 
 @RestController
 @RequestMapping("/api/organisation")
@@ -24,8 +29,7 @@ public class OrganisationController {
         this.organisationService = organisationService;
     }
 
-    //@RolesAllowed("codemotion-bff-admin")
-    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
+    @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
     @CrossOrigin
     @GetMapping("/")
     public List<Organisation> getOrganisations() {
@@ -33,6 +37,7 @@ public class OrganisationController {
         return organisationService.getOrganisations().stream().map(Organisation::new).collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
     @CrossOrigin
     @GetMapping("/{organisationId}")
     public ResponseEntity<Organisation> getOrganisation(@PathVariable String organisationId) {
@@ -46,6 +51,8 @@ public class OrganisationController {
         }
     }
 
+    @Operation(summary = "Create a new organisation", description = "Protected api, only eh-admin can access it.")
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
@@ -54,6 +61,9 @@ public class OrganisationController {
         return new ResponseEntity<>(new Organisation(entity), HttpStatus.CREATED);
     }
 
+
+    @Operation(summary = "Update an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/{organisationId}")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
@@ -68,6 +78,9 @@ public class OrganisationController {
             return new ResponseEntity<>(new Organisation(entity), HttpStatus.OK);
         }
     }
+
+    @Operation(summary = "Delete an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @DeleteMapping("/{organisationId}")
     public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {

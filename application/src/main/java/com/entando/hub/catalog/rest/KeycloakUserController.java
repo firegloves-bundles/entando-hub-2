@@ -6,6 +6,7 @@ import com.entando.hub.catalog.service.model.UserRepresentation;
 
 import java.util.*;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/keycloack")
@@ -26,7 +31,9 @@ public class KeycloakUserController {
     public KeycloakUserController(KeycloakService keycloakService) {
         this.keycloakService = keycloakService;
     }
-    
+
+    @Operation(summary = "Search on keycloak for specific users", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide filters using the JSON in the body")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @GetMapping("/users")
     public List<RestUserRepresentation> searchUsers(SearchKeycloackUserRequest request) {
@@ -34,7 +41,9 @@ public class KeycloakUserController {
         Map<String, String> map = (null != request) ? request.getParams() : new HashMap<>();
         return this.keycloakService.searchUsers(map).stream().map(RestUserRepresentation::new).collect(Collectors.toList());
     }
-    
+
+    @Operation(summary = "Search on keycloak for specific user having provided username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the username")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @GetMapping("/users/{username}")
     public ResponseEntity<RestUserRepresentation> getUser(@PathVariable String username) {

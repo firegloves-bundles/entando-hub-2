@@ -1,5 +1,5 @@
-image: germanogiudici/entando-hub-catalog-ms:0.0.3-SNAPSHOT
-dbms: none
+image: germanogiudici/entando-hub-catalog-ms:0.2.3-SNAPSHOT
+dbms: postgresql
 ingressPath: "/entando-hub-api"
 healthCheckPath: "/actuator/health"
 roles:

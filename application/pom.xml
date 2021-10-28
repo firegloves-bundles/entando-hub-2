@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.entando</groupId>
     <artifactId>entando-hub-catalog-ms</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.3-SNAPSHOT</version>
     <description>The BE microservice for Entando HUB</description>
     <properties>
         <problem-spring-web.version>0.25.0</problem-spring-web.version>
@@ -65,7 +65,10 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
-        
+        <dependency> <!--FIX for ENT prj build issue-->
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -129,6 +132,9 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <profiles>
+                        <profile>dev</profile>
+                    </profiles>
                 </configuration>
             </plugin>
             <plugin>
@@ -138,6 +144,19 @@
                     <source>9</source>
                     <target>9</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -158,8 +177,8 @@
             <id>prod</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
                 </dependency>
             </dependencies>
         </profile>

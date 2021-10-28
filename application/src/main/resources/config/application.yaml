@@ -10,11 +10,6 @@ server:
 logging:
   level:
     ROOT: INFO
-    com:
-      entando: DEBUG
-    org:
-      springframework:
-        security: debug
 
 #https://medium.com/devops-dudes/securing-spring-boot-rest-apis-with-keycloak-1d760b2004e
 keycloak:
@@ -26,7 +21,7 @@ keycloak:
   bearer-only: true
   credentials:
     secret: ${keycloak.client-secret}
-  realm: jhipster
+  realm: entando
   resource: ${keycloak.client-id}
   use-resource-role-mappings: true
 

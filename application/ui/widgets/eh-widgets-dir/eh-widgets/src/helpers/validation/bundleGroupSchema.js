@@ -32,6 +32,16 @@ export const bundleGroupSchema = Yup.object().shape({
     .required("Category is a required field"),
 })
 
+
+export const bundleOfBundleGroupSchema = Yup.object().shape({
+    gitRepo: Yup.string()
+        .required("The bundle address is a required field")
+        .matches(
+            /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?.git/gi,
+            "Must be a git repo URL (e.g. https://github.com/myrepo.git)"
+        )
+})
+
 export const fillErrors = (yupError) => {
   return yupError.inner
     .map((entry) => {
@@ -50,3 +60,5 @@ export const fillErrors = (yupError) => {
       return ret
     }, {})
 }
+
+

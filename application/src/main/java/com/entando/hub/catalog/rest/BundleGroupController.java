@@ -3,20 +3,25 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -26,14 +31,17 @@ public class BundleGroupController {
 
     private final BundleGroupService bundleGroupService;
     private final CategoryService categoryService;
+    private final SecurityHelperService securityHelperService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
         this.bundleGroupService = bundleGroupService;
         this.categoryService = categoryService;
+        this.securityHelperService = securityHelperService;
     }
 
-    //@RolesAllowed("codemotion-bff-admin")
-    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
+
+    //PUBLIC
+    @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @CrossOrigin
     @GetMapping("/")
     public List<BundleGroup> getBundleGroups(@RequestParam(required = false) String organisationId) {
@@ -42,30 +50,31 @@ public class BundleGroupController {
     }
 
 
-    //@RolesAllowed("codemotion-bff-admin")
-    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
+    //PUBLIC
+    @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
-        Integer sanitizedPageNum = page >=1 ? page -1 : 0;
+        Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
-        if(categoryIdFilterValues==null){
-            categoryIdFilterValues = categoryService.getCategories().stream().map(c->c.getId().toString()).toArray(String[]::new);
+        if (categoryIdFilterValues == null) {
+            categoryIdFilterValues = categoryService.getCategories().stream().map(c -> c.getId().toString()).toArray(String[]::new);
         }
 
         String[] statusFilterValues = statuses;
-        if(statusFilterValues == null){
+        if (statusFilterValues == null) {
             statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.values()).map(Enum::toString).toArray(String[]::new);
         }
 
         logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Page<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupsPage = bundleGroupService.getBundleGroups(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
-        PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroup::new).collect(Collectors.toList()),bundleGroupsPage);
+        PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroup::new).collect(Collectors.toList()), bundleGroupsPage);
         return pagedContent;
     }
 
-
+    //PUBLIC
+    @Operation(summary = "Get the bundleGroup details", description = "Public api, no authentication required. You have to provide the bundleGroupId")
     @CrossOrigin
     @GetMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
@@ -80,23 +89,43 @@ public class BundleGroupController {
     }
 
 
+    @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
+        //if not admin the organisationid of the bundle must be the same of the user
+        if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
+            logger.warn("Only {} users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN);
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
         com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup);
         return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/{bundleGroupId}")
-    public ResponseEntity<BundleGroup> updateBundle(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
+    public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {
             logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
+            //if the user is not ADMIN
+            if (!securityHelperService.hasRoles(Set.of(ADMIN))) {
+                //I'm going to check the organisation
+                com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroupEntity = bundleGroupOptional.get();
+
+                //must exist and the user mat be in it
+                if (bundleGroupEntity.getOrganisation() == null || !securityHelperService.userIsInTheOrganisation(bundleGroupEntity.getOrganisation().getId())) {
+                    logger.warn("Only {} users can update bundle groups for any organisation, the other ones can update bundle groups only for their organisation", ADMIN);
+                    return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+                }
+            }
             com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
             return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.OK);
         }

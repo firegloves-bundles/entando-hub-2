@@ -2,6 +2,7 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.security.RolesAllowed;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/category")
@@ -24,9 +29,8 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    
-    //@RolesAllowed("codemotion-bff-admin")
-    //@PreAuthorize("hasAuthority('ROLE_mf-widget-admin')")
+
+    @Operation(summary = "Get all the categories", description = "Public api, no authentication required.")
     @CrossOrigin
     @GetMapping("/")
     public List<Category> getCategories() {
@@ -34,6 +38,7 @@ public class CategoryController {
         return categoryService.getCategories().stream().map(Category::new).collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")
     @CrossOrigin
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
@@ -47,6 +52,8 @@ public class CategoryController {
         }
     }
 
+    @Operation(summary = "Create a new category", description = "Protected api, only eh-admin can access it.")
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
@@ -55,6 +62,8 @@ public class CategoryController {
         return new ResponseEntity<>(new Category(entity), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
+    @RolesAllowed({ADMIN})
     @CrossOrigin
     @PostMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {

@@ -1,6 +1,6 @@
 import { ToastNotification } from "carbon-components-react"
 import { useEffect } from 'react'
-import "carbon-components/css/carbon-components.min.css"
+import "./notification-dispatcher.scss"
 
 /**
  * Renders a toast notification on the screen
@@ -26,7 +26,7 @@ const Notification = ({ title, message, type, lowContrast, style, setShowNotific
     subtitle: message ? message : "",
     lowContrast: lowContrast ? lowContrast : true,
     caption: now,
-    timeout: 10000,
+    timeout: 3000,
     style: style ? style : {},
     onClose: onCloseHandler
   }

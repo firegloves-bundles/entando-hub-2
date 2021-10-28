@@ -53,7 +53,7 @@ const NotificationDispatcher = () => {
   }, [])
 
   return (
-    <div>
+    <div className="NotificationDispatcher">
       {showNotification && (
         <Notification
           {...notificationProps}

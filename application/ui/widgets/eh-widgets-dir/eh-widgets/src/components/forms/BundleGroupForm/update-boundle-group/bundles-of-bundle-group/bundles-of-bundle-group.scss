@@ -28,3 +28,26 @@
   top: 40px;
   width: 50%;
 }
+
+@media screen and (max-width: 1040px) {
+  .BundlesOfBundleGroup-add-button button {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .IconUploader-image img {
+    height: 108px;
+    width: 108px;
+    object-fit: contain;
+  }
+
+  label.bx--btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+}

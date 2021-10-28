@@ -15,6 +15,7 @@ import {
   bundleGroupSchema,
   fillErrors,
 } from "../../../../helpers/validation/bundleGroupSchema"
+import { fireEvent, SUCCESS, FAIL } from "../../../../helpers/eventDispatcher"
 
 import "./modal-update-bundle-group.scss"
 
@@ -24,7 +25,6 @@ export const ModalUpdateBundleGroup = ({
   onCloseModal,
   onAfterSubmit,
 }) => {
-
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
     name: "",

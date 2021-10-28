@@ -7,9 +7,12 @@ import UserManagementPage from "./page/user-management/UserManagementPage"
 import OrganisationManagementPage from "./page/organisation-management/OrganisationManagementPage"
 import RouteWithGate from "./components/routing/RouteWithGate";
 import {isHubAdmin} from "./helpers/helpers";
+import NotificationDispatcher from "./components/notification/NotificationDispatcher"
 
 function AppCarbon() {
-    return (
+  return (
+    <>
+      <NotificationDispatcher />
         <HashRouter>
             <Switch>
                 <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
@@ -21,7 +24,8 @@ function AppCarbon() {
                 <Route path="**/" component={CatalogPage}/>
             </Switch>
         </HashRouter>
-    )
+    </>
+  )
 }
 
 export default AppCarbon

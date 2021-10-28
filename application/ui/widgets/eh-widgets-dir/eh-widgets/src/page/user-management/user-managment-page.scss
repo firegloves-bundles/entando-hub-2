@@ -49,3 +49,15 @@
   background: #e5e5e5;
   color: #161616;
 }
+
+
+@media screen and (max-width: 1040px) {
+  .UserManagementPage-wrapper {
+    padding: 0 3.8% 4rem;
+  }
+  .bx--toolbar-content .bx--btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+}

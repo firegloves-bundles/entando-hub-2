@@ -163,3 +163,4 @@ Desktop.ini
 /application/.ent/
 /application/bundle/
 /application/ui/widgets/eh-widgets-dir/eh-widgets/build/**
+/content/.ent/

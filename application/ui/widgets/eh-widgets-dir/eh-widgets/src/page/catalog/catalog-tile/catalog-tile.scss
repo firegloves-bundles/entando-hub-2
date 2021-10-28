@@ -1,19 +1,25 @@
+.CatalogPageContent-wrapper > div:nth-of-type(1) {
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  max-width: 100%;
+}
+
 .CatalogPageContent-wrapper .CatalogTile {
   position: relative;
-  float: left;
-  width: 31%;
   margin: 0 2% 2% 0;
-  display: flex;
   background: #fff;
   padding: 2rem;
-  min-height: 306px;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .CatalogPageContent-wrapper .CatalogTile:hover {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .CatalogTile-card-icon {
@@ -30,7 +36,7 @@
 
 .CatalogTile-card-description {
   font-size: 16px;
-  line-height: 26px;
+  line-height: 21px;
   color: var(--clr-dark-grey);
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -38,6 +44,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-bottom: 20px;
 }
 
 .CatalogTile-card-category {
@@ -60,19 +67,25 @@
 }
 
 @media screen and (max-width: 1240px) {
-  .CatalogTile {
-    width: 48%;
-    min-height: 223px;
-    margin: 0 2% 2% 0;
-    float: left;
+  .CatalogPageContent-wrapper > div:nth-of-type(1) {
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    max-width: 100%;
   }
 }
 
 @media screen and (max-width: 1040px) {
-  .CatalogTile {
-    width: 100%;
-    min-height: 223px;
-    margin: 2% 0 0;
-    float: left;
+  .CatalogPageContent-wrapper > div:nth-of-type(1) {
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    max-width: 100%;
   }
 }

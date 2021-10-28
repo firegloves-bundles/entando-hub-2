@@ -123,3 +123,21 @@ button:focus, button {
 .bx--overflow-menu-options {
   background-color: #fff;
 }
+
+
+@media screen and (max-width: 1040px) {
+  .CatalogPage-wrapper {
+    padding: 0 3.8% 4rem;
+  }
+
+  .bx--breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .bx--modal-footer .bx--btn {
+    height: 4rem;
+    flex: 0 1 45%;
+  }
+
+}

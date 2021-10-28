@@ -80,6 +80,7 @@
     text-align: left;
   }
 
+
   .CatalogPageHeader-header-right {
     float: none;
   }
@@ -108,4 +109,10 @@
   width: 100%;
   padding-right: 0rem;
   padding-left: 0rem;
+}
+
+@media screen and (max-width: 1040px) {
+  .CatalogPageHeader {
+    padding: 2rem 1% 0;
+  }
 }

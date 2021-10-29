@@ -30,18 +30,19 @@ const parseGitRepoAddr = (gitRepoAddress) => {
     }
 }
 
-const BundleList = ({children = [], onDeleteBundle}) => {
+const BundleList = ({children = [], onDeleteBundle, disabled}) => {
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(
         parseGitRepoAddr).map((childrenInfo, index) =>
         <li key={index.toString()}>
-            <Tag>
-                <a href={childrenInfo.gitRepoAddress}
-                   target={"_new"}>{childrenInfo.name}</a>
-                <span
+            <Tag disabled={disabled}>
+                {disabled && childrenInfo.name}
+                {!disabled && <a href={childrenInfo.gitRepoAddress}
+                   target={"_new"}>{childrenInfo.name}</a>}
+                {!disabled && <span
                     className="button-delete"
                     onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
                 +
-              </span>
+              </span>}
             </Tag>
         </li>
     )
@@ -122,6 +123,7 @@ const BundlesOfBundleGroup = ({
             <Row>
                 <Column sm={16} md={8} lg={8}>
                     <TextInput value={gitRepo}
+                               disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!!validationResult["gitRepo"]}
                                invalidText={
@@ -142,7 +144,8 @@ const BundlesOfBundleGroup = ({
                 <Column sm={16} md={16} lg={16}>
                     <div>
                         <BundleList children={bundleList}
-                                    onDeleteBundle={onDeleteBundle}/>
+                                    onDeleteBundle={onDeleteBundle}
+                                    disabled={disabled}/>
                     </div>
                 </Column>
             </Row>

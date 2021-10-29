@@ -33,6 +33,7 @@ const eventHandler = (isError, action, failMessage, successMessage) => {
   }
 
   if (isError) {
+    console.log(`FATAL ERROR - ${failMessage}`)
     fireEvent(FAIL, failMessage)
   }
 }

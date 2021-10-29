@@ -15,7 +15,7 @@
 
 .CatalogPageHeader {
   background: #002f87;
-  padding: 3rem 15% 0;
+  padding: 3rem 15.8%;
   color: #fff;
 }
 
@@ -39,10 +39,9 @@
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
-  line-height: 30px;
+  line-height: 26px;
   letter-spacing: 0.02em;
   text-transform: capitalize;
-  margin-bottom: 4rem;
 }
 
 .CatalogPageHeader-header-content h2 {
@@ -71,6 +70,12 @@
 
 .CatalogPageHeader-header-right {
   float: right;
+}
+
+.CatalogPageHeader .bx--col-lg-16 {
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 @media screen and (max-width: 500px) {
@@ -109,6 +114,11 @@
   width: 100%;
   padding-right: 0rem;
   padding-left: 0rem;
+}
+
+.CatalogPageMustheadContainer {
+  display: flex;
+  justify-content: space-between;
 }
 
 @media screen and (max-width: 1040px) {

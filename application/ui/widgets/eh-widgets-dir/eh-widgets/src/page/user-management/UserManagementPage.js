@@ -85,7 +85,6 @@ const UserManagementPage = () => {
       const userList = (await getAllUsers()).userList
       if (userList === undefined) {
         setLoading(false)
-        return
       }
       //for every user get the organisations name
       const userListWithOrganisation = await Promise.all(
@@ -116,7 +115,6 @@ const UserManagementPage = () => {
 
       if (userListWithOrganisation === undefined) {
         setLoading(false)
-        return
       }
 
       return userListWithOrganisation

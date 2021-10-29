@@ -71,6 +71,9 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
          */
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
             const data = await getAllBundleGroupsFilteredPaged(page, pageSize, organisationId, categoryIds, statuses)
+            if (data.isError) {
+                setLoading(false)
+            }
             let filtered = data.bundleGroupList.payload
             const metadata = data.bundleGroupList.metadata
             setPage(metadata.page)
@@ -88,6 +91,9 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         }
         const initCs = async () => {
             const data = await getAllCategories()
+            if (data.isError) {
+                setLoading(false)
+            }
             setCategories(data.categoryList)
         }
         return Promise.all([initBGs(organisationId, statuses), initCs()])

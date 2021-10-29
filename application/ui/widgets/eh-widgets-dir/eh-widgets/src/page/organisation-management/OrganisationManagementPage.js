@@ -79,9 +79,7 @@ const OrganisationManagementPage = () => {
       setIsLoading(true)
       const organisationList = (await getAllOrganisations()).organisationList;
       if (organisationList === undefined) {
-        console.log("HERE", organisationList)
         setIsLoading(false)
-        return
       }
       setOrganisations(organisationList.map(organisation=>{
         return {

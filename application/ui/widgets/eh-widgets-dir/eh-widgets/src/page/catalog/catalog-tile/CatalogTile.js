@@ -69,7 +69,7 @@ const CatalogTile = ({
         <div onClick={handleClick} className="CatalogTile-card-wrapper">
           <div className="CatalogTile-card-icon">
             {descriptionImage ? (
-              <img src={descriptionImage} alt="Logo" width="45" height="45" />
+              <img src={descriptionImage} alt="Logo" />
             ) : (
               <img
                 src={`${process.env.REACT_APP_PUBLIC_ASSETS_URL}/icon.svg`}

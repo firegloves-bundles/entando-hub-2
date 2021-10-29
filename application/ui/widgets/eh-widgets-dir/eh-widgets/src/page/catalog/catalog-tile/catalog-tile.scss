@@ -67,6 +67,11 @@
   top: 10px;
 }
 
+.CatalogTile-card-icon img {
+  height:45px;
+}
+
+
 @media screen and (max-width: 1240px) {
   .CatalogPageContent-wrapper > div:nth-of-type(1) {
     display: grid;

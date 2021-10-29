@@ -1,126 +1,106 @@
-.bx--row--condensed .bx--col-lg-4, .bx--grid--condensed .bx--col-lg-4 {
+.bx--row--condensed .bx--col-lg-4,
+.bx--grid--condensed .bx--col-lg-4 {
   padding-right: 0;
   padding-left: 0;
 }
-
-.bx--grid--condensed [class*='bx--col'] {
+.bx--grid--condensed [class*="bx--col"] {
   padding-top: 0;
   padding-bottom: 0;
 }
-
 .BundleGroupPage {
   background: var(--clr-white);
   padding: 0;
 }
-
 .BundleGroupPage-wrapper {
   padding: 0 15.8% 1rem;
 }
-
 .BundleGroupPage-content {
   padding: 0 14%;
 }
-
 .BundleGroupPage hr {
   border: 1px solid var(--clr-grey);
 }
-
 .BundleGroupPage a {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   color: var(--clr-light-blue);
   width: 100%;
 }
-
 .BundleGroupPage-image {
   width: 100%;
-  height: 223px;
-  background: var(--clr-violet);
+  //height: 223px;
+  //background: var(--clr-violet);
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 2rem;
 }
-
 .BundleGroupPage .bx--tile {
   background: var(--clr-white);
 }
-
 .BundleGroupPage .bx--btn {
   width: 100%;
 }
-
 .BundleGroupPage-last-update {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
   color: var(--clr-black);
   margin: 1rem 0;
 }
-
 .BundleGroupPage-last-update p {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   line-height: 24px;
   margin: 1rem 0;
   padding-bottom: 1rem;
 }
-
 .BundleGroupPage-docs {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
   color: var(--clr-black);
   margin: 1rem 0;
 }
-
 .BundleGroupPage-docs a {
   font-size: 14px;
   line-height: 24px;
   margin: 1rem 0;
   padding-bottom: 1rem;
 }
-
-
 .BundleGroupPage-list {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
   color: var(--clr-black);
   margin: 2rem 0 1rem;
 }
-
 .BundleGroupPage-list-wrapper li {
   margin: 10px 0;
 }
-
 .BundleGroupPage-title {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
   font-size: 34px;
   line-height: 58px;
   letter-spacing: -0.555556px;
   color: #101820;
 }
-
 .BundleGroupPage-flex {
   display: flex;
   flex-direction: row;
 }
-
 .BundleGroupPage-specs {
   border-right: 1px solid var(--clr-grey);
   min-height: 55px;
   padding: 1rem;
 }
-
 .BundleGroupPage-specs:last-child {
   border-right: none;
   min-height: 55px;
 }
-
 .BundleGroupPage-specs {
   border-right: 1px solid var(--clr-grey);
   min-height: 55px;
@@ -128,20 +108,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
 }
-
-.BundleGroupPage-specs:nth-child(n+2) {
+.BundleGroupPage-specs:nth-child(n + 2) {
   align-items: center;
 }
-
 .BundleGroupPage-specs p {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 300;
   margin: 10px 0 0;
 }
-
 .BundleGroupPage-description {
   font-family: Roboto;
   font-style: normal;
@@ -152,37 +129,33 @@
   text-transform: capitalize;
   margin: 2rem 0;
 }
-
 .BundleGroupPage-image-list li {
   display: inline;
   margin-right: 10px;
 }
-
 .BundleGroupPage-image-list img {
   width: 30%;
 }
-
 .BundleGroupPage-breadcrumb {
   margin: 2rem 0;
 }
-
 .BundleGroupPage-tile.bx--col-lg-4 {
   padding-left: 0;
   padding-right: 0;
 }
-
 .BundleGroupPage .bx--col-lg-16.BundleGroupPage-breadcrumb {
   padding-right: 1rem;
   padding-left: 1rem;
 }
-
+.BundleGroupPage-image img {
+  width: 100%;
+  background-size: cover;
+}
 @media screen and (max-width: 1040px) {
   .BundleGroupPage-wrapper {
     padding: 0 3.8% 1rem;
   }
-
   .BundleGroupPage-tile button.bx--btn {
     max-width: 100%;
   }
-
 }

@@ -112,7 +112,7 @@ const BundleGroupPage = () => {
 */}
                         {pageModel.bundleGroup && pageModel.bundleGroup.descriptionImage && <img
                             src={pageModel.bundleGroup && pageModel.bundleGroup.descriptionImage}
-                            alt="BundleGroup Logo" width="100" height="100"/>}
+                            alt="BundleGroup Logo" />}
                     </div>
                     <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
                                                          children={pageModel.children}/>

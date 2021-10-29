@@ -1,5 +1,4 @@
 import { ToastNotification } from "carbon-components-react"
-import { useEffect } from 'react'
 import "./notification-dispatcher.scss"
 
 /**

@@ -14,7 +14,7 @@ http://localhost:8081/h2-console/
 jdbc:h2:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
 
 TO RUN
-docker run -d -p 8081:8081 --name entando-hub-catalog germanogiudici/entando-hub-catalog-ms:0.0.1-SNAPSHOT
+docker run -d -p 8081:8081 --name entando-hub-catalog entandopsdh/entando-hub-catalog-ms:0.0.1-SNAPSHOT
 
 docker stop entando-hub-catalog
 docker start entando-hub-catalog

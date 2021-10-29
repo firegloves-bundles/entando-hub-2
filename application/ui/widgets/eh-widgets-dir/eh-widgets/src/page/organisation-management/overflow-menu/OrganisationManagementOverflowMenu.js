@@ -5,7 +5,6 @@ import {
   getSingleOrganisation,
   deleteOrganisation,
 } from "../../../integration/Integration"
-import { fireEvent, FAIL, SUCCESS } from "../../../helpers/eventDispatcher"
 
 const OrganisationManagementOverflowMenu = ({
   organisationObj,

@@ -25,36 +25,15 @@ const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
   }
 }
 
-const eventHandler = (
-  data,
-  isError,
-  objectLabel,
-  actionLabel,
-  onlyError = true
-) => {
-  if (isError) {
-    console.log(
-      `Impossible to ${actionLabel} ${objectLabel}. ${data ? data.message : ""}`
-    )
-    fireEvent(
-      FAIL,
-      `Impossible to ${actionLabel} ${objectLabel}. ${data ? data.message : ""}`
-    )
-    return
+const eventHandler = (isError, action, failMessage, successMessage) => {
+  if (action === "create" || action === "update" || action === "delete") {
+    if (!isError) {
+      fireEvent(SUCCESS, successMessage)
+    }
   }
-  if (!isError && !onlyError) {
-    console.log(
-      `${objectLabel[0].toUpperCase()}${objectLabel.substring(1)} ${
-        data ? data.data.name : ""
-      } ${actionLabel}d`
-    )
-    fireEvent(
-      SUCCESS,
-      `${objectLabel[0].toUpperCase()}${objectLabel.substring(1)} ${
-        data ? data.data.name : ""
-      } ${actionLabel}d`
-    )
-    return
+
+  if (isError) {
+    fireEvent(FAIL, failMessage)
   }
 }
 
@@ -65,7 +44,11 @@ const eventHandler = (
 export const getAllOrganisations = async () => {
   let { data, isError } = await getData(urlOrganisations)
 
-  eventHandler(data, isError, "organisations", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load organisations. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "organisationList")
 }
@@ -73,7 +56,11 @@ export const getAllOrganisations = async () => {
 export const getSingleOrganisation = async (id) => {
   const { data, isError } = await getData(urlOrganisations, id)
 
-  eventHandler(data, isError, "organisation", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load organisation. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "organisation")
 }
@@ -81,7 +68,12 @@ export const getSingleOrganisation = async (id) => {
 export const addNewOrganisation = async (organisationData) => {
   const { data, isError } = await postData(urlOrganisations, organisationData)
 
-  eventHandler(data, isError, "organisation", "create", false)
+  eventHandler(
+    isError,
+    "create",
+    `Impossible to create organisation. ${data ? data.message : ""}`,
+    `Organisation ${data.data ? data.data.name : ""} created`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "newOrganisation")
 }
@@ -93,7 +85,12 @@ export const editOrganisation = async (organisationData, id) => {
     id
   )
 
-  eventHandler(data, isError, "organisation", "update", false)
+  eventHandler(
+    isError,
+    "update",
+    `Impossible to update organisation. ${data ? data.message : ""}`,
+    `Organisation ${data.data ? data.data.name : ""} updated`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "editedOrganisation")
 }
@@ -101,7 +98,13 @@ export const editOrganisation = async (organisationData, id) => {
 export const deleteOrganisation = async (id) => {
   const { data, isError } = await deleteData(urlOrganisations, id)
 
-  eventHandler(data, isError, "organisation", "delete", false)
+  console.log("HERE", data, isError)
+  eventHandler(
+    isError,
+    "delete",
+    `Impossible to delete organisation. ${data ? data.message : ""}`,
+    `Organisation ${data.data ? data.data.name : ""} deleted`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")
 }
@@ -113,7 +116,11 @@ export const deleteOrganisation = async (id) => {
 export const getAllCategories = async () => {
   const { data, isError } = await getData(urlCategories)
 
-  eventHandler(data, isError, "categories", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load categories. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "categoryList")
 }
@@ -121,7 +128,11 @@ export const getAllCategories = async () => {
 export const getSingleCategory = async (id) => {
   const { data, isError } = await getData(urlCategories, id)
 
-  eventHandler(data, isError, "category", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load category. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "category")
 }
@@ -129,7 +140,12 @@ export const getSingleCategory = async (id) => {
 export const addNewCategory = async (categoryData) => {
   const { data, isError } = await postData(urlCategories, categoryData)
 
-  eventHandler(data, isError, "category", "create", false)
+  eventHandler(
+    isError,
+    "create",
+    `Impossible to create category. ${data ? data.message : ""}`,
+    `Category ${data.data ? data.data.name : ""} created`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "newCategory")
 }
@@ -137,7 +153,12 @@ export const addNewCategory = async (categoryData) => {
 export const editCategory = async (categoryData, id) => {
   const { data, isError } = await postData(urlCategories, categoryData, id)
 
-  eventHandler(data, isError, "category", "update", false)
+  eventHandler(
+    isError,
+    "update",
+    `Impossible to update category. ${data ? data.message : ""}`,
+    `Category ${data.data ? data.data.name : ""} updated`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "editedCategory")
 }
@@ -149,7 +170,11 @@ export const editCategory = async (categoryData, id) => {
 export const getAllBundles = async () => {
   const { data, isError } = await getData(urlBundles)
 
-  eventHandler(data, isError, "bundles", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundles. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
 }
@@ -158,7 +183,11 @@ export const getAllBundlesForABundleGroup = async (id) => {
   const newUrl = `${urlBundles}?bundleGroupId=${id}`
   const { data, isError } = await getData(newUrl)
 
-  eventHandler(data, isError, "bundles", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundles. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
 }
@@ -166,7 +195,11 @@ export const getAllBundlesForABundleGroup = async (id) => {
 export const getSingleBundle = async (id) => {
   const { data, isError } = await getData(urlBundles, id)
 
-  eventHandler(data, isError, "bundle", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundle. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroup")
 }
@@ -174,7 +207,12 @@ export const getSingleBundle = async (id) => {
 export const addNewBundle = async (bundleData) => {
   const { data, isError } = await postData(urlBundles, bundleData)
 
-  eventHandler(data, isError, "bundle", "create", false)
+  eventHandler(
+    isError,
+    "create",
+    `Impossible to create bundle. ${data ? data.message : ""}`,
+    `Bundle ${data.data ? data.data.name : ""} created`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundle")
 }
@@ -182,7 +220,12 @@ export const addNewBundle = async (bundleData) => {
 export const editBundle = async (bundleData, id) => {
   const { data, isError } = await postData(urlBundles, bundleData, id)
 
-  eventHandler(data, isError, "bundle", "update", false)
+  eventHandler(
+    isError,
+    "update",
+    `Impossible to update bundle. ${data ? data.message : ""}`,
+    `Bundle ${data.data ? data.data.name : ""} updated`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "editedBundle")
 }
@@ -197,7 +240,11 @@ export const getAllBundleGroups = async (organisationId) => {
     url = urlBundleGroups + "?organisationId=" + organisationId
   const { data, isError } = await getData(url)
 
-  eventHandler(data, isError, "bundle groups", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundle groups. ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }
@@ -224,7 +271,11 @@ export const getAllBundleGroupsFilteredPaged = async (
   if (organisationId) url = url + "&organisationId=" + organisationId
   const { data, isError } = await getData(url)
 
-  eventHandler(data, isError, "bundle groups", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundle groups: ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }
@@ -232,7 +283,11 @@ export const getAllBundleGroupsFilteredPaged = async (
 export const getSingleBundleGroup = async (id) => {
   const { data, isError } = await getData(urlBundleGroups, id)
 
-  eventHandler(data, isError, "bundle group", "retrieve")
+  eventHandler(
+    isError,
+    "get",
+    `Impossible to load bundle group: ${data ? data.message : ""}`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroup")
 }
@@ -240,7 +295,12 @@ export const getSingleBundleGroup = async (id) => {
 export const addNewBundleGroup = async (bundleGroupData) => {
   const { data, isError } = await postData(urlBundleGroups, bundleGroupData)
 
-  eventHandler(data, isError, "bundle group", "create", false)
+  eventHandler(
+    isError,
+    "create",
+    `Impossible to create bundle group. ${data ? data.message : ""}`,
+    `Bundle group ${data.data ? data.data.name : ""} created`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundleGroup")
 }
@@ -248,7 +308,12 @@ export const addNewBundleGroup = async (bundleGroupData) => {
 export const editBundleGroup = async (bundleGroupData, id) => {
   const { data, isError } = await postData(urlBundleGroups, bundleGroupData, id)
 
-  eventHandler(data, isError, "bundle group", "update", false)
+  eventHandler(
+    isError,
+    "update",
+    `Impossible to update bundle group. ${data ? data.message : ""}`,
+    `Bundle group ${data.data ? data.data.name : ""} updated`
+  )
 
   return checkForErrorsAndSendResponse(data, isError, "editedBundleGroup")
 }
@@ -272,9 +337,9 @@ export const createAUserForAnOrganisation = async (
 
   // To be refactored using eventHandler after integration refactoring
   if (isError) {
-      fireEvent(FAIL, `Impossible to create user`)
+    fireEvent(FAIL, `Impossible to create user`)
   } else {
-      fireEvent(SUCCESS, `User created`)
+    fireEvent(SUCCESS, `User created`)
   }
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")

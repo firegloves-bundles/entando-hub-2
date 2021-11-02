@@ -78,6 +78,9 @@ const OrganisationManagementPage = () => {
     (async () => {
       setIsLoading(true)
       const organisationList = (await getAllOrganisations()).organisationList;
+      if (organisationList === undefined) {
+        setIsLoading(false)
+      }
       setOrganisations(organisationList.map(organisation=>{
         return {
           id: organisation.organisationId,

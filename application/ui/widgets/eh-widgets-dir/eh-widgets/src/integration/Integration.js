@@ -25,14 +25,15 @@ const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
   }
 }
 
-const eventHandler = (isError, action, failMessage, successMessage) => {
-  if (action === "create" || action === "update" || action === "delete") {
+const eventHandler = (isError, failMessage, successMessage) => {
+  if (successMessage) {
     if (!isError) {
       fireEvent(SUCCESS, successMessage)
     }
   }
 
   if (isError) {
+    console.error(`[ --- FATAL ERROR --- ] ${failMessage}`)
     fireEvent(FAIL, failMessage)
   }
 }
@@ -46,7 +47,6 @@ export const getAllOrganisations = async () => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load organisations. ${data ? data.message : ""}`
   )
 
@@ -58,7 +58,6 @@ export const getSingleOrganisation = async (id) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load organisation. ${data ? data.message : ""}`
   )
 
@@ -70,7 +69,6 @@ export const addNewOrganisation = async (organisationData) => {
 
   eventHandler(
     isError,
-    "create",
     `Impossible to create organisation. ${data ? data.message : ""}`,
     `Organisation ${data.data ? data.data.name : ""} created`
   )
@@ -87,7 +85,6 @@ export const editOrganisation = async (organisationData, id) => {
 
   eventHandler(
     isError,
-    "update",
     `Impossible to update organisation. ${data ? data.message : ""}`,
     `Organisation ${data.data ? data.data.name : ""} updated`
   )
@@ -101,7 +98,6 @@ export const deleteOrganisation = async (id) => {
   console.log("HERE", data, isError)
   eventHandler(
     isError,
-    "delete",
     `Impossible to delete organisation. ${data ? data.message : ""}`,
     `Organisation ${data.data ? data.data.name : ""} deleted`
   )
@@ -118,7 +114,6 @@ export const getAllCategories = async () => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load categories. ${data ? data.message : ""}`
   )
 
@@ -130,7 +125,6 @@ export const getSingleCategory = async (id) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load category. ${data ? data.message : ""}`
   )
 
@@ -142,7 +136,6 @@ export const addNewCategory = async (categoryData) => {
 
   eventHandler(
     isError,
-    "create",
     `Impossible to create category. ${data ? data.message : ""}`,
     `Category ${data.data ? data.data.name : ""} created`
   )
@@ -155,7 +148,6 @@ export const editCategory = async (categoryData, id) => {
 
   eventHandler(
     isError,
-    "update",
     `Impossible to update category. ${data ? data.message : ""}`,
     `Category ${data.data ? data.data.name : ""} updated`
   )
@@ -172,7 +164,6 @@ export const getAllBundles = async () => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundles. ${data ? data.message : ""}`
   )
 
@@ -185,7 +176,6 @@ export const getAllBundlesForABundleGroup = async (id) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundles. ${data ? data.message : ""}`
   )
 
@@ -197,7 +187,6 @@ export const getSingleBundle = async (id) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundle. ${data ? data.message : ""}`
   )
 
@@ -209,7 +198,6 @@ export const addNewBundle = async (bundleData) => {
 
   eventHandler(
     isError,
-    "create",
     `Impossible to create bundle. ${data ? data.message : ""}`,
     `Bundle ${data.data ? data.data.name : ""} created`
   )
@@ -222,7 +210,6 @@ export const editBundle = async (bundleData, id) => {
 
   eventHandler(
     isError,
-    "update",
     `Impossible to update bundle. ${data ? data.message : ""}`,
     `Bundle ${data.data ? data.data.name : ""} updated`
   )
@@ -242,7 +229,6 @@ export const getAllBundleGroups = async (organisationId) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundle groups. ${data ? data.message : ""}`
   )
 
@@ -273,7 +259,6 @@ export const getAllBundleGroupsFilteredPaged = async (
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundle groups: ${data ? data.message : ""}`
   )
 
@@ -285,7 +270,6 @@ export const getSingleBundleGroup = async (id) => {
 
   eventHandler(
     isError,
-    "get",
     `Impossible to load bundle group: ${data ? data.message : ""}`
   )
 
@@ -297,7 +281,6 @@ export const addNewBundleGroup = async (bundleGroupData) => {
 
   eventHandler(
     isError,
-    "create",
     `Impossible to create bundle group. ${data ? data.message : ""}`,
     `Bundle group ${data.data ? data.data.name : ""} created`
   )
@@ -310,7 +293,6 @@ export const editBundleGroup = async (bundleGroupData, id) => {
 
   eventHandler(
     isError,
-    "update",
     `Impossible to update bundle group. ${data ? data.message : ""}`,
     `Bundle group ${data.data ? data.data.name : ""} updated`
   )
@@ -335,12 +317,7 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
 
-  // To be refactored using eventHandler after integration refactoring
-  if (isError) {
-    fireEvent(FAIL, `Impossible to create user`)
-  } else {
-    fireEvent(SUCCESS, `User created`)
-  }
+  eventHandler(isError, `Impossible to create user`, `User created`)
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
@@ -349,10 +326,7 @@ export const createAUserForAnOrganisation = async (
 export const getAllUsers = async () => {
   const { data, isError } = await getData(urlUsers)
 
-  // To be refactored using eventHandler after integration refactoring
-  if (isError) {
-    fireEvent(FAIL, `Impossible to retrieve users`)
-  }
+  eventHandler(isError, `Impossible to load users`)
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -363,10 +337,7 @@ export const getAllUserForAnOrganisation = async (organisationId) => {
   const newUrl = `${urlUsers}?organisationId=${organisationId}`
   const { data, isError } = await getData(newUrl)
 
-  // To be refactored using eventHandler after integration refactoring
-  if (isError) {
-    fireEvent(FAIL, `Impossible to retrieve users`)
-  }
+  eventHandler(isError, `Impossible to load users`)
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -377,6 +348,8 @@ export const deleteUser = async (username) => {
   const newUrl = `${urlUsers}${username}`
   const { data, isError } = await deleteData(newUrl)
 
+  eventHandler(isError, `Impossible to delete user`, `User deleted`)
+
   return data
 }
 
@@ -386,6 +359,8 @@ export const deleteUser = async (username) => {
 export const removeUserFromOrganisation = async (organisationId, username) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
   const { data, isError } = await deleteData(newUrl)
+
+  eventHandler(isError, `Impossible to remove user`, `User removed`)
 
   return data
 }

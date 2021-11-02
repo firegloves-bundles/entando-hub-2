@@ -13,6 +13,7 @@ import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 
 import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
+import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -171,7 +172,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 id={"name"}
-                                labelText={"Name"}
+                                labelText={`Name ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -181,7 +182,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
-                                labelText={"Category"}
+                                labelText={`Category ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
                             >
                                 {selectItems_Category}
                             </Select>
@@ -198,7 +199,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 id={"documentation"}
-                                labelText={"Documentation Address"}
+                                labelText={`Documentation Address ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -213,7 +214,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
-                                labelText={"Version"}
+                                labelText={`Version ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -230,7 +231,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.status}
                                 onChange={statusChangeHandler}
                                 id={"status"}
-                                labelText={"Status"}>
+                                labelText={`Status ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>
                         </Column>
@@ -254,7 +255,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.description}
                                 onChange={descriptionChangeHandler}
                                 id={"description"}
-                                labelText={"Description"}
+                                labelText={`Description ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
                     </Row>

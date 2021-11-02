@@ -101,7 +101,7 @@
                             <image>adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.12_7</image>
                         </from>
                         <to>
-                            <image>germanogiudici/${project.artifactId}:${project.version}</image>
+                            <image>entandopsdh/${project.artifactId}:${project.version}</image>
                         </to>
                         <container>
                             <mainClass>com.entando.hub.catalog.EntandoHubCatalogApplication</mainClass>

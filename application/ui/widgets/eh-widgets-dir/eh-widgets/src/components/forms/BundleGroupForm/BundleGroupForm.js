@@ -260,7 +260,6 @@ const BundleGroupForm = ({
                         </Column>
                     </Row>
                 </Grid>
-                <div className="mandatory-label">* required field</div>
             </Content>
         </>
     )

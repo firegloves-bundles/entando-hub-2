@@ -8,12 +8,14 @@ import {
     TextArea,
     TextInput,
 } from "carbon-components-react"
+import { useState } from 'react'
 import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup"
 import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 
 import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import './bundle-group-form.scss'
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -24,6 +26,9 @@ const BundleGroupForm = ({
                              validationResult,
                          }) => {
 
+
+    const DESCRIPTION_MAX_LENGTH = 600
+    
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
@@ -244,7 +249,7 @@ const BundleGroupForm = ({
                             />
                         </Column>
 
-                        <Column sm={16} md={16} lg={16}>
+                        <Column className="bg-form-textarea" sm={16} md={16} lg={16}>
                             <TextArea
                                 invalid={!!validationResult["description"]}
                                 invalidText={
@@ -257,6 +262,7 @@ const BundleGroupForm = ({
                                 id={"description"}
                                 labelText={`Description ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
+                            <div className="bg-form-counter bx--label">{bundleGroup.description.length}/{DESCRIPTION_MAX_LENGTH}</div>
                         </Column>
                     </Row>
                 </Grid>

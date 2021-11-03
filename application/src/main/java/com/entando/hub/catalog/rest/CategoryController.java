@@ -4,19 +4,18 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 
 @RestController
 @RequestMapping("/api/category")
@@ -77,6 +76,23 @@ public class CategoryController {
             return new ResponseEntity<>(new Category(savedEntity), HttpStatus.OK);
         }
     }
+
+    @Operation(summary = "Delete a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
+    @RolesAllowed({ADMIN})
+    @CrossOrigin
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Category> deleteCategory(@PathVariable String categoryId) {
+        logger.debug("REST request to delete gategory {}", categoryId);
+        Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
+        if (!categoryOptional.isPresent()) {
+            logger.warn("Requested category '{}' does not exists", categoryId);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            categoryService.deleteCategory(categoryId);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
 
 
     @Getter

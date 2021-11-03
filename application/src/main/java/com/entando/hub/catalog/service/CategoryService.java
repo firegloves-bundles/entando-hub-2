@@ -16,15 +16,19 @@ public class CategoryService {
 
     }
 
-    public List<Category> getCategories(){
+    public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategory(String categoryId){
+    public Optional<Category> getCategory(String categoryId) {
         return categoryRepository.findById(Long.parseLong(categoryId));
     }
 
-    public Category createCategory(Category toSave){
+    public Category createCategory(Category toSave) {
         return categoryRepository.save(toSave);
+    }
+
+    public void deleteCategory(String categoryId) {
+        categoryRepository.deleteById(Long.valueOf(categoryId));
     }
 }

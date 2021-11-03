@@ -139,7 +139,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
-                <Pagination pageSizes={[ 12, 18]} page={page} pageSize={pageSize} totalItems={totalItems}
+                <Pagination pageSizes={[ 12, 18, 24]} page={page} pageSize={pageSize} totalItems={totalItems}
                             onChange={onPaginationChange}/>
             </div>
             {loading && <Loading/>}

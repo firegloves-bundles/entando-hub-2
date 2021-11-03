@@ -43,7 +43,7 @@ bundleGroupId	string
 
 const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => {
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(6)
+    const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
     const [loading, setLoading] = useState(true)
     const [selectedCategoryIds, setSelectedCategoryIds] = useState(["-1"])
@@ -139,7 +139,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
-                <Pagination pageSizes={[6, 12, 18]} page={page} pageSize={pageSize} totalItems={totalItems}
+                <Pagination pageSizes={[ 12, 18]} page={page} pageSize={pageSize} totalItems={totalItems}
                             onChange={onPaginationChange}/>
             </div>
             {loading && <Loading/>}

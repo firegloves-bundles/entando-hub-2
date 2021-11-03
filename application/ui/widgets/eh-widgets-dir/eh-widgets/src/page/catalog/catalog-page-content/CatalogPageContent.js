@@ -51,14 +51,15 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     const [categories, setCategories] = useState([])
     const [localStatusFilterValue, setLocalStatusFilerValue] = useState(null)
 
+    console.log("categories: ", categories)
+    console.log("bg: ", filteredBundleGroups)
+
     //if the statusFilter change value we need to set the page to 1
     //and query the BE
     if(localStatusFilterValue!==statusFilterValue){
         setLocalStatusFilerValue(statusFilterValue)
         setPage(1)
     }
-
-
 
     const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
 

@@ -6,8 +6,8 @@ import "./bundles-of-bundle-group.scss"
 import {
     bundleGroupSchema,
     bundleOfBundleGroupSchema,
-    fillErrors
 } from "../../../../../helpers/validation/bundleGroupSchema";
+import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 /*
 BUNDLE:
 {

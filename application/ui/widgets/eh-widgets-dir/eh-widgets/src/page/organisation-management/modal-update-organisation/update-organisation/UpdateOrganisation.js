@@ -1,6 +1,5 @@
-import {Content, TextInput,} from "carbon-components-react"
-
-
+import { Content, TextInput } from "carbon-components-react"
+import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
 /*
 
 Organisation:
@@ -13,33 +12,50 @@ Organisation:
 
 */
 
-const UpdateOrganisation = ({organisationObj, onDataChange}) => {
-
-    const changeOrganisation = (field, value) => {
-        const newObj = {
-            ...organisationObj,
-        }
-        newObj[field] = value
-        onDataChange(newObj)
+const UpdateOrganisation = ({
+  organisationObj,
+  onDataChange,
+  validationResult,
+}) => {
+  const changeOrganisation = (field, value) => {
+    const newObj = {
+      ...organisationObj,
     }
+    newObj[field] = value
+    onDataChange(newObj)
+  }
 
+  const onChangeHandler = (e, fieldName) => {
+    changeOrganisation(fieldName, e.target.value)
+  }
 
-
-    const onChangeHandler = (e,fieldName) => {
-        changeOrganisation(fieldName, e.target.value)
-    }
-
-
-    return (
-        <>
-            <Content>
-                <TextInput id="name" value={organisationObj.name} labelText="Name" onChange={(e)=>onChangeHandler(e,"name")}/>
-                <TextInput id="description" value={organisationObj.description} labelText="Description" onChange={(e)=>onChangeHandler(e,"description")}/>
-            </Content>
-        </>
-    )
-
+  return (
+    <>
+      <Content>
+        <TextInput
+          invalid={!!validationResult["name"]}
+          invalidText={
+            validationResult["name"] && validationResult["name"].join("; ")
+          }
+          id="name"
+          value={organisationObj.name}
+          labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          onChange={(e) => onChangeHandler(e, "name")}
+        />
+        <TextInput
+          invalid={!!validationResult["description"]}
+          invalidText={
+            validationResult["description"] &&
+            validationResult["description"].join("; ")
+          }
+          id="description"
+          value={organisationObj.description}
+          labelText={`Description ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          onChange={(e) => onChangeHandler(e, "description")}
+        />
+      </Content>
+    </>
+  )
 }
-
 
 export default UpdateOrganisation

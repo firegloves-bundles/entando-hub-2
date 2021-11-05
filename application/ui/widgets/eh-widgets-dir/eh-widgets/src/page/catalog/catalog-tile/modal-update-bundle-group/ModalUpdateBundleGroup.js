@@ -13,8 +13,8 @@ import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling
 import { getHigherRole } from "../../../../helpers/helpers"
 import {
   bundleGroupSchema,
-  fillErrors,
 } from "../../../../helpers/validation/bundleGroupSchema"
+import { fillErrors } from "../../../../helpers/validation/fillErrors"
 
 import "./modal-update-bundle-group.scss"
 

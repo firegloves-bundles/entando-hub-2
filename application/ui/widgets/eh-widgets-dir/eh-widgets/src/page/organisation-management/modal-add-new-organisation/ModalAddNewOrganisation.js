@@ -5,6 +5,8 @@ import {useState} from "react"
 import NewOrganisation from "./new-organisation/NewOrganisation"
 import {addNewOrganisation} from "../../../integration/Integration"
 import "./modal-add-new-organization.scss"
+import { organisationSchema } from "../../../helpers/validation/organisationSchema"
+import { fillErrors } from "../../../helpers/validation/fillErrors"
 export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
 
 
@@ -15,6 +17,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
         const [organisation, setOrganisation] = useState({})
+        const [validationResult, setValidationResult] = useState({})
 
         const onDataChange = (newOrganisation)=>{
             setOrganisation(newOrganisation)
@@ -37,6 +40,14 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             (async () => {
+                let validationError
+                await organisationSchema.validate(organisation, {abortEarly: false}).catch(error => {
+                    validationError = fillErrors(error)
+                })
+                if (validationError) {
+                    setValidationResult(validationError)
+                    return //don't send the form
+                }
                 await addNewOrganisation(organisation)
                 onRequestClose()
                 onAfterSubmit()
@@ -48,7 +59,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                 {!ModalContent || typeof document === 'undefined'
                     ? null
                     : ReactDOM.createPortal(
-                        <ModalContent open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
+                        <ModalContent validationResult={validationResult} open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
                         document.body
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
@@ -65,7 +76,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
             renderLauncher={({onRequestOpen}) => (
                 <Button onClick={onRequestOpen} renderIcon={Add16}>Add Organisation</Button>
             )}>
-            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
+            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
                 <Modal
                     modalLabel="Add"
                     className="Modal-Add-New-organization"
@@ -74,7 +85,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <NewOrganisation key={elemKey} onDataChange={onDataChange}/>
+                    <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
                 </Modal>
             )}
         </ModalStateManager>

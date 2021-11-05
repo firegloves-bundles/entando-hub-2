@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 
-export const organisationSchema = Yup.object().shape({
+export const categorySchema = Yup.object().shape({
   name: Yup.string()
     .min(3, "Name must be at least 3 characters")
     .max(25, "Name must not exceed 25 characters")

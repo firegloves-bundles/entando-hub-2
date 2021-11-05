@@ -5,6 +5,8 @@ import {useState} from "react"
 import NewCategory from "./new-category/NewCategory"
 import {addNewCategory} from "../../../integration/Integration"
 import "./modal-add-new-category.scss"
+import { categorySchema } from "../../../helpers/validation/categorySchema"
+import { fillErrors } from "../../../helpers/validation/fillErrors"
 export const ModalAddNewCategory = ({onAfterSubmit}) => {
 
 
@@ -15,6 +17,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
         const [category, setCategory] = useState({})
+        const [validationResult, setValidationResult] = useState({})
 
         const onDataChange = (newCategory)=>{
             setCategory(newCategory)
@@ -37,6 +40,14 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             (async () => {
+                let validationError
+                await categorySchema.validate(category, {abortEarly: false}).catch(error => {
+                    validationError = fillErrors(error)
+                })
+                if (validationError) {
+                    setValidationResult(validationError)
+                    return //don't send the form
+                }
                 await addNewCategory(category)
                 onRequestClose()
                 onAfterSubmit()
@@ -48,7 +59,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
                 {!ModalContent || typeof document === 'undefined'
                     ? null
                     : ReactDOM.createPortal(
-                        <ModalContent open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
+                        <ModalContent validationResult={validationResult} open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
                         document.body
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
@@ -65,7 +76,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
             renderLauncher={({onRequestOpen}) => (
                 <Button onClick={onRequestOpen} renderIcon={Add16}>Add Category</Button>
             )}>
-            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
+            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
                 <Modal
                     modalLabel="Add"
                     className="Modal-Add-New-organization"
@@ -74,7 +85,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <NewCategory key={elemKey} onDataChange={onDataChange}/>
+                    <NewCategory key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
                 </Modal>
             )}
         </ModalStateManager>

@@ -1,6 +1,7 @@
 {
   "id" : "jhipster",
-  "realm" : "jhipster",
+  "realm" : "entando",
+  "displayName" : "entando",
   "notBefore" : 0,
   "revokeRefreshToken" : false,
   "refreshTokenMaxReuse" : 0,
@@ -347,13 +348,13 @@
     "id" : "e07da50b-cddc-4524-b630-436a5a6ba8ab",
     "clientId" : "account",
     "name" : "${client_account}",
-    "baseUrl" : "/auth/realms/jhipster/account",
+    "baseUrl" : "/auth/realms/entando/account",
     "surrogateAuthRequired" : false,
     "enabled" : true,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "**********",
     "defaultRoles" : [ "manage-account", "view-profile" ],
-    "redirectUris" : [ "/auth/realms/jhipster/account/*" ],
+    "redirectUris" : [ "/auth/realms/entando/account/*" ],
     "webOrigins" : [ ],
     "notBefore" : 0,
     "bearerOnly" : false,
@@ -572,12 +573,12 @@
     "id" : "0aa176c1-8d28-4a8b-8e97-7e4b49a289ff",
     "clientId" : "security-admin-console",
     "name" : "${client_security-admin-console}",
-    "baseUrl" : "/auth/admin/jhipster/console/index.html",
+    "baseUrl" : "/auth/admin/entando/console/index.html",
     "surrogateAuthRequired" : false,
     "enabled" : true,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "**********",
-    "redirectUris" : [ "/auth/admin/jhipster/console/*" ],
+    "redirectUris" : [ "/auth/admin/entando/console/*" ],
     "webOrigins" : [ ],
     "notBefore" : 0,
     "bearerOnly" : false,
@@ -821,6 +822,7 @@
       "consentRequired" : false,
       "config" : {
         "multivalued" : "true",
+        "userinfo.token.claim" : "true",
         "user.attribute" : "foo",
         "id.token.claim" : "true",
         "access.token.claim" : "true",
@@ -1210,7 +1212,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-full-name-mapper", "oidc-usermodel-property-mapper", "oidc-usermodel-attribute-mapper", "oidc-address-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-user-attribute-mapper", "saml-role-list-mapper", "saml-user-property-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-address-mapper", "saml-role-list-mapper", "oidc-usermodel-attribute-mapper", "oidc-full-name-mapper", "saml-user-property-mapper", "saml-user-attribute-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-property-mapper" ]
       }
     }, {
       "id" : "c8d395e2-dd81-4118-b838-7095be5cc1c8",
@@ -1219,7 +1221,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-usermodel-property-mapper", "oidc-usermodel-attribute-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-address-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-full-name-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "saml-user-attribute-mapper", "saml-role-list-mapper", "saml-user-property-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-address-mapper", "oidc-full-name-mapper", "oidc-usermodel-property-mapper" ]
       }
     }, {
       "id" : "1175c6f8-2d58-437f-bb21-4660c8c1a62c",
@@ -1299,7 +1301,7 @@
   "internationalizationEnabled" : false,
   "supportedLocales" : [ ],
   "authenticationFlows" : [ {
-    "id" : "c7ffd523-59ca-496f-bee7-31a9a996a17c",
+    "id" : "ae65491d-5db6-434d-8434-182bf0696365",
     "alias" : "Handle Existing Account",
     "description" : "Handle what to do if there is existing account with same email/username like authenticated identity provider",
     "providerId" : "basic-flow",
@@ -1325,7 +1327,7 @@
       "autheticatorFlow" : true
     } ]
   }, {
-    "id" : "21e682c1-b1cf-4ff4-a606-bf7c8d04bc96",
+    "id" : "a623bfd1-ec2c-4e4e-9300-beaac1332e69",
     "alias" : "Verify Existing Account by Re-authentication",
     "description" : "Reauthentication of existing account",
     "providerId" : "basic-flow",
@@ -1345,7 +1347,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "64127c28-4b40-43d6-906a-988c83a8ba77",
+    "id" : "53fe313c-5388-4400-8990-67f5aaf07d85",
     "alias" : "browser",
     "description" : "browser based authentication",
     "providerId" : "basic-flow",
@@ -1377,7 +1379,7 @@
       "autheticatorFlow" : true
     } ]
   }, {
-    "id" : "cf35970a-b261-4eea-9a3e-109864e1a5c3",
+    "id" : "84cf957f-f180-4557-82cb-b14c1a5301a1",
     "alias" : "clients",
     "description" : "Base authentication for clients",
     "providerId" : "client-flow",
@@ -1409,7 +1411,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "1521e9bb-dbb7-4a3d-b5d6-8b7b5128529d",
+    "id" : "222870b9-cbc2-41d0-b07d-8e00336834d1",
     "alias" : "direct grant",
     "description" : "OpenID Connect Resource Owner Grant",
     "providerId" : "basic-flow",
@@ -1435,7 +1437,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "8a4f1c29-4390-4367-a5d6-d0a549f0ded4",
+    "id" : "264bf15e-fd1e-4338-aff6-478725dcb47e",
     "alias" : "docker auth",
     "description" : "Used by Docker clients to authenticate against the IDP",
     "providerId" : "basic-flow",
@@ -1449,7 +1451,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "fc11fc50-ca91-4d1f-a83a-7e7547447234",
+    "id" : "63d6b6fb-92fb-417c-88b9-f5aef3aa2d8d",
     "alias" : "first broker login",
     "description" : "Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account",
     "providerId" : "basic-flow",
@@ -1477,7 +1479,7 @@
       "autheticatorFlow" : true
     } ]
   }, {
-    "id" : "6038ea4d-bace-4898-ae90-f706306fcb8a",
+    "id" : "aae48fd7-9c61-4839-b5ea-72ea710c2c3f",
     "alias" : "forms",
     "description" : "Username, password, otp and other auth forms.",
     "providerId" : "basic-flow",
@@ -1497,7 +1499,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "a2a5ed46-3f5c-4a0a-90e1-44b0403bcf81",
+    "id" : "eb4226e7-63b6-4765-8f97-c08a15b79f74",
     "alias" : "http challenge",
     "description" : "An authentication flow based on challenge-response HTTP Authentication Schemes",
     "providerId" : "basic-flow",
@@ -1529,7 +1531,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "53697cd6-8b54-4d1d-b087-cc5d87a0cf19",
+    "id" : "ddb4d31b-78b4-480d-8cda-0d82716c2874",
     "alias" : "registration",
     "description" : "registration flow",
     "providerId" : "basic-flow",
@@ -1544,7 +1546,7 @@
       "autheticatorFlow" : true
     } ]
   }, {
-    "id" : "4ce712e1-f978-45c7-a0f6-6c37df859b49",
+    "id" : "908e9d17-e9a4-4707-8c42-dcf53ed123fa",
     "alias" : "registration form",
     "description" : "registration form",
     "providerId" : "form-flow",
@@ -1576,7 +1578,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "684297ed-845d-4761-b4d4-5fbc704edd1b",
+    "id" : "2a6d309b-634a-4f56-9067-8b5b0e4fd3f5",
     "alias" : "reset credentials",
     "description" : "Reset credentials for a user if they forgot their password or something",
     "providerId" : "basic-flow",
@@ -1608,7 +1610,7 @@
       "autheticatorFlow" : false
     } ]
   }, {
-    "id" : "ea773713-fb29-453e-bdf6-d965be9ee9dc",
+    "id" : "239da61b-74ef-4ee0-b4b2-10d3a61845f7",
     "alias" : "saml ecp",
     "description" : "SAML ECP Profile Authentication Flow",
     "providerId" : "basic-flow",
@@ -1623,13 +1625,13 @@
     } ]
   } ],
   "authenticatorConfig" : [ {
-    "id" : "55cc728e-de0d-4a24-abd3-d142b491a64a",
+    "id" : "6ef25615-5519-4f5f-bd05-143f27097ecf",
     "alias" : "create unique user config",
     "config" : {
       "require.password.update.after.registration" : "false"
     }
   }, {
-    "id" : "1be2385b-1920-4f43-8b0f-dac363f4ff3f",
+    "id" : "fdc0adfd-eaff-4567-80e2-95a2a2ae83dd",
     "alias" : "review profile config",
     "config" : {
       "update.profile.on.first.login" : "missing"
@@ -1688,6 +1690,7 @@
     "_browser_header.strictTransportSecurity" : "max-age=31536000; includeSubDomains",
     "permanentLockout" : "false",
     "quickLoginCheckMilliSeconds" : "1000",
+    "displayName" : "entando",
     "_browser_header.xRobotsTag" : "none",
     "maxFailureWaitSeconds" : "900",
     "minimumQuickLoginWaitSeconds" : "60",

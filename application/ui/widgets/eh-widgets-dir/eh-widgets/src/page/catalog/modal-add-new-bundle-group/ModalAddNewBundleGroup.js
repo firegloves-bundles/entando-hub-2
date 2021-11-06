@@ -15,12 +15,9 @@ import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 
-
 /*
-    TODO code cut and pasted from the crabon documentation can be semplified
     This component manages the modal for adding a new bundle group
 */
-
 export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
 
@@ -77,8 +74,14 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                     setSelectStatusValues(selectStatusValues)
                     setAllowedOrganisations(localAllowedOrganisations)
                     //default values
-                    const filtered = categoryList.filter(cat => cat.name === "Solution Template")
-                    let defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
+                    let defaultCategoryId = null;
+                    if (categoryList) {
+                        const filtered = categoryList && categoryList.filter(cat => cat.name === "Solution Template")
+                        if (filtered) {
+                            defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
+                        }
+                    }
+                    const organizationId = (localAllowedOrganisations) ? localAllowedOrganisations[0].organisationId : null;
                     const newObj = {
                         name: "",
                         description: "",
@@ -88,7 +91,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                         categories: [defaultCategoryId],
                         version: "",
                         status: "NOT_PUBLISHED",
-                        organisationId: localAllowedOrganisations[0].organisationId
+                        organisationId: organizationId
                     }
 
                     setBundleGroup(newObj)

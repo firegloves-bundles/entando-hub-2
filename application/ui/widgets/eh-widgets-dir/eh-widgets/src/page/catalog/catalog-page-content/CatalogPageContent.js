@@ -74,11 +74,15 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             if (data.isError) {
                 setLoading(false)
             }
-            let filtered = data.bundleGroupList.payload
-            const metadata = data.bundleGroupList.metadata
-            setPage(metadata.page)
-            setPageSize(metadata.pageSize)
-            setTotalItems(metadata.totalItems)
+            let filtered = null;
+            let metadata = null;
+            if (data.bundleGroupList) {
+                filtered = data.bundleGroupList.payload;
+                metadata = data.bundleGroupList.metadata
+                setPage(metadata.page)
+                setPageSize(metadata.pageSize)
+                setTotalItems(metadata.totalItems)
+            }
             return filtered
         }
 

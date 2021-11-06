@@ -39,9 +39,9 @@ public class BundleGroupService {
 
     public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
         Pageable paging;
-        if(pageSize == 0){
+        if (pageSize == 0) {
             paging = Pageable.unpaged();
-        }else{
+        } else {
             paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         }
         Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
@@ -124,5 +124,28 @@ public class BundleGroupService {
             toUpdate.setBundles(bundleSet);
         }
 
+    }
+
+    @Transactional
+    public void deleteBundleGroup(String bundleGroupId) {
+        Long id = Long.valueOf(bundleGroupId);
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
+        byId.ifPresent(bundleGroup -> {
+            deleteFromCategories(bundleGroup);
+            deleteFromBundles(bundleGroup);
+            bundleGroupRepository.delete(bundleGroup);
+        });
+    }
+    public void deleteFromCategories(BundleGroup bundleGroup) {
+        bundleGroup.getCategories().forEach((category) -> {
+            category.getBundleGroups().remove(bundleGroup);
+            categoryRepository.save(category);
+        });
+    }
+    public void deleteFromBundles(BundleGroup bundleGroup) {
+        bundleGroup.getBundles().forEach((bundle) -> {
+            bundle.getBundleGroups().remove(bundleGroup);
+            bundleRepository.save(bundle);
+        });
     }
 }

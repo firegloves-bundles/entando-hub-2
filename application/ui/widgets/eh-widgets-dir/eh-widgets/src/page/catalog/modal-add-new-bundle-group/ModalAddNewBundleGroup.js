@@ -81,7 +81,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                             defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
                         }
                     }
-                    const organizationId = (localAllowedOrganisations) ? localAllowedOrganisations[0].organisationId : null;
+                    const organizationId = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0].organisationId : null;
                     const newObj = {
                         name: "",
                         description: "",

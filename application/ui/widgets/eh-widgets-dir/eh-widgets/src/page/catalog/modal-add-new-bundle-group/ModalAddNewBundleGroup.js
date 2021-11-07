@@ -9,7 +9,7 @@ import {
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import {bundleGroupSchema, fillErrors} from "../../../helpers/validation/bundleGroupSchema";
-import {getProfiledNewSelecSatustInfo} from "../../../helpers/profiling";
+import {getProfiledNewSelectStatusInfo} from "../../../helpers/profiling";
 import {getHigherRole, isHubAdmin} from "../../../helpers/helpers";
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
@@ -68,7 +68,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 } else {
                     localAllowedOrganisations = (await getAllOrganisations()).organisationList
                 }
-                const selectStatusValues = getProfiledNewSelecSatustInfo(getHigherRole())
+                const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
                 if (isMounted) {
                     setCategories(categoryList)
                     setSelectStatusValues(selectStatusValues)

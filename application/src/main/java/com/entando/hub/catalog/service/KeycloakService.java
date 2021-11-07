@@ -4,6 +4,8 @@ import com.entando.hub.catalog.service.exception.OidcException;
 import com.entando.hub.catalog.service.model.AuthResponse;
 import com.entando.hub.catalog.service.model.UserRepresentation;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,8 @@ import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 
 @Service
 public class KeycloakService {
+
+    private final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
 
     private OpenIDConnectService oidcService;
     private KeycloakSpringBootProperties configuration;
@@ -87,6 +91,7 @@ public class KeycloakService {
 
     private <T, Y> ResponseEntity<Y> executeRequest(final String url, final HttpMethod method, final HttpEntity<T> entity,
                                                     final Class<Y> result, final Map<String, String> params, int retryCount) {
+        logger.debug("Service call at: {}", url);
         this.authenticate();
         final RestTemplate restTemplate = new RestTemplate();
         try {
@@ -96,10 +101,12 @@ public class KeycloakService {
             return restTemplate.exchange(builder.build().toUri(), method, createEntity(entity.getBody()), result);
         } catch (HttpClientErrorException e) {
             if (HttpStatus.FORBIDDEN.equals(e.getStatusCode()) || (HttpStatus.UNAUTHORIZED.equals(e.getStatusCode()) && retryCount > 10)) {
-                throw new RuntimeException("There was an error while trying to load user because the " +
+                String message = String.format("There was an error while trying to load user because the " +
                         "client on Keycloak doesn't have permission to do that. " +
                         "The client needs to have Service Accounts enabled and the permission 'realm-admin' on client 'realm-management'. " +
-                        "For more details, refer to the wiki " + OpenIDConnectService.EN_APP_CLIENT_FORBIDDEN, e);
+                        "For more details, refer to the wiki %s. Error: %s", OpenIDConnectService.EN_APP_CLIENT_FORBIDDEN, e.getMessage());
+                logger.warn("Service failure: {}", message);
+                throw new RuntimeException(message, e);
             }
             if (HttpStatus.UNAUTHORIZED.equals(e.getStatusCode())) {
                 invalidateToken();

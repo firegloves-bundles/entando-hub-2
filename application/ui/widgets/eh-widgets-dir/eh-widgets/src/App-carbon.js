@@ -18,8 +18,10 @@ function AppCarbon() {
             <Switch>
                 <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage}/>
-                <RouteWithGate gateFunction={isHubAdmin} path="**/orgs*" component={OrganisationManagementPage}/>
-                <RouteWithGate gateFunction={isHubAdmin} path="**/cats*" component={CategoryManagementPage}/>
+                <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage}/>
+                <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage}/>
+                <RouteWithGate gateFunction={isHubAdmin} path="**/categories*" component={CategoryManagementPage}/>
+                <RouteWithGate gateFunction={isHubAdmin} path="**/category*" component={CategoryManagementPage}/>
                 <Route path="**/unauthorized">
                     UNAUTHORIZED
                 </Route>

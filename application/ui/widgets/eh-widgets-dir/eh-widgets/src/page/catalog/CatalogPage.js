@@ -63,7 +63,7 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  Search
+                  Search1
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

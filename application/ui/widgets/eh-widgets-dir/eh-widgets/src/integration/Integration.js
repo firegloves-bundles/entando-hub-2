@@ -8,7 +8,7 @@ const urlBundles = `${process.env.REACT_APP_PUBLIC_API_URL}/bundles/`
 const urlBundleGroups = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/`
 const urlBundleGroupsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/filtered`
 const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
-const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloack/`
+const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {

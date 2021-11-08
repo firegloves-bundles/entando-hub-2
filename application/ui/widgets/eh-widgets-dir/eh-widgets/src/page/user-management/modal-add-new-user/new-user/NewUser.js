@@ -44,7 +44,7 @@ const NewUser = ({onDataChange}) => {
         const kcUsers = (await getAllKCUsers()).kcUsers
         const portalUserUsernames = (await getAllUsers()).userList.map(u=>u.username)
 
-        return kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
+        return kcUsers && kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
     }
 
     useEffect(() => {
@@ -76,7 +76,7 @@ const NewUser = ({onDataChange}) => {
             />
         )
     })
-    const selectItems_AvailableUsers = availableUsers.map((user) => {
+    const selectItems_AvailableUsers = availableUsers && availableUsers.map((user) => {
         return (
             <SelectItem
                 key={user.username}

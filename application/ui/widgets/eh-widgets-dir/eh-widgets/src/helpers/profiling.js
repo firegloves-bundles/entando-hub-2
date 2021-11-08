@@ -78,7 +78,7 @@ export const getProfiledStatusSelectAllValues = (role) => {
 }
 
 
-export const getProfiledNewSelecSatustInfo = (higherRole) => {
+export const getProfiledNewSelectStatusInfo = (higherRole) => {
     if (higherRole === AUTHOR) {
         return {
             values: [

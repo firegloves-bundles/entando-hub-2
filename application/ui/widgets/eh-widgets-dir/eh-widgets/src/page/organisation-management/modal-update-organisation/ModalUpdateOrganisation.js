@@ -1,7 +1,7 @@
 import {Modal} from "carbon-components-react"
 import {useCallback, useState} from "react"
 import UpdateOrganisation from "./update-organisation/UpdateOrganisation"
-import {editOrganisation} from "../../../integration/Integration"
+import {editOrganisation, getSingleOrganisation} from "../../../integration/Integration"
 import { organisationSchema } from "../../../helpers/validation/organisationSchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import "./modal-update-organization.scss"
@@ -19,6 +19,10 @@ export const ModalUpdateOrganisation = ({organisationObj, open, onCloseModal, on
         onCloseModal()
     }
 
+    const getBundleGroupsForAnOrganisation = async (organisationId) => {
+        const org = await getSingleOrganisation(organisationId)
+        return org.organisation.bundleGroups
+    }
 
     const onRequestSubmit = (e) => {
         (async () => {
@@ -30,9 +34,11 @@ export const ModalUpdateOrganisation = ({organisationObj, open, onCloseModal, on
                 setValidationResult(validationError)
                 return //don't send the form
             }
+            const bundleGroups = await getBundleGroupsForAnOrganisation(organisation.organisationId)
             await editOrganisation({
                 name: organisation.name,
-                description: organisation.description
+                description: organisation.description,
+                bundleGroups: bundleGroups
             }, organisation.organisationId)
             onCloseModal()
             onAfterSubmit()

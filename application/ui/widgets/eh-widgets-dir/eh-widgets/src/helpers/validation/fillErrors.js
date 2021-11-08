@@ -1,5 +1,3 @@
-import * as Yup from "yup"
-
 export const fillErrors = (yupError) => {
     return yupError.inner
       .map((entry) => {

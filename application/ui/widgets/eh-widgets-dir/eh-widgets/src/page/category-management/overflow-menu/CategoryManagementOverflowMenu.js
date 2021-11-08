@@ -1,9 +1,6 @@
 import { OverflowMenu, OverflowMenuItem } from "carbon-components-react"
 import { useState } from "react"
 import { ModalUpdateCategory } from "../modal-update-category/ModalUpdateCategory"
-import {
-  getSingleCategory,
-} from "../../../integration/Integration"
 
 const CategoryManagementOverflowMenu = ({
   categoryObj,

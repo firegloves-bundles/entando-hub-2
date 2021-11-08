@@ -23,36 +23,12 @@ export const ModalUpdateOrganisation = ({
     onCloseModal()
   }
 
-  const onRequestSubmit = (e) => {
-    ;(async () => {
-      let validationError
-      await organisationSchema
-        .validate(organisation, { abortEarly: false })
-        .catch((error) => {
-          validationError = fillErrors(error)
-        })
-      if (validationError) {
-        setValidationResult(validationError)
-        return //don't send the form
-      }
-      await editOrganisation(
-        {
-          name: organisation.name,
-          description: organisation.description,
-        },
-        organisation.organisationId
-      )
-      onCloseModal()
-      onAfterSubmit()
-    })()
-  }
-
   const getBundleGroupsForAnOrganisation = async (organisationId) => {
         const org = await getSingleOrganisation(organisationId)
         return org.organisation.bundleGroups
   }
 
-   const onRequestSubmit = (e) => {
+  const onRequestSubmit = (e) => {
         (async () => {
             let validationError
             await organisationSchema.validate(organisation, {abortEarly: false}).catch(error => {
@@ -71,9 +47,9 @@ export const ModalUpdateOrganisation = ({
             onCloseModal()
             onAfterSubmit()
         })()
-    }
+  }
 
-    return (
+  return (
         <Modal
             modalLabel="Edit"
             className="Modal-Update-organization"
@@ -87,5 +63,5 @@ export const ModalUpdateOrganisation = ({
                onDataChange={onDataChange}
                validationResult={validationResult}/>
         </Modal>
-    )
+  )
 }

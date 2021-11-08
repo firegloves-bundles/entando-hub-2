@@ -78,7 +78,6 @@ const CategoryManagementPage = () => {
     (async () => {
       setIsLoading(true)
       const categoryList = (await getAllCategories()).categoryList;
-      console.log("CL", categoryList)
       if (categoryList === undefined) {
         setIsLoading(false)
       }

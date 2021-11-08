@@ -2,11 +2,11 @@ import * as Yup from "yup"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, "Name must be at least 4 characters")
+    .min(3, "Name must be at least 3 characters")
     .max(25, "Name must not exceed 25 characters")
     .required("Name is a required field"),
   description: Yup.string()
-    .min(4, "Description must be at least 4 characters")
+    .min(3, "Description must be at least 3 characters")
     .max(600, "Description must not exceed 600 characters")
     .required("Description is a required field"),
   documentationUrl: Yup.string()

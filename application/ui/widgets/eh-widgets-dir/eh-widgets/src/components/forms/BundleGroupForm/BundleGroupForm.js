@@ -8,7 +8,6 @@ import {
     TextArea,
     TextInput,
 } from "carbon-components-react"
-import { useState } from 'react'
 import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup"
 import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 
@@ -84,7 +83,7 @@ const BundleGroupForm = ({
             <SelectItem key={index} value={curr.value} text={curr.text}/>
         ))
 
-    const selectItems_Category = categories.map((category) => {
+    const selectItems_Category = categories && categories.map((category) => {
         return (
             <SelectItem
                 key={category.categoryId}

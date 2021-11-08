@@ -21,7 +21,7 @@ import javax.annotation.security.RolesAllowed;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
-@RequestMapping("/api/keycloack")
+@RequestMapping("/api/keycloak")
 public class KeycloakUserController {
     
     private final Logger logger = LoggerFactory.getLogger(KeycloakUserController.class);

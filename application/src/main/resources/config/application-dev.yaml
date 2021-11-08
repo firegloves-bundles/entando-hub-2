@@ -13,7 +13,6 @@ logging:
       springframework:
         security: DEBUG
 
-
 spring:
   h2:
     console:
@@ -34,9 +33,13 @@ spring:
 
 
 keycloak:
-  auth-url: http://hubdev.okd-entando.org/auth
-  client-id:
-  client-secret:
+  auth-url: http://localhost:9080/auth
+  client-id: internal
+  client-secret: internal
+#Enable these settings to use an external keycloak
+#  auth-url: http://hubdev.okd-entando.org/auth
+#  client-id: entandopsdh-entando-hub-catalog-server
+#  client-secret: ADD HERE BUT DO NOT COMMIT
   ssl-required: none
   auth-server-url: ${keycloak.auth-url}
   bearer-only: true

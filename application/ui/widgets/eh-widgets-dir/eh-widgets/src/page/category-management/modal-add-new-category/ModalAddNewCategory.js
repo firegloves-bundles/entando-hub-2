@@ -2,12 +2,10 @@ import {Button, Modal} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import {useState} from "react"
-import NewOrganisation from "./new-organisation/NewOrganisation"
-import {addNewOrganisation} from "../../../integration/Integration"
-import "./modal-add-new-organization.scss"
-import { organisationSchema } from "../../../helpers/validation/organisationSchema"
-import { fillErrors } from "../../../helpers/validation/fillErrors"
-export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
+import NewCategory from "./new-category/NewCategory"
+import {addNewCategory} from "../../../integration/Integration"
+import "./modal-add-new-category.scss"
+export const ModalAddNewCategory = ({onAfterSubmit}) => {
 
 
     const ModalStateManager = ({
@@ -16,11 +14,10 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                                }) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
-        const [organisation, setOrganisation] = useState({})
-        const [validationResult, setValidationResult] = useState({})
+        const [category, setCategory] = useState({})
 
-        const onDataChange = (newOrganisation)=>{
-            setOrganisation(newOrganisation)
+        const onDataChange = (newCategory)=>{
+            setCategory(newCategory)
         }
 
 
@@ -40,15 +37,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             (async () => {
-                let validationError
-                await organisationSchema.validate(organisation, {abortEarly: false}).catch(error => {
-                    validationError = fillErrors(error)
-                })
-                if (validationError) {
-                    setValidationResult(validationError)
-                    return //don't send the form
-                }
-                await addNewOrganisation(organisation)
+                await addNewCategory(category)
                 onRequestClose()
                 onAfterSubmit()
             })()
@@ -59,7 +48,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                 {!ModalContent || typeof document === 'undefined'
                     ? null
                     : ReactDOM.createPortal(
-                        <ModalContent validationResult={validationResult} open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
+                        <ModalContent open={open} onRequestClose={onRequestClose} onDataChange={onDataChange} onRequestSubmit={onRequestSubmit} elemKey={elemKey}/>,
                         document.body
                     )}
                 {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
@@ -74,9 +63,9 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Organisation</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Category</Button>
             )}>
-            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
+            {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
                     modalLabel="Add"
                     className="Modal-Add-New-organization"
@@ -85,7 +74,7 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
+                    <NewCategory key={elemKey} onDataChange={onDataChange}/>
                 </Modal>
             )}
         </ModalStateManager>

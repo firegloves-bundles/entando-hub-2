@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -128,6 +129,27 @@ public class BundleGroupController {
             }
             com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
             return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.OK);
+        }
+    }
+
+
+    @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
+    @RolesAllowed({ADMIN, MANAGER})
+    @CrossOrigin
+    @DeleteMapping("/{bundleGroupId}")
+    @Transactional
+    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
+        logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
+        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        if (!bundleGroupOptional.isPresent() || !bundleGroupOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.DELETE_REQ)) {
+            bundleGroupOptional.ifPresentOrElse(
+                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not in DELETE_REQ status: {}", bundleGroupId, bundleGroup.getStatus()),
+                    () -> logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId)
+            );
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            bundleGroupService.deleteBundleGroup(bundleGroupId);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
 

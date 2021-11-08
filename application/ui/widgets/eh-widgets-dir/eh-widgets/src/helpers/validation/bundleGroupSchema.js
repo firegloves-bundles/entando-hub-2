@@ -16,7 +16,7 @@ export const bundleGroupSchema = Yup.object().shape({
     )
     .required("Documentation is a required field"),
   status: Yup.string().required("Status is a required field"),
-  version: Yup.string().matches(/^([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "Version must match semantic versioning format (e.g. x.x.x)").required("Version is a required field"),
+  version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)").required("Version is a required field"),
   children: Yup.array().of(
     Yup.object().shape({
       bundleGroups: Yup.array().of(Yup.string()),
@@ -42,23 +42,6 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
         )
 })
 
-export const fillErrors = (yupError) => {
-  return yupError.inner
-    .map((entry) => {
-      return { path: entry.path, message: entry.message }
-    })
-    .reduce((previousValue, currentValue) => {
-      const ret = { ...previousValue }
-      const previousPathMessages = previousValue[currentValue.path]
-      if (previousPathMessages) {
-        ret[currentValue.path] = previousPathMessages.concat([
-          currentValue.message,
-        ])
-      } else {
-        ret[currentValue.path] = [currentValue.message]
-      }
-      return ret
-    }, {})
-}
+
 
 

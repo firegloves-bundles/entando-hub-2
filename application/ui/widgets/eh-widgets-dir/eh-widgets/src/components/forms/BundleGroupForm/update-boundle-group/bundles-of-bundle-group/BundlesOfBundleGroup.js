@@ -5,8 +5,8 @@ import {Add16} from '@carbon/icons-react'
 import "./bundles-of-bundle-group.scss"
 import {
     bundleOfBundleGroupSchema,
-    fillErrors
 } from "../../../../../helpers/validation/bundleGroupSchema";
+import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 /*
 BUNDLE:
 {

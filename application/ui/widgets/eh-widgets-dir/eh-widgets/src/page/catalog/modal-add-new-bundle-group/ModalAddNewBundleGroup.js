@@ -8,7 +8,8 @@ import {
     getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
-import {bundleGroupSchema, fillErrors} from "../../../helpers/validation/bundleGroupSchema";
+import {bundleGroupSchema} from "../../../helpers/validation/bundleGroupSchema";
+import {fillErrors} from "../../../helpers/validation/fillErrors"
 import {getProfiledNewSelectStatusInfo} from "../../../helpers/profiling";
 import {getHigherRole, isHubAdmin} from "../../../helpers/helpers";
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
@@ -37,7 +38,6 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)

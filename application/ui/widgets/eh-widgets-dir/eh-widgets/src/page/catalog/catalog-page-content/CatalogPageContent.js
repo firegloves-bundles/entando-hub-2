@@ -58,8 +58,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         setPage(1)
     }
 
-
-
     const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
 
         const userOrganisation = await getCurrentUserOrganisation()

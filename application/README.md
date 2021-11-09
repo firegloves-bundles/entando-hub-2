@@ -3,7 +3,7 @@ This project is ent-enabled so you can use the ent cli (https://dev.entando.org/
 
 ### Setup the project directory.
 1. Prepare the bundle directory: `cp -r bundle_src bundle`
-2. Initialize the project: `ent prj init`
+2. Initialize the project: `ent prj init` (use entando-hub to match the bundle name in the integration environment)
 3. Initialize publication: `ent prj pbs-init` (requires the git bundle repo url)
 
 ### Publish the bundle.

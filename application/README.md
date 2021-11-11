@@ -35,7 +35,7 @@ This style of development is for a developer who wants to run keycloak, frontend
 
 ### Local testing
 You can use the following commands from the application folder to run the local stack 
-* `ent prj xk start` - or stop to shutdown keycloak again.
+* `ent prj xk start` - or stop to shutdown keycloak again. If docker-compose is only available to a superuser, you may need to create the `keycloak-db/content` directory as your regular user (`mkdir -p src/main/docker/keycloak-db/content`) and then start keycloak via `sudo docker-compose -f src/main/docker/keycloak.yml up`. This will work around permission issues mounted the h2 data store. 
 * `ent prj be-test-run` - to run the microservice
   persistent database (entando-data) with data preload (data.sql) The
   h2 console can be accessed here: http://localhost:8081/h2-console/

@@ -59,11 +59,13 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
 const BundlesOfBundleGroup = ({
                                   onAddOrRemoveBundleFromList,
                                   initialBundleList,
-                                  disabled = false
+                                  disabled = false,
+                                  onBundleUrl
                               }) => {
 
     useEffect(() => {
         setBundleList(initialBundleList)
+        onBundleUrl(onAddBundle);
     }, [initialBundleList])
 
     const [bundleList, setBundleList] = useState([])
@@ -114,7 +116,7 @@ const BundlesOfBundleGroup = ({
 
     const textInputProps = {
         id: "bundle",
-        labelText: "Add Url Bundle",
+        labelText: "Add Url Bundle *",
     }
 
     return (

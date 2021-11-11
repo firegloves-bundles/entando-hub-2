@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,15 +86,20 @@ public class BundleGroupService {
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId,HttpServletRequest request) {
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
-        updateMappedBy(entity, bundleGroupNoId);
+        updateMappedBy(entity, bundleGroupNoId,request);
         return entity;
     }
 
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup,HttpServletRequest request) {
         Objects.requireNonNull(toUpdate.getId());
+        if(request != null) {
+        	String bundleGroupUrl = request.getRequestURI();
+        	toUpdate.setBundleGroupUrl(bundleGroupUrl+"/bundlegroup/"+toUpdate.getId());
+        	bundleGroup.setBundleGroupUrl(bundleGroupUrl+"/bundlegroup/"+bundleGroup.getId());
+        }
         if (bundleGroup.getCategories() != null) {
             //remove the bundle group from all the categories containing it
             //TODO native query to improve performance

@@ -38,11 +38,11 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [bundleErrorFunc, setBundleErrorFunc] = useState(null);
+        const [bundleErrorFunc, setBundleErrorFunc] = useState([]);
 
-        const callOnAddBundleFunc = (bundleUrlErrorFunc) => {
+        const callOnAddBundleFunc = useCallback((bundleUrlErrorFunc) => {
             setBundleErrorFunc(() => bundleUrlErrorFunc);
-        }
+        }, [])
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)

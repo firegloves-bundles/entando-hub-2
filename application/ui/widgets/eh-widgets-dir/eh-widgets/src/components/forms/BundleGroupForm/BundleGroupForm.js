@@ -23,7 +23,7 @@ const BundleGroupForm = ({
                              onDataChange,
                              selectStatusValues,
                              validationResult,
-                             onBundleUrl,
+                             onBundleUrl = ()=>{},
                          }) => {
 
 

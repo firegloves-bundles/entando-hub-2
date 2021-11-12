@@ -57,15 +57,15 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
 }
 
 const BundlesOfBundleGroup = ({
-                                  onAddOrRemoveBundleFromList,
-                                  initialBundleList,
-                                  disabled = false,
-                                  onBundleUrl
-                              }) => {
+    onAddOrRemoveBundleFromList,
+    initialBundleList,
+    disabled = false,
+    onBundleUrl
+}) => {
 
     useEffect(() => {
         setBundleList(initialBundleList)
-        onBundleUrl(onAddBundle);
+        onBundleUrl((onAddBundle) ? onAddBundle : []);
     }, [initialBundleList])
 
     const [bundleList, setBundleList] = useState([])
@@ -104,6 +104,7 @@ const BundlesOfBundleGroup = ({
             setBundleList(newBundleList)
             onAddOrRemoveBundleFromList(newBundleList)
             setGitRepo("")
+            onBundleUrl(onAddBundle);
         })()
     }
 

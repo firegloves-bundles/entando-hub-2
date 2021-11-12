@@ -18,6 +18,13 @@ public class AppBuilderBundleGroupsController {
     @CrossOrigin
     @GetMapping("/")
     public PagedContent<BundleGroupController.BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+    	/**
+	 * EHUB-134
+	 */
+	if (Objects.isNull(statuses)) {
+		statuses = new String[1];
+		statuses[0] = BundleGroup.Status.PUBLISHED.toString();
+	}
         return bundleGroupController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses);
     }
 

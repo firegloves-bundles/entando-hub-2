@@ -2,7 +2,12 @@ package com.entando.hub.catalog.rest;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.util.Objects;
+
 import org.springframework.web.bind.annotation.*;
+
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundlegroups")

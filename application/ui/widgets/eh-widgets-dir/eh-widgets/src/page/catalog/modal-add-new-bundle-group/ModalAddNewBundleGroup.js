@@ -64,7 +64,8 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 const categoryList = (await getAllCategories()).categoryList
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
-                    localAllowedOrganisations = [(await getCurrentUserOrganisation())]
+                    const currentUserOrganisation = await getCurrentUserOrganisation();
+                    localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
                     localAllowedOrganisations = (await getAllOrganisations()).organisationList
                 }

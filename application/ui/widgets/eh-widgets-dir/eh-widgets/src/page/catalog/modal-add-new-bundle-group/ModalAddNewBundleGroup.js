@@ -1,31 +1,31 @@
-import {Button, Loading, Modal} from "carbon-components-react"
-import {Add16} from '@carbon/icons-react'
+import { Button, Loading, Modal } from "carbon-components-react"
+import { Add16 } from '@carbon/icons-react'
 import ReactDOM from "react-dom"
-import {useCallback, useEffect, useState} from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
     addNewBundle,
     addNewBundleGroup,
     getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
-import {bundleGroupSchema} from "../../../helpers/validation/bundleGroupSchema";
-import {fillErrors} from "../../../helpers/validation/fillErrors"
-import {getProfiledNewSelectStatusInfo} from "../../../helpers/profiling";
-import {getHigherRole, isHubAdmin} from "../../../helpers/helpers";
-import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
+import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import { fillErrors } from "../../../helpers/validation/fillErrors"
+import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
+import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
+import { getCurrentUserOrganisation } from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 
 /*
     This component manages the modal for adding a new bundle group
 */
-export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
+export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
 
 
     const ModalStateManager = ({
-                                   renderLauncher: LauncherContent,
-                                   children: ModalContent,
-                               }) => {
+        renderLauncher: LauncherContent,
+        children: ModalContent,
+    }) => {
         const [open, setOpen] = useState(false)
         const [elemKey, setElemKey] = useState(((new Date()).getTime()).toString()) //to clear form data
 
@@ -38,6 +38,11 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
+        const [bundleErrorFunc, setBundleErrorFunc] = useState([]);
+
+        const callOnAddBundleFunc = useCallback((bundleUrlErrorFunc) => {
+            setBundleErrorFunc(() => bundleUrlErrorFunc);
+        }, [])
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)
@@ -64,7 +69,8 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                 const categoryList = (await getAllCategories()).categoryList
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
-                    localAllowedOrganisations = [(await getCurrentUserOrganisation())]
+                    const currentUserOrganisation = await getCurrentUserOrganisation();
+                    localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
                     localAllowedOrganisations = (await getAllOrganisations()).organisationList
                 }
@@ -128,14 +134,21 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
         //Manage the modal submit
         const onRequestSubmit = (e) => {
             //when submitting the form, the data to save are in newBundleGroup object
-
             (async () => {
                 let validationError
-                await bundleGroupSchema.validate(bundleGroup, {abortEarly: false}).catch(error => {
+                await bundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
                     validationError = fillErrors(error)
                 })
+                let isChildGroupValidate = false;
+                if (bundleGroup.children && bundleGroup.children.length === 0) {
+                    isChildGroupValidate = true;
+                    bundleErrorFunc();
+                }
                 if (validationError) {
                     setValidationResult(validationError)
+                    return //don't send the form
+                }
+                if (isChildGroupValidate === true) {
                     return //don't send the form
                 }
                 const toSend = await createNewBundleGroup(bundleGroup)
@@ -152,20 +165,21 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
                     ? null
                     : ReactDOM.createPortal(
                         <ModalContent open={open}
-                                      onRequestClose={onRequestClose}
-                                      onDataChange={onDataChange}
-                                      onRequestSubmit={onRequestSubmit}
-                                      elemKey={elemKey}
-                                      validationResult={validationResult}
-                                      allowedOrganisations={allowedOrganisations}
-                                      categories={categories}
-                                      selectStatusValues={selectStatusValues}
-                                      bundleGroup={bundleGroup}
-                                      loading={loading}
+                            onRequestClose={onRequestClose}
+                            onDataChange={onDataChange}
+                            onRequestSubmit={onRequestSubmit}
+                            elemKey={elemKey}
+                            validationResult={validationResult}
+                            allowedOrganisations={allowedOrganisations}
+                            categories={categories}
+                            selectStatusValues={selectStatusValues}
+                            bundleGroup={bundleGroup}
+                            loading={loading}
+                            onBundleUrl={callOnAddBundleFunc}
                         />,
                         document.body
                     )}
-                {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen}/>}
+                {LauncherContent && <LauncherContent onRequestOpen={onRequestOpen} />}
             </>
         )
     }
@@ -173,7 +187,7 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
     return (
         <ModalStateManager
-            renderLauncher={({onRequestOpen}) => (
+            renderLauncher={({ onRequestOpen }) => (
                 <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
             )}>
             {ModalContent}
@@ -182,36 +196,36 @@ export const ModalAddNewBundleGroup = ({onAfterSubmit}) => {
 
 }
 
-
 const ModalContent = ({
-                          open,
-                          onRequestClose,
-                          onDataChange,
-                          onRequestSubmit,
-                          elemKey,
-                          validationResult,
-                          bundleGroup,
-                          selectStatusValues,
-                          allowedOrganisations,
-                          categories,
-                          loading
-                      }) => {
+    open,
+    onRequestClose,
+    onDataChange,
+    onRequestSubmit,
+    elemKey,
+    validationResult,
+    bundleGroup,
+    selectStatusValues,
+    allowedOrganisations,
+    categories,
+    loading,
+    onBundleUrl
+}) => {
     return (
         <>
-            {loading && <Loading/>}
+            {loading && <Loading />}
             {!loading &&
-            <Modal
-                className="Modal-Add-New-bundle-group"
-                modalLabel="Add"
-                primaryButtonText="Add"
-                secondaryButtonText="Cancel"
-                open={open}
-                onRequestClose={onRequestClose}
-                onRequestSubmit={onRequestSubmit}>
-                <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
-                                 categories={categories} selectStatusValues={selectStatusValues}
-                                 onDataChange={onDataChange} validationResult={validationResult}/>
-            </Modal>
+                <Modal
+                    className="Modal-Add-New-bundle-group"
+                    modalLabel="Add"
+                    primaryButtonText="Add"
+                    secondaryButtonText="Cancel"
+                    open={open}
+                    onRequestClose={onRequestClose}
+                    onRequestSubmit={onRequestSubmit}>
+                    <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
+                        categories={categories} selectStatusValues={selectStatusValues}
+                        onDataChange={onDataChange} validationResult={validationResult} onBundleUrl={onBundleUrl} />
+                </Modal>
             }        </>
     )
 }

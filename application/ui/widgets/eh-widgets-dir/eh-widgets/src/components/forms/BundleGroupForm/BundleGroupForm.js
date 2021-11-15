@@ -23,6 +23,7 @@ const BundleGroupForm = ({
                              onDataChange,
                              selectStatusValues,
                              validationResult,
+                             onBundleUrl = ()=>{},
                          }) => {
 
 
@@ -245,6 +246,7 @@ const BundleGroupForm = ({
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                 initialBundleList={bundleGroup.children}
                                 disabled={disabled}
+                                onBundleUrl={onBundleUrl}
                             />
                         </Column>
 

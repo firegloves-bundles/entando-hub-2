@@ -4,7 +4,7 @@ import {getUserName, isHubUser} from "../helpers/helpers";
 //portal user
 export const getPortalUserDetails = async (username) => {
     const userList = (await getAllUsers()).userList
-    if (userList) {
+    if (userList && userList.length) {
         const filteredUserList = userList.filter(user => user.username === username)
         if (filteredUserList.length > 0) {
             const user = filteredUserList[0]

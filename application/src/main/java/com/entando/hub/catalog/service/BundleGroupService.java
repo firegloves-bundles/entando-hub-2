@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.service;
 
+import com.entando.hub.catalog.config.ApplicationConfig;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
@@ -8,13 +9,14 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +26,9 @@ public class BundleGroupService {
     final private BundleGroupRepository bundleGroupRepository;
     final private CategoryRepository categoryRepository;
     final private BundleRepository bundleRepository;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleRepository bundleRepository) {
         this.bundleGroupRepository = bundleGroupRepository;
@@ -60,13 +65,16 @@ public class BundleGroupService {
                     categories,
                     statusSet
                     , paging);
+            setBundleGroupUrl(page);
             return page;
         }
 
-        return bundleGroupRepository.findDistinctByCategoriesInAndStatusIn(
+        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesInAndStatusIn(
                 categories,
                 statusSet
                 , paging);
+        setBundleGroupUrl(page);
+        return page;
     }
 
     public Page<BundleGroup> findByOrganisationId(String organisationId, Pageable pageable) {
@@ -86,20 +94,16 @@ public class BundleGroupService {
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId,HttpServletRequest request) {
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
-        updateMappedBy(entity, bundleGroupNoId,request);
+        updateMappedBy(entity, bundleGroupNoId);
         return entity;
     }
 
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup,HttpServletRequest request) {
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
         Objects.requireNonNull(toUpdate.getId());
-        if(request != null) {
-        	String bundleGroupUrl = request.getRequestURI();
-        	toUpdate.setBundleGroupUrl(bundleGroupUrl+"/bundlegroup/"+toUpdate.getId());
-        	bundleGroup.setBundleGroupUrl(bundleGroupUrl+"/bundlegroup/"+bundleGroup.getId());
-        }
+
         if (bundleGroup.getCategories() != null) {
             //remove the bundle group from all the categories containing it
             //TODO native query to improve performance
@@ -154,4 +158,12 @@ public class BundleGroupService {
             bundleRepository.save(bundle);
         });
     }
+
+	/**
+	 * Set bundle group url
+	 * @param page
+	 */
+	private void setBundleGroupUrl(Page<BundleGroup> page) {
+		page.forEach(entity -> entity.setBundleGroupUrl(applicationConfig.getAppHubGroupDetailBaseUrl() + "bundlegroup/" + entity.getId()));
+	}
 }

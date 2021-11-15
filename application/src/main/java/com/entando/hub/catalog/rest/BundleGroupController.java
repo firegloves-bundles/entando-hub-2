@@ -95,14 +95,14 @@ public class BundleGroupController {
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
-    public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup,HttpServletRequest request) {
+    public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         //if not admin the organisationid of the bundle must be the same of the user
         if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
             logger.warn("Only {} users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN);
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup,request);
+        com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup);
         return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
     }
 
@@ -128,7 +128,7 @@ public class BundleGroupController {
                     return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
                 }
             }
-            com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup,null);
+            com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
             return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.OK);
         }
     }
@@ -204,7 +204,7 @@ public class BundleGroupController {
             this.name = entity.getName();
             this.status = entity.getStatus();
             this.documentationUrl = entity.getDocumentationUrl();
-            this.documentationUrl = entity.getBundleGroupUrl();
+            this.bundleGroupUrl = entity.getBundleGroupUrl();
             this.version = entity.getVersion();
             this.lastUpdate = entity.getLastUpdate();
 

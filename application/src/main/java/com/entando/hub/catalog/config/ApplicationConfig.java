@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class ApplicationConfig {
 
-	@Value("${app.hub-group-detail-base-url}")
+	@Value("${HUB_GROUP_DETAIL_BASE_URL}")
 	private String appHubGroupDetailBaseUrl;
 
 }

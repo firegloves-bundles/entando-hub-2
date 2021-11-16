@@ -48,3 +48,6 @@ keycloak:
   realm: entando
   resource: ${keycloak.client-id}
   use-resource-role-mappings: true
+
+app:
+  hub-group-detail-base-url: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/

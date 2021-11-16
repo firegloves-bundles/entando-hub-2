@@ -20,6 +20,7 @@ public class BundleGroup {
     private String name;
     private String description;
     private String documentationUrl;
+    private String bundleGroupUrl;
     private String version;
 
     @UpdateTimestamp

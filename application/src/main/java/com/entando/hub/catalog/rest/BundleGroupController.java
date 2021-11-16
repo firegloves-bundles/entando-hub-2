@@ -178,6 +178,7 @@ public class BundleGroupController {
         protected final String description;
         protected final String descriptionImage;
         protected String documentationUrl;
+        protected String bundleGroupUrl;
         protected String version;
         protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
         protected LocalDateTime lastUpdate;
@@ -202,6 +203,7 @@ public class BundleGroupController {
             this.name = entity.getName();
             this.status = entity.getStatus();
             this.documentationUrl = entity.getDocumentationUrl();
+            this.bundleGroupUrl = entity.getBundleGroupUrl();
             this.version = entity.getVersion();
             this.lastUpdate = entity.getLastUpdate();
 

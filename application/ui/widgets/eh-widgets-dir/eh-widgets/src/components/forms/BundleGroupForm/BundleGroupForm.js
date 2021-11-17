@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Column,
     Content,
@@ -23,9 +24,11 @@ const BundleGroupForm = ({
                              onDataChange,
                              selectStatusValues,
                              validationResult,
-                             onBundleUrl = ()=>{},
+                             minOneBundleError
                          }) => {
 
+
+    const [bundleStatus, setBundleStatus] = useState("");
 
     const DESCRIPTION_MAX_LENGTH = 600
     
@@ -141,6 +144,7 @@ const BundleGroupForm = ({
 
     const statusChangeHandler = (e) => {
         changeBundleGroup("status", e.target.value)
+        setBundleStatus(e.target.value)
     }
 
     const descriptionChangeHandler = (e) => {
@@ -246,7 +250,8 @@ const BundleGroupForm = ({
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                 initialBundleList={bundleGroup.children}
                                 disabled={disabled}
-                                onBundleUrl={onBundleUrl}
+                                minOneBundleError={minOneBundleError}
+                                bundleStatus={bundleStatus}
                             />
                         </Column>
 

@@ -7,6 +7,8 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
+import { BUNDLE_STATUS } from "../../../../../helpers/constants";
+
 /*
 BUNDLE:
 {
@@ -56,16 +58,18 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
     )
 }
 
+const MIN_ONE_BUNDLE_ERROR = "Please add at least one bundle before publishing this bundle group.";
+
 const BundlesOfBundleGroup = ({
     onAddOrRemoveBundleFromList,
     initialBundleList,
     disabled = false,
-    onBundleUrl
+    minOneBundleError,
+    bundleStatus
 }) => {
 
     useEffect(() => {
         setBundleList(initialBundleList)
-        onBundleUrl((onAddBundle) ? onAddBundle : []);
     }, [initialBundleList])
 
     const [bundleList, setBundleList] = useState([])
@@ -80,6 +84,7 @@ const BundlesOfBundleGroup = ({
     const onAddBundle = (e) => {
         (async () => {
             //validation
+
             let validationError
             await bundleOfBundleGroupSchema.validate({gitRepo}, {abortEarly: false}).catch(error => {
                 validationError = fillErrors(error)
@@ -104,7 +109,6 @@ const BundlesOfBundleGroup = ({
             setBundleList(newBundleList)
             onAddOrRemoveBundleFromList(newBundleList)
             setGitRepo("")
-            onBundleUrl(onAddBundle);
         })()
     }
 
@@ -117,7 +121,18 @@ const BundlesOfBundleGroup = ({
 
     const textInputProps = {
         id: "bundle",
-        labelText: "Add Url Bundle *",
+        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? 'Add Url Bundle *' : 'Add Url Bundle'
+    }
+
+    let bundleUrlErrorResult = "";
+
+    if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
+        Object.keys(validationResult).length === 0 &&
+        initialBundleList.length < 1 && bundleStatus !== BUNDLE_STATUS.NOT_PUBLISHED) {
+        bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
+    } else {
+        bundleUrlErrorResult = validationResult["gitRepo"] &&
+            validationResult["gitRepo"].join("; ")
     }
 
     return (
@@ -127,12 +142,8 @@ const BundlesOfBundleGroup = ({
                     <TextInput value={gitRepo}
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
-                               invalid={!!validationResult["gitRepo"]}
-                               invalidText={
-                                   validationResult["gitRepo"] &&
-                                   validationResult["gitRepo"].join("; ")
-                               }
-
+                               invalid={!!validationResult["gitRepo"] || !!bundleUrlErrorResult}
+                               invalidText={bundleUrlErrorResult}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>

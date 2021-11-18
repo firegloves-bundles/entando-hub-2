@@ -49,12 +49,16 @@ You can use the following commands from the application folder to run the local 
   * user/user - regular user
 * Removing the src/main/docker/keycloak-db directory will result in the realm from src/main/docker/realm-config being reloaded on the next restart.
 
+### Set up environment variable in .yaml file
+Add base url `HUB_GROUP_DETAIL_BASE_URL` for entando hub. This will be used to open the detailed bundle group page on hub.
+`Example:
+HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/
+HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/`
+
+
 ## Local alternative - running microservice in docker
 You can also choose to run the current microservice in a docker container. 
 TODO: You'll need to provide environment variables to enable keycloak integration in this mode.
 * `docker run -d -p 8081:8081 --name entando-hub-catalog entandopsdh/entando-hub-catalog-ms:0.0.1-SNAPSHOT`
 * `docker stop entando-hub-catalog`
 * `docker start entando-hub-catalog`
-
-## Set HUB_GROUP_DETAIL_BASE_URL property in .yaml file
-Set appropriate value of HUB_GROUP_DETAIL_BASE_URL property in .yaml file. This url will be returned in GET All Bundle Groups API response through which we can interact with AppBuilder Hub UI and can fetch more details about a particular bundle group.

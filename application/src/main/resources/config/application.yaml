@@ -34,4 +34,4 @@ app:
     client-ui: entando-web
 
 # Hub UI url for bundle groups
-# HUB_GROUP_DETAIL_BASE_URL:
+#HUB_GROUP_DETAIL_BASE_URL:

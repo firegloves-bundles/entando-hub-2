@@ -56,3 +56,5 @@ TODO: You'll need to provide environment variables to enable keycloak integratio
 * `docker stop entando-hub-catalog`
 * `docker start entando-hub-catalog`
 
+## Set HUB_GROUP_DETAIL_BASE_URL property in .yaml file
+Set appropriate value of HUB_GROUP_DETAIL_BASE_URL property in .yaml file. This url will be returned in GET All Bundle Groups API response through which we can interact with AppBuilder Hub UI and can fetch more details about a particular bundle group.

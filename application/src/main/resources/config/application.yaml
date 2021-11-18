@@ -33,4 +33,5 @@ app:
     realm: ${keycloak.realm}
     client-ui: entando-web
 
-HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/
+# Hub UI url for bundle groups
+# HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/

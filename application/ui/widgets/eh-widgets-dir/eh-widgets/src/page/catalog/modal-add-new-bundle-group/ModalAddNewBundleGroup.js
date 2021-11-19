@@ -15,6 +15,7 @@ import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
 import { getCurrentUserOrganisation } from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
+import { BUNDLE_STATUS } from "../../../helpers/constants";
 
 /*
     This component manages the modal for adding a new bundle group
@@ -38,11 +39,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [bundleErrorFunc, setBundleErrorFunc] = useState([]);
-
-        const callOnAddBundleFunc = useCallback((bundleUrlErrorFunc) => {
-            setBundleErrorFunc(() => bundleUrlErrorFunc);
-        }, [])
+        const [minOneBundleError, setMinOneBundleError] = useState("")
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)
@@ -139,18 +136,23 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
                 await bundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
                     validationError = fillErrors(error)
                 })
-                let isChildGroupValidate = false;
-                if (bundleGroup.children && bundleGroup.children.length === 0) {
-                    isChildGroupValidate = true;
-                    bundleErrorFunc();
+
+                // bypass the validation for Draft(NOT_PUBLISHED) Status.
+                if (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED &&
+                    validationError && validationError.children && validationError.children.length === 1 &&
+                    Object.keys(validationError).length === 1) {
+                    validationError = undefined;
+                }
+
+                if (bundleGroup.children && bundleGroup.children.length === 0 &&
+                    bundleGroup.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
+                    setMinOneBundleError(validationError.children[0]);
                 }
                 if (validationError) {
                     setValidationResult(validationError)
                     return //don't send the form
                 }
-                if (isChildGroupValidate === true) {
-                    return //don't send the form
-                }
+
                 const toSend = await createNewBundleGroup(bundleGroup)
                 //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setBundleGroup(toSend)
@@ -158,7 +160,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
                 onAfterSubmit()
             })()
         }
-
         return (
             <>
                 {!ModalContent || typeof document === 'undefined'
@@ -175,7 +176,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
                             selectStatusValues={selectStatusValues}
                             bundleGroup={bundleGroup}
                             loading={loading}
-                            onBundleUrl={callOnAddBundleFunc}
+                            minOneBundleError={minOneBundleError}
                         />,
                         document.body
                     )}
@@ -208,7 +209,7 @@ const ModalContent = ({
     allowedOrganisations,
     categories,
     loading,
-    onBundleUrl
+    minOneBundleError
 }) => {
     return (
         <>
@@ -224,7 +225,7 @@ const ModalContent = ({
                     onRequestSubmit={onRequestSubmit}>
                     <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                         categories={categories} selectStatusValues={selectStatusValues}
-                        onDataChange={onDataChange} validationResult={validationResult} onBundleUrl={onBundleUrl} />
+                        onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError}/>
                 </Modal>
             }        </>
     )

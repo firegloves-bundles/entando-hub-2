@@ -50,8 +50,7 @@ You can use the following commands from the application folder to run the local 
 * Removing the src/main/docker/keycloak-db directory will result in the realm from src/main/docker/realm-config being reloaded on the next restart.
 
 ### Set up environment variable in .yaml file
-Please Add/Update the base url `HUB_GROUP_DETAIL_BASE_URL` in the .yaml files.
-This will be used to open the detailed bundle group page on hub.
+Please set the property `HUB_GROUP_DETAIL_BASE_URL` in the appropriate src/main/resources/config yaml file or as an environment variable. This is used by the App Builder to point back to the bundle group detail page on the Hub.
 * `Example:`
 * `HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/`
 * `HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/`

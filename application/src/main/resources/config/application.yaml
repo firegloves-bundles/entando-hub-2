@@ -32,3 +32,5 @@ app:
     auth-server-url: ${keycloak.auth-server-url}
     realm: ${keycloak.realm}
     client-ui: entando-web
+
+HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/

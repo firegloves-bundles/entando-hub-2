@@ -26,7 +26,7 @@ export const bundleGroupSchema = Yup.object().shape({
       gitRepoAddress: Yup.string(),
       name: Yup.string().required(),
     })
-  ),
+  ).min(1, "Please add at least one bundle before publishing this bundle group."),
   categories: Yup.array()
     .of(Yup.string())
     .required("Category is a required field"),

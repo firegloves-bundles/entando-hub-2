@@ -27,7 +27,7 @@ This style of development is for a developer who wants to run keycloak, frontend
 * Keycloak: http://localhost:9080/auth/
 * OpenAPI/Swagger: http://localhost:8081/swagger-ui.html
 * H2 console: http://localhost:8081/h2-console/
-* JDBC connector for H2: `jdbc:h2:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE`
+* JDBC connector for H2: `jdbc:h2:~/<YOUR_PROJECT_ROOT>/application/entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE`
 * React FE: http://localhost:3000/
 * Use the client web_app when authorizing the microservices
 * You'll need to update the `ui/widgets/eh-widgets-dir/eh-widgets/.env` settings to match your environment before starting the React app. See the `.env.template` file for a possible local configuration.

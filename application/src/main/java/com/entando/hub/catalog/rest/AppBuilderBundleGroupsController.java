@@ -2,7 +2,12 @@ package com.entando.hub.catalog.rest;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.util.Objects;
+
 import org.springframework.web.bind.annotation.*;
+
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundlegroups")
@@ -18,6 +23,10 @@ public class AppBuilderBundleGroupsController {
     @CrossOrigin
     @GetMapping("/")
     public PagedContent<BundleGroupController.BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+		if (Objects.isNull(statuses)) {
+			statuses = new String[1];
+			statuses[0] = BundleGroup.Status.PUBLISHED.toString();
+		}
         return bundleGroupController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses);
     }
 

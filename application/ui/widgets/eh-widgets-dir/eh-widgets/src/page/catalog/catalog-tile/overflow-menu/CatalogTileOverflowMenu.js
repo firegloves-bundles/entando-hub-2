@@ -5,7 +5,7 @@ import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDelete
 import { getHigherRole } from "../../../../helpers/helpers"
 import {ADMIN, MANAGER} from "../../../../helpers/constants"
 
-const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, onAfterSubmit}) => {
+const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName,onAfterSubmit}) => {
 
     const [openModal, setOpenModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
@@ -21,10 +21,10 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, onAfterSubmit}) =
                 {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText="Delete" onClick={() => setDeleteModal(true) }/>}
 
             </OverflowMenu>
-            {openModal && <ModalUpdateBundleGroup open={openModal} bundleGroupId={bundleGroupId}
+            {openModal && <ModalUpdateBundleGroup open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}
                                      onCloseModal={() => setOpenModal(false)}  onAfterSubmit={onAfterSubmit}/>}
 
-            {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupId={bundleGroupId}
+            {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupId={bundleGroupId} bundleName={bundleName}
                 onCloseModal={() => setDeleteModal(false)} onAfterSubmit={onAfterSubmit} />}
         </>
     )

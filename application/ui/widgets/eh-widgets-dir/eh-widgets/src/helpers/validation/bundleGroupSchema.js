@@ -37,8 +37,8 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
     gitRepo: Yup.string()
         .required("The bundle address is a required field")
         .matches(
-            /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?.git/gi,
-            "Must be a git repo URL (e.g. https://github.com/myrepo.git)"
+            /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-z-A-Z-0-9/]+)(?:\.git)$/gm,
+            "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)"
         )
 })
 

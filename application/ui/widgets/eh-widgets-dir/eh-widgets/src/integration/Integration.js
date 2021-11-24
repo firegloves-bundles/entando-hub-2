@@ -301,13 +301,13 @@ export const editBundleGroup = async (bundleGroupData, id) => {
 }
 
 // id: BundleGroupID
-export const deleteBundle = async (id) => {
+export const deleteBundle = async (id, bundleName) => {
   const { data, isError } = await deleteData(urlBundleGroups, id)
 
   eventHandler(
     isError,
     `Impossible to delete bundle. ${data ? data.message : ""}`,
-    `Bundle ${data.data ? data.data.name : ""} deleted`
+    `Bundle ${bundleName ? bundleName : ""} deleted`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedBundle")

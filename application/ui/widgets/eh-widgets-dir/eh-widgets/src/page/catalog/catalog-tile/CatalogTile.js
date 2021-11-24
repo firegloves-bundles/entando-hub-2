@@ -65,6 +65,7 @@ const CatalogTile = ({
             <CatalogTileOverflowMenu
               bundleGroupId={bundleGroupId}
               bundleStatus={bundleStatus}
+              bundleName={name}
               onAfterSubmit={onAfterSubmit}
             />
           </div>

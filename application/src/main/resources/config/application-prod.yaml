@@ -19,3 +19,6 @@ spring:
       hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
+
+# Hub UI url for bundle groups
+#HUB_GROUP_DETAIL_BASE_URL:

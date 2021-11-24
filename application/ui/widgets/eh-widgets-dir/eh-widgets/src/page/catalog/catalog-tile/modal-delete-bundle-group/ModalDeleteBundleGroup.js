@@ -4,14 +4,14 @@ import { deleteBundle } from "../../../../integration/Integration"
 
 import "./modal-delete-bundle-group.scss"
 
-export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleGroupId, onAfterSubmit}) => {
+export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleName, bundleGroupId, onAfterSubmit}) => {
 
     const onRequestClose = (e) => {
         onCloseModal()
     }
 
     const onRequestDelete = async (e) => {
-        await deleteBundle(bundleGroupId);
+        await deleteBundle(bundleGroupId, bundleName);
         onCloseModal()
         onAfterSubmit()
     }

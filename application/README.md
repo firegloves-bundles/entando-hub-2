@@ -49,10 +49,16 @@ You can use the following commands from the application folder to run the local 
   * user/user - regular user
 * Removing the src/main/docker/keycloak-db directory will result in the realm from src/main/docker/realm-config being reloaded on the next restart.
 
+### Set up environment variable in .yaml file
+Please set the property `HUB_GROUP_DETAIL_BASE_URL` in the appropriate src/main/resources/config yaml file or as an environment variable. This is used by the App Builder to point back to the bundle group detail page on the Hub.
+* `Example:`
+* `HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/`
+* `HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/`
+
+
 ## Local alternative - running microservice in docker
 You can also choose to run the current microservice in a docker container. 
 TODO: You'll need to provide environment variables to enable keycloak integration in this mode.
 * `docker run -d -p 8081:8081 --name entando-hub-catalog entandopsdh/entando-hub-catalog-ms:0.0.1-SNAPSHOT`
 * `docker stop entando-hub-catalog`
 * `docker start entando-hub-catalog`
-

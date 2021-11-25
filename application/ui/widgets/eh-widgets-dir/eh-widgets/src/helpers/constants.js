@@ -10,3 +10,8 @@ export const BUNDLE_STATUS = {
     PUBLISHED: 'PUBLISHED',
     PUBLISH_REQ: 'PUBLISH_REQ',
 }
+
+// HTTP Status
+export const HTTP_STATUS = {
+    EXPECTATION_FAILED: '417'
+}

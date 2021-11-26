@@ -11,11 +11,13 @@ import { textFromStatus } from "../../../helpers/profiling"
 const CatalogTile = ({
   bundleGroupId,
   name,
+  organisationName,
   description,
   descriptionImage,
   categories,
   status,
   onAfterSubmit,
+  version
 }) => {
   const [categoryName, setCategoryName] = useState("")
   useEffect(() => {
@@ -78,12 +80,14 @@ const CatalogTile = ({
             )}
           </div>
           <div className="CatalogTile-card-title">{name}</div>
+          <div className="CatalogTile-card-status">{organisationName}</div>
+          <div className="CatalogTile-card-description">{description}</div>
           {isHubUser() && (
             <div className="CatalogTile-card-status">
               {textFromStatus(status)}
             </div>
           )}
-          <div className="CatalogTile-card-description">{description}</div>
+          <div className="CatalogTile-card-status">{version}</div>
           <div className="CatalogTile-card-category">
             <Tag type={tagColor} title="Clear Filter">
               {" "}

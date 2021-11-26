@@ -89,13 +89,14 @@ public class CategoryController {
             logger.warn("Requested category '{}' does not exists", categoryId);
             return new ResponseEntity<>(ApplicationConstants.CATEGORY_NOT_EXIST_MSG , HttpStatus.NOT_FOUND);
         } else {
-        	if (!categoryOptional.get().getBundleGroups().isEmpty()){
-        	    logger.warn("Requested category '{}' applied to some bundle groups", categoryId);
-        	    return new ResponseEntity<>(ApplicationConstants.CATEGORY_APPLIED_ON_BUNDLE_GROUP_MSG, HttpStatus.EXPECTATION_FAILED);
-        	}else{
-        	    categoryService.deleteCategory(categoryId);
-        	    return new ResponseEntity<>(ApplicationConstants.CATEGORY_DELETED, HttpStatus.OK);
-        	}
+            if (!categoryOptional.get().getBundleGroups().isEmpty()) {
+                logger.warn("Requested category '{}' applied to some bundle groups", categoryId);
+                return new ResponseEntity<>(ApplicationConstants.CATEGORY_APPLIED_ON_BUNDLE_GROUP_MSG,
+                        HttpStatus.EXPECTATION_FAILED);
+            } else {
+                categoryService.deleteCategory(categoryId);
+                return new ResponseEntity<>(ApplicationConstants.CATEGORY_DELETED, HttpStatus.OK);
+            }
         }
     }
 

@@ -15,11 +15,13 @@ import {
   bundleGroupSchema,
 } from "../../../../helpers/validation/bundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
+import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
+  bundleStatus,
   open,
   onCloseModal,
   onAfterSubmit,
@@ -36,6 +38,8 @@ export const ModalUpdateBundleGroup = ({
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
+  const [minOneBundleError, setMinOneBundleError] = useState("")
+
 
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)
@@ -109,18 +113,27 @@ export const ModalUpdateBundleGroup = ({
     }
     await editBundleGroup(toSend, toSend.bundleGroupId)
   }
-
+  
   const onRequestSubmit = (e) => {
     ;(async () => {
       let validationError
       await bundleGroupSchema
-        .validate(bundleGroup, { abortEarly: false })
-        .catch((err) => {
-          validationError = fillErrors(err)
-        })
+      .validate(bundleGroup, { abortEarly: false })
+      .catch((err) => {
+        validationError = fillErrors(err)
+      })
+      if ((bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ) &&
+          validationError && validationError.children && validationError.children.length === 1 &&
+          Object.keys(validationError).length === 1) {
+          validationError = undefined;
+      }
+      if (bundleGroup.children && bundleGroup.children.length === 0 &&
+        (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
+        setMinOneBundleError(validationError.children[0]);
+      }
       if (validationError) {
         setValidationResult(validationError)
-        return
+        return //don't send the form
       }
       await updateBundleGroup(bundleGroup)
       onCloseModal()
@@ -147,8 +160,10 @@ export const ModalUpdateBundleGroup = ({
             categories={categories}
             onDataChange={onDataChange}
             bundleGroup={bundleGroup}
+            theBundleStatus={bundleStatus}
             selectStatusValues={selectStatusValues}
             validationResult={validationResult}
+            minOneBundleError={minOneBundleError}
           />
         </Modal>
       }

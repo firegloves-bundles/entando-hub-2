@@ -24,11 +24,12 @@ const BundleGroupForm = ({
                              onDataChange,
                              selectStatusValues,
                              validationResult,
-                             minOneBundleError
+                             minOneBundleError,
+                             theBundleStatus
                          }) => {
 
 
-    const [bundleStatus, setBundleStatus] = useState("");
+    const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : "");
 
     const DESCRIPTION_MAX_LENGTH = 600
     

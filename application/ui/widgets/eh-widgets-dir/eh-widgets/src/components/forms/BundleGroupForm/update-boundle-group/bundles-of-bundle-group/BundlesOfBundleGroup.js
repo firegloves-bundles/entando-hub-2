@@ -128,7 +128,7 @@ const BundlesOfBundleGroup = ({
 
     if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
         Object.keys(validationResult).length === 0 &&
-        initialBundleList.length < 1 && bundleStatus !== BUNDLE_STATUS.NOT_PUBLISHED) {
+        initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
     } else {
         bundleUrlErrorResult = validationResult["gitRepo"] &&

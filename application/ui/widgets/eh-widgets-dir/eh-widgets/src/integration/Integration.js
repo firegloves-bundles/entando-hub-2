@@ -300,7 +300,6 @@ export const editBundleGroup = async (bundleGroupData, id) => {
   return checkForErrorsAndSendResponse(data, isError, "editedBundleGroup")
 }
 
-// id: BundleGroupID
 export const deleteBundle = async (id, bundleName) => {
   const { data, isError } = await deleteData(urlBundleGroups, id)
 

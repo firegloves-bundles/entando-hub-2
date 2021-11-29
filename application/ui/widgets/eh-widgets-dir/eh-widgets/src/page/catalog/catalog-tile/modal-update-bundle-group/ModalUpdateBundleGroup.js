@@ -133,7 +133,7 @@ export const ModalUpdateBundleGroup = ({
       }
       if (validationError) {
         setValidationResult(validationError)
-        return //don't send the form
+        return
       }
       await updateBundleGroup(bundleGroup)
       onCloseModal()

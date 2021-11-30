@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO } from "../../../../../helpers/constants";
 
 /*
 BUNDLE:
@@ -131,8 +131,8 @@ const BundlesOfBundleGroup = ({
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
     } else {
-        bundleUrlErrorResult = validationResult["gitRepo"] &&
-            validationResult["gitRepo"].join("; ")
+        bundleUrlErrorResult = validationResult[GIT_REPO] &&
+            validationResult[GIT_REPO].join("; ")
     }
 
     return (
@@ -142,7 +142,7 @@ const BundlesOfBundleGroup = ({
                     <TextInput value={gitRepo}
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
-                               invalid={!!validationResult["gitRepo"] || !!bundleUrlErrorResult}
+                               invalid={!!validationResult[GIT_REPO] || !!bundleUrlErrorResult}
                                invalidText={bundleUrlErrorResult}
                     />
                 </Column>

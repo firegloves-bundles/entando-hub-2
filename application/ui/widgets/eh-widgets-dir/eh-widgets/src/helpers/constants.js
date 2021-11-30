@@ -31,3 +31,4 @@ export const API_RESPONSE_KEY = {
 
 // Constant String
 export const DELETED_BUNDLE = 'deletedBundle';
+export const GIT_REPO = 'gitRepo';

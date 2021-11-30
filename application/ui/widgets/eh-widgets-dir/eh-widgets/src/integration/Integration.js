@@ -1,6 +1,6 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
-import { API_RESPONSE_KEY } from "../helpers/constants";
+import { API_RESPONSE_KEY, DELETED_BUNDLE } from "../helpers/constants";
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -310,7 +310,7 @@ export const deleteBundle = async (id, bundleName) => {
     `Bundle ${bundleName ? bundleName : ""} deleted`
   )
 
-  return checkForErrorsAndSendResponse(data, isError, "deletedBundle")
+  return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE)
 }
 
 /*********************

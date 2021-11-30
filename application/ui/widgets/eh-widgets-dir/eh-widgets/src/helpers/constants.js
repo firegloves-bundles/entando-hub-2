@@ -16,6 +16,7 @@ export const BUNDLE_STATUS = {
 export const BUTTON_LABELS = {
     DELETE: "Delete",
     EDIT: "Edit",
+    CANCEL: "Cancel",
 }
 
 // All Modal Labels
@@ -27,3 +28,6 @@ export const MODAL_LABELS = {
 export const API_RESPONSE_KEY = {
     EDITED_BUNDLE_GROUP : 'editedBundleGroup'
 }
+
+// Constant String
+export const DELETED_BUNDLE = 'deletedBundle';

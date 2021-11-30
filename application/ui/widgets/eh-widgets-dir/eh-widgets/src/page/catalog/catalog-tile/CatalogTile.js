@@ -18,6 +18,8 @@ const CatalogTile = ({
   onAfterSubmit,
 }) => {
   const [categoryName, setCategoryName] = useState("")
+  let bundleStatus = status
+
   useEffect(() => {
     let isMounted = true
     ;(async () => {
@@ -62,6 +64,8 @@ const CatalogTile = ({
           <div className="CatalogTile-dropmenu">
             <CatalogTileOverflowMenu
               bundleGroupId={bundleGroupId}
+              bundleStatus={bundleStatus}
+              bundleName={name}
               onAfterSubmit={onAfterSubmit}
             />
           </div>

@@ -1,0 +1,32 @@
+.ModalRemoveUserFromOrg .bx--modal-header__label {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}
+
+.ModalRemoveUserFromOrg.bx--modal.is-visible .bx--modal-container {
+  background-color: var(--clr-white);
+}
+
+.ModalRemoveUserFromOrg.bx--modal-container .bx--modal-header, .bx--modal-container .bx--modal-content, .bx--modal-container .bx--modal-content__regular-content {
+  padding-right: 2%;
+}
+
+.Modal-remove-user-from-org {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Trash Icon Color
+.Modal-remove-user-from-org-wrapper {
+  color: red;
+}
+
+.Modal-edit-bundle-group .bx--modal-header__label {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}

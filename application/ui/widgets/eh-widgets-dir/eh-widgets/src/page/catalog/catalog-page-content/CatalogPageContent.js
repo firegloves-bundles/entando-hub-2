@@ -136,7 +136,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     return (
         <>
             <div className="bx--col-lg-4">
-                {categories.length > 0 &&
+                {categories && categories.length > 0 &&
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">

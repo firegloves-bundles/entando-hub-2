@@ -1,6 +1,8 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
 import { HTTP_STATUS } from '../helpers/constants'
+import { API_RESPONSE_KEY, DELETED_BUNDLE } from "../helpers/constants";
+
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
 const urlCategories = `${process.env.REACT_APP_PUBLIC_API_URL}/category/`
@@ -317,10 +319,9 @@ export const editBundleGroup = async (bundleGroupData, id) => {
     `Bundle group ${data.data ? data.data.name : ""} updated`
   )
 
-  return checkForErrorsAndSendResponse(data, isError, "editedBundleGroup")
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
 }
 
-// id: BundleGroupID
 export const deleteBundle = async (id, bundleName) => {
   const { data, isError } = await deleteData(urlBundleGroups, id)
 
@@ -330,7 +331,7 @@ export const deleteBundle = async (id, bundleName) => {
     `Bundle ${bundleName ? bundleName : ""} deleted`
   )
 
-  return checkForErrorsAndSendResponse(data, isError, "deletedBundle")
+  return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE)
 }
 
 /*********************

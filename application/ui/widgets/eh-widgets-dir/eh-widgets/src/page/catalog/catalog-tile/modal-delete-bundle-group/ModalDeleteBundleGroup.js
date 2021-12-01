@@ -1,6 +1,7 @@
 import { Modal } from "carbon-components-react"
 import { TrashCan32 } from '@carbon/icons-react'
 import { deleteBundle } from "../../../../integration/Integration"
+import { MODAL_LABELS, BUTTON_LABELS } from "../../../../helpers/constants";
 
 import "./modal-delete-bundle-group.scss"
 
@@ -20,10 +21,9 @@ export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleName, bundleG
         <>
             <Modal
                 className="Modal-edit-bundle-group"
-                modalLabel="Delete"
-                primaryButtonText="Delete"
-                // danger
-                secondaryButtonText="Cancel"
+                modalLabel={BUTTON_LABELS.DELETE}
+                primaryButtonText={BUTTON_LABELS.DELETE}
+                secondaryButtonText={BUTTON_LABELS.CANCEL}
                 open={open}
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestDelete}
@@ -33,7 +33,7 @@ export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleName, bundleG
                         <TrashCan32 />
                     </div>
                     <div>
-                        Are you sure you want to delete this bundle?
+                        {MODAL_LABELS.DELETE_BUNDLE_MSG}
                     </div>
                 </div>
             </Modal>

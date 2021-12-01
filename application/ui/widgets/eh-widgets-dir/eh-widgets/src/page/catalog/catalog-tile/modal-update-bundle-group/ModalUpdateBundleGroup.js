@@ -122,18 +122,18 @@ export const ModalUpdateBundleGroup = ({
       .catch((err) => {
         validationError = fillErrors(err)
       })
-      if ((bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ) &&
+      if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
           validationError && validationError.children && validationError.children.length === 1 &&
           Object.keys(validationError).length === 1) {
           validationError = undefined;
       }
-      if (bundleGroup.children && bundleGroup.children.length === 0 &&
+      if (bundleGroup && bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
         (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
         setMinOneBundleError(validationError.children[0]);
       }
       if (validationError) {
         setValidationResult(validationError)
-        return //don't send the form
+        return
       }
       await updateBundleGroup(bundleGroup)
       onCloseModal()

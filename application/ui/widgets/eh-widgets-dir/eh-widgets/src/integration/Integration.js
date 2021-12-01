@@ -1,5 +1,6 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
+import { HTTP_STATUS } from '../helpers/constants'
 import { API_RESPONSE_KEY, DELETED_BUNDLE } from "../helpers/constants";
 
 // endpoints
@@ -155,6 +156,26 @@ export const editCategory = async (categoryData, id) => {
 
   return checkForErrorsAndSendResponse(data, isError, "editedCategory")
 }
+
+const CATEGORY_APPLIED_ON_BUNDLE_GROUP_MSG = "This category is already in use."
+export const deleteCategory = async (id, categoryName) => {
+  const { data, isError } = await deleteData(urlCategories, id)
+  const dataMessageLength = data.message ? data.message.split(" ").length : null
+  const statusCode = dataMessageLength ? data.message.split(" ")[dataMessageLength - 1] : 0
+
+  if (statusCode && statusCode === HTTP_STATUS.EXPECTATION_FAILED) {
+    data.message = CATEGORY_APPLIED_ON_BUNDLE_GROUP_MSG
+  }
+
+  eventHandler(
+    isError,
+    `Impossible to delete category. ${data ? data.message : ""}`,
+    `Category ${categoryName ? categoryName : ""} deleted`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, "deletedCategory")
+}
+
 
 /*********************
  * BUNDLES ***********

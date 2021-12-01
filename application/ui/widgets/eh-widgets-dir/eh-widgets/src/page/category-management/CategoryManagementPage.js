@@ -149,6 +149,7 @@ const CategoryManagementPage = () => {
                                       name: row.cells[0].value,
                                       description: row.cells[1].value
                                     }}
+                                    categories={categories}
                                     onAfterSubmit={onAfterSubmit}
                                     setReloadToken={setReloadToken}
                                   />

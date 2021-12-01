@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.config.ApplicationConstants;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -81,15 +82,21 @@ public class CategoryController {
     @RolesAllowed({ADMIN})
     @CrossOrigin
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Category> deleteCategory(@PathVariable String categoryId) {
+    public ResponseEntity<String> deleteCategory(@PathVariable String categoryId) {
         logger.debug("REST request to delete gategory {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (!categoryOptional.isPresent()) {
             logger.warn("Requested category '{}' does not exists", categoryId);
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ApplicationConstants.CATEGORY_NOT_EXIST_MSG , HttpStatus.NOT_FOUND);
         } else {
-            categoryService.deleteCategory(categoryId);
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            if (!categoryOptional.get().getBundleGroups().isEmpty()) {
+                logger.warn("Requested category '{}' applied to some bundle groups", categoryId);
+                return new ResponseEntity<>(ApplicationConstants.CATEGORY_APPLIED_ON_BUNDLE_GROUP_MSG,
+                        HttpStatus.EXPECTATION_FAILED);
+            } else {
+                categoryService.deleteCategory(categoryId);
+                return new ResponseEntity<>(ApplicationConstants.CATEGORY_DELETED, HttpStatus.OK);
+            }
         }
     }
 

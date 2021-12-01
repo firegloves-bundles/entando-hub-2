@@ -15,6 +15,7 @@ import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import { DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX } from "../../../helpers/constants";
 import './bundle-group-form.scss'
 
 const BundleGroupForm = ({
@@ -30,6 +31,10 @@ const BundleGroupForm = ({
 
 
     const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : "");
+    const [bundleNameLength, setBundleNameLength] = useState(0);
+    const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
+    const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
+    const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
 
     const DESCRIPTION_MAX_LENGTH = 600
     
@@ -99,6 +104,8 @@ const BundleGroupForm = ({
     })
 
     const nameChangeHandler = (e) => {
+        const nameLength = e.target.value.length;
+        setBundleNameLength(nameLength);
         changeBundleGroup("name", e.target.value)
     }
 
@@ -113,10 +120,20 @@ const BundleGroupForm = ({
 
     const documentationChangeHandler = (e) => {
         changeBundleGroup("documentationUrl", e.target.value)
+        if (DOCUMENTATION_ADDRESS_URL_REGEX.test(e.target.value) && e.target.value.trim().length > 0) {
+            setIsDocumentationAddressValid(true);
+        } else {
+            setIsDocumentationAddressValid(false);
+        }
     }
 
     const versionChangeHandler = (e) => {
         changeBundleGroup("version", e.target.value)
+        if (VERSON_REGEX.test(e.target.value) && e.target.value.trim().length > 0) {
+            setIsBundleVersionValid(true);
+        } else {
+            setIsBundleVersionValid(false);
+        }
     }
 
     const convertToBase64 = (file) => {
@@ -149,6 +166,8 @@ const BundleGroupForm = ({
     }
 
     const descriptionChangeHandler = (e) => {
+        const descriptionLength = e.target.value.length;
+        setBundleDescriptionLength(descriptionLength);
         changeBundleGroup("description", e.target.value)
     }
 
@@ -173,10 +192,10 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!!validationResult["name"]}
+                                invalid={bundleNameLength < 3 && !!validationResult["name"]}
                                 invalidText={
-                                    validationResult["name"] &&
-                                    validationResult["name"].join("; ")
+                                    bundleNameLength < 3 ? (validationResult["name"] &&
+                                    validationResult["name"].join("; ")) : null
                                 }
                                 disabled={disabled}
                                 value={bundleGroup.name}
@@ -200,10 +219,10 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!!validationResult["documentationUrl"]}
+                                invalid={!isDocumentationAddressValid && !!validationResult["documentationUrl"]}
                                 invalidText={
-                                    validationResult["documentationUrl"] &&
-                                    validationResult["documentationUrl"].join("; ")
+                                    !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
+                                        validationResult["documentationUrl"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup.documentationUrl}
@@ -215,10 +234,10 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!!validationResult["version"]}
+                                invalid={!isBundleVersionValid && !!validationResult["version"]}
                                 invalidText={
-                                    validationResult["version"] &&
-                                    validationResult["version"].join("; ")
+                                    !isBundleVersionValid && (validationResult["version"] &&
+                                    validationResult["version"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup.version}
@@ -258,10 +277,10 @@ const BundleGroupForm = ({
 
                         <Column className="bg-form-textarea" sm={16} md={16} lg={16}>
                             <TextArea
-                                invalid={!!validationResult["description"]}
+                                invalid={bundleDescriptionLength < 3 && !!validationResult["description"]}
                                 invalidText={
-                                    validationResult["description"] &&
-                                    validationResult["description"].join("; ")
+                                    bundleDescriptionLength < 3 && (validationResult["description"] &&
+                                    validationResult["description"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup.description}

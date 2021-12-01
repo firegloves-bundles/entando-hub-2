@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
 
 /*
 BUNDLE:
@@ -75,10 +75,33 @@ const BundlesOfBundleGroup = ({
     const [bundleList, setBundleList] = useState([])
     const [gitRepo, setGitRepo] = useState("")
     const [validationResult, setValidationResult] = useState({})
+    const [isUrlReqValid, setIsUrlReqValid] = useState(false);
+    const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false);
+
+    useEffect(() => {
+        if(bundleList.length <= 0) {
+            setIsUrlReqValid(false);
+        }
+    }, [bundleList])
 
     const onChangeHandler = (e) => {
         const value = e.target.value
+        if (value.trim().length > 0) {
+            setIsUrlReqValid(true)
+        } else {
+            setIsUrlReqValid(false)
+        }
         setGitRepo(value)
+    }
+
+    const onBlurHandler = (e) => {
+        const value = e.target.value
+
+        if (value.trim().length > 0 && BUNDLE_URL_REGEX.test(value)) {
+            setIsUrlBundleRexValid(true)
+        } else if (!BUNDLE_URL_REGEX.test(value)) {
+            setIsUrlBundleRexValid(false)
+        }
     }
 
     const onAddBundle = (e) => {
@@ -109,6 +132,7 @@ const BundlesOfBundleGroup = ({
             setBundleList(newBundleList)
             onAddOrRemoveBundleFromList(newBundleList)
             setGitRepo("")
+            setIsUrlBundleRexValid(false)
         })()
     }
 
@@ -131,8 +155,12 @@ const BundlesOfBundleGroup = ({
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
     } else {
-        bundleUrlErrorResult = validationResult[GIT_REPO] &&
-            validationResult[GIT_REPO].join("; ")
+        if (!isUrlBundleRexValid) {
+            bundleUrlErrorResult = validationResult["gitRepo"] &&
+                validationResult["gitRepo"].join("; ")
+        } else {
+            bundleUrlErrorResult = null;
+        }
     }
 
     return (
@@ -142,8 +170,9 @@ const BundlesOfBundleGroup = ({
                     <TextInput value={gitRepo}
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
-                               invalid={!!validationResult[GIT_REPO] || !!bundleUrlErrorResult}
+                               invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
+                               onBlur={onBlurHandler}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>

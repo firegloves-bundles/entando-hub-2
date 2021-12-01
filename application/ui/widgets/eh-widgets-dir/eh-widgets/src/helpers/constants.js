@@ -8,7 +8,12 @@ export const BUNDLE_STATUS = {
     NOT_PUBLISHED: 'NOT_PUBLISHED',
     PUBLISHED: 'PUBLISHED',
     PUBLISH_REQ: 'PUBLISH_REQ',
-    DELETE_REQ: 'DELETE_REQ',
+    DELETE_REQ: 'DELETE_REQ'
+}
+
+// HTTP Status
+export const HTTP_STATUS = {
+    EXPECTATION_FAILED: '417'
 }
 
 // All Button Labels

@@ -106,7 +106,7 @@ public class PortalUserService {
             return false;
         }
         boolean result = portalUser.getOrganisations().removeIf(o -> o.getId().equals(orgIdLong));
-        if (result) {
+        if (result && Objects.nonNull(portalUser.getId())) {
 			/** Delete the user if it is not associated with any organization */
 			this.portalUserRepository.deleteById(portalUser.getId());
         }

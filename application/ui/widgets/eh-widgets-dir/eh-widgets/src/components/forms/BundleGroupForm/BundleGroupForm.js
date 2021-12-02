@@ -15,7 +15,7 @@ import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
-import { DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX } from "../../../helpers/constants";
+import { DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH } from "../../../helpers/constants";
 import './bundle-group-form.scss'
 
 const BundleGroupForm = ({
@@ -104,8 +104,7 @@ const BundleGroupForm = ({
     })
 
     const nameChangeHandler = (e) => {
-        const nameLength = e.target.value.length;
-        setBundleNameLength(nameLength);
+        setBundleNameLength(e.target.value.length);
         changeBundleGroup("name", e.target.value)
     }
 
@@ -120,19 +119,19 @@ const BundleGroupForm = ({
 
     const documentationChangeHandler = (e) => {
         changeBundleGroup("documentationUrl", e.target.value)
-        if (DOCUMENTATION_ADDRESS_URL_REGEX.test(e.target.value) && e.target.value.trim().length > 0) {
-            setIsDocumentationAddressValid(true);
-        } else {
-            setIsDocumentationAddressValid(false);
-        }
+        setIsValid(e.target.value, 'documentationUrl')
     }
 
     const versionChangeHandler = (e) => {
         changeBundleGroup("version", e.target.value)
-        if (VERSON_REGEX.test(e.target.value) && e.target.value.trim().length > 0) {
-            setIsBundleVersionValid(true);
-        } else {
-            setIsBundleVersionValid(false);
+        setIsValid(e.target.value, 'version')
+    }
+
+    const setIsValid = (val, inputTypeName) => {
+        if (inputTypeName === 'documentationUrl') {
+            val.trim().length > 0 && DOCUMENTATION_ADDRESS_URL_REGEX.test(val) ? setIsDocumentationAddressValid(true) : setIsDocumentationAddressValid(false)
+        } else if (inputTypeName === 'version') {
+            val.trim().length > 0 && VERSON_REGEX.test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
         }
     }
 
@@ -166,8 +165,7 @@ const BundleGroupForm = ({
     }
 
     const descriptionChangeHandler = (e) => {
-        const descriptionLength = e.target.value.length;
-        setBundleDescriptionLength(descriptionLength);
+        setBundleDescriptionLength(e.target.value.length);
         changeBundleGroup("description", e.target.value)
     }
 
@@ -192,9 +190,9 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={bundleNameLength < 3 && !!validationResult["name"]}
+                                invalid={bundleNameLength< CHAR_LENGTH && !!validationResult["name"]}
                                 invalidText={
-                                    bundleNameLength < 3 ? (validationResult["name"] &&
+                                    bundleNameLength< CHAR_LENGTH ? (validationResult["name"] &&
                                     validationResult["name"].join("; ")) : null
                                 }
                                 disabled={disabled}
@@ -277,9 +275,9 @@ const BundleGroupForm = ({
 
                         <Column className="bg-form-textarea" sm={16} md={16} lg={16}>
                             <TextArea
-                                invalid={bundleDescriptionLength < 3 && !!validationResult["description"]}
+                                invalid={bundleDescriptionLength< CHAR_LENGTH && !!validationResult["description"]}
                                 invalidText={
-                                    bundleDescriptionLength < 3 && (validationResult["description"] &&
+                                    bundleDescriptionLength< CHAR_LENGTH && (validationResult["description"] &&
                                     validationResult["description"].join("; "))
                                 }
                                 disabled={disabled}

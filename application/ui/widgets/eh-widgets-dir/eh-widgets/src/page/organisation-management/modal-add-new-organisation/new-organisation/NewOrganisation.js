@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
+import { CHAR_LENGTH } from "../../../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -45,9 +46,9 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={orgNameLength < 3 && !!validationResult["name"]}
+          invalid={orgNameLength< CHAR_LENGTH && !!validationResult["name"]}
           invalidText={
-            orgNameLength < 3 ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            orgNameLength< CHAR_LENGTH ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}

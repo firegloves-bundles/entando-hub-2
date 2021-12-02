@@ -79,29 +79,18 @@ const BundlesOfBundleGroup = ({
     const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false);
 
     useEffect(() => {
-        if(bundleList.length <= 0) {
-            setIsUrlReqValid(false);
-        }
+        !bundleList.length && setIsUrlReqValid(false);
     }, [bundleList])
 
     const onChangeHandler = (e) => {
         const value = e.target.value
-        if (value.trim().length > 0) {
-            setIsUrlReqValid(true)
-        } else {
-            setIsUrlReqValid(false)
-        }
+        value.trim().length > 0 ? setIsUrlReqValid(true) : setIsUrlReqValid(false)
         setGitRepo(value)
     }
 
     const onBlurHandler = (e) => {
         const value = e.target.value
-
-        if (value.trim().length > 0 && BUNDLE_URL_REGEX.test(value)) {
-            setIsUrlBundleRexValid(true)
-        } else if (!BUNDLE_URL_REGEX.test(value)) {
-            setIsUrlBundleRexValid(false)
-        }
+        value.trim().length > 0 && BUNDLE_URL_REGEX.test(value) ? setIsUrlBundleRexValid(true) : setIsUrlBundleRexValid(false)
     }
 
     const onAddBundle = (e) => {

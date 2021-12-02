@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
+import { CHAR_LENGTH } from "../../../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -44,9 +45,9 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={categoryNameLength < 3 && !!validationResult["name"]}
+          invalid={categoryNameLength< CHAR_LENGTH && !!validationResult["name"]}
           invalidText={
-            categoryNameLength < 3 ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            categoryNameLength< CHAR_LENGTH ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}

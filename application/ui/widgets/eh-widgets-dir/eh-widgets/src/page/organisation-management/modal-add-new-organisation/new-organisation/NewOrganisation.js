@@ -24,6 +24,8 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
+  const [orgNameLength, setOrgNameLength] = useState(false);
+
 
   const changeOrganisation = (field, value) => {
     const newObj = {
@@ -35,6 +37,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
   }
 
   const onChangeHandler = (e, fieldName) => {
+    fieldName === 'name' && setOrgNameLength(e.target.value.length)
     changeOrganisation(fieldName, e.target.value)
   }
 
@@ -42,9 +45,9 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={!!validationResult["name"]}
+          invalid={orgNameLength < 3 && !!validationResult["name"]}
           invalidText={
-            validationResult["name"] && validationResult["name"].join("; ")
+            orgNameLength < 3 ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}

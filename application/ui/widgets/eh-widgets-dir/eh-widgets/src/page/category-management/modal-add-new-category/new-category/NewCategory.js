@@ -24,6 +24,7 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
+  const [categoryNameLength, setCategoryNameLength] = useState(false);
 
   const changeCategory = (field, value) => {
     const newObj = {
@@ -35,6 +36,7 @@ const NewCategory = ({ onDataChange, validationResult }) => {
   }
 
   const onChangeHandler = (e, fieldName) => {
+    fieldName === 'name' && setCategoryNameLength(e.target.value.length)
     changeCategory(fieldName, e.target.value)
   }
 
@@ -42,9 +44,9 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={!!validationResult["name"]}
+          invalid={categoryNameLength < 3 && !!validationResult["name"]}
           invalidText={
-            validationResult["name"] && validationResult["name"].join("; ")
+            categoryNameLength < 3 ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}

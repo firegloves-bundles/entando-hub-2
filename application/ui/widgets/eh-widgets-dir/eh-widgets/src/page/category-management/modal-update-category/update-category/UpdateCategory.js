@@ -1,4 +1,5 @@
 import { Content, TextInput } from "carbon-components-react"
+import { useState } from "react";
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
 
 /*
@@ -14,6 +15,8 @@ Organisation:
 */
 
 const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
+  const [categoryNameLength, setCategoryNameLength] = useState(false);
+
   const changeCategory = (field, value) => {
     const newObj = {
       ...categoryObj,
@@ -23,6 +26,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
   }
 
   const onChangeHandler = (e, fieldName) => {
+    fieldName === 'name' && setCategoryNameLength(e.target.value.length)
     changeCategory(fieldName, e.target.value)
   }
 
@@ -30,9 +34,9 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={!!validationResult["name"]}
+          invalid={categoryNameLength < 3 && !!validationResult["name"]}
           invalidText={
-            validationResult["name"] && validationResult["name"].join("; ")
+            categoryNameLength < 3 ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           value={categoryObj.name}

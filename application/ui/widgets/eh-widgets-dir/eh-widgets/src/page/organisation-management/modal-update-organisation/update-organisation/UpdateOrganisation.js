@@ -1,6 +1,7 @@
 import { Content, TextInput } from "carbon-components-react"
 import { useState } from "react";
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
+import { CHAR_LENGTH } from "../../../../helpers/constants"
 /*
 
 Organisation:
@@ -19,7 +20,6 @@ const UpdateOrganisation = ({
   validationResult,
 }) => {
   const [orgNameLength, setOrgNameLength] = useState(false);
-  const requiredMinChar = 3;
   const changeOrganisation = (field, value) => {
     const newObj = {
       ...organisationObj,
@@ -37,9 +37,9 @@ const UpdateOrganisation = ({
     <>
       <Content>
         <TextInput
-          invalid={orgNameLength < requiredMinChar && !!validationResult["name"]}
+          invalid={orgNameLength < CHAR_LENGTH && !!validationResult["name"]}
           invalidText={
-            orgNameLength < requiredMinChar ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            orgNameLength < CHAR_LENGTH ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           value={organisationObj.name}

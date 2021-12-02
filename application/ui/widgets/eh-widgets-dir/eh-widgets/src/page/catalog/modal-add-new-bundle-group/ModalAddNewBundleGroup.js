@@ -20,7 +20,7 @@ import { BUNDLE_STATUS } from "../../../helpers/constants";
 /*
     This component manages the modal for adding a new bundle group
 */
-export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
+export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList }) => {
 
 
     const ModalStateManager = ({
@@ -63,13 +63,15 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
             setLoading(true)
             let isMounted = true
             const init = async () => {
-                const categoryList = (await getAllCategories()).categoryList
+                // const categoryList = (await getAllCategories()).categoryList
+                const categoryList = catList;
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
                     const currentUserOrganisation = await getCurrentUserOrganisation();
                     localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
-                    localAllowedOrganisations = (await getAllOrganisations()).organisationList
+                    // localAllowedOrganisations = (await getAllOrganisations()).organisationList
+                    localAllowedOrganisations = orgList
                 }
                 const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
                 if (isMounted) {

@@ -57,11 +57,11 @@ class Login extends Component {
           currentUserName: username,
         })
 
-        getPortalUserDetails(username).then(portalUser => {
-          this.setState({
-            portalUser: portalUser
-          })
-        })
+        // getPortalUserDetails(username).then(portalUser => {
+        //   this.setState({
+        //     portalUser: portalUser
+        //   })
+        // })
 
       })
 

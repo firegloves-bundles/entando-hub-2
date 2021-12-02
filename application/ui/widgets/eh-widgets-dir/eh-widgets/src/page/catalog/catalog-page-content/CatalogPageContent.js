@@ -41,7 +41,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, onAfterSubmit}) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -92,11 +92,13 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             setFilteredBundleGroups(filtered)
         }
         const initCs = async () => {
-            const data = await getAllCategories()
-            if (data.isError) {
-                setLoading(false)
-            }
-            setCategories(data.categoryList)
+            // const data = await getAllCategories()
+            // TODO: 'data' is not defined
+            // if (data.isError) {
+            //     setLoading(false)
+            // }
+            setCategories(catList)
+            // setCategories(data.categoryList)
         }
         return Promise.all([initBGs(organisationId, statuses), initCs()])
     }, [])
@@ -140,7 +142,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoriesDetails={catList} onAfterSubmit={onAfterSubmit}/>
                 <Pagination pageSizes={[ 12, 18, 24]} page={page} pageSize={pageSize} totalItems={totalItems}
                             onChange={onPaginationChange}/>
             </div>

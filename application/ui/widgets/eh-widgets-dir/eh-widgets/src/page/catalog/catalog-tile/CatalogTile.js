@@ -15,6 +15,7 @@ const CatalogTile = ({
   descriptionImage,
   categories,
   status,
+  categoriesDetails,
   onAfterSubmit,
 }) => {
   const [categoryName, setCategoryName] = useState("")
@@ -22,12 +23,20 @@ const CatalogTile = ({
 
   useEffect(() => {
     let isMounted = true
-    ;(async () => {
-      const data = await getSingleCategory(categories[0])
-      if (isMounted) {
-        setCategoryName(data.category.name)
+    // ;(async () => {
+    //   const data = await getSingleCategory(categories[0])
+    //   if (isMounted) {
+    //     setCategoryName(data.category.name)
+    //   }
+    // })()
+
+    if (categories) {
+      const getCategoryNameById = (catId) => {
+        return categoriesDetails.find(cat => cat.categoryId === catId);
       }
-    })()
+      const data = getCategoryNameById(categories[0]) && getCategoryNameById(categories[0]).name;
+      setCategoryName(data);
+    }
 
     return () => {
       isMounted = false

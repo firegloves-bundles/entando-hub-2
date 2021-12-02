@@ -2,17 +2,22 @@ import {Content} from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState, useEffect} from "react";
 
 import './catalogPage.scss'
 import {isHubUser} from "../../helpers/helpers"
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
+import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 
 /*
 This is the HUB landing page
 */
 
 const CatalogPage = () => {
+    const [categories, setCategories] = useState([])
+    const [orgList, setOrgList] = useState([])
+    const [loading, setLoading] = useState(true)
+
     const hubUser = isHubUser()
 
     //signals the reloading need of the right side
@@ -21,6 +26,20 @@ const CatalogPage = () => {
     //filter the BG query by status (only published by default)
     //LOADING means ho use the filter value has to wait
     const [statusFilterValue, setStatusFilterValue] = useState("LOADING")
+
+    useEffect(() => {
+      const getCatList = async () => {
+        const data = (await getAllCategories());
+        if (data.isError) {
+          setLoading(false)
+        }
+        setCategories(data.categoryList);
+        const orgData = (await getAllOrganisations()).organisationList;
+        setOrgList(orgData)
+      }
+
+      getCatList();
+    }, [])
 
     /*
     Callback when the status filter is changed
@@ -60,7 +79,7 @@ const CatalogPage = () => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
+                  {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit}/>}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Search
@@ -85,7 +104,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
+                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
               </div>
             </div>
           </div>

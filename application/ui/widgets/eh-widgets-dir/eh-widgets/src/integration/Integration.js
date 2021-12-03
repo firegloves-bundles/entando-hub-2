@@ -399,6 +399,17 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
   return data
 }
 
+/**
+ * Get a portal user by username.
+ * @param {*} username 
+ * @returns 
+ */
+ export const getPortalUserByUsername = async (username) => {
+  const { data, isError } = await getData(urlUsers + username)
+
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.PORTAL_USER);
+}
+
 /*********************
  * KC *************
  *********************/

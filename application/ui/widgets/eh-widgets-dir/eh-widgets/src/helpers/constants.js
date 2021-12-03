@@ -31,9 +31,17 @@ export const MODAL_LABELS = {
 
 // All API Response Key
 export const API_RESPONSE_KEY = {
-    EDITED_BUNDLE_GROUP : 'editedBundleGroup'
+    EDITED_BUNDLE_GROUP: 'editedBundleGroup',
+    PORTAL_USER: 'portalUser'
 }
 
 // Constant String
 export const DELETED_BUNDLE = 'deletedBundle';
 export const GIT_REPO = 'gitRepo';
+
+/**
+ * Messages
+ */
+ export const MESSAGES = {
+    NOTIFY_GUEST_PORTAL_USER_MSG: 'Your account does not currently have access to the Hub. Please contact your Administrator to request access.',
+}

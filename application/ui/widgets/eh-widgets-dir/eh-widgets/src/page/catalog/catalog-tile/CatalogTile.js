@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Tag } from "carbon-components-react"
 import { useHistory } from "react-router-dom"
-import { getSingleCategory } from "../../../integration/Integration"
+// import { getSingleCategory } from "../../../integration/Integration"
 
 import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
@@ -22,7 +22,7 @@ const CatalogTile = ({
   let bundleStatus = status
 
   useEffect(() => {
-    let isMounted = true
+    // let isMounted = true
     // ;(async () => {
     //   const data = await getSingleCategory(categories[0])
     //   if (isMounted) {
@@ -38,9 +38,9 @@ const CatalogTile = ({
       setCategoryName(data);
     }
 
-    return () => {
-      isMounted = false
-    }
+    // return () => {
+    //   isMounted = false
+    // }
   }, [categories])
 
   const history = useHistory()

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
 import CatalogTiles from "../catalog-tiles/CatalogTiles"
-import {getAllBundleGroupsFilteredPaged, getAllCategories} from "../../../integration/Integration"
+import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"

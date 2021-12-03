@@ -129,9 +129,9 @@ const BundleGroupForm = ({
 
     const setIsValid = (val, inputTypeName) => {
         if (inputTypeName === 'documentationUrl') {
-            val.trim().length > 0 && DOCUMENTATION_ADDRESS_URL_REGEX.test(val) ? setIsDocumentationAddressValid(true) : setIsDocumentationAddressValid(false)
+            val.trim().length > 0 && new RegExp(DOCUMENTATION_ADDRESS_URL_REGEX).test(val) ? setIsDocumentationAddressValid(true) : setIsDocumentationAddressValid(false)
         } else if (inputTypeName === 'version') {
-            val.trim().length > 0 && VERSON_REGEX.test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
+            val.trim().length > 0 && new RegExp(VERSON_REGEX).test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
         }
     }
 

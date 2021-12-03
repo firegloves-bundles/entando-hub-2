@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
-import { CHAR_LENGTH } from "../../../../helpers/constants"
+import { CHAR_LENGTH, LEAST_CHAR_NAME_MSG, NAME_REQ_MSG } from "../../../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -25,7 +25,7 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
-  const [categoryNameLength, setCategoryNameLength] = useState(false);
+  const [validationErrorMsg,setValidationErrorMsg] = useState({message: NAME_REQ_MSG});
 
   const changeCategory = (field, value) => {
     const newObj = {
@@ -37,7 +37,21 @@ const NewCategory = ({ onDataChange, validationResult }) => {
   }
 
   const onChangeHandler = (e, fieldName) => {
-    fieldName === 'name' && setCategoryNameLength(e.target.value.length)
+    if (fieldName === "name") {
+      if (e.target.value.length === 0) {
+        setValidationErrorMsg({
+          message: NAME_REQ_MSG
+        })
+      } else if (e.target.value.length < CHAR_LENGTH) {
+        setValidationErrorMsg({
+          message: LEAST_CHAR_NAME_MSG
+        })
+      } else {
+        setValidationErrorMsg({
+          message: ""
+        })
+      }
+    }
     changeCategory(fieldName, e.target.value)
   }
 
@@ -45,9 +59,9 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={categoryNameLength< CHAR_LENGTH && !!validationResult["name"]}
+          invalid={!!validationResult["name"] && !!validationErrorMsg.message}
           invalidText={
-            categoryNameLength< CHAR_LENGTH ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            validationErrorMsg.message
           }
           id="name"
           labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}

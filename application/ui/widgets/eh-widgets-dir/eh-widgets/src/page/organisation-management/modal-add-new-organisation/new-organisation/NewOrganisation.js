@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
-import { CHAR_LENGTH } from "../../../../helpers/constants"
+import { CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG } from "../../../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -25,7 +25,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
-  const [orgNameLength, setOrgNameLength] = useState(false);
+  const [validationErrorMsg,setValidationErrorMsg] = useState({message: NAME_REQ_MSG});
 
 
   const changeOrganisation = (field, value) => {
@@ -38,7 +38,21 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
   }
 
   const onChangeHandler = (e, fieldName) => {
-    fieldName === 'name' && setOrgNameLength(e.target.value.length)
+    if (fieldName === "name") {
+      if (e.target.value.length === 0) {
+        setValidationErrorMsg({
+          message: NAME_REQ_MSG
+        })
+      } else if (e.target.value.length < CHAR_LENGTH) {
+        setValidationErrorMsg({
+          message: LEAST_CHAR_NAME_MSG
+        })
+      } else {
+        setValidationErrorMsg({
+          message: ""
+        })
+      }
+    }
     changeOrganisation(fieldName, e.target.value)
   }
 
@@ -46,9 +60,9 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     <>
       <Content>
         <TextInput
-          invalid={orgNameLength< CHAR_LENGTH && !!validationResult["name"]}
+          invalid={!!validationResult["name"] && !!validationErrorMsg.message}
           invalidText={
-            orgNameLength< CHAR_LENGTH ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            validationErrorMsg.message
           }
           id="name"
           labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}

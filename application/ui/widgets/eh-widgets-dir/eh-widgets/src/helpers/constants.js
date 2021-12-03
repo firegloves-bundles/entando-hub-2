@@ -45,3 +45,7 @@ export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-
 
 // Input char length
 export const CHAR_LENGTH = 3;
+
+// Form Validatin Error Message
+export const NAME_REQ_MSG = 'Name is a required field';
+export const LEAST_CHAR_NAME_MSG = `Name must be at least ${CHAR_LENGTH} characters`;

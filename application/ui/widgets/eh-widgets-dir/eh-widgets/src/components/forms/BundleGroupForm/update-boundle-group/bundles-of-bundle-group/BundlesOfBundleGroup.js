@@ -90,7 +90,7 @@ const BundlesOfBundleGroup = ({
 
     const onBlurHandler = (e) => {
         const value = e.target.value
-        value.trim().length > 0 && BUNDLE_URL_REGEX.test(value) ? setIsUrlBundleRexValid(true) : setIsUrlBundleRexValid(false)
+        value.trim().length > 0 && new RegExp(BUNDLE_URL_REGEX).test(value) ? setIsUrlBundleRexValid(true) : setIsUrlBundleRexValid(false)
     }
 
     const onAddBundle = (e) => {

@@ -11,6 +11,8 @@
     "carbon-components": "^10.41.0",
     "carbon-components-react": "^7.41.0",
     "carbon-icons": "^7.0.7",
+    "i18n-js": "^3.8.0",
+    "i18next": "^21.5.4",
     "node-sass": "^6.0.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",

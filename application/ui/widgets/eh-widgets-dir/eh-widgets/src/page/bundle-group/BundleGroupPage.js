@@ -12,6 +12,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import {ModalInstallInformation} from "./modal-install-information/ModalInstallInformation"
 
 import "./bundle-group-page.scss"
+import i18n from "../../i18n"
 
 /*
 BUNDLEGROUP:
@@ -118,6 +119,7 @@ const BundleGroupPage = () => {
                                                          children={pageModel.children}/>
                     <div className="BundleGroupPage-last-update">
                       Last Update
+                      <br/>{i18n.t('adminConfig.integrationTicketingSystem.title')}
                       <p>{pageModel.bundleGroup && pageModel.bundleGroup.lastUpdate && formatLastUpdate(pageModel.bundleGroup.lastUpdate)}</p>
                     </div>
                     <hr/>

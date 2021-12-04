@@ -3,6 +3,7 @@ import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, {useCallback, useState} from "react";
+import i18n from '../../i18n';
 
 import './catalogPage.scss'
 import {isHubUser} from "../../helpers/helpers"
@@ -51,6 +52,7 @@ const CatalogPage = () => {
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Categories
+                  <p className="title">{i18n.t('adminDashboard.allCustomers')}</p>
                 </div>
                 <div className="bx--col-lg-6 CatalogPage-section">
                   Catalog

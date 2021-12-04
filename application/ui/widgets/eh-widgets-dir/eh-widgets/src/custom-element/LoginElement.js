@@ -6,6 +6,7 @@ import KeycloakContext from '../auth/KeycloakContext'
 import {subscribeToWidgetEvent} from '../helpers/widgetEvents'
 import {KEYCLOAK_EVENT_TYPE} from './widgetEventTypes'
 import Login from '../components/Login/Login'
+import * as Locale from '../i18n';
 
 const getKeycloakInstance = () =>
   (window && window.entando && window.entando.keycloak && {...window.entando.keycloak, initialized: true}) || {
@@ -34,10 +35,17 @@ class LoginElement extends HTMLElement {
     this.appendChild(this.mountPoint)
   }
 
-  render() {
+  render(lang) {
+    Locale.setLocale(lang || 'it');//working from here
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
-        <Login/>
+        <Login />
+        <button onClick={() => this.render('en')}>
+          header-EN
+        </button>
+        <button onClick={() => this.render('it')}>
+          header-IT
+        </button>
       </KeycloakContext.Provider>,
       this.mountPoint
     )

@@ -9,6 +9,7 @@ import withKeycloak from "../../auth/withKeycloak"
 import {HashRouter, Link} from "react-router-dom"
 import {getPortalUserDetails} from "../../integration/api-adapters"
 import {ADMIN} from "../../helpers/constants";
+import i18n from '../../i18n';
 
 import "./login.scss"
 
@@ -103,7 +104,9 @@ class Login extends Component {
                       {getHigherRole() === ADMIN &&
                       <div className="admin-page">
                         <HashRouter>
-                          <Link to="/admin">Admin</Link>
+                          <Link to="/admin">Admin
+                            <p className="title">{i18n.t('userMessages.unauthorized')}</p>
+                          </Link>
                         </HashRouter>
                         <i className="fas fa-cog"/>
                       </div>

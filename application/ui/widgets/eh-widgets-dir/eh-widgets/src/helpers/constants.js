@@ -27,7 +27,7 @@ export const BUTTON_LABELS = {
 // All Modal Labels
 export const MODAL_LABELS = {
     DELETE_BUNDLE_MSG: "Are you sure you want to delete this bundle?",
-    REMOVE_USER_FROM_ORG_MSG: "Are you sure, you want to remove this User from the Organization?",
+    REMOVE_USER_FROM_ORG_MSG: "Are you sure you want to remove this User from the Organization?",
 }
 
 // All API Response Key

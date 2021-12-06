@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.service;
 
-import com.entando.hub.catalog.config.ApplicationConfig;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
@@ -11,6 +10,7 @@ import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +28,7 @@ public class BundleGroupService {
     final private BundleRepository bundleRepository;
 
     @Autowired
-    private ApplicationConfig applicationConfig;
+    private Environment environment;
 
     public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleRepository bundleRepository) {
         this.bundleGroupRepository = bundleGroupRepository;
@@ -164,6 +164,9 @@ public class BundleGroupService {
 	 * @param page
 	 */
 	private void setBundleGroupUrl(Page<BundleGroup> page) {
-		page.forEach(entity -> entity.setBundleGroupUrl(applicationConfig.getAppHubGroupDetailBaseUrl() + "bundlegroup/" + entity.getId()));
+		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
+		if (Objects.nonNull(hubGroupDeatilUrl)) {
+			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroup/" + entity.getId()));
+		}
 	}
 }

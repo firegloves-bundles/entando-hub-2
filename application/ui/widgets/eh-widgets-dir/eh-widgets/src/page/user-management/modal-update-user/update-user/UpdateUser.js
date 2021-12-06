@@ -61,13 +61,12 @@ const UpdateUser = ({userObj, organisations, onDataChange}) => {
                            labelText={"Name"}/>
                 <TextInput disabled={true} value={userObj.email} id={"email"}
                            labelText={"Email"}/>
-                <Select value={userObj.organisation.organisationId} onChange={organisationChangeHandler}
+                <Select value={userObj && userObj.organisation && userObj.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
                         labelText={"Organisation"}>{selectItems_Organisations}</Select>
             </Content>
         </>
     )
-
 }
 
 export default UpdateUser

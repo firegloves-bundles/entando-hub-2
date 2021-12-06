@@ -21,7 +21,7 @@ public class Category {
 
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<BundleGroup> bundleGroups = new HashSet<>();
 
 

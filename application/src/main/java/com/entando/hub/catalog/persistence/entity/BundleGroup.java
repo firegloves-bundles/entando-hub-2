@@ -34,10 +34,10 @@ public class BundleGroup {
     @ManyToOne
     private Organisation organisation;
 
-    @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Bundle> bundles = new HashSet<>();
 
 /*

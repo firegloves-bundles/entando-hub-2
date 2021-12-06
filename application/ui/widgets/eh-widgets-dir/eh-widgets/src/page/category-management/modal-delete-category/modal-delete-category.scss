@@ -1,0 +1,17 @@
+.Modal-delete-category-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+// Trash Icon Color
+.Modal-delete-category-group-wrapper {
+    color: red;
+}
+
+.Modal-edit-category-group .bx--modal-header__label {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    color: #161616;
+}

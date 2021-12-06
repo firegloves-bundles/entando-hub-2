@@ -105,12 +105,13 @@ public class PortalUserService {
             logger.info("Organisation '{}' doesn't include User '" + username + "'", orgId, username);
             return false;
         }
-        portalUser.setEmail(user.getEmail());
         boolean result = portalUser.getOrganisations().removeIf(o -> o.getId().equals(orgIdLong));
-        if (result) {
-            this.portalUserRepository.save(portalUser);
+        if (result && Objects.nonNull(portalUser.getId())) {
+			/** Delete the user if it is not associated with any organization */
+			this.portalUserRepository.deleteById(portalUser.getId());
         }
-        return result;
+
+        return true;
     }
 
     public boolean removeUser(String username) {

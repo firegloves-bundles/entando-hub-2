@@ -22,6 +22,7 @@ const CatalogTile = ({
   let bundleStatus = status
 
   useEffect(() => {
+    // EHUB-39
     // let isMounted = true
     // ;(async () => {
     //   const data = await getSingleCategory(categories[0])
@@ -38,10 +39,11 @@ const CatalogTile = ({
       setCategoryName(data);
     }
 
+    // EHUB-39
     // return () => {
     //   isMounted = false
     // }
-  }, [categories])
+  }, [categories, categoriesDetails])
 
   const history = useHistory()
 

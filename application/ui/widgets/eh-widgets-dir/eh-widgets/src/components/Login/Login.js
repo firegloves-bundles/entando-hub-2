@@ -7,7 +7,7 @@ import {
 } from "../../helpers/helpers"
 import withKeycloak from "../../auth/withKeycloak"
 import {HashRouter, Link} from "react-router-dom"
-import {getPortalUserDetails} from "../../integration/api-adapters"
+// import {getPortalUserDetails} from "../../integration/api-adapters"
 import {ADMIN} from "../../helpers/constants";
 
 import "./login.scss"

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
 import CatalogTiles from "../catalog-tiles/CatalogTiles"
-import {getAllBundleGroupsFilteredPaged, getAllCategories} from "../../../integration/Integration"
+import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"
@@ -41,7 +41,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, catList, onAfterSubmit}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit}) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -91,17 +91,29 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, onAfterSub
             const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
             setFilteredBundleGroups(filtered)
         }
-        const initCs = async () => {
-            // const data = await getAllCategories()
-            // TODO: 'data' is not defined
-            // if (data.isError) {
-            //     setLoading(false)
-            // }
-            setCategories(catList)
-            // setCategories(data.categoryList)
-        }
-        return Promise.all([initBGs(organisationId, statuses), initCs()])
+        // EHUB-39
+        // const initCs = async () => {
+        //     // const data = await getAllCategories()
+        //     // TODO: 'data' is not defined
+        //     // if (data.isError) {
+        //     //     setLoading(false)
+        //     // }
+        //     if (isError) {
+        //         setLoading(false);
+        //     }
+        //     setCategories(catList)
+        //     // setCategories(data.categoryList)
+        // }
+        // return Promise.all([initBGs(organisationId, statuses), initCs()])
+        return Promise.all([initBGs(organisationId, statuses)])
     }, [])
+
+    useEffect(() => {
+        if (isError) {
+            setLoading(false);
+        }
+        setCategories(catList)
+    }, [isError, catList])
 
     useEffect(() => {
         const hubUser = isHubUser();

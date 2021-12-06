@@ -17,6 +17,7 @@ const CatalogPage = () => {
     const [categories, setCategories] = useState([])
     const [orgList, setOrgList] = useState([])
     const [loading, setLoading] = useState(true)
+    const [isError, setIsError] = useState(null)
 
     const hubUser = isHubUser()
 
@@ -31,6 +32,7 @@ const CatalogPage = () => {
       const getCatList = async () => {
         const data = (await getAllCategories());
         if (data.isError) {
+          setIsError(data.isError)
           setLoading(false)
         }
         setCategories(data.categoryList);
@@ -104,7 +106,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
+                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
               </div>
             </div>
           </div>

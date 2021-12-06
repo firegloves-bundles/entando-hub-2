@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react"
 import {
     addNewBundle,
     addNewBundleGroup,
-    getAllCategories, getAllOrganisations
+    // getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";

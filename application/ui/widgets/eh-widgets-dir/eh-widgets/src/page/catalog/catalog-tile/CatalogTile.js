@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react"
 import { Tag } from "carbon-components-react"
 import { useHistory } from "react-router-dom"
 import { getSingleCategory } from "../../../integration/Integration"
-
 import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
 import { isHubUser } from "../../../helpers/helpers"
-import { textFromStatus } from "../../../helpers/profiling"
 
 const CatalogTile = ({
   bundleGroupId,
   name,
+  organisationName,
   description,
   descriptionImage,
   categories,
   status,
   onAfterSubmit,
+  version
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -25,7 +25,7 @@ const CatalogTile = ({
     ;(async () => {
       const data = await getSingleCategory(categories[0])
       if (isMounted) {
-        setCategoryName(data.category.name)
+        setCategoryName(data && data.category && data.category.name)
       }
     })()
 
@@ -82,18 +82,15 @@ const CatalogTile = ({
             )}
           </div>
           <div className="CatalogTile-card-title">{name}</div>
-          {isHubUser() && (
-            <div className="CatalogTile-card-status">
-              {textFromStatus(status)}
-            </div>
-          )}
+          <div className="CatalogTile-card-status">{organisationName}</div>
           <div className="CatalogTile-card-description">{description}</div>
-          <div className="CatalogTile-card-category">
+          <div className="tag-setting">
             <Tag type={tagColor} title="Clear Filter">
-              {" "}
-              {categoryName}{" "}
+              {categoryName}
             </Tag>
           </div>
+
+          <div className="CatalogTile-card-status">{version}</div>
         </div>
       </div>
     </>

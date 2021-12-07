@@ -65,7 +65,8 @@ const BundlesOfBundleGroup = ({
     initialBundleList,
     disabled = false,
     minOneBundleError,
-    bundleStatus
+    bundleStatus,
+    mode
 }) => {
 
     useEffect(() => {
@@ -139,7 +140,10 @@ const BundlesOfBundleGroup = ({
 
     let bundleUrlErrorResult = "";
 
-    if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
+
+    if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
+        bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
+    } else if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
@@ -160,6 +164,7 @@ const BundlesOfBundleGroup = ({
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
+                            //    invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
                                onBlur={onBlurHandler}
                     />

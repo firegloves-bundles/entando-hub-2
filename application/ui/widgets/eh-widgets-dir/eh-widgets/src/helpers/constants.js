@@ -48,6 +48,7 @@ export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-
 export const CHAR_LENGTH = 3;
 export const MAX_CHAR_LENGTH = 25;
 export const MAX_CHAR_LENGTH_FOR_DESC = 600;
+export const MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM = 100;
 
 /**
  * Bundle Form Validatin Error Message
@@ -66,6 +67,12 @@ export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format
 // Version
 export const VERSION_REQ_MSG = 'Version is a required field'
 export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+
+/**
+ * Bundle Form Validatin Error Message
+ */
+// DESCRIPTION ERROR MESSAGE FOR CATEGORY AND ORGANISATION.
+export const DESCRIPTION_MAX_LENGTH = 'Description must not exceed 100 characters';
 
 /**
  * Messages

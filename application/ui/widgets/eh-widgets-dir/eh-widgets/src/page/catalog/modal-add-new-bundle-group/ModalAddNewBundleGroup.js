@@ -223,7 +223,7 @@ const ModalContent = ({
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
+                    <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                         categories={categories} selectStatusValues={selectStatusValues}
                         onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError}/>
                 </Modal>

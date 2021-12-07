@@ -15,7 +15,9 @@ import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
 import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
-import { DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH } from "../../../helpers/constants";
+import {
+    DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH, MAX_CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG, 
+    MAX_CHAR_NAME_MSG, DESC_REQ_MESG, LEAST_CHAR_DESC_MSG, MAX_CHAR_DESC_MSG, MAX_CHAR_LENGTH_FOR_DESC, DOCUMENTATION_URL_REQ_MSG, DOCUMENTATION_URL_FORMAT_MSG, VERSION_REQ_MSG, VERSION_FORMAT_MSG } from "../../../helpers/constants";
 import './bundle-group-form.scss'
 
 const BundleGroupForm = ({
@@ -26,7 +28,8 @@ const BundleGroupForm = ({
                              selectStatusValues,
                              validationResult,
                              minOneBundleError,
-                             theBundleStatus
+                             theBundleStatus,
+                             mode
                          }) => {
 
 
@@ -106,6 +109,12 @@ const BundleGroupForm = ({
     const nameChangeHandler = (e) => {
         setBundleNameLength(e.target.value.length);
         changeBundleGroup("name", e.target.value)
+        if (e.target.value.length < 3) {
+            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+            validationResult["name"] = [errorMessageForLengthZeroOrThree]
+        } else if (e.target.value.length > MAX_CHAR_LENGTH) {
+            validationResult["name"] = [MAX_CHAR_NAME_MSG]
+        }
     }
 
     const organisationChangeHandler = (e) => {
@@ -120,11 +129,21 @@ const BundleGroupForm = ({
     const documentationChangeHandler = (e) => {
         changeBundleGroup("documentationUrl", e.target.value)
         setIsValid(e.target.value, 'documentationUrl')
+        if (!e.target.value.trim().length) {
+            validationResult["documentationUrl"] = [DOCUMENTATION_URL_REQ_MSG]
+        } else if (e.target.value.trim().length) {
+            validationResult["documentationUrl"] = [DOCUMENTATION_URL_FORMAT_MSG]
+        }
     }
 
     const versionChangeHandler = (e) => {
         changeBundleGroup("version", e.target.value)
         setIsValid(e.target.value, 'version')
+        if (!e.target.value.trim().length) {
+            validationResult["version"] = [VERSION_REQ_MSG]
+        } else if (e.target.value.trim().length) {
+            validationResult["version"] = [VERSION_FORMAT_MSG]
+        }
     }
 
     const setIsValid = (val, inputTypeName) => {
@@ -167,6 +186,12 @@ const BundleGroupForm = ({
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);
         changeBundleGroup("description", e.target.value)
+        if (e.target.value.length < CHAR_LENGTH) {
+            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? DESC_REQ_MESG : LEAST_CHAR_DESC_MSG
+            validationResult["description"] = [errorMessageForLengthZeroOrThree]
+        } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
+            validationResult["description"] = [MAX_CHAR_DESC_MSG]
+        }
     }
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
@@ -190,9 +215,9 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={bundleNameLength< CHAR_LENGTH && !!validationResult["name"]}
+                                invalid={(bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) && !!validationResult["name"]}
                                 invalidText={
-                                    bundleNameLength< CHAR_LENGTH ? (validationResult["name"] &&
+                                    (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
                                     validationResult["name"].join("; ")) : null
                                 }
                                 disabled={disabled}
@@ -270,15 +295,20 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 minOneBundleError={minOneBundleError}
                                 bundleStatus={bundleStatus}
+                                mode={mode}
                             />
                         </Column>
 
                         <Column className="bg-form-textarea" sm={16} md={16} lg={16}>
                             <TextArea
-                                invalid={bundleDescriptionLength< CHAR_LENGTH && !!validationResult["description"]}
+                                invalid={
+                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
+                                    !!validationResult["description"]
+                                }
                                 invalidText={
-                                    bundleDescriptionLength< CHAR_LENGTH && (validationResult["description"] &&
-                                    validationResult["description"].join("; "))
+                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
+                                    (validationResult["description"] &&
+                                        validationResult["description"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup.description}

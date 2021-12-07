@@ -67,7 +67,6 @@ const UpdateUser = ({userObj, organisations, onDataChange}) => {
             </Content>
         </>
     )
-
 }
 
 export default UpdateUser

@@ -1,7 +1,6 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
-import { HTTP_STATUS } from '../helpers/constants'
-import { API_RESPONSE_KEY, DELETED_BUNDLE } from "../helpers/constants";
+import { API_RESPONSE_KEY, DELETED_BUNDLE, MESSAGES, HTTP_STATUS } from "../helpers/constants";
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -394,7 +393,7 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
   const { data, isError } = await deleteData(newUrl)
 
-  eventHandler(isError, `Impossible to remove user`, `User removed`)
+  eventHandler(isError, MESSAGES.IMPOSSIBLE_TO_REMOVE_USERS_MSG, MESSAGES.USER_REMOVED_FROM_ORG_MSG);
 
   return data
 }

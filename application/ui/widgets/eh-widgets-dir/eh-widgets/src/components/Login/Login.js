@@ -11,6 +11,7 @@ import {HashRouter, Link} from "react-router-dom"
 import {ADMIN} from "../../helpers/constants";
 
 import "./login.scss"
+import { getPortalUserDetails } from '../../integration/api-adapters';
 
 const KEYCLOAK_EVENT_ID = 'keycloak'
 
@@ -57,14 +58,16 @@ class Login extends Component {
           currentUserName: username,
         })
 
-        // getPortalUserDetails(username).then(portalUser => {
-        //   this.setState({
-        //     portalUser: portalUser
-        //   })
-        // })
+        getPortalUserDetails(username).then(portalUser => {
+          this.setState({
+            currentUserOrgName: portalUser
+              && portalUser.organisations
+              && portalUser.organisations[0]
+              && portalUser.organisations[0].organisationName
+          })
+        })
 
       })
-
     }
   }
 
@@ -96,9 +99,7 @@ class Login extends Component {
                       </div>
                       |
                       <div className="spacer">
-                        {this.state.portalUser
-                        && this.state.portalUser.organisation
-                        && this.state.portalUser.organisation.name}
+                        {this.state.currentUserOrgName}
                       </div>
                       {getHigherRole() === ADMIN &&
                       <div className="admin-page">

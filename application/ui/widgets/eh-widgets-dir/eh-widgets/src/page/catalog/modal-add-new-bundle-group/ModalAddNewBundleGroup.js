@@ -12,7 +12,6 @@ import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
-import { getCurrentUserOrganisation } from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 import { BUNDLE_STATUS } from "../../../helpers/constants";
@@ -20,7 +19,7 @@ import { BUNDLE_STATUS } from "../../../helpers/constants";
 /*
     This component manages the modal for adding a new bundle group
 */
-export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList }) => {
+export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, currentUserOrg}) => {
 
 
     const ModalStateManager = ({
@@ -67,7 +66,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList }) => {
                 const categoryList = catList;
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
-                    const currentUserOrganisation = await getCurrentUserOrganisation();
+                    // EHUB-39
+                    // const currentUserOrganisation = await getCurrentUserOrganisation();
+                    const currentUserOrganisation = currentUserOrg;
                     localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
                     // localAllowedOrganisations = (await getAllOrganisations()).organisationList

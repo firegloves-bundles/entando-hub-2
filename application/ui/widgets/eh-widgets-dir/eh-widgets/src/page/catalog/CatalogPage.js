@@ -5,9 +5,9 @@ import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBu
 import React, {useCallback, useState, useEffect} from "react";
 
 import './catalogPage.scss'
-import {isHubUser} from "../../helpers/helpers"
+import {getUserName, isHubUser} from "../../helpers/helpers"
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPortalUserByUsername } from "../../integration/Integration";
 
 /*
 This is the HUB landing page
@@ -18,6 +18,7 @@ const CatalogPage = () => {
     const [orgList, setOrgList] = useState([])
     const [loading, setLoading] = useState(true)
     const [isError, setIsError] = useState(null)
+    const [currentUserOrg, setCurrentUserOrg] = useState(null)
 
     const hubUser = isHubUser()
 
@@ -41,6 +42,25 @@ const CatalogPage = () => {
       }
 
       getCatList();
+
+      // --------EHUB-39: Need to replace with EHUB-142 code -----------
+      (async () => {
+        const username = await getUserName();
+        if (username) {
+          const portalUserResp = (await getPortalUserByUsername(username));
+          if (portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
+            // setOrgLength(portalUserResp.portalUser.organisationIds.length);
+            // setPortalUserPresent(true);
+            setCurrentUserOrg(portalUserResp.portalUser.organisations[0]);
+          } else if (portalUserResp && portalUserResp.isError) {
+            // setOrgLength(0);
+            // setPortalUserPresent(false);
+          }
+        }
+      })()
+      return () => {
+
+      }
     }, [])
 
     /*
@@ -58,7 +78,7 @@ const CatalogPage = () => {
     const onAfterSubmit = () => {
         setReloadToken(((new Date()).getTime()).toString()) //internal status change will rerender this component
     }
-
+    
   return (
       <>
         <Content className="CatalogPage">
@@ -81,7 +101,7 @@ const CatalogPage = () => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit}/>}
+                {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Search
@@ -106,7 +126,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit}/>}
+                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg}/>}
               </div>
             </div>
           </div>

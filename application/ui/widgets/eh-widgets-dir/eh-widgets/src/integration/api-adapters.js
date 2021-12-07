@@ -1,8 +1,9 @@
-import {getAllUsers, getSingleOrganisation} from "./Integration"
+import {getAllUsers, getPortalUserByUsername, getSingleOrganisation} from "./Integration"
 import {getUserName, isHubUser} from "../helpers/helpers";
 
 //portal user
-export const getPortalUserDetails = async (username) => {
+//EHUB-39
+export const getPortalUserDetails_old = async (username) => {
     const userList = (await getAllUsers()).userList
     if (userList && userList.length) {
         const filteredUserList = userList.filter(user => user.username === username)
@@ -24,8 +25,18 @@ export const getPortalUserDetails = async (username) => {
 }
 
 
+export const getPortalUserDetails = async (username) => {
+    const user = (await getPortalUserByUsername(username)).portalUser;
+    if (user) {
+        return {
+            ...user
+        }
+    }
+    return undefined
+}
 
-export const getCurrentUserOrganisation= async ()=>{
+//EHUB-39
+export const getCurrentUserOrganisation_old = async ()=>{
     //TODO cache user info
     if (isHubUser()) {
         const username = await getUserName()
@@ -34,6 +45,17 @@ export const getCurrentUserOrganisation= async ()=>{
             return portalUserDetail.organisation
         }
     }
+    return undefined
+}
 
+export const getCurrentUserOrganisation = async () => {
+    //TODO cache user info
+    if (isHubUser()) {
+        const username = await getUserName()
+        const portalUserDetail = await getPortalUserDetails(username)
+        if (portalUserDetail && portalUserDetail.organisations && portalUserDetail.organisations[0]) {
+            return portalUserDetail.organisations[0];
+        }
+    }
     return undefined
 }

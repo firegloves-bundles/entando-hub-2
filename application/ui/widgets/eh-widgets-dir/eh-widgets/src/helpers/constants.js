@@ -1,4 +1,3 @@
-
 //Hub Roles
 export const AUTHOR = 'eh-author'
 export const MANAGER = 'eh-manager'
@@ -22,16 +21,18 @@ export const BUTTON_LABELS = {
     DELETE: "Delete",
     EDIT: "Edit",
     CANCEL: "Cancel",
+    REMOVE: "Remove",
 }
 
 // All Modal Labels
 export const MODAL_LABELS = {
     DELETE_BUNDLE_MSG: "Are you sure you want to delete this bundle?",
+    REMOVE_USER_FROM_ORG_MSG: "Are you sure you want to remove this User from the Organization?",
 }
 
 // All API Response Key
 export const API_RESPONSE_KEY = {
-    EDITED_BUNDLE_GROUP : 'editedBundleGroup'
+    EDITED_BUNDLE_GROUP: 'editedBundleGroup'
 }
 
 // Constant String
@@ -45,7 +46,38 @@ export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-
 
 // Input char length
 export const CHAR_LENGTH = 3;
+export const MAX_CHAR_LENGTH = 25;
+export const MAX_CHAR_LENGTH_FOR_DESC = 600;
 
-// Form Validatin Error Message
-export const NAME_REQ_MSG = 'Name is a required field';
-export const LEAST_CHAR_NAME_MSG = `Name must be at least ${CHAR_LENGTH} characters`;
+/**
+ * Bundle Form Validatin Error Message
+ */
+// NAME
+export const NAME_REQ_MSG = 'Name is a required field'
+export const LEAST_CHAR_NAME_MSG = `Name must be at least ${CHAR_LENGTH} characters`
+export const MAX_CHAR_NAME_MSG = `Name must not exceed ${MAX_CHAR_LENGTH} characters`
+// DESCRIPTION
+export const DESC_REQ_MESG = 'Description is a required field'
+export const LEAST_CHAR_DESC_MSG = `Description must be at least ${CHAR_LENGTH} characters`
+export const MAX_CHAR_DESC_MSG = `Description must not exceed ${MAX_CHAR_LENGTH_FOR_DESC} characters`
+// Documentation
+export const DOCUMENTATION_URL_REQ_MSG = 'Documentation is a required field'
+export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format'
+// Version
+export const VERSION_REQ_MSG = 'Version is a required field'
+export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+
+/**
+ * Messages
+ */
+export const MESSAGES = {
+    NOTIFY_GUEST_PORTAL_USER_MSG: 'Your account does not currently have access to the Hub. Please contact your Administrator to request access.',
+    IMPOSSIBLE_TO_REMOVE_USERS_MSG: 'Impossible to remove the user',
+    USER_REMOVED_FROM_ORG_MSG: 'User removed from the organisation'
+}
+
+// All dropdown options
+export const DROPDOWN_OPTIONS = {
+    EDIT: "Edit",
+    REMOVE: "Remove",
+}

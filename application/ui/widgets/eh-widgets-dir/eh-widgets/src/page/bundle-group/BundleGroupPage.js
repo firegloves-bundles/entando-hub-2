@@ -68,7 +68,7 @@ const BundleGroupPage = () => {
                 bundleGroupId)).bundleGroup
             pageModel["bundleGroup"] = fetchedBundleGroup
             pageModel["organisation"] =
-                fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
+            fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
                     fetchedBundleGroup.organisationId)).organisation : null
             pageModel["category"] =
                 fetchedBundleGroup.categories && fetchedBundleGroup.categories.length

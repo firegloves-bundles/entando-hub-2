@@ -48,7 +48,8 @@ public class BundleGroupService {
         if (pageSize == 0) {
             paging = Pageable.unpaged();
         } else {
-            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
         }
         Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
             Category category = new Category();

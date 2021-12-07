@@ -88,7 +88,7 @@ const UserManagementPage = () => {
       }
       //for every user get the organisations name
       const userListWithOrganisation = await Promise.all(
-        userList.map(async (user) => {
+        userList && userList.map(async (user) => {
           if (user.organisationIds) {
             //get the current organisation name
             const organisations = await Promise.all(

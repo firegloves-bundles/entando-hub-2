@@ -406,7 +406,7 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
  export const getPortalUserByUsername = async (username) => {
   const { data, isError } = await getData(urlUsers + username)
 
-  return checkForErrorsAndSendResponse(data, isError, 'portalUser');
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.PORTAL_USER);
 }
 
 /*********************

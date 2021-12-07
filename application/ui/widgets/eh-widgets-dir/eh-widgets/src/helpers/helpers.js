@@ -42,8 +42,8 @@ export const getHigherRole = () => {
 
 export const getUserName = async () => {
     if (window.entando && window.entando.keycloak && window.entando.keycloak.tokenParsed) {
-        const userInfo = await window.entando.keycloak.tokenParsed
-        return userInfo.preferred_username
+        const userInfo = window.entando.keycloak.tokenParsed;
+        return userInfo.preferred_username;
     } else {
         return ""
     }

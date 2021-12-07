@@ -127,6 +127,15 @@ button:focus, button {
   background-color: #fff;
 }
 
+.notify-user-absense {
+  font-family: Roboto;
+  line-height: 35px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  background: var(--clr-grey);
+}
+
 @media screen and (max-width: 1040px) {
   .CatalogPage-wrapper {
     padding: 0 3.8% 4rem;
@@ -141,5 +150,4 @@ button:focus, button {
     height: 4rem;
     flex: 0 1 45%;
   }
-
 }

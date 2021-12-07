@@ -48,8 +48,8 @@ const CatalogPage = () => {
       const username = await getUserName();
       if (username) {
         const portalUserResp = (await getPortalUserByUsername(username));
-        if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisationIds) {
-          setOrgLength(portalUserResp.portalUser.organisationIds.length);
+        if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
+          setOrgLength(portalUserResp.portalUser.organisations.length);
           setPortalUserPresent(true);
         } else if (isMounted && portalUserResp && portalUserResp.isError) {
           setOrgLength(0);

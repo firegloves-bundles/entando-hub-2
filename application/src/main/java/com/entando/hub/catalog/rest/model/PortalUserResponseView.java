@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.rest.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -13,6 +12,6 @@ public class PortalUserResponseView {
     private String firstName;
     private String lastName;
     private String email;
-    private Set<Long> organisationIds = new HashSet<>();
+    private Set<OrganisationResponseView> organisations;
 	
 }

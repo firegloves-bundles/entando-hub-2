@@ -7,15 +7,19 @@ import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.service.model.UserRepresentation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.entando.hub.catalog.rest.model.OrganisationResponseView;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 
 /**
@@ -145,7 +149,7 @@ public class PortalUserService {
 	}
 
 	/**
-	 * Fetches values from PortalUser entity and set in PortalUserResponseView.
+	 * Fetches values from PortalUser entity and sets in PortalUserResponseView.
 	 * @param portalUser
 	 * @return an object of PortalUserResponseView
 	 */
@@ -157,10 +161,28 @@ public class PortalUserService {
 		portalUserResponseView.setUsername(portalUser.getUsername());
 
 		if(CollectionUtils.isNotEmpty(portalUser.getOrganisations())) {
-			portalUserResponseView.setOrganisationIds(portalUser.getOrganisations().stream()
-	                .map(Organisation::getId).collect(Collectors.toSet()));
+			portalUserResponseView.setOrganisations(organisationToOrganisationResponseView(portalUser.getOrganisations()));
 		}
 
 		return portalUserResponseView;
+	}
+
+	/**
+	 * Creates a response view for Organisations.
+	 * @param organisations
+	 * @return set of OrganisationResponseView
+	 */
+	private Set<OrganisationResponseView> organisationToOrganisationResponseView(Set<Organisation> organisations) {
+		Set<OrganisationResponseView> orgRespViewSet = new HashSet<OrganisationResponseView>();
+		organisations.stream().forEach(movie -> {
+			OrganisationResponseView orgRespView = new OrganisationResponseView();
+			orgRespView.setOrganisationId(movie.getId());
+			orgRespView.setOrganisationName(movie.getName());
+			orgRespView.setOrganisationDescription(movie.getDescription());
+
+			orgRespViewSet.add(orgRespView);
+		});
+
+		return orgRespViewSet;
 	}
 }

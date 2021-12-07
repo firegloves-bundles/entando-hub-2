@@ -3,16 +3,12 @@ import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, {useCallback, useState, useEffect} from "react";
-import './catalogPage.scss'
-import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getAllCategories, getAllOrganisations, getPortalUserByUsername } from "../../integration/Integration";
-import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, { useCallback, useEffect, useState } from "react";
-
+import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
 import { MESSAGES } from "../../helpers/constants";
+import './catalogPage.scss';
 
 /*
 This is the HUB landing page

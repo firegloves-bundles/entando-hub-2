@@ -63,7 +63,7 @@ export const ModalUpdateBundleGroup = ({
     const initBG = async () => {
       const res = await getSingleBundleGroup(bundleGroupId)
       const childrenFromDb =
-        res.bundleGroup.children && res.bundleGroup.children.length > 0
+      res && res.bundleGroup && res.bundleGroup.children && res.bundleGroup.children.length > 0
           ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
           : []
 
@@ -105,7 +105,7 @@ export const ModalUpdateBundleGroup = ({
       //WARNING a new bundle is created even if already exists
       //the call is async in respArray there will be the new bundles id
       let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-      newChildren = respArray.map((res) => res.newBundle.data.bundleId)
+      newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
     }
     const toSend = {
       ...bundleGroup,

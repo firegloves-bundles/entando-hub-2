@@ -186,6 +186,7 @@ public class BundleGroupController {
         //the following must be merged with the entity using mappedBy
         protected List<String> children;
         protected String organisationId;
+        protected String organisationName;
         protected List<String> categories;
 
 
@@ -209,6 +210,7 @@ public class BundleGroupController {
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId().toString();
+                this.organisationName = entity.getOrganisation().getName();
             }
             //todo one single iteration
             if (entity.getBundles() != null) {
@@ -230,6 +232,7 @@ public class BundleGroupController {
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
                 organisation.setId(Long.parseLong(this.organisationId));
+                organisation.setName(this.organisationName);
                 ret.setOrganisation(organisation);
             }
             id.map(Long::valueOf).ifPresent(ret::setId);

@@ -5,14 +5,22 @@ import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.service.model.UserRepresentation;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.entando.hub.catalog.rest.model.OrganisationResponseView;
+import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 
 /**
  * @author E.Santoboni
@@ -120,4 +128,61 @@ public class PortalUserService {
         this.portalUserRepository.delete(portalUser);
         return true;
     }
+
+    /**
+     * Gets a portal user by username, returns null if user not found.
+     * @param username
+     * @return a response view with portal user details.
+     */
+	public PortalUserResponseView getUserByUsername(String username) {
+		PortalUser portalUser = null;
+		PortalUserResponseView portalUserResponseView = null;
+		if (username != null) {
+			portalUser = this.portalUserRepository.findByUsername(username);
+			if (Objects.isNull(portalUser)) {
+				logger.warn("user '{}' does not exists", username);
+				return null;
+			}
+			portalUserResponseView = PortalUserToPortalUserResponseView(portalUser);
+		}
+		return portalUserResponseView;
+	}
+
+	/**
+	 * Fetches values from PortalUser entity and sets in PortalUserResponseView.
+	 * @param portalUser
+	 * @return an object of PortalUserResponseView
+	 */
+	private PortalUserResponseView PortalUserToPortalUserResponseView(PortalUser portalUser) {
+		PortalUserResponseView portalUserResponseView = new PortalUserResponseView();
+
+		portalUserResponseView.setId(portalUser.getId());
+		portalUserResponseView.setEmail(portalUser.getEmail());
+		portalUserResponseView.setUsername(portalUser.getUsername());
+
+		if(CollectionUtils.isNotEmpty(portalUser.getOrganisations())) {
+			portalUserResponseView.setOrganisations(organisationToOrganisationResponseView(portalUser.getOrganisations()));
+		}
+
+		return portalUserResponseView;
+	}
+
+	/**
+	 * Creates a response view for Organisations.
+	 * @param organisations
+	 * @return set of OrganisationResponseView
+	 */
+	private Set<OrganisationResponseView> organisationToOrganisationResponseView(Set<Organisation> organisations) {
+		Set<OrganisationResponseView> orgRespViewSet = new HashSet<OrganisationResponseView>();
+		organisations.stream().forEach(movie -> {
+			OrganisationResponseView orgRespView = new OrganisationResponseView();
+			orgRespView.setOrganisationId(movie.getId());
+			orgRespView.setOrganisationName(movie.getName());
+			orgRespView.setOrganisationDescription(movie.getDescription());
+
+			orgRespViewSet.add(orgRespView);
+		});
+
+		return orgRespViewSet;
+	}
 }

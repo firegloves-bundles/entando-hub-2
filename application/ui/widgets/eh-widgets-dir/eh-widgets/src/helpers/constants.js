@@ -32,7 +32,8 @@ export const MODAL_LABELS = {
 
 // All API Response Key
 export const API_RESPONSE_KEY = {
-    EDITED_BUNDLE_GROUP: 'editedBundleGroup'
+    EDITED_BUNDLE_GROUP: 'editedBundleGroup',
+    PORTAL_USER: 'portalUser'
 }
 
 // Constant String

@@ -164,7 +164,6 @@ const BundlesOfBundleGroup = ({
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
-                            //    invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
                                onBlur={onBlurHandler}
                     />

@@ -107,14 +107,23 @@ const BundleGroupForm = ({
     })
 
     const nameChangeHandler = (e) => {
-        setBundleNameLength(e.target.value.length);
-        changeBundleGroup("name", e.target.value)
-        if (e.target.value.length < 3) {
-            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+        setBundleNameLength(e.target.value.trim().length);
+        if (e.target.value.trim().length < CHAR_LENGTH) {
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
             validationResult["name"] = [errorMessageForLengthZeroOrThree]
-        } else if (e.target.value.length > MAX_CHAR_LENGTH) {
+        } else if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
             validationResult["name"] = [MAX_CHAR_NAME_MSG]
         }
+        changeBundleGroup("name", e.target.value)
+    }
+
+    /**
+     * @param {*} e Event object to get value of field
+     * @param {*} field Name of the field
+     * @description Trimming whitespaces from the field value.
+     */
+    const trimBeforeFormSubmitsHandler = (e, field) => {
+        changeBundleGroup(field, e.target.value.trim())
     }
 
     const organisationChangeHandler = (e) => {
@@ -128,7 +137,7 @@ const BundleGroupForm = ({
 
     const documentationChangeHandler = (e) => {
         changeBundleGroup("documentationUrl", e.target.value)
-        setIsValid(e.target.value, 'documentationUrl')
+        setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
             validationResult["documentationUrl"] = [DOCUMENTATION_URL_REQ_MSG]
         } else if (e.target.value.trim().length) {
@@ -137,7 +146,7 @@ const BundleGroupForm = ({
     }
 
     const versionChangeHandler = (e) => {
-        changeBundleGroup("version", e.target.value)
+        changeBundleGroup("version", e.target.value.trim())
         setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
             validationResult["version"] = [VERSION_REQ_MSG]
@@ -223,6 +232,7 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
+                                onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
                                 id={"name"}
                                 labelText={`Name ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
                             />
@@ -250,6 +260,7 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 value={bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
+                                onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
                                 id={"documentation"}
                                 labelText={`Documentation Address ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
                             />
@@ -313,6 +324,7 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 value={bundleGroup.description}
                                 onChange={descriptionChangeHandler}
+                                onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
                                 id={"description"}
                                 labelText={`Description ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />

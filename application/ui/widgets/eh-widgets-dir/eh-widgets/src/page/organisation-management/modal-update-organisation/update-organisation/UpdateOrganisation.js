@@ -32,26 +32,33 @@ const UpdateOrganisation = ({
   }
 
   const onChangeHandler = (e, fieldName) => {
-
-    if (fieldName === 'description') {
-      const msg = e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH: ""
+    if (fieldName === 'description' && e.target.value.trim().length) {
+      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH : ""
       validationResult["description"] = [msg]
+      setOrgDescLength(e.target.value.trim().length)
     }
 
     if (fieldName === 'name') {
       !isChanged && setIsChanged(true)
-      if (isChanged && e.target.value.length < CHAR_LENGTH) {
-        const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+      if (isChanged && e.target.value.trim().length < CHAR_LENGTH) {
+        const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
         validationResult["name"] = [errorMessageForLengthZeroOrThree]
       }
-      if (isChanged && e.target.value.length > MAX_CHAR_LENGTH) {
+      if (isChanged && e.target.value.trim().length > MAX_CHAR_LENGTH) {
         validationResult["name"] = [MAX_CHAR_NAME_MSG]
       }
+      setOrgNameLength(e.target.value.trim().length)
     }
-
-    fieldName === 'description' && setOrgDescLength(e.target.value.length)
-    fieldName === 'name' && setOrgNameLength(e.target.value.length)
     changeOrganisation(fieldName, e.target.value)
+  }
+
+  /**
+   * @param {*} e Event object to get value of field
+   * @param {*} field Name of the field
+   * @description Trimming whitespaces from the field value.
+   */
+  const trimBeforeFormSubmitsHandler = (e, field) => {
+    changeOrganisation(field, e.target.value.trim())
   }
 
   return (
@@ -68,6 +75,7 @@ const UpdateOrganisation = ({
           value={organisationObj.name}
           labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
+          onBlur={(e) =>  trimBeforeFormSubmitsHandler(e, "name")}
         />
         <TextInput
           invalid={orgDescLength > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM && !!validationResult["description"]}
@@ -80,6 +88,7 @@ const UpdateOrganisation = ({
           value={organisationObj.description}
           labelText={`Description ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
+          onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />
       </Content>
     </>

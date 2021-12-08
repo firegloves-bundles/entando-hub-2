@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
+import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
@@ -87,4 +88,22 @@ public class PortalUserController {
         return new ResponseEntity<>(mapResult, HttpStatus.OK);
     }
 
+	/**
+	 * An API to get a portal user by username.
+	 * @param username
+	 * @return a response view with portal user details.
+	 */
+	@Operation(summary = "Get a user by username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
+	@RolesAllowed({ ADMIN, AUTHOR, MANAGER })
+	@CrossOrigin
+	@GetMapping("/{username}")
+	public ResponseEntity<PortalUserResponseView> getPortalUserByUsername(@PathVariable("username") String username) {
+		logger.debug("REST request to get a user by username: {}", username);
+		PortalUserResponseView portalUser;
+		portalUser = portalUserService.getUserByUsername(username);
+		if (null == portalUser) {
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<PortalUserResponseView>(portalUser, HttpStatus.OK);
+	}
 }

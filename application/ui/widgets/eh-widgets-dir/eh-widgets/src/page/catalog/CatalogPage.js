@@ -24,8 +24,8 @@ const CatalogPage = () => {
 
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-    
+  const [loaded, setLoaded] = useState(false)
+
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
@@ -49,22 +49,21 @@ const CatalogPage = () => {
     setReloadToken(((new Date()).getTime()).toString()) //internal status change will rerender this component
   }
 
-    useEffect(() => {
-      const getCatList = async () => {
-        const data = (await getAllCategories());
-        if (data.isError) {
-          setIsError(data.isError)
-          setLoading(false)
-        }
-        setCategories(data.categoryList);
-        const orgData = (await getAllOrganisations()).organisationList;
-        setOrgList(orgData)
+  useEffect(() => {
+    const getCatList = async () => {
+      const data = (await getAllCategories());
+      if (data.isError) {
+        setIsError(data.isError)
+        setLoading(false)
       }
+      setCategories(data.categoryList);
+      const orgData = (await getAllOrganisations()).organisationList;
+      setOrgList(orgData)
+    }
 
-      getCatList();
-    }, [])
+    getCatList();
+  }, [])
 
-  
   useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -98,7 +97,7 @@ const CatalogPage = () => {
         && !isHubAdmin()
         && (portalUserPresent === false || orgLength === 0)
         ?
-          loaded && <p className="notify-user-absense">{MESSAGES.NOTIFY_GUEST_PORTAL_USER_MSG}</p>
+        loaded && <p className="notify-user-absense">{MESSAGES.NOTIFY_GUEST_PORTAL_USER_MSG}</p>
         :
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
@@ -120,7 +119,7 @@ const CatalogPage = () => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                  {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   Search
@@ -145,7 +144,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                  {(!hubUser || (hubUser && statusFilterValue!=="LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg}/>}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

@@ -68,6 +68,8 @@ export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format
 // Version
 export const VERSION_REQ_MSG = 'Version is a required field'
 export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+// Bundle
+export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/re…git or git@github.com:github/reponame/myrepo.git)'
 
 /**
  * Bundle Form Validatin Error Message

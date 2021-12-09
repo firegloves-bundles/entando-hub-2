@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, BUNDLE_URL_REGEX_FAIL } from "../../../../../helpers/constants";
 
 /*
 BUNDLE:
@@ -142,7 +142,8 @@ const BundlesOfBundleGroup = ({
 
 
     if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
-        bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
+        // Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show MIN_ONE_BUNDLE_ERROR
+        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : MIN_ONE_BUNDLE_ERROR
     } else if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
@@ -155,7 +156,6 @@ const BundlesOfBundleGroup = ({
             bundleUrlErrorResult = null;
         }
     }
-
     return (
         <>
             <Row>

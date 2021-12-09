@@ -17,7 +17,6 @@ Organisation:
 const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
   const [categoryNameLength, setCategoryNameLength] = useState(false);
   const [catDescLength, setCatDescLength] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
 
   const changeCategory = (field, value) => {
     const newObj = {
@@ -35,12 +34,11 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
     }
 
     if (fieldName === 'name') {
-      !isChanged && setIsChanged(true)
-      if (isChanged && e.target.value.trim().length < CHAR_LENGTH) {
+      if (e.target.value.trim().length < CHAR_LENGTH) {
         const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
         validationResult["name"] = [errorMessageForLengthZeroOrThree]
       }
-      if (isChanged && e.target.value.trim().length > MAX_CHAR_LENGTH) {
+      if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
         validationResult["name"] = [MAX_CHAR_NAME_MSG]
       }
       setCategoryNameLength(e.target.value.trim().length)
@@ -62,10 +60,10 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
       <Content>
         <TextInput
           invalid={
-            (isChanged && (categoryNameLength < CHAR_LENGTH || categoryNameLength > MAX_CHAR_LENGTH)) && !!validationResult["name"]
+            (categoryNameLength < CHAR_LENGTH || categoryNameLength > MAX_CHAR_LENGTH) && !!validationResult["name"]
           }
           invalidText={
-            (isChanged && (categoryNameLength < CHAR_LENGTH || categoryNameLength > MAX_CHAR_LENGTH)) ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            (categoryNameLength < CHAR_LENGTH || categoryNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           value={categoryObj.name}

@@ -21,7 +21,6 @@ const UpdateOrganisation = ({
 }) => {
   const [orgNameLength, setOrgNameLength] = useState(false);
   const [orgDescLength, setOrgDescLength] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
 
   const changeOrganisation = (field, value) => {
     const newObj = {
@@ -39,12 +38,11 @@ const UpdateOrganisation = ({
     }
 
     if (fieldName === 'name') {
-      !isChanged && setIsChanged(true)
-      if (isChanged && e.target.value.trim().length < CHAR_LENGTH) {
+      if (e.target.value.trim().length < CHAR_LENGTH) {
         const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
         validationResult["name"] = [errorMessageForLengthZeroOrThree]
       }
-      if (isChanged && e.target.value.trim().length > MAX_CHAR_LENGTH) {
+      if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
         validationResult["name"] = [MAX_CHAR_NAME_MSG]
       }
       setOrgNameLength(e.target.value.trim().length)
@@ -66,10 +64,10 @@ const UpdateOrganisation = ({
       <Content>
         <TextInput
           invalid={
-            (isChanged && (orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH)) && !!validationResult["name"]
+            (orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH) && !!validationResult["name"]
           }
           invalidText={
-            (isChanged && (orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH)) ? (validationResult["name"] && validationResult["name"].join("; ")) : null
+            (orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
           value={organisationObj.name}

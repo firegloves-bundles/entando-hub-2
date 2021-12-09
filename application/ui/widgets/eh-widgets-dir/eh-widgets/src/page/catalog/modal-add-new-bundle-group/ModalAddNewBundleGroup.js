@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react"
 import {
     addNewBundle,
     addNewBundleGroup,
-    // getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -62,16 +61,12 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             setLoading(true)
             let isMounted = true
             const init = async () => {
-                // const categoryList = (await getAllCategories()).categoryList
                 const categoryList = catList;
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
-                    // EHUB-39
-                    // const currentUserOrganisation = await getCurrentUserOrganisation();
                     const currentUserOrganisation = currentUserOrg;
                     localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
-                    // localAllowedOrganisations = (await getAllOrganisations()).organisationList
                     localAllowedOrganisations = orgList
                 }
                 const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())

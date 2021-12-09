@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Tag } from "carbon-components-react"
 import { useHistory } from "react-router-dom"
-// import { getSingleCategory } from "../../../integration/Integration"
-
 import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
 import { isHubUser } from "../../../helpers/helpers"
@@ -23,14 +21,6 @@ const CatalogTile = ({
   let bundleStatus = status
 
   useEffect(() => {
-    // EHUB-39
-    // let isMounted = true
-    // ;(async () => {
-    //   const data = await getSingleCategory(categories[0])
-    //   if (isMounted) {
-    //     setCategoryName(data.category.name)
-    //   }
-    // })()
 
     if (categories) {
       const getCategoryNameById = (catId) => {
@@ -40,10 +30,6 @@ const CatalogTile = ({
       setCategoryName(data);
     }
 
-    // EHUB-39
-    // return () => {
-    //   isMounted = false
-    // }
   }, [categories, categoriesDetails])
 
   const history = useHistory()

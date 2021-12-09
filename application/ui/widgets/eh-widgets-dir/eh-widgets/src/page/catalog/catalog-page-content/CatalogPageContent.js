@@ -57,8 +57,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
     }
 
     const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
-        // EHUB-39
-        // const userOrganisation = await getCurrentUserOrganisation();
         const userOrganisation = currentUserOrg;
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
 
@@ -89,20 +87,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
             const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
             setFilteredBundleGroups(filtered)
         }
-        // EHUB-39
-        // const initCs = async () => {
-        //     // const data = await getAllCategories()
-        //     // TODO: 'data' is not defined
-        //     // if (data.isError) {
-        //     //     setLoading(false)
-        //     // }
-        //     if (isError) {
-        //         setLoading(false);
-        //     }
-        //     setCategories(catList)
-        //     // setCategories(data.categoryList)
-        // }
-        // return Promise.all([initBGs(organisationId, statuses), initCs()])
         return Promise.all([initBGs(organisationId, statuses)])
     }, [currentUserOrg])
 

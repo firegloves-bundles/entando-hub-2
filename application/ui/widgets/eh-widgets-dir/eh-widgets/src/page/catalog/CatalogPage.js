@@ -62,25 +62,6 @@ const CatalogPage = () => {
       }
 
       getCatList();
-
-      // --------EHUB-39: Need to replace with EHUB-142 code -----------
-      // (async () => {
-      //   const username = await getUserName();
-      //   if (username) {
-      //     const portalUserResp = (await getPortalUserByUsername(username));
-      //     if (portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
-      //       // setOrgLength(portalUserResp.portalUser.organisationIds.length);
-      //       // setPortalUserPresent(true);
-      //       setCurrentUserOrg(portalUserResp.portalUser.organisations[0]);
-      //     } else if (portalUserResp && portalUserResp.isError) {
-      //       // setOrgLength(0);
-      //       // setPortalUserPresent(false);
-      //     }
-      //   }
-      // })()
-      // return () => {
-
-      // }
     }, [])
 
   

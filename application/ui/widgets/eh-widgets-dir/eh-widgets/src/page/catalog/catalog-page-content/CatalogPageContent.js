@@ -1,14 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
 import CatalogTiles from "../catalog-tiles/CatalogTiles"
-import {getAllBundleGroupsFilteredPaged, getAllCategories} from "../../../integration/Integration"
+import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
-import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import {Loading, Pagination} from "carbon-components-react";
-
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
     return {name: "name" + index, categoryId: "" + index}
@@ -41,7 +39,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -59,10 +57,8 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
     }
 
     const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
-
-        const userOrganisation = await getCurrentUserOrganisation()
+        const userOrganisation = currentUserOrg;
         const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
-
 
         /**
          *Get all the bundle groups having categoryIds and statuses
@@ -91,15 +87,15 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
             setFilteredBundleGroups(filtered)
         }
-        const initCs = async () => {
-            const data = await getAllCategories()
-            if (data.isError) {
-                setLoading(false)
-            }
-            setCategories(data.categoryList)
+        return Promise.all([initBGs(organisationId, statuses)])
+    }, [currentUserOrg])
+
+    useEffect(() => {
+        if (isError) {
+            setLoading(false);
         }
-        return Promise.all([initBGs(organisationId, statuses), initCs()])
-    }, [])
+        setCategories(catList);
+    }, [isError, catList])
 
     useEffect(() => {
         const hubUser = isHubUser();
@@ -140,7 +136,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoriesDetails={catList} onAfterSubmit={onAfterSubmit}/>
                 <Pagination pageSizes={[ 12, 18, 24]} page={page} pageSize={pageSize} totalItems={totalItems}
                             onChange={onPaginationChange}/>
             </div>

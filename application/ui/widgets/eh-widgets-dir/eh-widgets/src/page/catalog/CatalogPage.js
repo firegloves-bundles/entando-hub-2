@@ -51,11 +51,13 @@ const CatalogPage = () => {
               </div>
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  Categories
-                  <p className="title">{i18n.t('adminDashboard.allCustomers')}</p>
+                  {/* Categories */}
+                  {i18n.t('page.catlogPanel.catlogHomePage.categories')}
+                  {/* <p className="title">{i18n.t('adminDashboard.allCustomers')}</p> */}
                 </div>
                 <div className="bx--col-lg-6 CatalogPage-section">
-                  Catalog
+                  {/* Catalog */}
+                  {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
                 </div>
                 <div className="bx--col-lg-2 CatalogPage-section">
                   {/*
@@ -65,7 +67,8 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue!=="LOADING" && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit}/>}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  Search
+                  {/* Search */}
+                  {i18n.t('component.button.search')}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

@@ -50,7 +50,7 @@ const CatalogPage = () => {
   }
 
   useEffect(() => {
-    const getCatList = async () => {
+    const getCatOrgList = async () => {
       const data = (await getAllCategories());
       if (data.isError) {
         setIsError(data.isError)
@@ -60,8 +60,7 @@ const CatalogPage = () => {
       const orgData = (await getAllOrganisations()).organisationList;
       setOrgList(orgData)
     }
-
-    getCatList();
+    getCatOrgList();
   }, [])
 
   useEffect(() => {

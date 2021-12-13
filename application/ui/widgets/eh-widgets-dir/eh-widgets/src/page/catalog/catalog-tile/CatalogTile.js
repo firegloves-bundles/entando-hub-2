@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom"
 import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
 import { isHubUser } from "../../../helpers/helpers"
+import {textFromStatus} from '../../../helpers/profiling';
 
 const CatalogTile = ({
   bundleGroupId,
@@ -81,6 +82,11 @@ const CatalogTile = ({
           </div>
           <div className="CatalogTile-card-title">{name}</div>
           <div className="CatalogTile-card-status">{organisationName}</div>
+          {isHubUser() && (
+              <div className="CatalogTile-card-status">
+                {textFromStatus(status)}
+              </div>
+          )}
           <div className="CatalogTile-card-description">{description}</div>
           <div className="tag-setting">
             <Tag type={tagColor} title="Clear Filter">

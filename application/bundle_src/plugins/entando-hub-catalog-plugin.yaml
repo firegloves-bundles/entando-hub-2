@@ -1,4 +1,4 @@
-image: entandopsdh/entando-hub-catalog-ms:0.2.7-SNAPSHOT
+image: entandopsdh/entando-hub-catalog-ms:0.2.8-SNAPSHOT
 dbms: postgresql
 ingressPath: "/entando-hub-api"
 healthCheckPath: "/actuator/health"

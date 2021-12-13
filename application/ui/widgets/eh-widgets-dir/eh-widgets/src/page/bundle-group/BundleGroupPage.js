@@ -118,16 +118,16 @@ const BundleGroupPage = () => {
                     <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
                                                          children={pageModel.children}/>
                     <div className="BundleGroupPage-last-update">
-                      Last Update
-                      <br/>{i18n.t('adminConfig.integrationTicketingSystem.title')}
+                      {i18n.t('page.bundleGroupInfo.lastUpdate')}
+                      {/* <br/>{i18n.t('adminConfig.integrationTicketingSystem.title')} */}
                       <p>{pageModel.bundleGroup && pageModel.bundleGroup.lastUpdate && formatLastUpdate(pageModel.bundleGroup.lastUpdate)}</p>
                     </div>
                     <hr/>
                     <div className="BundleGroupPage-docs">
-                      Link to documentation <br/>
+                    {i18n.t('page.bundleGroupInfo.linkToDocument')} <br/>
                        <a href={pageModel.bundleGroup
                                     && pageModel.bundleGroup.documentationUrl}
-                                       target="_new">Documentation</a>
+                                       target="_new">{i18n.t('page.bundleGroupInfo.documentation')}</a>
                     </div>
                     <hr/>
                     <div>
@@ -143,17 +143,17 @@ const BundleGroupPage = () => {
 
                     <div className="BundleGroupPage-flex">
                       <Column className="BundleGroupPage-specs">
-                        Version
+                      {i18n.t('page.bundleGroupInfo.version')}
                         <p>{pageModel.bundleGroup && pageModel.bundleGroup.version}</p>
 
                       </Column>
                       <Column className="BundleGroupPage-specs">
-                        Category
+                      {i18n.t('page.bundleGroupInfo.category')}
                         <p>{pageModel.category && pageModel.category.name}</p>
 
                       </Column>
                       <Column className="BundleGroupPage-specs">
-                        Organization
+                      {i18n.t('page.bundleGroupInfo.organisation')}
                         <p>{pageModel.organisation && pageModel.organisation.name}</p>
 
                       </Column>
@@ -182,7 +182,7 @@ const BundleList = ({children}) => {
   return (
       <div className="BundleGroupPage-list-wrapper">
         <div className="BundleGroupPage-list">
-          List of Bundles
+        {i18n.t('page.bundleGroupInfo.listToBundles')}
         </div>
         <ul>{elemList}</ul>
       </div>

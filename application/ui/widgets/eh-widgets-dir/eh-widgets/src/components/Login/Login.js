@@ -105,7 +105,7 @@ class Login extends Component {
                       <div className="admin-page">
                         <HashRouter>
                           <Link to="/admin">Admin
-                            <p className="title">{i18n.t('userMessages.unauthorized')}</p>
+                            {/* <p className="title">{i18n.t('userMessages.unauthorized')}</p> */}
                           </Link>
                         </HashRouter>
                         <i className="fas fa-cog"/>
@@ -115,8 +115,9 @@ class Login extends Component {
                 )}
                 <div className="log-button">
                    <button className="log-out" href="#" onClick={handleLogout}
-                        title={"Logout"}>
-                   {"Logout"}<i className="fas fa-sign-out-alt"/>
+                        // title={"Logout"}>
+                        title={i18n.t('page.header.logout')}>
+                   {i18n.t('page.header.logout')}<i className="fas fa-sign-out-alt"/>
                    </button>
                 </div>
               </>

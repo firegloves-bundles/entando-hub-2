@@ -8,6 +8,7 @@ import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {getCurrentUserOrganisation} from "../../../integration/api-adapters";
 import {Loading, Pagination} from "carbon-components-react";
+import i18n from '../../../i18n'
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -133,6 +134,8 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
         setPage(page)
     }
 
+    console.log("page", page,"pageSize", pageSize,"totalItems", totalItems)
+
     return (
         <>
             <div className="bx--col-lg-4">
@@ -141,8 +144,17 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, onAfterSubmit}) => 
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} onAfterSubmit={onAfterSubmit}/>
-                <Pagination pageSizes={[ 12, 18, 24]} page={page} pageSize={pageSize} totalItems={totalItems}
-                            onChange={onPaginationChange}/>
+                <Pagination
+                    itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
+                    itemRangeText={
+                        () => `${page}–${pageSize} ${i18n.t("component.pagination.of")} ${totalItems} ${i18n.t("component.pagination.items")}`
+                    }
+                    pageSizes={[12, 18, 24]}
+                    // page={page}
+                    // pageSize={pageSize}
+                    totalItems={totalItems}
+                    onChange={onPaginationChange}
+                />
             </div>
             {loading && <Loading/>}
         </>

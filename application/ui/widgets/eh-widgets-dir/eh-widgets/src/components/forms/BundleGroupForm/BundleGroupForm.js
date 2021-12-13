@@ -16,6 +16,7 @@ import "./update-boundle-group/update-bundle-group.scss"
 import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import './bundle-group-form.scss'
+import i18n from "../../../i18n";
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -43,7 +44,7 @@ const BundleGroupForm = ({
                 <TextInput
                     disabled={true}
                     id="organisation"
-                    labelText="Organisation"
+                    labelText={i18n.t('component.bundleModalFields.organisation')}
                     value={currOrganisation.name}
                 />
             </Column>)
@@ -65,7 +66,7 @@ const BundleGroupForm = ({
                     value={currOrganisation.organisationId}
                     onChange={organisationChangeHandler}
                     id={"organisation"}
-                    labelText={"Organisation"}>
+                    labelText={i18n.t('component.bundleModalFields.organisation')}>
                     {organisationSelectItems}
                 </Select>
             </Column>)
@@ -85,7 +86,7 @@ const BundleGroupForm = ({
     const disabled = selectStatusValues.disabled
     const createSelectOptionsForRoleAndSetSelectStatus =
         selectStatusValues.values.map((curr, index) => (
-            <SelectItem key={index} value={curr.value} text={curr.text}/>
+            <SelectItem key={index} value={curr.value} text={i18n.t(curr.text)}/>
         ))
 
     const selectItems_Category = categories && categories.map((category) => {
@@ -156,6 +157,8 @@ const BundleGroupForm = ({
         changeBundleGroup("children", newBundleList)
     }
 
+    console.log('validationResult', validationResult);
+
     return (
         <>
             <Content className="Edit-bundle-group">
@@ -182,7 +185,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 id={"name"}
-                                labelText={`Name ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.name')} ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -192,7 +195,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
-                                labelText={`Category ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.category')} ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
                             >
                                 {selectItems_Category}
                             </Select>
@@ -209,7 +212,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 id={"documentation"}
-                                labelText={`Documentation Address ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.documentAddress')} ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -224,7 +227,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
-                                labelText={`Version ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.version')} ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -241,7 +244,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.status}
                                 onChange={statusChangeHandler}
                                 id={"status"}
-                                labelText={`Status ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
+                                labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>
                         </Column>
@@ -267,7 +270,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.description}
                                 onChange={descriptionChangeHandler}
                                 id={"description"}
-                                labelText={`Description ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
                             <div className="bg-form-counter bx--label">{bundleGroup.description.length}/{DESCRIPTION_MAX_LENGTH}</div>
                         </Column>

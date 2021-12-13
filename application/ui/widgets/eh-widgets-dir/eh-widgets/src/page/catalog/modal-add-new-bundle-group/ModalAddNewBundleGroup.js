@@ -16,6 +16,7 @@ import { getCurrentUserOrganisation } from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 import { BUNDLE_STATUS } from "../../../helpers/constants";
+import i18n from "../../../i18n"
 
 /*
     This component manages the modal for adding a new bundle group
@@ -189,7 +190,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
     return (
         <ModalStateManager
             renderLauncher={({ onRequestOpen }) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
+                // <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.add')}</Button>
             )}>
             {ModalContent}
         </ModalStateManager>
@@ -217,9 +219,9 @@ const ModalContent = ({
             {!loading &&
                 <Modal
                     className="Modal-Add-New-bundle-group"
-                    modalLabel="Add"
-                    primaryButtonText="Add"
-                    secondaryButtonText="Cancel"
+                    modalLabel={i18n.t('component.button.add')}
+                    primaryButtonText={i18n.t('component.button.add')}
+                    secondaryButtonText={i18n.t('component.button.cancel')}
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>

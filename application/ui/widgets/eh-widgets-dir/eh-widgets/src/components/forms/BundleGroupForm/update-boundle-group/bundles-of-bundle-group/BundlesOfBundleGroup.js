@@ -87,11 +87,25 @@ const BundlesOfBundleGroup = ({
         const value = e.target.value
         value.trim().length > 0 ? setIsUrlReqValid(true) : setIsUrlReqValid(false)
         setGitRepo(value)
+        validateBundleUrl(e)
     }
 
-    const onBlurHandler = (e) => {
+    const validateBundleUrl = (e) => {
         const value = e.target.value
         value.trim().length > 0 && new RegExp(BUNDLE_URL_REGEX).test(value) ? setIsUrlBundleRexValid(true) : setIsUrlBundleRexValid(false)
+            ; (async () => {
+                let validationError
+                await bundleOfBundleGroupSchema.validate({ gitRepo: value }, { abortEarly: false }).catch(error => {
+                    validationError = fillErrors(error)
+                })
+                if (validationError) {
+                    value.trim().length === 0 && delete validationError.gitRepo;
+                    if (value.trim().length && (bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.DELETE_REQ)) {
+                        validationError.gitRepo = [BUNDLE_URL_REGEX_FAIL];
+                    }
+                    setValidationResult(validationError)
+                }
+            })()
     }
 
     const onAddBundle = (e) => {
@@ -165,7 +179,6 @@ const BundlesOfBundleGroup = ({
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
-                               onBlur={onBlurHandler}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>

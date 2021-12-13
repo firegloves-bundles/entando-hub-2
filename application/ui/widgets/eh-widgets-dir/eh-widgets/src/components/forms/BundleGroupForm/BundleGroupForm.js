@@ -17,7 +17,7 @@ import values from "../../../config/common-configuration";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import {
     DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH, MAX_CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG, 
-    MAX_CHAR_NAME_MSG, DESC_REQ_MESG, LEAST_CHAR_DESC_MSG, MAX_CHAR_DESC_MSG, MAX_CHAR_LENGTH_FOR_DESC, DOCUMENTATION_URL_REQ_MSG, DOCUMENTATION_URL_FORMAT_MSG, VERSION_REQ_MSG, VERSION_FORMAT_MSG } from "../../../helpers/constants";
+    MAX_CHAR_NAME_MSG, DESC_REQ_MESG, LEAST_CHAR_DESC_MSG, MAX_CHAR_DESC_MSG, MAX_CHAR_LENGTH_FOR_DESC, DOCUMENTATION_URL_REQ_MSG, DOCUMENTATION_URL_FORMAT_MSG, VERSION_REQ_MSG, VERSION_FORMAT_MSG, BUNDLE_STATUS } from "../../../helpers/constants";
 import './bundle-group-form.scss'
 
 const BundleGroupForm = ({
@@ -33,7 +33,7 @@ const BundleGroupForm = ({
                          }) => {
 
 
-    const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : "");
+    const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
     const [bundleNameLength, setBundleNameLength] = useState(0);
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);

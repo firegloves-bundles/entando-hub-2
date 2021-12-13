@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react"
 import {Content, Select, SelectItem,} from "carbon-components-react"
 import {getAllKCUsers, getAllOrganisations, getAllUsers} from "../../../../integration/Integration"
+import i18n from "../../../../i18n"
 
 /*
 BUNDLEGROUP:
@@ -101,7 +102,7 @@ const NewUser = ({onDataChange}) => {
             <Content>
                 <Select value={user.name} onChange={nameChangeHandler}
                         id={"name"}
-                        labelText={"Name"}>
+                        labelText={i18n.t('component.bundleModalFields.name')}>
                     <SelectItem
                         key="nousername"
                         value="nousername"
@@ -111,7 +112,7 @@ const NewUser = ({onDataChange}) => {
                 </Select>
                 <Select value={user.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
-                        labelText={"Organisation"}>{selectItems_Organisations}</Select>
+                        labelText={i18n.t('component.bundleModalFields.organisation')}>{selectItems_Organisations}</Select>
             </Content>
         </>
     )

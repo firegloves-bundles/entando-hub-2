@@ -5,6 +5,7 @@ import {useState} from "react"
 import NewUser from "./new-user/NewUser"
 import {createAUserForAnOrganisation} from "../../../integration/Integration"
 import "./modal-add-new-user.scss"
+import i18n from "../../../i18n"
 
 export const ModalAddNewUser = ({onAfterSubmit}) => {
 
@@ -65,14 +66,14 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add User</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('page.admin.addUser')}</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey}) => (
                 <Modal
                     className="ModalAddNewUser"
-                    modalLabel="Add"
-                    primaryButtonText="Add"
-                    secondaryButtonText="Cancel"
+                    modalLabel={i18n.t('component.button.add')}
+                    primaryButtonText={i18n.t('component.button.add')}
+                    secondaryButtonText={i18n.t('component.button.cancel')}
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>

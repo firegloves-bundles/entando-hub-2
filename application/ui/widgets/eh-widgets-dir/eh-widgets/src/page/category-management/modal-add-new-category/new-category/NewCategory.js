@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
+import i18n from "../../../../i18n"
 
 /*
 BUNDLEGROUP:
@@ -47,7 +48,7 @@ const NewCategory = ({ onDataChange, validationResult }) => {
             validationResult["name"] && validationResult["name"].join("; ")
           }
           id="name"
-          labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.name')} ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
         />
         <TextInput
@@ -57,7 +58,7 @@ const NewCategory = ({ onDataChange, validationResult }) => {
             validationResult["description"].join("; ")
           }
           id="description"
-          labelText={`Description ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.description')} ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
         />
       </Content>

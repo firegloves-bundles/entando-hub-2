@@ -1,0 +1,11 @@
+version: '2'
+services:
+  hub-postgresql:
+    image: postgres:12.1
+    volumes:
+      - ./postgresql-db:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hubApp
+      - POSTGRES_PASSWORD=
+    ports:
+      - 5432:5432

@@ -1,5 +1,6 @@
 import { Content, TextInput } from "carbon-components-react"
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
+import i18n from "../../../../i18n"
 
 /*
 
@@ -36,7 +37,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           }
           id="name"
           value={categoryObj.name}
-          labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('component.bundleModalFields.name')} ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
         />
         <TextInput
@@ -47,7 +48,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           }
           id="description"
           value={categoryObj.description}
-          labelText={`Description ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('component.bundleModalFields.description')} ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
         />
       </Content>

@@ -3,7 +3,8 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS, BUTTON_LABELS} from "../../../../helpers/constants"
+import {ADMIN, MANAGER, BUNDLE_STATUS} from "../../../../helpers/constants"
+import i18n from "../../../../i18n"
 
 const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName,onAfterSubmit}) => {
 
@@ -17,8 +18,8 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName,onAfte
     return (
         <>
             <OverflowMenu>
-                <OverflowMenuItem itemText="Edit" onClick={() => setOpenModal(true)}/>
-                {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={BUTTON_LABELS.DELETE} onClick={() => setDeleteModal(true) }/>}
+                <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)}/>
+                {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setDeleteModal(true) }/>}
 
             </OverflowMenu>
             {openModal && <ModalUpdateBundleGroup open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}

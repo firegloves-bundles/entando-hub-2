@@ -1,4 +1,5 @@
 import {Content, Select, SelectItem, TextInput,} from "carbon-components-react"
+import i18n from "../../../../i18n"
 
 
 /*
@@ -58,12 +59,12 @@ const UpdateUser = ({userObj, organisations, onDataChange}) => {
         <>
             <Content>
                 <TextInput disabled={true} value={userObj.username} onChange={nameChangeHandler} id={"name"}
-                           labelText={"Name"}/>
+                           labelText={i18n.t("page.management.label.name")}/>
                 <TextInput disabled={true} value={userObj.email} id={"email"}
-                           labelText={"Email"}/>
+                           labelText={i18n.t("page.admin.Email")}/>
                 <Select value={userObj && userObj.organisation && userObj.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
-                        labelText={"Organisation"}>{selectItems_Organisations}</Select>
+                        labelText={i18n.t("page.admin.Organisation")}>{selectItems_Organisations}</Select>
             </Content>
         </>
     )

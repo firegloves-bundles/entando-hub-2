@@ -8,6 +8,7 @@ import {
 } from "../../../integration/Integration"
 
 import "./modal-update-user.scss"
+import i18n from "../../../i18n"
 export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
     const [user, setUser] = useState(userObj)
@@ -69,9 +70,9 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
             <Modal
                 style={{display: !visible?"none":""}}
                 className="ModalUpdateUser"
-                modalLabel="Edit"
-                primaryButtonText="Save"
-                secondaryButtonText="Cancel"
+                modalLabel={i18n.t('component.button.edit')}
+                primaryButtonText={i18n.t('component.button.save')}
+                secondaryButtonText={i18n.t('component.button.cancel')}
                 open={open}
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestSubmit}>

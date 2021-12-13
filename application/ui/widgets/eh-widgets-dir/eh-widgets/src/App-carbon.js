@@ -9,6 +9,7 @@ import CategoryManagementPage from "./page/category-management/CategoryManagemen
 import RouteWithGate from "./components/routing/RouteWithGate";
 import {isHubAdmin} from "./helpers/helpers";
 import NotificationDispatcher from "./components/notification/NotificationDispatcher"
+import i18n from "./i18n"
 
 function AppCarbon() {
   return (
@@ -23,7 +24,7 @@ function AppCarbon() {
                 <RouteWithGate gateFunction={isHubAdmin} path="**/categories*" component={CategoryManagementPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/category*" component={CategoryManagementPage}/>
                 <Route path="**/unauthorized">
-                    UNAUTHORIZED
+                    {i18n.t('page.unauthorized')}
                 </Route>
                 <Route path="**/" component={CatalogPage}/>
             </Switch>

@@ -4,6 +4,7 @@ import {getHigherRole} from "../../../helpers/helpers"
 import {getProfiledStatusSelectInfo} from "../../../helpers/profiling"
 
 import './bundle-group-status-filter.scss'
+import i18n from '../../../i18n'
 
 const BundleGroupStatusFilter = ({onFilterValueChange}) => {
     const [selectedStatus, setSelectedStatus] = useState("")
@@ -31,11 +32,10 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
     }
 
     const render = () => {
-        const itemList = statusArray.map((s, index) => <SelectItem key={index} value={s.value} text={s.text}/>)
-
+        const itemList = statusArray.map((s, index) => <SelectItem key={index} value={s.value} text={i18n.t(s.text)}/>)
         return (
             <div className="BundleGroupStatusFilter-select">
-              <Select value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
+              <Select labelText={i18n.t('page.catlogPanel.catlogHomePage.select')} value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
                 {itemList}
             </Select>
             </div>

@@ -1,290 +1,148 @@
 {
-  "adminConfig": {
-    "title": "Interfaccia di Amministrazione di Entando",
-    "formTitle": "Tutti i clienti",
-    "desc": "Configura il sistema di segnalazione e le versioni di Entando qui di seguito.",
-    "integrationTicketingSystem": {
-      "title": "Integrazione con il sistema di segnalazione",
-      "desc": "Questo ti permette di gestire il sistema di segnalazione",
-      "selectBackendTicketingSystem": "Seleziona il sistema di segnalazione (Backend Ticketing System)",
-      "select": "Selezionare",
-      "url": "URL",
-      "userName": "Nome utente",
-      "password": "Parola d'ordine",
-      "projectName": "Nome del progetto"
+  "page": {
+    "header": {
+      "logout": "Disconnettersi"
     },
-    "manageProductVersion": {
-      "title": "Gestisci la versione del prodotto",
-      "desc": "Ciò consente di gestire le versioni del prodotto Entando",
-      "entandoVersion": "Versione di Entando",
-      "status": "Stato *",
-      "startDate": "data d'inizio",
-      "supportEndDate": "Data di fine supporto"
+    "catlogPanel": {
+      "catlogHomePage": {
+        "home": "Casa",
+        "categories": "Categorie",
+        "catalog": "Catalogare",
+        "select": "Selezionare"
+      }
+    },
+    "bundleGroupInfo": {
+      "lastUpdate": "Ultimo aggiornamento",
+      "linkToDocument": "Link alla documentazione",
+      "listToBundles": "Elenco dei pacchetti",
+      "version": "Versione",
+      "category": "Categoria",
+      "organisation": "Organizzazione",
+      "documentation": "documentazione"
+    },
+    "admin": {
+      "Users Management": "Gestione Utenti",
+      "Username": "Nome Utente",
+      "Email": "E-mail",
+      "Organisation": "Organizzazione",
+      "addUser": "Aggiungi utente"
+    },
+    "management": {
+      "label": {
+        "name": "Nome",
+        "description": "Descrizione"
+      },
+      "categoryManagement": "Gestione delle Categorie",
+      "organisationsManagement": "Gestione delle Organizzazioni"
+    },
+    "unauthorized": "NON AUTORIZZATO"
+  },
+  "component": {
+    "bundleModalFields": {
+      "addFiles": "Aggiungere i file",
+      "name": "Nome",
+      "category": "Categoria",
+      "documentAddress": "Indirizzo della documentazione",
+      "version": "Versione",
+      "organisation": "Organizzazione",
+      "status": "Stato",
+      "addUrlBundle": "Aggiungi pacchetto URL",
+      "description": "Descrizione"
+    },
+    "button": {
+      "add": "Aggiungere",
+      "create": "Creare",
+      "save": "Salva",
+      "edit": "Modificare",
+      "delete": "Elimina",
+      "search": "Ricerca",
+      "cancel": "Annulla",
+      "install": "Installare",
+      "addCategory": "Aggiungi Categoria",
+      "addOrganisation": "Aggiungi Organizzazione",
+      "remove": "Rimuovere"
+    },
+    "pagination": {
+      "page": "pagina",
+      "items": "Oggetti",
+      "of": "di",
+      "itemsPerPage": "oggetti per pagina"
+    },
+    "select": {
+      "all": "Tutto"
     }
   },
-  "adminDashboard": {
-    "title": "Benvenuti a Entando",
-    "adminTitle": "Benvenuti all'Interfaccia di Amministrazione di Entando",
-    "customerTitle": "Benvenuti all'Interfaccia di Amministrazione dei Clienti di Entando",
-    "partnerTitle": "Benvenuti all'Interfaccia di Amministrazione dei Partner di Entando",
-    "supportTitle": "Benvenuti all'Interfaccia di Amministrazione del Supporto di Entando",
-    "allCustomers": "Tutti i clienti",
-    "searchLabel": "Ricerca dei clienti",
-    "searchText": "Quale cliente stai cercando?",
-    "view": "Visualizza",
-    "addProject": {
-      "title": "Aggiungi un progetto",
-      "customerList": "Elenco clienti",
-      "projectName": "Nome del progetto",
-      "projectDesc": "descrizione del progetto",
-      "systemId": "ID sistema",
-      "contactName": "Nome del contatto",
-      "contactPhone": "Contatto telefonico",
-      "contactEmail": "Contatto email",
-      "notes": "Appunti",
-      "editTitle": "Modifica progetto"
-    },
-    "addCustomer": {
-      "title": "Aggiungi un cliente",
-      "customerName": "Nome del cliente",
-      "customerNumber": "Numero cliente",
-      "contactName": "Nome del contatto",
-      "contactPhone": "Contatto telefonico",
-      "contactEmail": "Contatto email",
-      "notes": "Appunti"
-    },
-    "addPartner": {
-      "title": "Aggiungi un Partner",
-      "projectList": "Elenco Progetti",
-      "selectProject": "Seleziona Progetto",
-      "partnerName": "Nome Partner",
-      "partnerNumber": "Numero Partner",
-      "notes": "Appunti"
-    },
-    "addProductVersion": {
-      "title": "Aggiungi una nuova versione del prodotto",
-      "productVersion": "Versione del prodotto",
-      "productVersionStartDate": "Data di inizio della versione del prodotto",
-      "productVersionEndDate": "Data di fine vita della versione del prodotto"
-    },
-    "editCustomer": {
-      "title": "Modifica cliente"
-    },
-    "managePartners": {
-      "title": "Gestire i partner"
-    }
+  "toasterMessage": {
+    "impossibleToLoadOrganisations": "Impossibile caricare le organizzazioni",
+    "impossibleToLoadOrganisation": "Impossibile caricare l'organizzazione.",
+    "impossibleToCreateOrganisation": "Impossibile creare organizzazione.",
+    "impossibleToUpdateOrganisation": "Impossibile aggiornare l'organizzazione.",
+    "impossibleToDeleteOrganisation": "Impossibile eliminare l'organizzazione.",
+    "impossibleToLoadCategories": "Impossibile caricare le categorie.",
+    "impossibleToLoadCategory": "Impossibile caricare la categoria.",
+    "impossibleToCreateCategory": "Impossibile creare la categoria.",
+    "impossibleToUpdateCategory": "Impossibile aggiornare la categoria.",
+    "impossibleToDeleteCategory": "Impossibile eliminare la categoria.",
+    "impossibleToLoadBundles": "Impossibile caricare i bundle.",
+    "impossibleToLoadBundle": "Impossibile caricare il pacchetto.",
+    "impossibleToCreateBundle": "Impossibile creare il bundle.",
+    "impossibleToUpdateBundle": "Impossibile aggiornare il pacchetto.",
+    "impossibleToLoadBundleGroups": "Impossibile caricare i gruppi di bundle",
+    "impossibleToLoadBundleGroup": "Impossibile caricare il gruppo bundle",
+    "impossibleToCreateBundleGroup": "Impossibile creare un gruppo di bundle.",
+    "impossibleToUpdateBundleGroup": "Impossibile aggiornare il gruppo di bundle.",
+    "impossibleToDeleteBundle": "Impossibile eliminare il pacchetto.",
+    "impossibleToCreateUser": "Impossibile creare l'utente",
+    "impossibleToLoadUsers": "Impossibile caricare gli utenti",
+    "impossibleToDeleteUser": "Impossibile eliminare l'utente",
+    "impossibleToRemoveUser": "Impossibile rimuovere l'utente"
   },
-  "buttons": {
-    "addCustomer": "Aggiungi un cliente +",
-    "addPartner": "Aggiungi un partner +",
-    "addProject": "Aggiungi un progetto",
-    "addSubscription": "Aggiungi un abbonamento",
-    "addProductVersion": "Aggiungi la versione del prodotto +",
-    "cancel": "Annulla",
-    "delete": "Elimina",
-    "edit": "Modificare",
-    "managePartners": "Gestire i Partner",
-    "manageSubscriptions": "Gestisci le iscrizioni",
-    "manageUsers": "Gestione Utenti",
-    "openTicket": "Apri un ticket",
-    "save": "Salva",
-    "submit": "Invia",
-    "subscriptionRequest": "Richiesta di abbonamento",
-    "view": "Visualizza",
-    "viewAllTickets": "Visualizza tutte le richieste (tickets)",
-    "viewTickets": "Visualizzare tutte le richieste (tickets)",
-    "viewDetails": "Visualizza dettagli"
+  "profile": {
+    "NOT_PUBLISHED": "NON PUBBLICATO",
+    "PUBLISH_REQ": "PUBBLICARE RICH",
+    "PUBLISHED": "PUBBLICATO",
+    "DELETE_REQ" : "ELIMINA RICH",
+    "All": "Tutto"
   },
+  "formValidationMsg": {
+    "nameReq": "Il nome è un campo obbligatorio",
+    "minCharForName": "Il nome deve contenere almeno 3 caratteri",
+    "maxCharForName": "Il nome non deve superare i 25 caratteri",
+    "docReq": "La documentazione è un campo obbligatorio",
+    "docFormat": "La documentazione deve corrispondere al formato dell'URL",
+    "versionReq": "La versione è un campo obbligatorio",
+    "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
+    "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
+    "descReq": "La descrizione è un campo obbligatorio",
+    "minCharForDesc": "La descrizione deve contenere almeno 3 caratteri",
+    "maxCharForDesc": "La descrizione non deve superare i 600 caratteri"
+  },
+  "modalMsg": {
+    "deleteBundleMsg": "Sei sicuro di voler eliminare questo pacchetto?",
+    "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
+    "impossibleToRemoveCat": "Questa categoria è già in uso.",
+    "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+  },
+  "Draft": "NON PUBBLICATO",
+  "Publication Request": "PUBBLICARE RICH",
+  "Published": "PUBBLICATO",
+  "Deletion Request": "ELIMINA RICH",
+  "All": "Tutto",
 
-  "customerDashboard":{
-    "customerPortal": "Portale Clienti",
-    "title": "Benvenuto nel Portale Clienti Entando",
-    "customerName": "Nome del cliente",
-    "customerId": "Identificativo del cliente",
-    "startDate": "Data d'inizio",
-    "endDate": "Data di fine",
-    "projectName": "Nome del progetto",
-    "partnerName": "Nome partner",
-    "entandoVersion": "Versione Entando",
-    "openTickets": "Segnalazioni aperte",
-    "subscriptions": "Subscriptions",
-    "tableDesc": "In questa tabella ci sono Subscription aperte",
-    "partners": "Partner",
-    "status": "Stato",
-    "action": "Azione"
-  },
-  "customerDetails": {
-    "id": "Identificativo del cliente",
-    "name": "Nome del cliente",
-    "contactName": "Nome del contatto",
-    "contactPhone": "Contatto telefonico",
-    "contactEmail": "Contatto email",
-    "notes": "Appunti"
-  },
-  "editSubscription": {
-    "title": "Modifica subscription",
-    "description": "Descrizione",
-    "commitment": "Impegno",
-    "type": "genere",
-    "quantityRequest": "Quantità Richiesta",
-    "components": "Componenti",
-    "level": "Livello"
-  },
-  "manageUsers": {
-    "title": "Entando Interfaccia Amministrativa",
-    "assign": {
-      "title": "Assegna un nuovo utente",
-      "desc": "Assegnare un utente a un progetto esistente.",
-      "assignUser": "Assegna utente",
-      "projectName": "Nome del progetto",
-      "projectList": "Elenco dei progetti",
-      "noUsers": "Al momento non ci sono utenti nel sistema",
-      "noProjects": "Al momento non ci sono progetti nel sistema",
-      "selectRole": "Seleziona ruolo",
-      "userList": "Elenco degli utenti"
-    },
-    "manage": {
-      "title": "Gestisci tutti gli utenti",
-      "desc": "Visualizzare ed eliminare gli utenti esistenti."
-    },
-    "delete": {
-      "desc": "Visualizzare ed eliminare gli utenti esistenti",
-      "userName": "Nome atente",
-      "userEmail": "Email dell'utente",
-      "dateAdded": "Data aggiunta",
-      "userAccess": "Accesso utente",
-      "removeUser": "Rimuovere l'utente"
-    }
-  },
-  "modalText": {
-    "cancel": "Annulla",
-    "done": "Completato",
-    "save": "Salva"
-  },
-  "projectDetails": {
-    "description": "Descrizione",
-    "type": "Tipo",
-    "quantityRequest": "Quantità richiesta:",
-    "components": "Componente",
-    "id": "ID",
-    "status": "Stato",
-    "level": "Lievllo",
-    "startDate": "Data di inizio",
-    "endDate": "Data di fine",
-    "lengthInMonths": "Durata (mesi)",
-    "license": "Licenza",
-    "listOfTickets": "Lista delle segnalazioni",
-    "tickets": "Segnalazioni",
-    "project": "Progetto",
-    "entandoVersion": "Versione di Entando",
-    "creationDate": "Data di creazione",
-    "goToTicket": "Vai alla segnalazione"
-  },
-  "roles": {
-    "admin": "Amministratore",
-    "customer": "Cliente",
-    "partner": "Partner",
-    "support": "Supporto"
-  },
-  "submitMessages": {
-    "subscriptionRequired": "È necessario una subscription per creare segnalazioni per questo progetto",
-    "created": "Creata con successo",
-    "updated": "Aggiornata con successo",
-    "added": "Aggiunta con successo",
-    "confirmDelete": "Sei sicuro di voler eliminare questo articolo?",
-    "deleted": "Cancellato con successo",
-    "error": "Si è verificato un errore",
-    "ticketError": "Si è verificato un errore. Assicurarsi che questo progetto abbia un'organizzazione corrispondente in Jira Service Desk."
-  },
-  "subscriptionDetails": {
-    "description": "Descrizione",
-    "commitment": "Impegno",
-    "partners": "Partner",
-    "type": "Genere",
-    "status": "Stato",
-    "level": "Livello",
-    "startDate": "Data d'inizio",
-    "endDate": "Data di fine",
-    "license": "Licenza",
-    "lengthInMonths": "Durata in mesi",
-    "notes": "Appunti",
-    "assignedUsers": "Utenti assegnati"
-  },
 
-  "subscriptionForm": {
-    "adminSubmitNewSuccess": "Aggiunta di una sottoscrizione al progetto riuscita.",
-    "adminRenewNewSuccess": "Rinnovato con successo una subscription al progetto.",
-    "adminTitle": "Interfaccia Amministrativa di Entando",
-    "chooseLevel": "Scegli un livello",
-    "chooseVersion": "Scegli la versione Entando",
-    "contactEmail": "Contatto email *",
-    "contactName": "Nome del contatto *",
-    "contactNumber": "numero di contatto telefonico",
-    "customerEmail": "Email del cliente *",
-    "customerName": "Nome del cliente *",
-    "customerNumber": "Numero cliente *",
-    "customerSubmitSuccess": "Sarai contattato da un addetto alle vendite Entando per finalizzare l'attivazione della subscription.",
-    "entandoVersion": "Versione di Entando",
-    "formTitle": "Nuova o rinnova subscription",
-    "editSubscription": "Modifica subscription",
-    "newSubError": "Errore durante la creazione di una nuova subscription di progetto.",
-    "newSubscription": "Nuovo subscription",
-    "projectName": "Nome del progetto *",
-    "renewSubError": "Errore nel rinnovo della subscription di un progetto.",
-    "renewSubscription": "Rinnova la subscription",
-    "selectType": "Seleziona il tipo di subscription",
-    "subscriptionLength": "Durata della subscription",
-    "subscriptionLevel": "Livello di subscription",
-    "subscriptionStartDate": "Data di inizio della subscription *",
-    "subscriptionStatus": "Stato della subscription",
-    "subscriptionType": "Genere di subscription *"
-  },
-  "supportTicketForm": {
-    "title": "Interfaccia Amministrativa di Entando",
-    "formTitle": "Creare una nuova segnalazione di supporto",
-    "desc": "Creare una nuova segnalazione di supporto per un progetto esistente.",
-    "select": "Seleziona",
-    "type": "Genere",
-    "selectProject": "Seleziona progetto",
-    "ticketNumber": "Numero della Segnalazione",
-    "customerName": "Nome Cliente",
-    "projectName": "Nome Progetto",
-    "ticketOpenedBy": "Segnalazione aperta da:",
-    "priority": "Priorità",
-    "partnerName": "Nome del Partner",
-    "ticketSummary": "Riepiliogo della segnalazione",
-    "addticketSummary": "Aggiungi il riepilogo della segnalazione",
-    "ticketDescription": "Descrizione della segnalazione",
-    "addticketDescription": "Aggiungi una descrizione alla segnalazione"
-  },
-  "ticketDetails": {
-    "listOfTickets": "Elenco delle segnalazioni",
-    "tickets": "Segnalazioni",
-    "issue": "Problema",
-    "project": "Progetto",
-    "summary": "Sommario",
-    "description": "Descrizione",
-    "type": "Genere",
-    "status": "Stato",
-    "created": "Creato",
-    "link": "Collegamento",
-    "priority": "Priorità",
-    "updated": "Aggiornato",
-    "viewTicket": "visualizza la segnalazione"
-  },
-  "userMessages": {
-    "loading": "Caricamento in corso",
-    "login": "Login",
-    "logout": "Logout",
-    "none": "Nessuna",
-    "unauthorized": "Non autorizzato"
-  },
-  "validation": {
-    "invalid": {
-      "required": "Questo campo è obbligatorio.",
-      "email": "L'email non è valida.",
-      "date": "Inserisci una data nel formato 'mm / gg / aaaa'.",
-      "number": "Questo campo deve essere un numero."
-    }
-  }
+  "Name is a required field": "Il nome è un campo obbligatorio",
+  "Name must be at least 3 characters": "Il nome deve contenere almeno 3 caratteri",
+  "The bundle address is a required field": "L'indirizzo del pacchetto è un campo obbligatorio",
+  "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)": 
+    "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
+  "The name must not exceed 25 characters": "Il nome non deve superare i 25 caratteri",
+  "Documentation is a required field": "La documentazione è un campo obbligatorio",
+  "Documentation must match URL format": "La documentazione deve corrispondere al formato dell'URL",
+  "Version is a required field": "La versione è un campo obbligatorio",
+  "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
+  "Description is a required field": "La descrizione è un campo obbligatorio",
+  "Description must be at least 3 characters": "La descrizione deve contenere almeno 3 caratteri",
+  "Description must not exceed 600 characters": "La descrizione non deve superare i 600 caratteri",
+  "Description must not exceed 100 characters": "La descrizione non deve superare i 100 caratteri"
 }
+

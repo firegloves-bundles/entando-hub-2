@@ -5,16 +5,25 @@ import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNew
 import React, { useCallback, useEffect, useState } from "react";
 import i18n from '../../i18n';
 import './catalogPage.scss'
+import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
 import { MESSAGES } from "../../helpers/constants";
+import './catalogPage.scss';
 
 /*
 This is the HUB landing page
 */
 const CatalogPage = () => {
   const hubUser = isHubUser()
+
+  const [categories, setCategories] = useState([])
+  const [orgList, setOrgList] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isError, setIsError] = useState(null)
+  const [currentUserOrg, setCurrentUserOrg] = useState(null);
+
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
   const [loaded, setLoaded] = useState(false)
@@ -43,6 +52,20 @@ const CatalogPage = () => {
   }
 
   useEffect(() => {
+    const getCatOrgList = async () => {
+      const data = (await getAllCategories());
+      if (data.isError) {
+        setIsError(data.isError)
+        setLoading(false)
+      }
+      setCategories(data.categoryList);
+      const orgData = (await getAllOrganisations()).organisationList;
+      setOrgList(orgData)
+    }
+    getCatOrgList();
+  }, [])
+
+  useEffect(() => {
     let isMounted = true;
     (async () => {
       const username = await getUserName();
@@ -51,6 +74,7 @@ const CatalogPage = () => {
         if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
           setOrgLength(portalUserResp.portalUser.organisations.length);
           setPortalUserPresent(true);
+          setCurrentUserOrg(portalUserResp.portalUser.organisations[0]);
         } else if (isMounted && portalUserResp && portalUserResp.isError) {
           setOrgLength(0);
           setPortalUserPresent(false);
@@ -98,8 +122,8 @@ const CatalogPage = () => {
                   {/*
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
-                    */}
-                  {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup onAfterSubmit={onAfterSubmit} />}
+                   */}
+                  {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/* Search */}
@@ -125,7 +149,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

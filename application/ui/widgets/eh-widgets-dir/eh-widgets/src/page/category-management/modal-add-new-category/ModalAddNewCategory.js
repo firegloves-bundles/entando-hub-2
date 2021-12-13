@@ -7,6 +7,7 @@ import {addNewCategory} from "../../../integration/Integration"
 import "./modal-add-new-category.scss"
 import { categorySchema } from "../../../helpers/validation/categorySchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
+import i18n from "../../../i18n"
 export const ModalAddNewCategory = ({onAfterSubmit}) => {
 
 
@@ -74,14 +75,14 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Category</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.addCategory')}</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
                 <Modal
-                    modalLabel="Add"
+                    modalLabel={i18n.t('component.button.add')}
                     className="Modal-Add-New-organization"
-                    primaryButtonText="Add"
-                    secondaryButtonText="Cancel"
+                    primaryButtonText={i18n.t('component.button.add')}
+                    secondaryButtonText={i18n.t('component.button.cancel')}
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>

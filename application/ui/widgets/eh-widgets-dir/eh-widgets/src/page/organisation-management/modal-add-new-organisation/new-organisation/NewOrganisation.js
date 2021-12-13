@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
+import i18n from "../../../../i18n"
 
 /*
 BUNDLEGROUP:
@@ -47,7 +48,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
             validationResult["name"] && validationResult["name"].join("; ")
           }
           id="name"
-          labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.name')} ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
         />
         <TextInput
@@ -57,7 +58,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
             validationResult["description"].join("; ")
           }
           id="description"
-          labelText={`Description ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.description')} ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
         />
       </Content>

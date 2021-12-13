@@ -27,17 +27,24 @@ class XEhApp extends HTMLElement {
     }
 
     render(lang) {
-        // const locale = this.getAttribute(ATTRIBUTES.locale) || '';
-        Locale.setLocale(lang || 'it');//working from here
-        console.log('eh-hub.js', locale)
+        const locale = this.getAttribute('locale') || '';
+        Locale.setLocale(locale);//working from here
         ReactDOM.render(<React.StrictMode>
             <Router>
-                <button onClick={() => this.render('en')}>
-                    EN
-                </button>
-                <button onClick={() => this.render('it')}>
-                    IT
-                </button>
+                <div style={{ float: "right", "margin-top": ".3em", "margin-right": "0.3em" }}>
+                    <a href="javascript:void(0);">
+                        <span onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
+                            ENG
+                        </span>
+                    </a>
+                    <span> | </span>
+                    <a href="javascript:void(0);">
+                        <span onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
+                            ITA
+                        </span>
+                    </a>
+                </div>
+
                 <AppCarbon />
             </Router>
         </React.StrictMode>,

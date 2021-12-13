@@ -36,16 +36,16 @@ class LoginElement extends HTMLElement {
   }
 
   render(lang) {
-    Locale.setLocale(lang || 'it');//working from here
+    Locale.setLocale(lang || 'en');//working from here
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
         <Login />
-        <button onClick={() => this.render('en')}>
+        {/* <button onClick={() => this.render('en')}>
           header-EN
         </button>
         <button onClick={() => this.render('it')}>
           header-IT
-        </button>
+        </button> */}
       </KeycloakContext.Provider>,
       this.mountPoint
     )

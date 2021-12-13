@@ -1,5 +1,6 @@
 import { Content, TextInput } from "carbon-components-react"
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
+import i18n from "../../../../i18n"
 /*
 
 Organisation:
@@ -39,7 +40,7 @@ const UpdateOrganisation = ({
           }
           id="name"
           value={organisationObj.name}
-          labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.name')} ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
         />
         <TextInput
@@ -50,7 +51,7 @@ const UpdateOrganisation = ({
           }
           id="description"
           value={organisationObj.description}
-          labelText={`Description ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.description')} ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
         />
       </Content>

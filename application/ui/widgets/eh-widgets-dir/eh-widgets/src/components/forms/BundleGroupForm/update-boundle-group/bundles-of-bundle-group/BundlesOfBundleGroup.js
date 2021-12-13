@@ -8,6 +8,7 @@ import {
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 import { BUNDLE_STATUS, GIT_REPO } from "../../../../../helpers/constants";
+import i18n from "../../../../../i18n";
 
 /*
 BUNDLE:
@@ -121,7 +122,7 @@ const BundlesOfBundleGroup = ({
 
     const textInputProps = {
         id: "bundle",
-        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? 'Add Url Bundle *' : 'Add Url Bundle'
+        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? `${i18n.t('component.bundleModalFields.addUrlBundle')} *` : `${i18n.t('component.bundleModalFields.addUrlBundle')}`
     }
 
     let bundleUrlErrorResult = "";
@@ -150,7 +151,7 @@ const BundlesOfBundleGroup = ({
                     <div className="BundlesOfBundleGroup-add-button">
                         <Button disabled={disabled} onClick={onAddBundle}
                                 renderIcon={Add16}>
-                            Add
+                            {i18n.t('component.button.add')}
                         </Button>
                     </div>
                 </Column>

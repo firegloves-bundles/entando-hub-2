@@ -5,14 +5,12 @@ import { useCallback, useEffect, useState } from "react"
 import {
     addNewBundle,
     addNewBundleGroup,
-    getAllCategories, getAllOrganisations
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
-import { getCurrentUserOrganisation } from "../../../integration/api-adapters";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 import { BUNDLE_STATUS } from "../../../helpers/constants";
@@ -21,7 +19,7 @@ import i18n from "../../../i18n"
 /*
     This component manages the modal for adding a new bundle group
 */
-export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
+export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, currentUserOrg}) => {
 
 
     const ModalStateManager = ({
@@ -64,13 +62,13 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit }) => {
             setLoading(true)
             let isMounted = true
             const init = async () => {
-                const categoryList = (await getAllCategories()).categoryList
+                const categoryList = catList;
                 let localAllowedOrganisations
                 if (!isHubAdmin()) {
-                    const currentUserOrganisation = await getCurrentUserOrganisation();
+                    const currentUserOrganisation = currentUserOrg;
                     localAllowedOrganisations = currentUserOrganisation ? [currentUserOrganisation] : [];
                 } else {
-                    localAllowedOrganisations = (await getAllOrganisations()).organisationList
+                    localAllowedOrganisations = orgList
                 }
                 const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
                 if (isMounted) {

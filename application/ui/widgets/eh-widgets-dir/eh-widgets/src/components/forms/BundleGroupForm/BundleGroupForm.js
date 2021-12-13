@@ -45,7 +45,7 @@ const BundleGroupForm = ({
                     disabled={true}
                     id="organisation"
                     labelText={i18n.t('component.bundleModalFields.organisation')}
-                    value={currOrganisation.name}
+                    value={currOrganisation.name ? currOrganisation.name : currOrganisation.organisationName}
                 />
             </Column>)
         }

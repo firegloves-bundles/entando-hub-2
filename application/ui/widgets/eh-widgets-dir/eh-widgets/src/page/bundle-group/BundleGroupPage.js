@@ -173,7 +173,6 @@ const BundleGroupPage = () => {
 
 }
 
-
 const BundleList = ({children}) => {
     const elemList = children.map((bundle, index) =>
         <li key={index.toString()}><a href={bundle.gitRepoAddress}

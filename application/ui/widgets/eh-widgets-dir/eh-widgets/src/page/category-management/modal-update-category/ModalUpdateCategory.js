@@ -8,6 +8,7 @@ import {
 import { categorySchema } from "../../../helpers/validation/categorySchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import "./modal-update-category.scss"
+import i18n from "../../../i18n"
 
 export const ModalUpdateCategory = ({
   categoryObj,
@@ -61,10 +62,10 @@ export const ModalUpdateCategory = ({
 
   return (
     <Modal
-      modalLabel="Edit"
+      modalLabel={i18n.t('component.button.edit')}
       className="Modal-Update-organization"
-      primaryButtonText="Save"
-      secondaryButtonText="Cancel"
+      primaryButtonText={i18n.t('component.button.save')}
+      secondaryButtonText={i18n.t('component.button.cancel')}
       open={open}
       onRequestClose={onRequestClose}
       onRequestSubmit={onRequestSubmit}

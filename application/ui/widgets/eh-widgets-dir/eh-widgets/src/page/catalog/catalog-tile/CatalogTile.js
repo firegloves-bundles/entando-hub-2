@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Tag } from "carbon-components-react"
 import { useHistory } from "react-router-dom"
-import { getSingleCategory } from "../../../integration/Integration"
 import "./catalog-tile.scss"
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
 import { isHubUser } from "../../../helpers/helpers"
@@ -14,6 +13,7 @@ const CatalogTile = ({
   descriptionImage,
   categories,
   status,
+  categoriesDetails,
   onAfterSubmit,
   version
 }) => {
@@ -21,18 +21,16 @@ const CatalogTile = ({
   let bundleStatus = status
 
   useEffect(() => {
-    let isMounted = true
-    ;(async () => {
-      const data = await getSingleCategory(categories[0])
-      if (isMounted) {
-        setCategoryName(data && data.category && data.category.name)
-      }
-    })()
 
-    return () => {
-      isMounted = false
+    if (categories) {
+      const getCategoryNameById = (catId) => {
+        return categoriesDetails.find(cat => cat.categoryId === catId);
+      }
+      const data = getCategoryNameById(categories[0]) && getCategoryNameById(categories[0]).name;
+      setCategoryName(data);
     }
-  }, [categories])
+
+  }, [categories, categoriesDetails])
 
   const history = useHistory()
 

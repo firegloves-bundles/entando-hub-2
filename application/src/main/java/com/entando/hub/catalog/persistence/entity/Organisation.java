@@ -20,10 +20,10 @@ public class Organisation {
 
     private String description;
 
-    @OneToMany(mappedBy = "organisation", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @OneToMany(mappedBy = "organisation", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<BundleGroup> bundleGroups;
 
-    @ManyToMany(mappedBy = "organisations", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @ManyToMany(mappedBy = "organisations", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<PortalUser> portalUsers;
 
 /*

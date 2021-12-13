@@ -59,12 +59,14 @@ class Login extends Component {
 
         getPortalUserDetails(username).then(portalUser => {
           this.setState({
-            portalUser: portalUser
+            currentUserOrgName: portalUser
+              && portalUser.organisations
+              && portalUser.organisations[0]
+              && portalUser.organisations[0].organisationName
           })
         })
 
       })
-
     }
   }
 
@@ -96,9 +98,7 @@ class Login extends Component {
                       </div>
                       |
                       <div className="spacer">
-                        {this.state.portalUser
-                        && this.state.portalUser.organisation
-                        && this.state.portalUser.organisation.name}
+                        {this.state.currentUserOrgName}
                       </div>
                       {getHigherRole() === ADMIN &&
                       <div className="admin-page">

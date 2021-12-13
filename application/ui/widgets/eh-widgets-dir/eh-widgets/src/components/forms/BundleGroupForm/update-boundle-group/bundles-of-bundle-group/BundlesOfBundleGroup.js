@@ -179,12 +179,13 @@ const BundlesOfBundleGroup = ({
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
+                               autoComplete={false}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>
                     <div className="BundlesOfBundleGroup-add-button">
                         <Button disabled={disabled} onClick={onAddBundle}
-                                renderIcon={Add16}>
+                            renderIcon={Add16}>
                             Add
                         </Button>
                     </div>
@@ -192,8 +193,8 @@ const BundlesOfBundleGroup = ({
                 <Column sm={16} md={16} lg={16}>
                     <div>
                         <BundleList children={bundleList}
-                                    onDeleteBundle={onDeleteBundle}
-                                    disabled={disabled}/>
+                            onDeleteBundle={onDeleteBundle}
+                            disabled={disabled} />
                     </div>
                 </Column>
             </Row>

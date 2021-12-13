@@ -1,4 +1,4 @@
-import {Button, Modal} from "carbon-components-react"
+import {Button, ComposedModal, ModalBody, ModalFooter, ModalHeader} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import {useState} from "react"
@@ -77,16 +77,28 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                 <Button onClick={onRequestOpen} renderIcon={Add16}>Add Organisation</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
-                <Modal
-                    modalLabel="Add"
+                <ComposedModal
                     className="Modal-Add-New-organization"
-                    primaryButtonText="Add"
-                    secondaryButtonText="Cancel"
                     open={open}
-                    onRequestClose={onRequestClose}
-                    onRequestSubmit={onRequestSubmit}>
-                    <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
-                </Modal>
+                    onClose={onRequestClose}
+                >
+                    <ModalHeader label="Add" />
+                    <ModalBody>
+                        <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            kind="secondary"
+                            onMouseDown={() => { onRequestClose() }}>
+                            Cancel
+                        </Button>
+                        <Button
+                            kind="primary"
+                            onClick={() => { onRequestSubmit() }}>
+                            Add
+                        </Button>
+                    </ModalFooter>
+                </ComposedModal>
             )}
         </ModalStateManager>
     )

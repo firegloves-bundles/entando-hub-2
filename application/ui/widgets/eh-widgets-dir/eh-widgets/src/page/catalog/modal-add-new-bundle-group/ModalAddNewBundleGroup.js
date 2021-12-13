@@ -243,7 +243,7 @@ const ModalContent = ({
                     <ModalBody>
                         <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                             categories={categories} selectStatusValues={selectStatusValues}
-                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError}/>
+                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} />
                     </ModalBody>
                     <ModalFooter>
                         <Button
@@ -253,7 +253,7 @@ const ModalContent = ({
                         </Button>
                         <Button
                             kind="primary"
-                            onMouseDown={() => { onRequestSubmit() }}>
+                            onClick={() => { onRequestSubmit() }}>
                             Add
                         </Button>
                     </ModalFooter>

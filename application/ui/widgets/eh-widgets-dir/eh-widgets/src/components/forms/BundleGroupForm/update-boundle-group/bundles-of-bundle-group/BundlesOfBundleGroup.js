@@ -156,7 +156,10 @@ const BundlesOfBundleGroup = ({
 
 
     if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
-        // Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show MIN_ONE_BUNDLE_ERROR
+        /**
+         * Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is
+         * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show MIN_ONE_BUNDLE_ERROR
+         */
         bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : MIN_ONE_BUNDLE_ERROR
     } else if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
         Object.keys(validationResult).length === 0 &&

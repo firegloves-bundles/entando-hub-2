@@ -25,8 +25,6 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
-  // const [validationErrorMsg,setValidationErrorMsg] = useState({message: NAME_REQ_MSG});
-  // const [isChanged, setIsChanged] = useState(false);
   const [orgNameLength, setOrgNameLength] = useState(false);
   const [orgDescLength, setOrgDescLength] = useState(false);
 

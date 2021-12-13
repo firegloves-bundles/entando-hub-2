@@ -25,7 +25,6 @@ const NewCategory = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
-  // const [validationErrorMsg,setValidationErrorMsg] = useState({message: NAME_REQ_MSG});
   const [catNameLength, setCatNameLength] = useState(false);
   const [catDescLength, setCatDescLength] = useState(false);
 

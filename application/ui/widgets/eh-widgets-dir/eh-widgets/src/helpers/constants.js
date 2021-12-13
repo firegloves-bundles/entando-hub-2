@@ -74,7 +74,7 @@ export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://githu
 /**
  * Bundle Form Validatin Error Message
  */
-// DESCRIPTION ERROR MESSAGE FOR CATEGORY AND ORGANISATION.
+
 export const DESCRIPTION_MAX_LENGTH = 'Description must not exceed 100 characters';
 
 /**

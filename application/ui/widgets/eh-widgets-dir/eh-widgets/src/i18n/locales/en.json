@@ -1,7 +1,8 @@
 {
   "page": {
     "header": {
-      "logout": "Logout"
+      "logout": "Logout",
+      "login": "Login"
     },
     "catlogPanel": {
       "catlogHomePage": {
@@ -9,6 +10,9 @@
         "categories": "Categories",
         "catalog": "Catalog",
         "select": "Select"
+      },
+      "AuthMessage": {
+        "notifyGuestPortalUserMsg": "Your account does not currently have access to the Hub. Please contact your Administrator to request access."
       }
     },
     "bundleGroupInfo": {

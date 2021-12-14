@@ -157,8 +157,6 @@ const BundleGroupForm = ({
         changeBundleGroup("children", newBundleList)
     }
 
-    console.log('validationResult', validationResult);
-
     return (
         <>
             <Content className="Edit-bundle-group">

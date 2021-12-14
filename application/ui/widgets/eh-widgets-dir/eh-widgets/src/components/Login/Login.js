@@ -105,7 +105,6 @@ class Login extends Component {
                       <div className="admin-page">
                         <HashRouter>
                           <Link to="/admin">Admin
-                            {/* <p className="title">{i18n.t('userMessages.unauthorized')}</p> */}
                           </Link>
                         </HashRouter>
                         <i className="fas fa-cog"/>

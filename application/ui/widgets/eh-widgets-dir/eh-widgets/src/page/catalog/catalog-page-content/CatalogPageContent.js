@@ -131,8 +131,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
         setPage(page)
     }
 
-    console.log("page", page,"pageSize", pageSize,"totalItems", totalItems)
-
     return (
         <>
             <div className="bx--col-lg-4">
@@ -147,8 +145,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                         () => `${page}–${pageSize} ${i18n.t("component.pagination.of")} ${totalItems} ${i18n.t("component.pagination.items")}`
                     }
                     pageSizes={[12, 18, 24]}
-                    // page={page}
-                    // pageSize={pageSize}
                     totalItems={totalItems}
                     onChange={onPaginationChange}
                 />

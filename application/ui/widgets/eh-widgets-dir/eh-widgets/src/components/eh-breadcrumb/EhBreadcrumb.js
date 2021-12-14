@@ -25,7 +25,6 @@ const EhBreadcrumb = ({pathElements = []}) => {
     return (
         <Breadcrumb aria-label="Page navigation">
             <BreadcrumbItem>
-                {/* <Link to="/">Home</Link> */}
                 <Link to="/">{i18n.t('page.catlogPanel.catlogHomePage.home')}</Link>
             </BreadcrumbItem>
             {elementList}

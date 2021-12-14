@@ -36,16 +36,34 @@ class LoginElement extends HTMLElement {
   }
 
   render(lang) {
-    Locale.setLocale(lang || 'en');//working from here
+
+    window.entando = { ...window.entando, lang: lang ? lang : 'en' }
+    const locale = this.getAttribute('locale') || '';
+    let engEle = document.getElementById('engLang');
+    let itaEle = document.getElementById('itaLang');
+    if (engEle && locale === 'en') {
+      engEle.click()
+    }
+    if (itaEle && locale === 'it') {
+      itaEle.click()
+    }
+    Locale.setLocale(locale);
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
         <Login />
-        {/* <button onClick={() => this.render('en')}>
-          header-EN
-        </button>
-        <button onClick={() => this.render('it')}>
-          header-IT
-        </button> */}
+        <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em" }}>
+                    <a href="/#">
+                        <span onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
+                            ENG
+                        </span>
+                    </a>
+                    <span> | </span>
+                    <a href="/#">
+                        <span onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
+                            ITA
+                        </span>
+                    </a>
+                </div>
       </KeycloakContext.Provider>,
       this.mountPoint
     )

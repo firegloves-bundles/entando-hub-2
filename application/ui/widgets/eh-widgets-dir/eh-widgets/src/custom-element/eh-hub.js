@@ -27,19 +27,20 @@ class XEhApp extends HTMLElement {
     }
 
     render(lang) {
+        window.entando = { ...window.entando, lang: lang ? lang : 'en' }
         const locale = this.getAttribute('locale') || '';
-        Locale.setLocale(locale);//working from here
+        Locale.setLocale(locale);
         ReactDOM.render(<React.StrictMode>
             <Router>
-                <div style={{ float: "right", "margin-top": ".3em", "margin-right": "0.3em" }}>
-                    <a href="javascript:void(0);">
-                        <span onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
+                <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em", "display": "none" }}>
+                    <a href="/#">
+                        <span id="engLang" onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
                             ENG
                         </span>
                     </a>
                     <span> | </span>
-                    <a href="javascript:void(0);">
-                        <span onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
+                    <a href="/#">
+                        <span id="itaLang" onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
                             ITA
                         </span>
                     </a>

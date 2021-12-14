@@ -119,7 +119,6 @@ const BundleGroupPage = () => {
                                                          children={pageModel.children}/>
                     <div className="BundleGroupPage-last-update">
                       {i18n.t('page.bundleGroupInfo.lastUpdate')}
-                      {/* <br/>{i18n.t('adminConfig.integrationTicketingSystem.title')} */}
                       <p>{pageModel.bundleGroup && pageModel.bundleGroup.lastUpdate && formatLastUpdate(pageModel.bundleGroup.lastUpdate)}</p>
                     </div>
                     <hr/>

@@ -9,7 +9,6 @@ import { getAllCategories, getAllOrganisations } from "../../integration/Integra
 import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
-import { MESSAGES } from "../../helpers/constants";
 import './catalogPage.scss';
 
 /*
@@ -98,7 +97,7 @@ const CatalogPage = () => {
         && !isHubAdmin()
         && (portalUserPresent === false || orgLength === 0)
         ?
-        loaded && <p className="notify-user-absense">{MESSAGES.NOTIFY_GUEST_PORTAL_USER_MSG}</p>
+        loaded && <p className="notify-user-absense">{i18n.t('page.catlogPanel.AuthMessage.notifyGuestPortalUserMsg')}</p>
         :
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
@@ -110,12 +109,9 @@ const CatalogPage = () => {
               </div>
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  {/* Categories */}
                   {i18n.t('page.catlogPanel.catlogHomePage.categories')}
-                  {/* <p className="title">{i18n.t('adminDashboard.allCustomers')}</p> */}
                 </div>
                 <div className="bx--col-lg-6 CatalogPage-section">
-                  {/* Catalog */}
                   {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
                 </div>
                 <div className="bx--col-lg-2 CatalogPage-section">
@@ -126,7 +122,6 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  {/* Search */}
                   {i18n.t('component.button.search')}
                 </div>
               </div>

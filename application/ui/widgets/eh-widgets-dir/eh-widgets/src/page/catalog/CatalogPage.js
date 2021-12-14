@@ -111,10 +111,10 @@ const CatalogPage = () => {
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {i18n.t('page.catlogPanel.catlogHomePage.categories')}
                 </div>
-                <div className="bx--col-lg-6 CatalogPage-section">
+                <div className="bx--col-lg-5 CatalogPage-section">
                   {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
                 </div>
-                <div className="bx--col-lg-2 CatalogPage-section">
+                <div className="bx--col-lg-3 CatalogPage-section">
                   {/*
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call

@@ -21,7 +21,8 @@
       "listToBundles": "List of Bundles",
       "version": "Version",
       "category": "Category",
-      "organisation": "Organisation"
+      "organisation": "Organisation",
+      "documentation": "Documentation"
     },
     "admin": {
       "Users Management": "Users Management",

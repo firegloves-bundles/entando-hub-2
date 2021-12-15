@@ -1,3 +1,4 @@
+import "./custom-element.scss"
 import ReactDOM from "react-dom"
 import React from "react"
 import '../index.css'
@@ -26,26 +27,21 @@ class XEhApp extends HTMLElement {
         })
     }
 
-    render(lang) {
-        window.entando = { ...window.entando, lang: lang ? lang : 'en' }
+    render() {
+        // window.entando = { ...window.entando, lang: lang ? lang : 'en' }
         const locale = this.getAttribute('locale') || '';
         Locale.setLocale(locale);
         ReactDOM.render(<React.StrictMode>
             <Router>
-                <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em", "display": "none" }}>
-                    <a href={()=>{}} style={{cursor: "pointer"}}>
-                        <span id="engLang" onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
-                            ENG
-                        </span>
-                    </a>
+                <div className="locale-button hide-button">
+                    <span id="engLang" onClick={() => { this.setAttribute('locale', 'en'); this.render(); }}>
+                        ENG
+                    </span>
                     <span> | </span>
-                    <a href={()=>{}} style={{cursor: "pointer"}}>
-                        <span id="itaLang" onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
-                            ITA
-                        </span>
-                    </a>
+                    <span id="itaLang" onClick={() => { this.setAttribute('locale', 'it'); this.render(); }}>
+                        ITA
+                    </span>
                 </div>
-
                 <AppCarbon />
             </Router>
         </React.StrictMode>,

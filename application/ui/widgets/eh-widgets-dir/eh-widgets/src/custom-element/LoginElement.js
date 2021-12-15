@@ -1,3 +1,4 @@
+import "./custom-element.scss"
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -35,35 +36,29 @@ class LoginElement extends HTMLElement {
     this.appendChild(this.mountPoint)
   }
 
-  render(lang) {
-
-    window.entando = { ...window.entando, lang: lang ? lang : 'en' }
+  render() {
     const locale = this.getAttribute('locale') || '';
-    let engEle = document.getElementById('engLang');
-    let itaEle = document.getElementById('itaLang');
-    if (engEle && locale === 'en') {
-      engEle.click()
+    const engBtn = document.getElementById('engLang');
+    const itaBtn = document.getElementById('itaLang');
+    if (engBtn && locale === 'en') {
+      engBtn.click()
     }
-    if (itaEle && locale === 'it') {
-      itaEle.click()
+    if (itaBtn && locale === 'it') {
+      itaBtn.click()
     }
     Locale.setLocale(locale);
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
         <Login />
-        <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em" }}>
-                    <a href={()=>{}} style={{cursor: "pointer"}}>
-                        <span onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
-                            ENG
-                        </span>
-                    </a>
-                    <span> | </span>
-                    <a href={()=>{}} style={{cursor: "pointer"}}>
-                        <span onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
-                            ITA
-                        </span>
-                    </a>
-                </div>
+        <div className="locale-button">
+          <span onClick={() => { this.setAttribute('locale', 'en'); this.render(); }}>
+            ENG
+          </span>
+          <span> | </span>
+          <span onClick={() => { this.setAttribute('locale', 'it'); this.render(); }}>
+            ITA
+          </span>
+        </div>
       </KeycloakContext.Provider>,
       this.mountPoint
     )

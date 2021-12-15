@@ -33,13 +33,13 @@ class XEhApp extends HTMLElement {
         ReactDOM.render(<React.StrictMode>
             <Router>
                 <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em", "display": "none" }}>
-                    <a href="/#">
+                    <a href={()=>{}} style={{cursor: "pointer"}}>
                         <span id="engLang" onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
                             ENG
                         </span>
                     </a>
                     <span> | </span>
-                    <a href="/#">
+                    <a href={()=>{}} style={{cursor: "pointer"}}>
                         <span id="itaLang" onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
                             ITA
                         </span>

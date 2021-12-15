@@ -147,6 +147,8 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                     pageSizes={[12, 18, 24]}
                     totalItems={totalItems}
                     onChange={onPaginationChange}
+                    backwardText={i18n.t("component.pagination.previousPage")}
+                    forwardText={i18n.t("component.pagination.nextPage")}
                 />
             </div>
             {loading && <Loading/>}

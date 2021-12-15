@@ -70,7 +70,9 @@
       "page": "pagina",
       "items": "Oggetti",
       "of": "di",
-      "itemsPerPage": "oggetti per pagina"
+      "itemsPerPage": "oggetti per pagina",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva"
     },
     "select": {
       "all": "Tutto"
@@ -99,7 +101,12 @@
     "impossibleToCreateUser": "Impossibile creare l'utente",
     "impossibleToLoadUsers": "Impossibile caricare gli utenti",
     "impossibleToDeleteUser": "Impossibile eliminare l'utente",
-    "impossibleToRemoveUser": "Impossibile rimuovere l'utente"
+    "impossibleToRemoveUser": "Impossibile rimuovere l'utente",
+    "bundle": "Fascio",
+    "bundleGroup": "Fascio Gruppo",
+    "created": "Creata",
+    "updated": "Aggiornato",
+    "deleted": "Cancellato"
   },
   "profile": {
     "NOT_PUBLISHED": "NON PUBBLICATO",
@@ -127,10 +134,10 @@
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
   },
-  "Draft": "NON PUBBLICATO",
-  "Publication Request": "PUBBLICARE RICH",
-  "Published": "PUBBLICATO",
-  "Deletion Request": "ELIMINA RICH",
+  "Draft": "Non Pubblicato",
+  "Publication Request": "Pubblicare Rich",
+  "Published": "Pubblicato",
+  "Deletion Request": "Elimina Rich",
   "All": "Tutto",
 
 

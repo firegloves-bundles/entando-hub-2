@@ -71,7 +71,9 @@
       "page": "page",
       "items": "items",
       "of": "of",
-      "itemsPerPage": "Items per page:"
+      "itemsPerPage": "Items per page:",
+      "previousPage": "Previous page",
+      "nextPage": "Next page"
     },
     "select": {
       "all": "All"
@@ -100,7 +102,12 @@
     "impossibleToCreateUser": "Impossible to create user",
     "impossibleToLoadUsers": "Impossible to load users",
     "impossibleToDeleteUser": "Impossible to delete user",
-    "impossibleToRemoveUser": "Impossible to remove user"
+    "impossibleToRemoveUser": "Impossible to remove user",
+    "bundle": "Bundle",
+    "bundleGroup": "Bundle Group",
+    "created": "Created",
+    "updated": "Updated",
+    "deleted": "Deleted"
   },
   "profile": {
     "NOT_PUBLISHED": "Draft",

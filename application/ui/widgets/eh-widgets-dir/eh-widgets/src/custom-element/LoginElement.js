@@ -52,13 +52,13 @@ class LoginElement extends HTMLElement {
       <KeycloakContext.Provider value={this.keycloak}>
         <Login />
         <div style={{ float: "right", "marginTop": ".3em", "marginRight": "0.3em" }}>
-                    <a href="/#">
+                    <a href={()=>{}} style={{cursor: "pointer"}}>
                         <span onClick={() => { this.setAttribute('locale', 'en'); this.render('en'); }}>
                             ENG
                         </span>
                     </a>
                     <span> | </span>
-                    <a href="/#">
+                    <a href={()=>{}} style={{cursor: "pointer"}}>
                         <span onClick={() => { this.setAttribute('locale', 'it'); this.render('it'); }}>
                             ITA
                         </span>

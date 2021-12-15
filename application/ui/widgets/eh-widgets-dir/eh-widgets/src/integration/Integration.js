@@ -1,6 +1,7 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
 import { API_RESPONSE_KEY, DELETED_BUNDLE, MESSAGES, HTTP_STATUS } from "../helpers/constants";
+import i18n from "../i18n";
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -100,7 +101,7 @@ export const deleteOrganisation = async (id) => {
   eventHandler(
     isError,
     `Impossible to delete organisation. ${data ? data.message : ""}`,
-    `Organisation ${data.data ? data.data.name : ""} deleted`
+    `Organisation ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")
@@ -169,7 +170,7 @@ export const deleteCategory = async (id, categoryName) => {
   eventHandler(
     isError,
     `Impossible to delete category. ${data ? data.message : ""}`,
-    `Category ${categoryName ? categoryName : ""} deleted`
+    `Category ${categoryName ? categoryName : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedCategory")
@@ -220,7 +221,7 @@ export const addNewBundle = async (bundleData) => {
   eventHandler(
     isError,
     `Impossible to create bundle. ${data ? data.message : ""}`,
-    `Bundle ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.bundle')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundle")
@@ -303,7 +304,7 @@ export const addNewBundleGroup = async (bundleGroupData) => {
   eventHandler(
     isError,
     `Impossible to create bundle group. ${data ? data.message : ""}`,
-    `Bundle group ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundleGroup")
@@ -315,7 +316,7 @@ export const editBundleGroup = async (bundleGroupData, id) => {
   eventHandler(
     isError,
     `Impossible to update bundle group. ${data ? data.message : ""}`,
-    `Bundle group ${data.data ? data.data.name : ""} updated`
+    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
@@ -327,7 +328,7 @@ export const deleteBundle = async (id, bundleName) => {
   eventHandler(
     isError,
     `Impossible to delete bundle. ${data ? data.message : ""}`,
-    `Bundle ${bundleName ? bundleName : ""} deleted`
+    `${i18n.t('toasterMessage.bundle')} ${bundleName ? bundleName : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE)

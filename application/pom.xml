@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.entando</groupId>
     <artifactId>entando-hub-catalog-ms</artifactId>
-    <version>0.2.7-SNAPSHOT</version>
+    <version>0.2.8-SNAPSHOT</version>
     <description>The BE microservice for Entando HUB</description>
     <properties>
         <problem-spring-web.version>0.25.0</problem-spring-web.version>

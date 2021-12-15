@@ -351,7 +351,7 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
   
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToCreateUser')}`, `${i18n.t('toasterMessage.UserCreated')}`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToCreateUser')}`, `${i18n.t('toasterMessage.userCreated')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }

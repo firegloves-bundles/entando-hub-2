@@ -40,6 +40,43 @@ export const API_RESPONSE_KEY = {
 export const DELETED_BUNDLE = 'deletedBundle';
 export const GIT_REPO = 'gitRepo';
 
+// REGEX
+export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
+export const VERSON_REGEX = /^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm
+export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-z-A-Z-0-9/]+)(?:\.git)$/gm
+
+// Input char length
+export const CHAR_LENGTH = 3;
+export const MAX_CHAR_LENGTH = 25;
+export const MAX_CHAR_LENGTH_FOR_DESC = 600;
+export const MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM = 100;
+
+/**
+ * Bundle Form Validatin Error Message
+ */
+// NAME
+export const NAME_REQ_MSG = 'Name is a required field'
+export const LEAST_CHAR_NAME_MSG = `Name must be at least ${CHAR_LENGTH} characters`
+export const MAX_CHAR_NAME_MSG = `Name must not exceed ${MAX_CHAR_LENGTH} characters`
+// DESCRIPTION
+export const DESC_REQ_MESG = 'Description is a required field'
+export const LEAST_CHAR_DESC_MSG = `Description must be at least ${CHAR_LENGTH} characters`
+export const MAX_CHAR_DESC_MSG = `Description must not exceed ${MAX_CHAR_LENGTH_FOR_DESC} characters`
+// Documentation
+export const DOCUMENTATION_URL_REQ_MSG = 'Documentation is a required field'
+export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format'
+// Version
+export const VERSION_REQ_MSG = 'Version is a required field'
+export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+// Bundle
+export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)'
+
+/**
+ * Bundle Form Validatin Error Message
+ */
+
+export const DESCRIPTION_MAX_LENGTH = 'Description must not exceed 100 characters';
+
 /**
  * Messages
  */

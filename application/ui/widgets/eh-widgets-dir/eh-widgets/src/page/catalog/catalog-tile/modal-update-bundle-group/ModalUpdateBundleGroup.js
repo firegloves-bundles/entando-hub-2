@@ -156,6 +156,7 @@ export const ModalUpdateBundleGroup = ({
           onRequestSubmit={onRequestSubmit}
         >
           <BundleGroupForm
+            mode="Edit"
             allowedOrganisations={allowedOrganisations}
             categories={categories}
             onDataChange={onDataChange}

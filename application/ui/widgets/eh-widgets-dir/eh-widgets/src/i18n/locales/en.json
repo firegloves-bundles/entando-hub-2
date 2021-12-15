@@ -25,10 +25,10 @@
       "documentation": "Documentation"
     },
     "admin": {
-      "Users Management": "Users Management",
-      "Username": "Username",
-      "Email": "Email",
-      "Organisation": "Organisation",
+      "userManagement": "Users Management",
+      "username": "Username",
+      "email": "Email",
+      "organisation": "Organisation",
       "addUser": "Add User"
     },
     "management": {
@@ -103,33 +103,30 @@
     "impossibleToLoadUsers": "Impossible to load users.",
     "impossibleToDeleteUser": "Impossible to delete user.",
     "impossibleToRemoveUser": "Impossible to remove user.",
-    "userRemovedFromTheOrganisation":"User removed from the organisation",
-    "UserCreated" : "User created",
+    "userRemovedFromTheOrganisation": "User removed from the organisation",
+    "userCreated": "User created",
     "bundle": "Bundle",
     "bundleGroup": "Bundle Group",
     "created": "Created",
     "updated": "Updated",
     "deleted": "Deleted"
   },
-  "profile": {
-    "NOT_PUBLISHED": "Draft",
-    "PUBLISH_REQ": "Publication Request",
-    "PUBLISHED": "Published",
-    "DELETE_REQ": "Deletion Request",
-    "All": "All"
-  },
   "formValidationMsg": {
-    "Name is a required field": "Name is a required field",
-    "Name must be at least 3 characters": "Name must be at least 3 characters",
-    "The name must not exceed 25 characters": "The name must not exceed 25 characters",
-    "Documentation is a required field": "Documentation is a required field",
-    "Documentation must match URL format": "Documentation must match URL format",
-    "Version is a required field": "Version is a required field",
+    "nameRequired": "Name is a required field",
+    "min3Char": "Name must be at least 3 characters",
+    "max25Char": "The name must not exceed 25 characters",
+    "docRequired": "Documentation is a required field",
+    "docFormat": "Documentation must match URL format",
+    "versionRequired": "Version is a required field",
     "versionFormat": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
     "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)",
-    "Description is a required field": "Description is a required field",
-    "The description must contain at least 3 characters": "The description must contain at least 3 characters",
-    "The description must not exceed 600 characters": "The description must not exceed 600 characters"
+    "bundleUrlRequired": "The bundle address is a required field",
+    "descriptionRequired": "Description is a required field",
+    "minDescription": "The description must contain at least 3 characters",
+    "maxDescription": "The description must not exceed 600 characters",
+    "categoryRequired": "Category is a required field",
+    "atleastOneUrl": "Please add at least one bundle before publishing this bundle group.",
+    "description": "Description must not exceed 100 characters"
   },
   "modalMsg": {
     "deleteBundleMsg": "Are you sure you want to delete this bundle?",
@@ -141,20 +138,5 @@
   "Publication Request": "Publication Request",
   "Published": "Published",
   "Deletion Request": "Deletion Request",
-  "All": "All",
-
-  "Name is a required field": "Name is a required field",
-  "Name must be at least 3 characters": "Name must be at least 3 characters",
-  "The bundle address is a required field": "The bundle address is a required field",
-  "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)": 
-    "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)",
-  "The name must not exceed 25 characters": "The name must not exceed 25 characters",
-  "Documentation is a required field": "Documentation is a required field",
-  "Documentation must match URL format": "Documentation must match URL format",
-  "Version is a required field": "Version is a required field",
-  "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
-  "Description is a required field": "Description is a required field",
-  "Description must be at least 3 characters": "The description must contain at least 3 characters",
-  "Description must not exceed 600 characters": "The description must not exceed 600 characters",
-  "Description must not exceed 100 characters": "Description must not exceed 100 characters"
+  "All": "All"
 }

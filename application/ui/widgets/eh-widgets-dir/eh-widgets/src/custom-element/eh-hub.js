@@ -28,7 +28,6 @@ class XEhApp extends HTMLElement {
     }
 
     render() {
-        // window.entando = { ...window.entando, lang: lang ? lang : 'en' }
         const locale = this.getAttribute('locale') || '';
         Locale.setLocale(locale);
         ReactDOM.render(<React.StrictMode>

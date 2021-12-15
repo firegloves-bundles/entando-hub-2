@@ -1,6 +1,6 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
-import { API_RESPONSE_KEY, DELETED_BUNDLE, MESSAGES, HTTP_STATUS } from "../helpers/constants";
+import { API_RESPONSE_KEY, DELETED_BUNDLE, HTTP_STATUS } from "../helpers/constants";
 import i18n from "../i18n";
 
 // endpoints

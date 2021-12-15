@@ -55,15 +55,15 @@ bundleId	string
 const headers = [
   {
     key: "username",
-    header: "Username",
+    header: "username",
   },
   {
     key: "email",
-    header: "Email",
+    header: "email",
   },
   {
     key: "organisation",
-    header: "Organisation",
+    header: "organisation",
   },
   {
     key: "overflow",
@@ -151,7 +151,7 @@ const UserManagementPage = () => {
                     getHeaderProps,
                     getRowProps,
                   }) => (
-                    <TableContainer title={i18n.t("page.admin.Users Management")}>
+                    <TableContainer title={i18n.t("page.admin.userManagement")}>
                       <TableToolbar>
                         <TableToolbarContent>
                           <ModalAddNewUser onAfterSubmit={onAfterSubmit} />

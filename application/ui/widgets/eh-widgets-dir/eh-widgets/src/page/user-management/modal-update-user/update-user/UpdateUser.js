@@ -61,10 +61,10 @@ const UpdateUser = ({userObj, organisations, onDataChange}) => {
                 <TextInput disabled={true} value={userObj.username} onChange={nameChangeHandler} id={"name"}
                            labelText={i18n.t("page.management.label.name")}/>
                 <TextInput disabled={true} value={userObj.email} id={"email"}
-                           labelText={i18n.t("page.admin.Email")}/>
+                           labelText={i18n.t("page.admin.email")}/>
                 <Select value={userObj && userObj.organisation && userObj.organisation.organisationId} onChange={organisationChangeHandler}
                         id={"organisation"}
-                        labelText={i18n.t("page.admin.Organisation")}>{selectItems_Organisations}</Select>
+                        labelText={i18n.t("page.admin.organisation")}>{selectItems_Organisations}</Select>
             </Content>
         </>
     )

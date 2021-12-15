@@ -25,10 +25,10 @@
       "documentation": "documentazione"
     },
     "admin": {
-      "Users Management": "Gestione Utenti",
-      "Username": "Nome Utente",
-      "Email": "E-mail",
-      "Organisation": "Organizzazione",
+      "userManagement": "Gestione Utenti",
+      "username": "Nome Utente",
+      "email": "E-mail",
+      "organisation": "Organizzazione",
       "addUser": "Aggiungi utente"
     },
     "management": {
@@ -102,33 +102,31 @@
     "impossibleToLoadUsers": "Impossibile caricare gli utenti.",
     "impossibleToDeleteUser": "Impossibile eliminare l'utente.",
     "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
-    "userRemovedFromTheOrganisation":"Utente rimosso dall'organizzazione",
-    "UserCreated" : "Utente creato",
+    "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione",
+    "userCreated": "Utente creato",
     "bundle": "Fascio",
     "bundleGroup": "Fascio Gruppo",
     "created": "Creata",
     "updated": "Aggiornato",
     "deleted": "Cancellato"
   },
-  "profile": {
-    "NOT_PUBLISHED": "NON PUBBLICATO",
-    "PUBLISH_REQ": "PUBBLICARE RICH",
-    "PUBLISHED": "PUBBLICATO",
-    "DELETE_REQ" : "ELIMINA RICH",
-    "All": "Tutto"
-  },
   "formValidationMsg": {
+    "nameRequired": "Il nome è un campo obbligatorio",
     "nameReq": "Il nome è un campo obbligatorio",
-    "minCharForName": "Il nome deve contenere almeno 3 caratteri",
-    "maxCharForName": "Il nome non deve superare i 25 caratteri",
-    "docReq": "La documentazione è un campo obbligatorio",
+    "min3Char": "Il nome deve contenere almeno 3 caratteri",
+    "max25Char": "Il nome non deve superare i 25 caratteri",
+    "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve corrispondere al formato dell'URL",
-    "versionReq": "La versione è un campo obbligatorio",
+    "versionRequired": "La versione è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
     "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
-    "descReq": "La descrizione è un campo obbligatorio",
-    "minCharForDesc": "La descrizione deve contenere almeno 3 caratteri",
-    "maxCharForDesc": "La descrizione non deve superare i 600 caratteri"
+    "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
+    "descriptionRequired": "La descrizione è un campo obbligatorio",
+    "minDescription": "La descrizione deve contenere almeno 3 caratteri",
+    "maxDescription": "La descrizione non deve superare i 600 caratteri",
+    "categoryRequired": "La categoria è un campo obbligatorio",
+    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo gruppo di bundle.",
+    "description": "La descrizione non deve superare i 100 caratteri"
   },
   "modalMsg": {
     "deleteBundleMsg": "Sei sicuro di voler eliminare questo pacchetto?",
@@ -140,22 +138,5 @@
   "Publication Request": "Pubblicare Rich",
   "Published": "Pubblicato",
   "Deletion Request": "Elimina Rich",
-  "All": "Tutto",
-
-
-  "Name is a required field": "Il nome è un campo obbligatorio",
-  "Name must be at least 3 characters": "Il nome deve contenere almeno 3 caratteri",
-  "The bundle address is a required field": "L'indirizzo del pacchetto è un campo obbligatorio",
-  "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)": 
-    "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
-  "The name must not exceed 25 characters": "Il nome non deve superare i 25 caratteri",
-  "Documentation is a required field": "La documentazione è un campo obbligatorio",
-  "Documentation must match URL format": "La documentazione deve corrispondere al formato dell'URL",
-  "Version is a required field": "La versione è un campo obbligatorio",
-  "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
-  "Description is a required field": "La descrizione è un campo obbligatorio",
-  "Description must be at least 3 characters": "La descrizione deve contenere almeno 3 caratteri",
-  "Description must not exceed 600 characters": "La descrizione non deve superare i 600 caratteri",
-  "Description must not exceed 100 characters": "La descrizione non deve superare i 100 caratteri"
+  "All": "Tutto"
 }
-

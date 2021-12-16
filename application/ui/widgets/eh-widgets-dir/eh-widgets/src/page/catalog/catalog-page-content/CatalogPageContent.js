@@ -142,13 +142,17 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                 <Pagination
                     itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                     itemRangeText={
-                        () => `${page}–${pageSize} ${i18n.t("component.pagination.of")} ${totalItems} ${i18n.t("component.pagination.items")}`
+                        (min, max, total) => `${min}–${max} ${i18n.t("component.pagination.of")} ${total} ${i18n.t("component.pagination.items")}`
                     }
                     pageSizes={[12, 18, 24]}
                     totalItems={totalItems}
                     onChange={onPaginationChange}
                     backwardText={i18n.t("component.pagination.previousPage")}
                     forwardText={i18n.t("component.pagination.nextPage")}
+                    pageRangeText={
+                        (total) => `${i18n.t("component.pagination.of")} ${ total }
+                        ${ total === 1 ? `${i18n.t("component.pagination.page")}` : `${i18n.t("component.pagination.pages")}` }`
+                    }
                 />
             </div>
             {loading && <Loading/>}

@@ -69,6 +69,7 @@
     },
     "pagination": {
       "page": "page",
+      "pages": "pages",
       "items": "items",
       "of": "of",
       "itemsPerPage": "Items per page:",

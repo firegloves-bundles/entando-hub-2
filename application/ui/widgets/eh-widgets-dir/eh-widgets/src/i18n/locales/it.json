@@ -68,9 +68,10 @@
     },
     "pagination": {
       "page": "pagina",
+      "pages": "pagine",
       "items": "Oggetti",
       "of": "di",
-      "itemsPerPage": "oggetti per pagina",
+      "itemsPerPage": "oggetti per pagina:",
       "previousPage": "Pagina precedente",
       "nextPage": "Pagina successiva"
     },

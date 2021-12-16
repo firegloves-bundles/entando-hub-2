@@ -53,6 +53,15 @@ public class BundleGroupVersionService {
     
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
+    	if (bundleGroupVersionView.getStatus().equals(BundleGroupVersion.Status.PUBLISHED)) {
+    		List<BundleGroupVersion> publishedBundles = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
+    		if (! publishedBundles.isEmpty()) {
+    			for(BundleGroupVersion publishedBundle : publishedBundles) {
+    				publishedBundle.setStatus(BundleGroupVersion.Status.ARCHIVE);
+    			}
+    			bundleGroupVersionRepository.saveAll(publishedBundles);
+    		}
+    	}
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
     	return entity;
     }

@@ -195,6 +195,7 @@ public class BundleGroupController {
 
         public BundleGroupNoId(String name ,String organisationId) {
             this.name = name;
+            this.organisationId = organisationId;
 //            this.description = description;
 //            this.descriptionImage = descriptionImage;
 //            this.version = version;

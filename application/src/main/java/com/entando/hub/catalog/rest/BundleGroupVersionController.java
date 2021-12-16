@@ -182,8 +182,10 @@ public class BundleGroupVersionController {
             if (entity.getBundleGroup()!= null) {
             	this.bundleGroupId = entity.getBundleGroup().getId().toString();
             }
-            this.organisationId = entity.getBundleGroup().getOrganisation().getId();
-            this.organisationName = entity.getBundleGroup().getOrganisation().getName();
+            if (entity.getBundleGroup().getOrganisation() != null) {
+	            this.organisationId = entity.getBundleGroup().getOrganisation().getId();
+	            this.organisationName = entity.getBundleGroup().getOrganisation().getName();
+            }
             this.name = entity.getBundleGroup().getName();
             this.lastUpdate = entity.getLastUpdated();
             if (entity.getBundleGroup().getCategories() != null) {

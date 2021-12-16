@@ -43,8 +43,8 @@ const NewUser = ({onDataChange}) => {
     //TODO BE QUERY REFACTORING
     const getAvailableKcUsers = async () => {
         const kcUsers = (await getAllKCUsers()).kcUsers
-        const portalUserUsernames = (await getAllUsers()).userList.map(u=>u.username)
-
+        const portalUsers = (await getAllUsers()).userList
+        const portalUserUsernames = portalUsers && portalUsers.map(u=>u.username)
         return kcUsers && kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
     }
 

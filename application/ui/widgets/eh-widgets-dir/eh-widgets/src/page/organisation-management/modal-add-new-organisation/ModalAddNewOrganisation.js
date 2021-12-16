@@ -1,4 +1,4 @@
-import {Button, Modal} from "carbon-components-react"
+import {Button, ComposedModal, ModalBody, ModalFooter, ModalHeader} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import {useState} from "react"
@@ -78,16 +78,28 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
                 <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.addOrganisation')}</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
-                <Modal
-                    modalLabel={i18n.t('component.button.add')}
+                <ComposedModal
                     className="Modal-Add-New-organization"
-                    primaryButtonText={i18n.t('component.button.add')}
-                    secondaryButtonText={i18n.t('component.button.cancel')}
                     open={open}
-                    onRequestClose={onRequestClose}
-                    onRequestSubmit={onRequestSubmit}>
-                    <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
-                </Modal>
+                    onClose={onRequestClose}
+                >
+                    <ModalHeader label={i18n.t('component.button.add')} />
+                    <ModalBody>
+                        <NewOrganisation key={elemKey} onDataChange={onDataChange} validationResult={validationResult}/>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            kind="secondary"
+                            onMouseDown={() => { onRequestClose() }}>
+                            {i18n.t('component.button.cancel')}
+                        </Button>
+                        <Button
+                            kind="primary"
+                            onClick={() => { onRequestSubmit() }}>
+                            {i18n.t('component.button.add')}
+                        </Button>
+                    </ModalFooter>
+                </ComposedModal>
             )}
         </ModalStateManager>
     )

@@ -1,4 +1,4 @@
-import { Button, Loading, Modal } from "carbon-components-react"
+import { Button, ComposedModal, Loading, ModalBody, ModalFooter, ModalHeader } from "carbon-components-react"
 import { Add16 } from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import { useCallback, useEffect, useState } from "react"
@@ -45,6 +45,27 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         }, [])
 
         const onRequestClose = (e) => {
+            // Reset Form on Modal Close
+            let defaultCategoryId = null;
+            if (categories) {
+                const filtered = categories && categories.filter(cat => cat.name === "Solution Template")
+                if (filtered) {
+                    defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]
+                }
+            }
+            setBundleGroup(
+                {
+                    name: "",
+                    description: "",
+                    descriptionImage: values.bundleGroupForm.standardIcon,
+                    documentationUrl: "",
+                    children: [],
+                    categories: [defaultCategoryId],
+                    version: "",
+                    status: "NOT_PUBLISHED",
+                    organisationId: allowedOrganisations[0].organisationId
+                }
+            )
             setOpen(false)
             setValidationResult({})
             resetData()
@@ -215,18 +236,31 @@ const ModalContent = ({
         <>
             {loading && <Loading />}
             {!loading &&
-                <Modal
+                <ComposedModal
                     className="Modal-Add-New-bundle-group"
-                    modalLabel={i18n.t('component.button.add')}
-                    primaryButtonText={i18n.t('component.button.add')}
-                    secondaryButtonText={i18n.t('component.button.cancel')}
                     open={open}
-                    onRequestClose={onRequestClose}
-                    onRequestSubmit={onRequestSubmit}>
-                    <BundleGroupForm key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
-                        categories={categories} selectStatusValues={selectStatusValues}
-                        onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError}/>
-                </Modal>
-            }        </>
+                    onClose={onRequestClose}
+                >
+                    <ModalHeader label={i18n.t('component.button.add')} />
+                    <ModalBody>
+                        <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
+                            categories={categories} selectStatusValues={selectStatusValues}
+                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            kind="secondary"
+                            onMouseDown={() => { onRequestClose() }}>
+                            {i18n.t('component.button.cancel')}
+                        </Button>
+                        <Button
+                            kind="primary"
+                            onClick={() => { onRequestSubmit() }}>
+                            {i18n.t('component.button.add')}
+                        </Button>
+                    </ModalFooter>
+                </ComposedModal>
+            }
+        </>
     )
 }

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
 import i18n from "../../../../i18n"
+import { CHAR_LENGTH, MAX_CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG, MAX_CHAR_NAME_MSG, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM, DESCRIPTION_MAX_LENGTH } from "../../../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -25,6 +26,8 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     name: "",
     description: "",
   })
+  const [orgNameLength, setOrgNameLength] = useState(false);
+  const [orgDescLength, setOrgDescLength] = useState(false);
 
   const changeOrganisation = (field, value) => {
     const newObj = {
@@ -35,31 +38,64 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
     onDataChange(newObj)
   }
 
+  /**
+   * @param {*} e Event object to get value of field
+   * @param {*} fieldName Name of the field
+   * @description Validation & Setting on fields.
+   */
   const onChangeHandler = (e, fieldName) => {
+    if (fieldName === 'description' && e.target.value.trim().length) {
+      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH : ""
+      validationResult["description"] = [msg]
+      setOrgDescLength(e.target.value.trim().length)
+    }
+
+    if (fieldName === 'name') {
+      if (e.target.value.trim().length < CHAR_LENGTH) {
+        const msg = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+        validationResult["name"] = [msg]
+      }
+      if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
+        validationResult["name"] = [MAX_CHAR_NAME_MSG]
+      }
+      setOrgNameLength(e.target.value.trim().length)
+    }
     changeOrganisation(fieldName, e.target.value)
+  }
+
+  /**
+   * @param {*} e Event object to get value of field
+   * @param {*} field Name of the field
+   * @description Trimming whitespaces from the field value.
+   */
+  const trimBeforeFormSubmitsHandler = (e, field) => {
+    changeOrganisation(field, e.target.value.trim())
   }
 
   return (
     <>
       <Content>
         <TextInput
-          invalid={!!validationResult["name"]}
+          invalid={((orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH)) && !!validationResult["name"]}
           invalidText={
-            validationResult["name"] && validationResult["name"].join("; ")
+            ((orgNameLength < CHAR_LENGTH || orgNameLength > MAX_CHAR_LENGTH)) ? (validationResult["name"] && validationResult["name"].join("; ")) : null
           }
           id="name"
+          value={organisation.name}
           labelText={`${i18n.t('page.management.label.name')} ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
+          onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
         />
         <TextInput
-          invalid={!!validationResult["description"]}
+          invalid={orgDescLength > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM && !!validationResult["description"]}
           invalidText={
-            validationResult["description"] &&
-            validationResult["description"].join("; ")
+            orgDescLength > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM && (validationResult["description"] && validationResult["description"].join("; "))
           }
           id="description"
+          value={organisation.description}
           labelText={`${i18n.t('page.management.label.description')} ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
+          onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />
       </Content>
     </>

@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, BUNDLE_URL_REGEX_FAIL } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 /*
 BUNDLE:
@@ -99,7 +99,7 @@ const BundlesOfBundleGroup = ({
                 if (validationError) {
                     value.trim().length === 0 && delete validationError.gitRepo;
                     if (value.trim().length && (bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.DELETE_REQ)) {
-                        validationError.gitRepo = [BUNDLE_URL_REGEX_FAIL];
+                        validationError.gitRepo = [`${i18n.t('formValidationMsg.bundleUrlFormat')}`];
                     }
                     setValidationResult(validationError)
                 }
@@ -157,7 +157,7 @@ const BundlesOfBundleGroup = ({
          * Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is
          * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show minOneBundle
          */
-        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : minOneBundle
+        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? `${i18n.t('formValidationMsg.bundleUrlFormat')}` : minOneBundle
     } else if (minOneBundleError === minOneBundle &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {

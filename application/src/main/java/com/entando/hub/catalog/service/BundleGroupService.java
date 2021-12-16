@@ -8,9 +8,6 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +23,16 @@ public class BundleGroupService {
     final private BundleGroupRepository bundleGroupRepository;
     final private CategoryRepository categoryRepository;
     final private BundleRepository bundleRepository;
+    private final BundleGroupVersionService bundleGroupVersionService;
+    
+//    @Autowired
+//    private Environment environment;
 
-    @Autowired
-    private Environment environment;
-
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleRepository bundleRepository) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleRepository bundleRepository, BundleGroupVersionService bundleGroupVersionService) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleRepository = bundleRepository;
+        this.bundleGroupVersionService = bundleGroupVersionService;
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
@@ -57,24 +56,22 @@ public class BundleGroupService {
             return category;
         }).collect(Collectors.toSet());
 
-        Set<BundleGroup.Status> statusSet = Arrays.stream(statuses).map(BundleGroup.Status::valueOf).collect(Collectors.toSet());
+     //   Set<BundleGroup.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
         if (organisationId.isPresent()) {
             Organisation organisation = new Organisation();
             organisation.setId(Long.valueOf(organisationId.get()));
-            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesInAndStatusIn(
+            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(
                     organisation,
                     categories,
-                    statusSet
-                    , paging);
-            setBundleGroupUrl(page);
+                    paging);
+          //  setBundleGroupUrl(page);
             return page;
         }
 
-        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesInAndStatusIn(
-                categories,
-                statusSet
-                , paging);
-        setBundleGroupUrl(page);
+        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesIn(
+                categories
+                ,paging);
+       // setBundleGroupUrl(page);
         return page;
     }
 
@@ -134,6 +131,9 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setBundles(bundleSet);
         }
+        if (bundleGroup.getVersion() != null) {
+    	      bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersion().createEntity(Optional.empty(),toUpdate), bundleGroup.getVersion());
+        }
 
     }
 
@@ -160,14 +160,14 @@ public class BundleGroupService {
         });
     }
 
-	/**
-	 * Set bundle group url
-	 * @param page
-	 */
-	private void setBundleGroupUrl(Page<BundleGroup> page) {
-		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
-		if (Objects.nonNull(hubGroupDeatilUrl)) {
-			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroup/" + entity.getId()));
-		}
-	}
+//	/**
+//	 * Set bundle group url
+//	 * @param page
+//	 */
+//	private void setBundleGroupUrl(Page<BundleGroup> page) {
+//		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
+//		if (Objects.nonNull(hubGroupDeatilUrl)) {
+//			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroup/" + entity.getId()));
+//		}
+//	}
 }

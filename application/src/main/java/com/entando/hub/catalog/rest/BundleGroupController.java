@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class BundleGroupController {
 
         String[] statusFilterValues = statuses;
         if (statusFilterValues == null) {
-            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.values()).map(Enum::toString).toArray(String[]::new);
+            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
         }
 
         logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
@@ -141,16 +142,16 @@ public class BundleGroupController {
     public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent() || !bundleGroupOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.DELETE_REQ)) {
-            bundleGroupOptional.ifPresentOrElse(
-                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not in DELETE_REQ status: {}", bundleGroupId, bundleGroup.getStatus()),
-                    () -> logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId)
-            );
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
+//        if (!bundleGroupOptional.isPresent() || !bundleGroupOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
+//            bundleGroupOptional.ifPresentOrElse(
+//                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not in DELETE_REQ status: {}", bundleGroupId, bundleGroup.getStatus()),
+//                    () -> logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId)
+//            );
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else {
             bundleGroupService.deleteBundleGroup(bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
+//        }
     }
 
 
@@ -175,38 +176,40 @@ public class BundleGroupController {
     @Data
     public static class BundleGroupNoId {
         protected final String name;
-        protected final String description;
-        protected final String descriptionImage;
-        protected String documentationUrl;
-        protected String bundleGroupUrl;
-        protected String version;
-        protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
-        protected LocalDateTime lastUpdate;
+//        protected final String description;
+//        protected final String descriptionImage;
+//        protected String documentationUrl;
+//        protected String bundleGroupUrl;
+//        protected String version;
+//        protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
+//        protected LocalDateTime lastUpdate;
 
         //the following must be merged with the entity using mappedBy
         protected List<String> children;
         protected String organisationId;
         protected String organisationName;
         protected List<String> categories;
+        protected BundleGroupVersionView version;
+
 
 
         public BundleGroupNoId(String name, String description, String descriptionImage, String version) {
             this.name = name;
-            this.description = description;
-            this.descriptionImage = descriptionImage;
-            this.version = version;
+//            this.description = description;
+//            this.descriptionImage = descriptionImage;
+//            this.version = version;
         }
 
 
         public BundleGroupNoId(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
-            this.description = entity.getDescription();
-            this.descriptionImage = entity.getDescriptionImage();
-            this.name = entity.getName();
-            this.status = entity.getStatus();
-            this.documentationUrl = entity.getDocumentationUrl();
-            this.bundleGroupUrl = entity.getBundleGroupUrl();
-            this.version = entity.getVersion();
-            this.lastUpdate = entity.getLastUpdate();
+//            this.description = entity.getDescription();
+//            this.descriptionImage = entity.getDescriptionImage();
+              this.name = entity.getName();
+//            this.status = entity.getStatus();
+//            this.documentationUrl = entity.getDocumentationUrl();
+//            this.bundleGroupUrl = entity.getBundleGroupUrl();
+//            this.version = entity.getVersion();
+//            this.lastUpdate = entity.getLastUpdate();
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId().toString();
@@ -223,12 +226,12 @@ public class BundleGroupController {
 
         public com.entando.hub.catalog.persistence.entity.BundleGroup createEntity(Optional<String> id) {
             com.entando.hub.catalog.persistence.entity.BundleGroup ret = new com.entando.hub.catalog.persistence.entity.BundleGroup();
-            ret.setDescription(this.getDescription());
-            ret.setName(this.getName());
-            ret.setDescriptionImage(this.getDescriptionImage());
-            ret.setDocumentationUrl(this.getDocumentationUrl());
-            ret.setStatus(this.getStatus());
-            ret.setVersion(this.getVersion());
+//            ret.setDescription(this.getDescription());
+              ret.setName(this.getName());
+//            ret.setDescriptionImage(this.getDescriptionImage());
+//            ret.setDocumentationUrl(this.getDocumentationUrl());
+//            ret.setStatus(this.getStatus());
+//            ret.setVersion(this.getVersion());
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
                 organisation.setId(Long.parseLong(this.organisationId));

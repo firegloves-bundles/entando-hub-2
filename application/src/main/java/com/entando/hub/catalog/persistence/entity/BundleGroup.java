@@ -18,18 +18,6 @@ public class BundleGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String description;
-    private String documentationUrl;
-    private String bundleGroupUrl;
-    private String version;
-
-    @UpdateTimestamp
-    private LocalDateTime lastUpdate;
-
-    @Lob
-    private String descriptionImage;
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.NOT_PUBLISHED;
 
     @ManyToOne
     private Organisation organisation;
@@ -39,6 +27,9 @@ public class BundleGroup {
 
     @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Bundle> bundles = new HashSet<>();
+    
+    @OneToMany(mappedBy = "bundleGroup", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    private Set<BundleGroupVersion> version = new HashSet<>();
 
 /*
     public void addCategory(Category category) {
@@ -74,20 +65,20 @@ public class BundleGroup {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "BundleGroup{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", descriptionImage='" + descriptionImage + '\'' +
-                ", organisation=" + organisation +
-                ", version=" + version +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "BundleGroup{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", description='" + description + '\'' +
+//                ", descriptionImage='" + descriptionImage + '\'' +
+//                ", organisation=" + organisation +
+//                ", version=" + version +
+//                '}';
+//    }
 
-    public  enum Status {
-        NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED
-    }
+//    public  enum Status {
+//        NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED
+//    }
 }
 

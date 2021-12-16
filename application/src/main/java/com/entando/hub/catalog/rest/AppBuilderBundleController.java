@@ -47,7 +47,7 @@ public class AppBuilderBundleController {
                     List<String> bundleGroups = bundle.getBundleGroups();
                     if (bundleGroups != null && bundleGroups.size() > 0) {
                         Optional<BundleGroup> optionalBundleGroup = bundleGroupService.getBundleGroup(bundleGroups.get(0));
-                        optionalBundleGroup.ifPresent(group -> bundle.setDescriptionImage(group.getDescriptionImage()));
+                        //optionalBundleGroup.ifPresent(group -> bundle.setDescriptionImage(group.getDescriptionImage()));
                     }
                 }).collect(Collectors.toList()), bundlesPage);
         return pagedContent;

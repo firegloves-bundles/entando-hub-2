@@ -72,7 +72,7 @@ export const addNewOrganisation = async (organisationData) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToCreateOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} $${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newOrganisation")
@@ -88,7 +88,7 @@ export const editOrganisation = async (organisationData, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} $${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedOrganisation")
@@ -101,7 +101,7 @@ export const deleteOrganisation = async (id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToDeleteOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} $${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.deleted')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")

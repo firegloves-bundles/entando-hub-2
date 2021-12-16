@@ -131,8 +131,8 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setBundles(bundleSet);
         }
-        if (bundleGroup.getVersion() != null) {
-    	      bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersion().createEntity(Optional.empty(),toUpdate), bundleGroup.getVersion());
+        if (bundleGroup.getVersionDetails()!= null) {
+    	      bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(Optional.empty(),toUpdate), bundleGroup.getVersionDetails());
         }
 
     }

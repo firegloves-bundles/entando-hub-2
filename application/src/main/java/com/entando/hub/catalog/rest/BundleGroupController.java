@@ -162,8 +162,8 @@ public class BundleGroupController {
     public static class BundleGroup extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroup(String bundleGroupId, String name, String description, String descriptionImage, String version) {
-            super(name, description, descriptionImage, version);
+        public BundleGroup(String bundleGroupId, String name, String organizationId) {
+            super(name, organizationId);
             this.bundleGroupId = bundleGroupId;
         }
 
@@ -189,11 +189,11 @@ public class BundleGroupController {
         protected String organisationId;
         protected String organisationName;
         protected List<String> categories;
-        protected BundleGroupVersionView version;
+        protected BundleGroupVersionView versionDetails;
 
 
 
-        public BundleGroupNoId(String name, String description, String descriptionImage, String version) {
+        public BundleGroupNoId(String name ,String organisationId) {
             this.name = name;
 //            this.description = description;
 //            this.descriptionImage = descriptionImage;

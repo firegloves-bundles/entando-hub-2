@@ -106,7 +106,7 @@ const NewUser = ({onDataChange}) => {
                     <SelectItem
                         key="nousername"
                         value="nousername"
-                        text={"Select one Username"}
+                        text={i18n.t('component.button.selectOneUsername')}
                     />
                     {selectItems_AvailableUsers}
                 </Select>

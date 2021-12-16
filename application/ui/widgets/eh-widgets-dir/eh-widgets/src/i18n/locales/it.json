@@ -64,7 +64,8 @@
       "install": "Installare",
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
-      "remove": "Rimuovere"
+      "remove": "Rimuovere",
+      "selectOneUsername" : "Seleziona un nome utente"
     },
     "pagination": {
       "page": "pagina",

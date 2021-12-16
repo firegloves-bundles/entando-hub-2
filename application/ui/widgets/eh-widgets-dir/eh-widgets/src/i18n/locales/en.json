@@ -65,7 +65,8 @@
       "addCategory": "Add Category",
       "addOrganisation": "Add Organisation",
       "addUser": "Add User",
-      "remove": "Remove"
+      "remove": "Remove",
+      "selectOneUsername" : "Select one Username"
     },
     "pagination": {
       "page": "page",

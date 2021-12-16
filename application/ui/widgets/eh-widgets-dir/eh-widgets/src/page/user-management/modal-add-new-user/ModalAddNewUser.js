@@ -38,12 +38,15 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            (async () => {
-                let organisationId = user.organisation.organisationId
-                await createAUserForAnOrganisation(organisationId, user.username)
-                onRequestClose()
-                onAfterSubmit()
-            })()
+            console.log(user);
+            if (user.organisation &&  user.username) {
+                (async () => {
+                    let organisationId = user.organisation.organisationId
+                    await createAUserForAnOrganisation(organisationId, user.username)
+                    onRequestClose()
+                    onAfterSubmit()
+                })()
+            } 
         }
 
         return (

@@ -9,15 +9,19 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName,onAfte
 
     const [openModal, setOpenModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
+    const [viewVersionModal, setViewVersionModal] = useState(false);
+
     const higherRole = getHigherRole()
 
     const isShowDelete = (higherRole === MANAGER || higherRole === ADMIN) ? true : false;
     const isDeletableBundle = bundleStatus === BUNDLE_STATUS.DELETE_REQ ? true : false
+    const isNewVersionVisible = bundleStatus === BUNDLE_STATUS.PUBLISHED ? true : false;
 
     return (
         <>
             <OverflowMenu>
                 <OverflowMenuItem itemText="Edit" onClick={() => setOpenModal(true)}/>
+                {isNewVersionVisible && <OverflowMenuItem itemText="New Version" onClick={() => setViewVersionModal(true)}/>}
                 {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={BUTTON_LABELS.DELETE} onClick={() => setDeleteModal(true) }/>}
 
             </OverflowMenu>

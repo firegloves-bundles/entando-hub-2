@@ -11,12 +11,18 @@ import java.util.List;
 import java.util.Set;
 
 public interface BundleGroupRepository extends JpaRepository<BundleGroup, Long> {
+	
     List<BundleGroup> findByOrganisationId(Long organisationId);
+    
     Page<BundleGroup> findByOrganisationId(Long organisationId, Pageable pageable);
 
+    Page<BundleGroup> findDistinctByCategoriesIn(Set<Category> categories, Pageable pageable);
 
-    Page<BundleGroup> findDistinctByCategoriesInAndStatusIn(Set<Category> categories, Set<BundleGroup.Status> statuses, Pageable pageable);
+    Page<BundleGroup> findDistinctByOrganisationAndCategoriesIn(Organisation organisation, Set<Category> categories, Pageable pageable);
+    
+    List<BundleGroup> findDistinctByOrganisationAndCategoriesIn(Organisation organisation, Set<Category> categories);
+    
+    List<BundleGroup> findDistinctByCategoriesIn(Set<Category> categories);
 
-    Page<BundleGroup> findDistinctByOrganisationAndCategoriesInAndStatusIn(Organisation organisation, Set<Category> categories, Set<BundleGroup.Status> statuses, Pageable pageable);
-    Page<BundleGroup> findDistinctByOrganisationAndStatusIn(Organisation organisation, Set<Category> categories, Set<BundleGroup.Status> statuses, Pageable pageable);
+   // Page<BundleGroup> findDistinctByOrganisationAndStatusIn(Organisation organisation, Set<Category> categories, Set<BundleGroup.Status> statuses, Pageable pageable);
 }

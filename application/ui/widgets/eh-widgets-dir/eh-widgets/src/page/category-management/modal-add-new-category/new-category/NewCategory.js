@@ -2,24 +2,7 @@ import { useState } from "react"
 import { Content, TextInput } from "carbon-components-react"
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
 import i18n from "../../../../i18n"
-import { CHAR_LENGTH, DESCRIPTION_MAX_LENGTH, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM, MAX_CHAR_NAME_MSG, NAME_REQ_MSG } from "../../../../helpers/constants"
-
-/*
-BUNDLEGROUP:
-{
-name	string
-description	string
-descriptionImage	string
-documentationUrl	string
-status	string
-Enum:
-Array [ 2 ]
-children	[...]
-organisationId	string
-categories	[...]
-bundleGroupId	string
-}
- */
+import { CHAR_LENGTH, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM } from "../../../../helpers/constants"
 
 const NewCategory = ({ onDataChange, validationResult }) => {
   const [category, setCategory] = useState({
@@ -40,18 +23,18 @@ const NewCategory = ({ onDataChange, validationResult }) => {
 
   const onChangeHandler = (e, fieldName) => {
     if (fieldName === 'description') {
-      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH : ""
+      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? i18n.t('formValidationMsg.description') : ""
       validationResult["description"] = [msg]
       fieldName === 'description' && setCatDescLength(e.target.value.trim().length)
     }
 
     if (fieldName === 'name') {
       if (e.target.value.trim().length < CHAR_LENGTH) {
-        const msg = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+        const msg = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
         validationResult["name"] = [msg]
       }
       if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-        validationResult["name"] = [MAX_CHAR_NAME_MSG]
+        validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
       }
       fieldName === 'name' && setCatNameLength(e.target.value.trim().length)
     }

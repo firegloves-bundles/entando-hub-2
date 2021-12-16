@@ -58,8 +58,6 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
     )
 }
 
-const MIN_ONE_BUNDLE_ERROR = "Please add at least one bundle before publishing this bundle group.";
-
 const BundlesOfBundleGroup = ({
     onAddOrRemoveBundleFromList,
     initialBundleList,
@@ -153,18 +151,17 @@ const BundlesOfBundleGroup = ({
     }
 
     let bundleUrlErrorResult = "";
-
-
+    let minOneBundle = `${i18n.t('formValidationMsg.atleastOneUrl')}`
     if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         /**
          * Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is
-         * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show MIN_ONE_BUNDLE_ERROR
+         * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show minOneBundle
          */
-        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : MIN_ONE_BUNDLE_ERROR
-    } else if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
+        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : minOneBundle
+    } else if (minOneBundleError === minOneBundle &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
-        bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
+            bundleUrlErrorResult = minOneBundle;
     } else {
         if (!isUrlBundleRexValid) {
             bundleUrlErrorResult = validationResult["gitRepo"] &&

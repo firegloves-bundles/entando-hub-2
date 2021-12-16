@@ -53,6 +53,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]
                 }
             }
+            const organizationId = (allowedOrganisations && allowedOrganisations.length > 0) ? allowedOrganisations[0].organisationId : null;
             setBundleGroup(
                 {
                     name: "",
@@ -63,7 +64,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     categories: [defaultCategoryId],
                     version: "",
                     status: "NOT_PUBLISHED",
-                    organisationId: allowedOrganisations[0].organisationId
+                    organisationId: organizationId
                 }
             )
             setOpen(false)

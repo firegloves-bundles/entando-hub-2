@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Column,
     Content,
@@ -7,19 +6,18 @@ import {
     Select,
     SelectItem,
     TextArea,
-    TextInput,
-} from "carbon-components-react"
-import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup"
-import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
-
-import "./update-boundle-group/update-bundle-group.scss"
+    TextInput
+} from "carbon-components-react";
+import { useState } from "react";
 import values from "../../../config/common-configuration";
+import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
-import {
-    DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH, MAX_CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG, 
-    MAX_CHAR_NAME_MSG, DESC_REQ_MESG, LEAST_CHAR_DESC_MSG, MAX_CHAR_DESC_MSG, MAX_CHAR_LENGTH_FOR_DESC, DOCUMENTATION_URL_REQ_MSG, DOCUMENTATION_URL_FORMAT_MSG, VERSION_REQ_MSG, VERSION_FORMAT_MSG, BUNDLE_STATUS } from "../../../helpers/constants";
-import './bundle-group-form.scss'
 import i18n from "../../../i18n";
+import './bundle-group-form.scss';
+import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
+import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
+import "./update-boundle-group/update-bundle-group.scss";
+
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -110,10 +108,10 @@ const BundleGroupForm = ({
     const nameChangeHandler = (e) => {
         setBundleNameLength(e.target.value.trim().length);
         if (e.target.value.trim().length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
             validationResult["name"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-            validationResult["name"] = [MAX_CHAR_NAME_MSG]
+            validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
         }
         changeBundleGroup("name", e.target.value)
     }
@@ -140,9 +138,9 @@ const BundleGroupForm = ({
         changeBundleGroup("documentationUrl", e.target.value)
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [DOCUMENTATION_URL_REQ_MSG]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [DOCUMENTATION_URL_FORMAT_MSG]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
 
@@ -150,9 +148,9 @@ const BundleGroupForm = ({
         changeBundleGroup("version", e.target.value.trim())
         setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
-            validationResult["version"] = [VERSION_REQ_MSG]
+            validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["version"] = [VERSION_FORMAT_MSG]
+            validationResult["version"] = [i18n.t('formValidationMsg.versionFormat')]
         }
     }
 
@@ -197,10 +195,10 @@ const BundleGroupForm = ({
         setBundleDescriptionLength(e.target.value.length);
         changeBundleGroup("description", e.target.value)
         if (e.target.value.length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? DESC_REQ_MESG : LEAST_CHAR_DESC_MSG
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
             validationResult["description"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
-            validationResult["description"] = [MAX_CHAR_DESC_MSG]
+            validationResult["description"] = [i18n.t('formValidationMsg.maxDescription')]
         }
     }
 

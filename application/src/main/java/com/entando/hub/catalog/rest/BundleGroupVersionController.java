@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -132,7 +134,51 @@ public class BundleGroupVersionController {
         }
     }
     
-
+    
+    //PUBLIC
+    @Operation(summary = "Get all the bundle group versions in the hub by bundleGroupId", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @CrossOrigin
+    @GetMapping("/{bundleGroupId}")
+    public PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+        Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
+        String[] statusFilterValues = statuses;
+        PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = null;
+        if (statusFilterValues == null) {
+            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
+        }
+        logger.debug("REST request to get BundleGroup by Id: {},  statuses {}", bundleGroupId, statuses);
+        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        if (bundleGroupOptional.isPresent()) {
+        	Page<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupsPage = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
+        	pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroupVersion::new).sorted(Comparator.comparing(BundleGroupVersion::getName,String::compareToIgnoreCase)).collect(Collectors.toList()), bundleGroupsPage);
+            return pagedContent;                  
+        } else {
+            logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
+            return pagedContent;
+        }
+    }
+    
+    @Operation(summary = "Delete a bundleGroupVersion", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroupVersion can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupVersionId identifying the category")
+    @RolesAllowed({ADMIN, MANAGER})
+    @CrossOrigin
+    @DeleteMapping("/{bundleGroupVersionId}")
+    @Transactional
+    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupVersionId) {
+        logger.debug("REST request to delete bundleGroup {}", bundleGroupVersionId);
+        Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
+        if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
+            bundleGroupVersionOptional.ifPresentOrElse(
+                    bundleGroupVersion -> logger.warn("Requested bundleGroup '{}' is not in DELETE_REQ status: {}", bundleGroupVersionId, bundleGroupVersion.getStatus()),
+                    () -> logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionId)
+            );
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+        	bundleGroupVersionService.deleteBundleGroupVersion(bundleGroupVersionOptional);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+    
+    
     @Getter
     @Setter
     @ToString

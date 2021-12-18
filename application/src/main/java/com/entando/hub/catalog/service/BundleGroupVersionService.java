@@ -109,4 +109,30 @@ public class BundleGroupVersionService {
 			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroupversion/" + entity.getId()));
 		}
 	}
+	
+	 public Page<BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
+	        Pageable paging;
+	        if (pageSize == 0) {
+	            paging = Pageable.unpaged();
+	        } else {
+	            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
+	            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
+	        }
+
+	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
+
+	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);  
+	        setBundleGroupUrl(page);
+	        return page;
+	 }
+	 
+	 @Transactional
+	 public void deleteBundleGroupVersion(Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional) {
+		 
+		    bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
+		    	bundleGroupVersionRepository.delete(bundleGroupVersion);
+		    });
+	  }
+	    
+	    
 }

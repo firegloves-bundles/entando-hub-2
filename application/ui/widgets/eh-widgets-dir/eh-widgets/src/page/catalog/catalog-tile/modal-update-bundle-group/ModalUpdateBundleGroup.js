@@ -68,7 +68,7 @@ export const ModalUpdateBundleGroup = ({
           : []
 
       const bundleGroupOrganisation = (
-        await getSingleOrganisation(res.bundleGroup.organisationId)
+        await getSingleOrganisation(res && res.bundleGroup && res.bundleGroup.organisationId)
       ).organisation
       if (isMounted) {
         if (bundleGroupOrganisation) {

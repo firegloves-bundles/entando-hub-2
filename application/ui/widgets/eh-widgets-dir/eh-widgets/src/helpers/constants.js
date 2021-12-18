@@ -22,12 +22,14 @@ export const BUTTON_LABELS = {
     EDIT: "Edit",
     CANCEL: "Cancel",
     REMOVE: "Remove",
+    SUBMIT: "Submit"
 }
 
 // All Modal Labels
 export const MODAL_LABELS = {
     DELETE_BUNDLE_MSG: "Are you sure you want to delete this bundle?",
     REMOVE_USER_FROM_ORG_MSG: "Are you sure you want to remove this User from the Organization?",
+    ADD_BUNDLE_GROUP_VERSION: 'Add New Version'
 }
 
 // All API Response Key
@@ -68,6 +70,7 @@ export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format
 // Version
 export const VERSION_REQ_MSG = 'Version is a required field'
 export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+export const DUPLICATE_VERSION = 'This version number already exists, please enter a new version number.'
 // Bundle
 export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)'
 
@@ -90,4 +93,9 @@ export const MESSAGES = {
 export const DROPDOWN_OPTIONS = {
     EDIT: "Edit",
     REMOVE: "Remove",
+}
+
+export const MENU_OPTIONS = {
+    ADD_BUNDLE_GROUP_VERSION: 'Add Version',
+    VIEW_BUNDLE_GROUP_VERSIONS: 'View Versions'
 }

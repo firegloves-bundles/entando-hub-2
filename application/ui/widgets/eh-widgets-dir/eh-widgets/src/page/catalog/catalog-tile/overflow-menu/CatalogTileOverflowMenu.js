@@ -3,33 +3,52 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS, BUTTON_LABELS} from "../../../../helpers/constants"
+import {ADMIN, MANAGER, BUNDLE_STATUS, BUTTON_LABELS, MENU_OPTIONS } from "../../../../helpers/constants"
+import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-version/ModalAddNewBundleGroupVersion"
 
-const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName,onAfterSubmit}) => {
+const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup}) => {
 
     const [openModal, setOpenModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
-    const [viewVersionModal, setViewVersionModal] = useState(false);
+
+    const [addBundleGroupVersionModal, setAddBundleGroupVersionModal] = useState(false);
+    // const [viewBundleGroupVersionModal, setViewBundleGroupVersionModal] = useState(false);
 
     const higherRole = getHigherRole()
 
     const isShowDelete = (higherRole === MANAGER || higherRole === ADMIN) ? true : false;
     const isDeletableBundle = bundleStatus === BUNDLE_STATUS.DELETE_REQ ? true : false
-    const isNewVersionVisible = bundleStatus === BUNDLE_STATUS.PUBLISHED ? true : false;
+    const isAddVersionOptionVisible = bundleStatus === BUNDLE_STATUS.PUBLISHED ? true : false;
+    const isViewVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED) ? true : false;
 
     return (
         <>
             <OverflowMenu>
-                <OverflowMenuItem itemText="Edit" onClick={() => setOpenModal(true)}/>
-                {isNewVersionVisible && <OverflowMenuItem itemText="New Version" onClick={() => setViewVersionModal(true)}/>}
-                {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={BUTTON_LABELS.DELETE} onClick={() => setDeleteModal(true) }/>}
+                <OverflowMenuItem itemText={BUTTON_LABELS.EDIT} onClick={() => setOpenModal(true)}/>
+
+                {(isShowDelete && isDeletableBundle) &&
+                    <OverflowMenuItem itemText={BUTTON_LABELS.DELETE} onClick={() => setDeleteModal(true) }/>}
+
+                {/* Show Add Version option */}
+                {isAddVersionOptionVisible &&
+                    <OverflowMenuItem itemText={MENU_OPTIONS.ADD_BUNDLE_GROUP_VERSION} onClick={() => setAddBundleGroupVersionModal(true)}/>}
+
+                {/* Show View Versions option */}
+                {isViewVersionOptionVisible && 
+                    <OverflowMenuItem itemText={MENU_OPTIONS.VIEW_BUNDLE_GROUP_VERSIONS} onClick={() => {}}/>}
 
             </OverflowMenu>
+
             {openModal && <ModalUpdateBundleGroup open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}
                                      onCloseModal={() => setOpenModal(false)}  onAfterSubmit={onAfterSubmit}/>}
 
             {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupId={bundleGroupId} bundleName={bundleName}
                 onCloseModal={() => setDeleteModal(false)} onAfterSubmit={onAfterSubmit} />}
+
+            {/* Add bundle group version */}
+            {addBundleGroupVersionModal && <ModalAddNewBundleGroupVersion theBundleGroup={bundleGroup} open={addBundleGroupVersionModal}
+                onCloseModal={() => setAddBundleGroupVersionModal(false)} onAfterSubmit={onAfterSubmit} />}
+
         </>
     )
 }

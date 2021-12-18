@@ -53,18 +53,35 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 }
             }
             setBundleGroup(
+                // Remove this commented code later : EHUB-147
+            //     {
+            //         name: "",
+            //         description: "",
+            //         descriptionImage: values.bundleGroupForm.standardIcon,
+            //         documentationUrl: "",
+            //         children: [],
+            //         categories: [defaultCategoryId],
+            //         version: "",
+            //         status: "NOT_PUBLISHED",
+            //         organisationId: allowedOrganisations[0].organisationId
+            //     }
+
                 {
                     name: "",
-                    description: "",
-                    descriptionImage: values.bundleGroupForm.standardIcon,
-                    documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
-                    version: "",
-                    status: "NOT_PUBLISHED",
-                    organisationId: allowedOrganisations[0].organisationId
+                    organisationId: allowedOrganisations[0].organisationId,
+                    versionDetails: {
+                        description: "",
+                        descriptionImage: values.bundleGroupForm.standardIcon,
+                        documentationUrl: "",
+                        bundleGroupUrl: "",
+                        version: "",
+                        status: "NOT_PUBLISHED",
+                    }
                 }
             )
+
             setOpen(false)
             setValidationResult({})
             resetData()
@@ -104,17 +121,33 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         }
                     }
                     const organizationId = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0].organisationId : null;
+                    // Remove this commented code later: EHUB-147
+                    // const newObj = {
+                    //     name: "",
+                    //     description: "",
+                    //     descriptionImage: values.bundleGroupForm.standardIcon,
+                    //     documentationUrl: "",
+                    //     children: [],
+                    //     categories: [defaultCategoryId],
+                    //     version: "",
+                    //     status: "NOT_PUBLISHED",
+                    //     organisationId: organizationId,
+                    // }
+
                     const newObj = {
                         name: "",
-                        description: "",
-                        descriptionImage: values.bundleGroupForm.standardIcon,
-                        documentationUrl: "",
                         children: [],
                         categories: [defaultCategoryId],
-                        version: "",
-                        status: "NOT_PUBLISHED",
-                        organisationId: organizationId
-                    }
+                        organisationId: organizationId,
+                        versionDetails: {
+                          description: "",
+                          descriptionImage: values.bundleGroupForm.standardIcon,
+                          documentationUrl: "",
+                          bundleGroupUrl: "",
+                          version: "",
+                          status: "NOT_PUBLISHED",
+                        }
+                      }
 
                     setBundleGroup(newObj)
                     setLoading(false)
@@ -124,7 +157,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             return () => {
                 isMounted = false
             }
-
         }, [])
 
 
@@ -157,20 +189,21 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 })
 
                 // bypass the validation for Draft(NOT_PUBLISHED) Status.
-                if (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED &&
+                if (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED &&
                     validationError && validationError.children && validationError.children.length === 1 &&
                     Object.keys(validationError).length === 1) {
                     validationError = undefined;
                 }
 
                 if (bundleGroup.children && bundleGroup.children.length === 0 &&
-                    bundleGroup.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
+                    bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     setMinOneBundleError(validationError.children[0]);
                 }
-                if (validationError) {
-                    setValidationResult(validationError)
-                    return //don't send the form
-                }
+                //Uncomment this code for validation: EHUB-147
+                // if (validationError) {
+                //     setValidationResult(validationError)
+                //     return //don't send the form
+                // }
 
                 const toSend = await createNewBundleGroup(bundleGroup)
                 //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
@@ -204,7 +237,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         )
     }
 
-
     return (
         <ModalStateManager
             renderLauncher={({ onRequestOpen }) => (
@@ -213,7 +245,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             {ModalContent}
         </ModalStateManager>
     )
-
 }
 
 const ModalContent = ({

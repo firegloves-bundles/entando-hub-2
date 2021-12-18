@@ -16,7 +16,8 @@ const CatalogTile = ({
   status,
   categoriesDetails,
   onAfterSubmit,
-  version
+  version,
+  bundleGroup
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -66,6 +67,7 @@ const CatalogTile = ({
               bundleStatus={bundleStatus}
               bundleName={name}
               onAfterSubmit={onAfterSubmit}
+              bundleGroup={bundleGroup}
             />
           </div>
         )}

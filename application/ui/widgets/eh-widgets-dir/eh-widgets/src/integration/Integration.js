@@ -11,6 +11,10 @@ const urlBundleGroupsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bu
 const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
 const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
 
+//Bundle group version urls
+const urlAddBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/`
+const urlBundleGroupsVersionsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/filtered`
+
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
   if (isError) {
@@ -256,7 +260,8 @@ export const getAllBundleGroups = async (organisationId) => {
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }
 
-export const getAllBundleGroupsFilteredPaged = async (
+//Need to remove-EHUB-147
+export const getAllBundleGroupsFilteredPagedOld = async (
   page,
   pageSize,
   organisationId,
@@ -264,6 +269,45 @@ export const getAllBundleGroupsFilteredPaged = async (
   statuses
 ) => {
   let url = `${urlBundleGroupsFilteredPaged}?page=${page}&pageSize=${pageSize}`
+  if (categoryIds && categoryIds.length > 0) {
+    url =
+      url +
+      "&" +
+      categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&")
+  }
+  if (statuses && statuses.length > 0) {
+    statuses.map((status) => `statuses=${status}`).join("&")
+    url = url + "&" + statuses.map((status) => `statuses=${status}`).join("&")
+  }
+
+  if (organisationId) url = url + "&organisationId=" + organisationId
+  const { data, isError } = await getData(url)
+
+  eventHandler(
+    isError,
+    `Impossible to load bundle groups: ${data ? data.message : ""}`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
+}
+
+/**
+ * GET bundle groups/versions filtered
+ * @param {*} page 
+ * @param {*} pageSize 
+ * @param {*} organisationId 
+ * @param {*} categoryIds 
+ * @param {*} statuses 
+ * @returns 
+ */
+export const getAllBundleGroupsFilteredPaged = async (
+  page,
+  pageSize,
+  organisationId,
+  categoryIds,
+  statuses
+) => {
+  let url = `${urlBundleGroupsVersionsFilteredPaged}?page=${page}&pageSize=${pageSize}`
   if (categoryIds && categoryIds.length > 0) {
     url =
       url +
@@ -430,4 +474,26 @@ export const getAllKCUsers = async () => {
   const { data, isError } = await getData(newUrl)
 
   return checkForErrorsAndSendResponse(data, isError, "kcUsers")
+}
+
+/**************************
+ * Bundle Group Version
+***************************/
+
+/**
+ * Add new bundle group version
+ * @param {*} bundleGroupVersionData 
+ * @param {*} bundleGroupId 
+ * @returns 
+ */
+export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
+  const { data, isError } = await postData(urlAddBundleGroupVersion, bundleGroupVersionData)
+
+  eventHandler(
+    isError,
+    `Unable to add bundle group version. ${data ? data.message : ""}`,
+    `Bundle group version ${data.data ? data.data.name : ""} saved`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
 }

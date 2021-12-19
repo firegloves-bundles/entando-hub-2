@@ -2,6 +2,7 @@ import { Modal } from "carbon-components-react"
 import { TrashCan32 } from "@carbon/icons-react"
 import "./modal-delete-category.scss"
 import { deleteCategory } from "../../../integration/Integration"
+import i18n from "../../../i18n"
 
 export const ModalDeleteCategory = ({
     categoryObj,
@@ -28,14 +29,14 @@ export const ModalDeleteCategory = ({
             open
             passiveModal
             onRequestClose={onRequestClose}
-            modalHeading="This category is already in use."></Modal>)
+            modalHeading={i18n.t("modalMsg.impossibleToRemoveCat")}></Modal>)
     }
 
     return (<Modal
         className="Modal-Update-organization"
-        modalLabel="Delete"
-        primaryButtonText="Delete"
-        secondaryButtonText="Cancel"
+        modalLabel={i18n.t('component.button.delete')}
+        primaryButtonText={i18n.t('component.button.delete')}
+        secondaryButtonText={i18n.t('component.button.cancel')}
         open={open}
         onRequestClose={onRequestClose}
         onRequestSubmit={onRequestDelete}
@@ -45,7 +46,7 @@ export const ModalDeleteCategory = ({
                 <TrashCan32 />
             </div>
             <div>
-                Are you sure you want to delete this Category?
+                {i18n.t("modalMsg.deleteCat")}
             </div>
         </div>
     </Modal>)

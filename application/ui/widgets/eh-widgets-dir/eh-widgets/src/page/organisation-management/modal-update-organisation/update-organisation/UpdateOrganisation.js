@@ -1,18 +1,8 @@
-import { Content, TextInput } from "carbon-components-react"
+import { Content, TextInput } from "carbon-components-react";
 import { useState } from "react";
-import { organisationSchema } from "../../../../helpers/validation/organisationSchema"
-import { CHAR_LENGTH, DESCRIPTION_MAX_LENGTH, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM, MAX_CHAR_NAME_MSG, NAME_REQ_MSG } from "../../../../helpers/constants"
-/*
-
-Organisation:
-{
-    "name": "Entando inc.",
-    "description": "Entando inc.",
-    "bundleGroups": [],
-    "organisationId": "1"
-}
-
-*/
+import { CHAR_LENGTH, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM } from "../../../../helpers/constants";
+import { organisationSchema } from "../../../../helpers/validation/organisationSchema";
+import i18n from "../../../../i18n";
 
 const UpdateOrganisation = ({
   organisationObj,
@@ -32,18 +22,18 @@ const UpdateOrganisation = ({
 
   const onChangeHandler = (e, fieldName) => {
     if (fieldName === 'description' && e.target.value.trim().length) {
-      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH : ""
+      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? i18n.t('formValidationMsg.description') : ""
       validationResult["description"] = [msg]
       setOrgDescLength(e.target.value.trim().length)
     }
 
     if (fieldName === 'name') {
       if (e.target.value.trim().length < CHAR_LENGTH) {
-        const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+        const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
         validationResult["name"] = [errorMessageForLengthZeroOrThree]
       }
       if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-        validationResult["name"] = [MAX_CHAR_NAME_MSG]
+        validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
       }
       setOrgNameLength(e.target.value.trim().length)
     }
@@ -71,7 +61,7 @@ const UpdateOrganisation = ({
           }
           id="name"
           value={organisationObj.name}
-          labelText={`Name ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.name')} ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
           onBlur={(e) =>  trimBeforeFormSubmitsHandler(e, "name")}
         />
@@ -84,7 +74,7 @@ const UpdateOrganisation = ({
           }
           id="description"
           value={organisationObj.description}
-          labelText={`Description ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('page.management.label.description')} ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />

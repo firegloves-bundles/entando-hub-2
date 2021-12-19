@@ -19,6 +19,7 @@ import {ModalAddNewOrganisation} from "./modal-add-new-organisation/ModalAddNewO
 import {getAllOrganisations,} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
+import i18n from "../../i18n"
 
 /*
 [
@@ -114,7 +115,7 @@ const OrganisationManagementPage = () => {
                   getHeaderProps,
                   getRowProps,
                 }) => (
-                  <TableContainer title="Organisations Management">
+                  <TableContainer title={i18n.t('page.management.organisationsManagement')}>
                     <TableToolbar>
                       <TableToolbarContent>
                         <ModalAddNewOrganisation onAfterSubmit={onAfterSubmit} />
@@ -125,7 +126,7 @@ const OrganisationManagementPage = () => {
                         <TableRow>
                           {headers.map((header) => (
                             <TableHeader {...getHeaderProps({ header })}>
-                              {header.header}
+                              {header.header ? i18n.t(`component.bundleModalFields.${header.header.toLowerCase()}`) : ''}
                             </TableHeader>
                           ))}
                         </TableRow>

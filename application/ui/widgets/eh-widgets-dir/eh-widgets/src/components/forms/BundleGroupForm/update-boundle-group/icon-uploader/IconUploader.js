@@ -1,6 +1,7 @@
 import {Column} from "carbon-components-react";
 import './icon-uploader.scss';
 import values from "../../../../../config/common-configuration";
+import i18n from "../../../../../i18n";
 
 const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}) => {
 
@@ -19,7 +20,7 @@ const IconUploader = ({disabled, descriptionImage, onImageDelete, onImageChange}
                         {
             }
                         <label tabIndex="0" className="bx--btn bx--btn--primary bx--btn--sm" htmlFor="id14">
-                            <span role="button" aria-disabled="false">Add Files</span>
+                            <span role="button" aria-disabled="false">{i18n.t('component.bundleModalFields.addFiles')}</span>
                         </label>
                         <input className="bx--visually-hidden" id="id14" type="file" tabIndex="-1" accept=""
                                onChange={onImageChange}></input>

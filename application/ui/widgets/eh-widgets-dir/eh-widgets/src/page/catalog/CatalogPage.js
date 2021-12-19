@@ -1,13 +1,14 @@
 import { Content } from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
-import {ModalAddNewBundleGroup} from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, {useCallback, useState, useEffect} from "react";
+import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
+import React, { useCallback, useEffect, useState } from "react";
+import i18n from '../../i18n';
+import './catalogPage.scss'
 import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
-import { MESSAGES } from "../../helpers/constants";
 import './catalogPage.scss';
 
 /*
@@ -96,7 +97,7 @@ const CatalogPage = () => {
         && !isHubAdmin()
         && (portalUserPresent === false || orgLength === 0)
         ?
-        loaded && <p className="notify-user-absense">{MESSAGES.NOTIFY_GUEST_PORTAL_USER_MSG}</p>
+        loaded && <p className="notify-user-absense">{i18n.t('page.catlogPanel.AuthMessage.notifyGuestPortalUserMsg')}</p>
         :
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
@@ -108,12 +109,12 @@ const CatalogPage = () => {
               </div>
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  Categories
+                  {i18n.t('page.catlogPanel.catlogHomePage.categories')}
                 </div>
-                <div className="bx--col-lg-6 CatalogPage-section">
-                  Catalog
+                <div className="bx--col-lg-5 CatalogPage-section">
+                  {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
                 </div>
-                <div className="bx--col-lg-2 CatalogPage-section">
+                <div className="bx--col-lg-3 CatalogPage-section">
                   {/*
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
@@ -121,7 +122,7 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  Search
+                  {i18n.t('component.button.search')}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

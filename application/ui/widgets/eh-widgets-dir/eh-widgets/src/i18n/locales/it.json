@@ -1,0 +1,144 @@
+{
+  "page": {
+    "header": {
+      "logout": "Disconnettersi",
+      "login": "Login"
+    },
+    "catlogPanel": {
+      "catlogHomePage": {
+        "home": "Casa",
+        "categories": "Categorie",
+        "catalog": "Catalogare",
+        "select": "Selezionare"
+      },
+      "AuthMessage": {
+        "notifyGuestPortalUserMsg": "Il tuo account non ha attualmente accesso all'Hub. Contatta il tuo amministratore per richiedere l'accesso."
+      }
+    },
+    "bundleGroupInfo": {
+      "lastUpdate": "Ultimo aggiornamento",
+      "linkToDocument": "Link alla documentazione",
+      "listToBundles": "Elenco dei pacchetti",
+      "version": "Versione",
+      "category": "Categoria",
+      "organisation": "Organizzazione",
+      "documentation": "documentazione"
+    },
+    "admin": {
+      "userManagement": "Gestione Utenti",
+      "username": "Nome Utente",
+      "email": "E-mail",
+      "organisation": "Organizzazione",
+      "addUser": "Aggiungi utente"
+    },
+    "management": {
+      "label": {
+        "name": "Nome",
+        "description": "Descrizione"
+      },
+      "categoryManagement": "Gestione delle Categorie",
+      "organisationsManagement": "Gestione delle Organizzazioni"
+    },
+    "unauthorized": "NON AUTORIZZATO"
+  },
+  "component": {
+    "bundleModalFields": {
+      "addFiles": "Aggiungere i file",
+      "name": "Nome",
+      "category": "Categoria",
+      "documentAddress": "Indirizzo della documentazione",
+      "version": "Versione",
+      "organisation": "Organizzazione",
+      "status": "Stato",
+      "addUrlBundle": "Aggiungi pacchetto URL",
+      "description": "Descrizione"
+    },
+    "button": {
+      "add": "Aggiungere",
+      "create": "Creare",
+      "save": "Salva",
+      "edit": "Modificare",
+      "delete": "Elimina",
+      "search": "Ricerca",
+      "cancel": "Annulla",
+      "install": "Installare",
+      "addCategory": "Aggiungi Categoria",
+      "addOrganisation": "Aggiungi Organizzazione",
+      "remove": "Rimuovere",
+      "selectOneUsername" : "Seleziona un nome utente"
+    },
+    "pagination": {
+      "page": "pagina",
+      "pages": "pagine",
+      "items": "Oggetti",
+      "of": "di",
+      "itemsPerPage": "oggetti per pagina:",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva"
+    },
+    "select": {
+      "all": "Tutto"
+    }
+  },
+  "toasterMessage": {
+    "impossibleToLoadOrganisations": "Impossibile caricare le organizzazioni",
+    "impossibleToLoadOrganisation": "Impossibile caricare l'organizzazione.",
+    "impossibleToCreateOrganisation": "Impossibile creare organizzazione.",
+    "impossibleToUpdateOrganisation": "Impossibile aggiornare l'organizzazione.",
+    "impossibleToDeleteOrganisation": "Impossibile eliminare l'organizzazione.",
+    "impossibleToLoadCategories": "Impossibile caricare le categorie.",
+    "impossibleToLoadCategory": "Impossibile caricare la categoria.",
+    "impossibleToCreateCategory": "Impossibile creare la categoria.",
+    "impossibleToUpdateCategory": "Impossibile aggiornare la categoria.",
+    "impossibleToDeleteCategory": "Impossibile eliminare la categoria.",
+    "impossibleToLoadBundles": "Impossibile caricare i bundle.",
+    "impossibleToLoadBundle": "Impossibile caricare il pacchetto.",
+    "impossibleToCreateBundle": "Impossibile creare il bundle.",
+    "impossibleToUpdateBundle": "Impossibile aggiornare il pacchetto.",
+    "impossibleToLoadBundleGroups": "Impossibile caricare i gruppi di bundle",
+    "impossibleToLoadBundleGroup": "Impossibile caricare il gruppo bundle",
+    "impossibleToCreateBundleGroup": "Impossibile creare un gruppo di bundle.",
+    "impossibleToUpdateBundleGroup": "Impossibile aggiornare il gruppo di bundle.",
+    "impossibleToDeleteBundle": "Impossibile eliminare il pacchetto.",
+    "impossibleToCreateUser": "Impossibile creare l'utente.",
+    "impossibleToLoadUsers": "Impossibile caricare gli utenti.",
+    "impossibleToDeleteUser": "Impossibile eliminare l'utente.",
+    "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
+    "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione",
+    "userCreated": "Utente creato",
+    "bundle": "Fascio",
+    "bundleGroup": "Fascio Gruppo",
+    "created": "Creata",
+    "updated": "Aggiornato",
+    "deleted": "Cancellato"
+  },
+  "formValidationMsg": {
+    "nameRequired": "Il nome è un campo obbligatorio",
+    "nameReq": "Il nome è un campo obbligatorio",
+    "min3Char": "Il nome deve contenere almeno 3 caratteri",
+    "max25Char": "Il nome non deve superare i 25 caratteri",
+    "docRequired": "La documentazione è un campo obbligatorio",
+    "docFormat": "La documentazione deve corrispondere al formato dell'URL",
+    "versionRequired": "La versione è un campo obbligatorio",
+    "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
+    "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
+    "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
+    "descriptionRequired": "La descrizione è un campo obbligatorio",
+    "minDescription": "La descrizione deve contenere almeno 3 caratteri",
+    "maxDescription": "La descrizione non deve superare i 600 caratteri",
+    "categoryRequired": "La categoria è un campo obbligatorio",
+    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo gruppo di bundle.",
+    "description": "La descrizione non deve superare i 100 caratteri"
+  },
+  "modalMsg": {
+    "deleteBundleMsg": "Sei sicuro di voler eliminare questo pacchetto?",
+    "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
+    "impossibleToRemoveCat": "Questa categoria è già in uso.",
+    "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+  },
+  "Draft": "Non Pubblicato",
+  "Publication Request": "Pubblicare Rich",
+  "Published": "Pubblicato",
+  "Deletion Request": "Elimina Rich",
+  "All": "Tutto"
+}

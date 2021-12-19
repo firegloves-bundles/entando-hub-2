@@ -7,8 +7,8 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, BUNDLE_URL_REGEX_FAIL } from "../../../../../helpers/constants";
-
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
+import i18n from "../../../../../i18n";
 /*
 BUNDLE:
 {
@@ -58,8 +58,6 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
     )
 }
 
-const MIN_ONE_BUNDLE_ERROR = "Please add at least one bundle before publishing this bundle group.";
-
 const BundlesOfBundleGroup = ({
     onAddOrRemoveBundleFromList,
     initialBundleList,
@@ -101,7 +99,7 @@ const BundlesOfBundleGroup = ({
                 if (validationError) {
                     value.trim().length === 0 && delete validationError.gitRepo;
                     if (value.trim().length && (bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.DELETE_REQ)) {
-                        validationError.gitRepo = [BUNDLE_URL_REGEX_FAIL];
+                        validationError.gitRepo = [`${i18n.t('formValidationMsg.bundleUrlFormat')}`];
                     }
                     setValidationResult(validationError)
                 }
@@ -149,22 +147,21 @@ const BundlesOfBundleGroup = ({
 
     const textInputProps = {
         id: "bundle",
-        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? 'Add Url Bundle *' : 'Add Url Bundle'
+        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? `${i18n.t('component.bundleModalFields.addUrlBundle')} *` : `${i18n.t('component.bundleModalFields.addUrlBundle')}`
     }
 
     let bundleUrlErrorResult = "";
-
-
+    let minOneBundle = `${i18n.t('formValidationMsg.atleastOneUrl')}`
     if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
         /**
          * Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is
-         * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show MIN_ONE_BUNDLE_ERROR
+         * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show minOneBundle
          */
-        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? BUNDLE_URL_REGEX_FAIL : MIN_ONE_BUNDLE_ERROR
-    } else if (minOneBundleError === MIN_ONE_BUNDLE_ERROR &&
+        bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? `${i18n.t('formValidationMsg.bundleUrlFormat')}` : minOneBundle
+    } else if (minOneBundleError === minOneBundle &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
-        bundleUrlErrorResult = MIN_ONE_BUNDLE_ERROR;
+            bundleUrlErrorResult = minOneBundle;
     } else {
         if (!isUrlBundleRexValid) {
             bundleUrlErrorResult = validationResult["gitRepo"] &&
@@ -182,14 +179,14 @@ const BundlesOfBundleGroup = ({
                                onChange={onChangeHandler} {...textInputProps}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
-                               autoComplete={false}
+                               autoComplete={"false"}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>
                     <div className="BundlesOfBundleGroup-add-button">
                         <Button disabled={disabled} onClick={onAddBundle}
-                            renderIcon={Add16}>
-                            Add
+                                renderIcon={Add16}>
+                            {i18n.t('component.button.add')}
                         </Button>
                     </div>
                 </Column>

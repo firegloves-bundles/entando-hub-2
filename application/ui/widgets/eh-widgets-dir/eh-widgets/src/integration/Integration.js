@@ -1,6 +1,7 @@
 import { deleteData, getData, postData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
-import { API_RESPONSE_KEY, DELETED_BUNDLE, MESSAGES, HTTP_STATUS } from "../helpers/constants";
+import { API_RESPONSE_KEY, DELETED_BUNDLE, HTTP_STATUS } from "../helpers/constants";
+import i18n from "../i18n";
 
 // endpoints
 const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
@@ -48,7 +49,7 @@ export const getAllOrganisations = async () => {
 
   eventHandler(
     isError,
-    `Impossible to load organisations. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadOrganisations')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "organisationList")
@@ -59,7 +60,7 @@ export const getSingleOrganisation = async (id) => {
 
   eventHandler(
     isError,
-    `Impossible to load organisation. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadOrganisation')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "organisation")
@@ -70,8 +71,8 @@ export const addNewOrganisation = async (organisationData) => {
 
   eventHandler(
     isError,
-    `Impossible to create organisation. ${data ? data.message : ""}`,
-    `Organisation ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.impossibleToCreateOrganisation')} ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newOrganisation")
@@ -86,8 +87,8 @@ export const editOrganisation = async (organisationData, id) => {
 
   eventHandler(
     isError,
-    `Impossible to update organisation. ${data ? data.message : ""}`,
-    `Organisation ${data.data ? data.data.name : ""} updated`
+    `${i18n.t('toasterMessage.impossibleToUpdateOrganisation')} ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedOrganisation")
@@ -99,8 +100,8 @@ export const deleteOrganisation = async (id) => {
   console.log("HERE", data, isError)
   eventHandler(
     isError,
-    `Impossible to delete organisation. ${data ? data.message : ""}`,
-    `Organisation ${data.data ? data.data.name : ""} deleted`
+    `${i18n.t('toasterMessage.impossibleToDeleteOrganisation')} ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")
@@ -115,7 +116,7 @@ export const getAllCategories = async () => {
 
   eventHandler(
     isError,
-    `Impossible to load categories. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadCategory')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "categoryList")
@@ -126,9 +127,9 @@ export const getSingleCategory = async (id) => {
 
   eventHandler(
     isError,
-    `Impossible to load category. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadCategory')} ${data ? data.message : ""}`
   )
-
+  
   return checkForErrorsAndSendResponse(data, isError, "category")
 }
 
@@ -137,8 +138,8 @@ export const addNewCategory = async (categoryData) => {
 
   eventHandler(
     isError,
-    `Impossible to create category. ${data ? data.message : ""}`,
-    `Category ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.impossibleToCreateCategory')}  ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.category')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newCategory")
@@ -149,8 +150,8 @@ export const editCategory = async (categoryData, id) => {
 
   eventHandler(
     isError,
-    `Impossible to update category. ${data ? data.message : ""}`,
-    `Category ${data.data ? data.data.name : ""} updated`
+    `${i18n.t('toasterMessage.impossibleToUpdateCategory')}  ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.category')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedCategory")
@@ -168,8 +169,8 @@ export const deleteCategory = async (id, categoryName) => {
 
   eventHandler(
     isError,
-    `Impossible to delete category. ${data ? data.message : ""}`,
-    `Category ${categoryName ? categoryName : ""} deleted`
+    `${i18n.t('toasterMessage.impossibleToDeleteCategory')} ${data ? data.message : ""}`,
+    `${i18n.t('component.bundleModalFields.category')} ${categoryName ? categoryName : ""}  ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedCategory")
@@ -185,7 +186,7 @@ export const getAllBundles = async () => {
 
   eventHandler(
     isError,
-    `Impossible to load bundles. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadBundles')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
@@ -197,7 +198,7 @@ export const getAllBundlesForABundleGroup = async (id) => {
 
   eventHandler(
     isError,
-    `Impossible to load bundles. ${data ? data.message : ""}`
+   `${i18n.t('toasterMessage.impossibleToLoadBundles')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
@@ -208,7 +209,7 @@ export const getSingleBundle = async (id) => {
 
   eventHandler(
     isError,
-    `Impossible to load bundle. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadBundle')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroup")
@@ -219,8 +220,8 @@ export const addNewBundle = async (bundleData) => {
 
   eventHandler(
     isError,
-    `Impossible to create bundle. ${data ? data.message : ""}`,
-    `Bundle ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.impossibleToCreateBundle')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundle')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundle")
@@ -231,8 +232,8 @@ export const editBundle = async (bundleData, id) => {
 
   eventHandler(
     isError,
-    `Impossible to update bundle. ${data ? data.message : ""}`,
-    `Bundle ${data.data ? data.data.name : ""} updated`
+    `${i18n.t('toasterMessage.impossibleToUpdateBundle')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundle')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedBundle")
@@ -250,7 +251,7 @@ export const getAllBundleGroups = async (organisationId) => {
 
   eventHandler(
     isError,
-    `Impossible to load bundle groups. ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadBundleGroups')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
@@ -280,7 +281,7 @@ export const getAllBundleGroupsFilteredPaged = async (
 
   eventHandler(
     isError,
-    `Impossible to load bundle groups: ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadBundleGroups')} ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
@@ -302,8 +303,8 @@ export const addNewBundleGroup = async (bundleGroupData) => {
 
   eventHandler(
     isError,
-    `Impossible to create bundle group. ${data ? data.message : ""}`,
-    `Bundle group ${data.data ? data.data.name : ""} created`
+    `${i18n.t('toasterMessage.impossibleToCreateBundleGroup')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundleGroup")
@@ -314,8 +315,8 @@ export const editBundleGroup = async (bundleGroupData, id) => {
 
   eventHandler(
     isError,
-    `Impossible to update bundle group. ${data ? data.message : ""}`,
-    `Bundle group ${data.data ? data.data.name : ""} updated`
+    `${i18n.t('toasterMessage.impossibleToUpdateBundleGroup')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
@@ -326,8 +327,8 @@ export const deleteBundle = async (id, bundleName) => {
 
   eventHandler(
     isError,
-    `Impossible to delete bundle. ${data ? data.message : ""}`,
-    `Bundle ${bundleName ? bundleName : ""} deleted`
+    `${i18n.t('toasterMessage.impossibleToDeleteBundle')}  ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundle')} ${bundleName ? bundleName : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE)
@@ -349,8 +350,8 @@ export const createAUserForAnOrganisation = async (
     username: userData,
   }
   const { data, isError } = await postData(newUrl, userDataObject)
-
-  eventHandler(isError, `Impossible to create user`, `User created`)
+  
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToCreateUser')}`, `${i18n.t('toasterMessage.userCreated')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
@@ -359,7 +360,7 @@ export const createAUserForAnOrganisation = async (
 export const getAllUsers = async () => {
   const { data, isError } = await getData(urlUsers)
 
-  eventHandler(isError, `Impossible to load users`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`) 
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -370,7 +371,7 @@ export const getAllUserForAnOrganisation = async (organisationId) => {
   const newUrl = `${urlUsers}?organisationId=${organisationId}`
   const { data, isError } = await getData(newUrl)
 
-  eventHandler(isError, `Impossible to load users`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -381,7 +382,7 @@ export const deleteUser = async (username) => {
   const newUrl = `${urlUsers}${username}`
   const { data, isError } = await deleteData(newUrl)
 
-  eventHandler(isError, `Impossible to delete user`, `User deleted`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToDeleteUser')}`, `User deleted`)
 
   return data
 }
@@ -393,7 +394,7 @@ export const removeUserFromOrganisation = async (organisationId, username) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
   const { data, isError } = await deleteData(newUrl)
 
-  eventHandler(isError, MESSAGES.IMPOSSIBLE_TO_REMOVE_USERS_MSG, MESSAGES.USER_REMOVED_FROM_ORG_MSG);
+  eventHandler(isError,  `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, `${i18n.t('toasterMessage.userRemovedFromTheOrganisation')}`);
 
   return data
 }

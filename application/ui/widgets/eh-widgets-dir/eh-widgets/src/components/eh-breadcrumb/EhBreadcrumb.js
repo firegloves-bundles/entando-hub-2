@@ -2,6 +2,7 @@ import React from 'react'
 import {Breadcrumb, BreadcrumbItem} from "carbon-components-react"
 import {Link} from "react-router-dom"
 import './eh-breadcrumb.scss'
+import i18n from '../../i18n'
 /*
 {
 path,
@@ -24,7 +25,7 @@ const EhBreadcrumb = ({pathElements = []}) => {
     return (
         <Breadcrumb aria-label="Page navigation">
             <BreadcrumbItem>
-                <Link to="/">Home</Link>
+                <Link to="/">{i18n.t('page.catlogPanel.catlogHomePage.home')}</Link>
             </BreadcrumbItem>
             {elementList}
         </Breadcrumb>

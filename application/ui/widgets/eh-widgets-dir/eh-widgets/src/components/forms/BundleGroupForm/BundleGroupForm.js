@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Column,
     Content,
@@ -7,18 +6,18 @@ import {
     Select,
     SelectItem,
     TextArea,
-    TextInput,
-} from "carbon-components-react"
-import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup"
-import IconUploader from "./update-boundle-group/icon-uploader/IconUploader"
-
-import "./update-boundle-group/update-bundle-group.scss"
+    TextInput
+} from "carbon-components-react";
+import { useState } from "react";
 import values from "../../../config/common-configuration";
+import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
-import {
-    DOCUMENTATION_ADDRESS_URL_REGEX, VERSON_REGEX, CHAR_LENGTH, MAX_CHAR_LENGTH, NAME_REQ_MSG, LEAST_CHAR_NAME_MSG, 
-    MAX_CHAR_NAME_MSG, DESC_REQ_MESG, LEAST_CHAR_DESC_MSG, MAX_CHAR_DESC_MSG, MAX_CHAR_LENGTH_FOR_DESC, DOCUMENTATION_URL_REQ_MSG, DOCUMENTATION_URL_FORMAT_MSG, VERSION_REQ_MSG, VERSION_FORMAT_MSG, BUNDLE_STATUS } from "../../../helpers/constants";
-import './bundle-group-form.scss'
+import i18n from "../../../i18n";
+import './bundle-group-form.scss';
+import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
+import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
+import "./update-boundle-group/update-bundle-group.scss";
+
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -51,7 +50,7 @@ const BundleGroupForm = ({
                 <TextInput
                     disabled={true}
                     id="organisation"
-                    labelText="Organisation"
+                    labelText={i18n.t('component.bundleModalFields.organisation')}
                     value={currOrganisation.name ? currOrganisation.name : currOrganisation.organisationName}
                 />
             </Column>)
@@ -73,7 +72,7 @@ const BundleGroupForm = ({
                     value={currOrganisation.organisationId}
                     onChange={organisationChangeHandler}
                     id={"organisation"}
-                    labelText={"Organisation"}>
+                    labelText={i18n.t('component.bundleModalFields.organisation')}>
                     {organisationSelectItems}
                 </Select>
             </Column>)
@@ -93,7 +92,7 @@ const BundleGroupForm = ({
     const disabled = selectStatusValues.disabled
     const createSelectOptionsForRoleAndSetSelectStatus =
         selectStatusValues.values.map((curr, index) => (
-            <SelectItem key={index} value={curr.value} text={curr.text}/>
+            <SelectItem key={index} value={curr.value} text={i18n.t(curr.text)}/>
         ))
 
     const selectItems_Category = categories && categories.map((category) => {
@@ -109,10 +108,10 @@ const BundleGroupForm = ({
     const nameChangeHandler = (e) => {
         setBundleNameLength(e.target.value.trim().length);
         if (e.target.value.trim().length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
             validationResult["name"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-            validationResult["name"] = [MAX_CHAR_NAME_MSG]
+            validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
         }
         changeBundleGroup("name", e.target.value)
     }
@@ -139,9 +138,9 @@ const BundleGroupForm = ({
         changeBundleGroup("documentationUrl", e.target.value)
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [DOCUMENTATION_URL_REQ_MSG]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [DOCUMENTATION_URL_FORMAT_MSG]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
 
@@ -149,9 +148,9 @@ const BundleGroupForm = ({
         changeBundleGroup("version", e.target.value.trim())
         setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
-            validationResult["version"] = [VERSION_REQ_MSG]
+            validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["version"] = [VERSION_FORMAT_MSG]
+            validationResult["version"] = [i18n.t('formValidationMsg.versionFormat')]
         }
     }
 
@@ -196,10 +195,10 @@ const BundleGroupForm = ({
         setBundleDescriptionLength(e.target.value.length);
         changeBundleGroup("description", e.target.value)
         if (e.target.value.length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? DESC_REQ_MESG : LEAST_CHAR_DESC_MSG
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
             validationResult["description"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
-            validationResult["description"] = [MAX_CHAR_DESC_MSG]
+            validationResult["description"] = [i18n.t('formValidationMsg.maxDescription')]
         }
     }
 
@@ -234,7 +233,7 @@ const BundleGroupForm = ({
                                 onChange={nameChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
                                 id={"name"}
-                                labelText={`Name ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.name')} ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -244,7 +243,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
-                                labelText={`Category ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.category')} ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
                             >
                                 {selectItems_Category}
                             </Select>
@@ -262,7 +261,7 @@ const BundleGroupForm = ({
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
                                 id={"documentation"}
-                                labelText={`Documentation Address ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.documentAddress')} ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -277,7 +276,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
-                                labelText={`Version ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.version')} ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
 
@@ -294,7 +293,7 @@ const BundleGroupForm = ({
                                 value={bundleGroup.status}
                                 onChange={statusChangeHandler}
                                 id={"status"}
-                                labelText={`Status ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
+                                labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>
                         </Column>
@@ -326,7 +325,7 @@ const BundleGroupForm = ({
                                 onChange={descriptionChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
                                 id={"description"}
-                                labelText={`Description ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+                                labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
                             <div className="bg-form-counter bx--label">{bundleGroup.description.length}/{DESCRIPTION_MAX_LENGTH}</div>
                         </Column>

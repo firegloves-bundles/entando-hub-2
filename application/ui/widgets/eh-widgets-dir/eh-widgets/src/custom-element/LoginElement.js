@@ -1,3 +1,4 @@
+import "./custom-element.scss"
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -6,6 +7,7 @@ import KeycloakContext from '../auth/KeycloakContext'
 import {subscribeToWidgetEvent} from '../helpers/widgetEvents'
 import {KEYCLOAK_EVENT_TYPE} from './widgetEventTypes'
 import Login from '../components/Login/Login'
+import * as Locale from '../i18n';
 
 const getKeycloakInstance = () =>
   (window && window.entando && window.entando.keycloak && {...window.entando.keycloak, initialized: true}) || {
@@ -35,9 +37,28 @@ class LoginElement extends HTMLElement {
   }
 
   render() {
+    const locale = this.getAttribute('locale') || '';
+    const engBtn = document.getElementById('engLang');
+    const itaBtn = document.getElementById('itaLang');
+    if (engBtn && locale === 'en') {
+      engBtn.click()
+    }
+    if (itaBtn && locale === 'it') {
+      itaBtn.click()
+    }
+    Locale.setLocale(locale);
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
-        <Login/>
+        <Login />
+        <div className="locale-button">
+          <span onClick={() => { this.setAttribute('locale', 'en'); this.render(); }}>
+            ENG
+          </span>
+          <span> | </span>
+          <span onClick={() => { this.setAttribute('locale', 'it'); this.render(); }}>
+            ITA
+          </span>
+        </div>
       </KeycloakContext.Provider>,
       this.mountPoint
     )

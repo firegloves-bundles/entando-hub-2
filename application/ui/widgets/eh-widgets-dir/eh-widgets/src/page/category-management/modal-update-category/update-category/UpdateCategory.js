@@ -1,18 +1,9 @@
 import { Content, TextInput } from "carbon-components-react"
 import { useState } from "react";
 import { categorySchema } from "../../../../helpers/validation/categorySchema"
-import { CHAR_LENGTH, DESCRIPTION_MAX_LENGTH, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM, MAX_CHAR_NAME_MSG, NAME_REQ_MSG } from "../../../../helpers/constants"
-/*
+import i18n from "../../../../i18n"
 
-Organisation:
-{
-    "name": "Entando inc.",
-    "description": "Entando inc.",
-    "bundleGroups": [],
-    "organisationId": "1"
-}
-
-*/
+import { CHAR_LENGTH, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM } from "../../../../helpers/constants"
 
 const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
   const [categoryNameLength, setCategoryNameLength] = useState(false);
@@ -28,18 +19,18 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
 
   const onChangeHandler = (e, fieldName) => {
     if (fieldName === 'description') {
-      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? DESCRIPTION_MAX_LENGTH : ""
+      const msg = e.target.value.trim().length > MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM ? i18n.t('formValidationMsg.description') : ""
       validationResult["description"] = [msg]
       setCatDescLength(e.target.value.trim().length)
     }
 
     if (fieldName === 'name') {
       if (e.target.value.trim().length < CHAR_LENGTH) {
-        const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
+        const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
         validationResult["name"] = [errorMessageForLengthZeroOrThree]
       }
       if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-        validationResult["name"] = [MAX_CHAR_NAME_MSG]
+        validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
       }
       setCategoryNameLength(e.target.value.trim().length)
     }
@@ -67,7 +58,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           }
           id="name"
           value={categoryObj.name}
-          labelText={`Name ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('component.bundleModalFields.name')} ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
         />
@@ -80,7 +71,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           }
           id="description"
           value={categoryObj.description}
-          labelText={`Description ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
+          labelText={`${i18n.t('component.bundleModalFields.description')} ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />

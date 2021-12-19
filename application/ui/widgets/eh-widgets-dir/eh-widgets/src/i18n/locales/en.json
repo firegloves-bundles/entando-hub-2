@@ -1,0 +1,144 @@
+{
+  "page": {
+    "header": {
+      "logout": "Logout",
+      "login": "Login"
+    },
+    "catlogPanel": {
+      "catlogHomePage": {
+        "home": "Home",
+        "categories": "Categories",
+        "catalog": "Catalog",
+        "select": "Select"
+      },
+      "AuthMessage": {
+        "notifyGuestPortalUserMsg": "Your account does not currently have access to the Hub. Please contact your Administrator to request access."
+      }
+    },
+    "bundleGroupInfo": {
+      "lastUpdate": "Last Update",
+      "linkToDocument": "Link to documentation",
+      "listToBundles": "List of Bundles",
+      "version": "Version",
+      "category": "Category",
+      "organisation": "Organisation",
+      "documentation": "Documentation"
+    },
+    "admin": {
+      "userManagement": "Users Management",
+      "username": "Username",
+      "email": "Email",
+      "organisation": "Organisation",
+      "addUser": "Add User"
+    },
+    "management": {
+      "label": {
+        "name": "Name",
+        "description": "Description"
+      },
+      "categoryManagement": "Category Management",
+      "organisationsManagement": "Organisations Management"
+    },
+    "unauthorized": "UNAUTHORIZED"
+  },
+  "component": {
+    "bundleModalFields": {
+      "addFiles": "Add Files",
+      "name": "Name",
+      "category": "Category",
+      "documentAddress": "Documentation Address",
+      "version": "Version",
+      "organisation": "Organisation",
+      "status": "Status",
+      "addUrlBundle": "Add Url Bundle",
+      "description": "Description"
+    },
+    "button": {
+      "add": "Add",
+      "create": "Create",
+      "save": "Save",
+      "edit": "Edit",
+      "delete": "Delete",
+      "search": "Search",
+      "cancel": "Cancel",
+      "install": "Install",
+      "addCategory": "Add Category",
+      "addOrganisation": "Add Organisation",
+      "addUser": "Add User",
+      "remove": "Remove",
+      "selectOneUsername" : "Select one Username"
+    },
+    "pagination": {
+      "page": "page",
+      "pages": "pages",
+      "items": "items",
+      "of": "of",
+      "itemsPerPage": "Items per page:",
+      "previousPage": "Previous page",
+      "nextPage": "Next page"
+    },
+    "select": {
+      "all": "All"
+    }
+  },
+  "toasterMessage": {
+    "impossibleToLoadOrganisations": "Impossible to load organisations.",
+    "impossibleToLoadOrganisation": "Impossible to load organisation.",
+    "impossibleToCreateOrganisation": "Impossible to create organisation.",
+    "impossibleToUpdateOrganisation": "Impossible to update organisation.",
+    "impossibleToDeleteOrganisation": "Impossible to delete organisation.",
+    "impossibleToLoadCategories": "Impossible to load categories.",
+    "impossibleToLoadCategory": "Impossible to load category.",
+    "impossibleToCreateCategory": "Impossible to create category.",
+    "impossibleToUpdateCategory": "Impossible to update category.",
+    "impossibleToDeleteCategory": "Impossible to delete category.",
+    "impossibleToLoadBundles": "Impossible to load bundles.",
+    "impossibleToLoadBundle": "Impossible to load bundle.",
+    "impossibleToCreateBundle": "Impossible to create bundle.",
+    "impossibleToUpdateBundle": "Impossible to update bundle.",
+    "impossibleToLoadBundleGroups": "Impossible to load bundle groups.",
+    "impossibleToLoadBundleGroup": "Impossible to load bundle group.",
+    "impossibleToCreateBundleGroup": "Impossible to create bundle group.",
+    "impossibleToUpdateBundleGroup": "Impossible to update bundle group.",
+    "impossibleToDeleteBundle": "Impossible to delete bundle.",
+    "impossibleToCreateUser": "Impossible to create user.",
+    "impossibleToLoadUsers": "Impossible to load users.",
+    "impossibleToDeleteUser": "Impossible to delete user.",
+    "impossibleToRemoveUser": "Impossible to remove user.",
+    "userRemovedFromTheOrganisation": "User removed from the organisation",
+    "userCreated": "User created",
+    "bundle": "Bundle",
+    "bundleGroup": "Bundle Group",
+    "created": "Created",
+    "updated": "Updated",
+    "deleted": "Deleted"
+  },
+  "formValidationMsg": {
+    "nameRequired": "Name is a required field",
+    "min3Char": "Name must be at least 3 characters",
+    "max25Char": "The name must not exceed 25 characters",
+    "docRequired": "Documentation is a required field",
+    "docFormat": "Documentation must match URL format",
+    "versionRequired": "Version is a required field",
+    "versionFormat": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
+    "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)",
+    "bundleUrlRequired": "The bundle address is a required field",
+    "descriptionRequired": "Description is a required field",
+    "minDescription": "The description must contain at least 3 characters",
+    "maxDescription": "The description must not exceed 600 characters",
+    "categoryRequired": "Category is a required field",
+    "atleastOneUrl": "Please add at least one bundle before publishing this bundle group.",
+    "description": "Description must not exceed 100 characters"
+  },
+  "modalMsg": {
+    "deleteBundleMsg": "Are you sure you want to delete this bundle?",
+    "removeUserFromOrgMsg": "Are you sure you want to remove this User from the Organization?",
+    "impossibleToRemoveCat": "This category is already in use.",
+    "deleteCat": "Are you sure you want to delete this Category?"
+  },
+  "Draft": "Draft",
+  "Publication Request": "Publication Request",
+  "Published": "Published",
+  "Deletion Request": "Deletion Request",
+  "All": "All"
+}

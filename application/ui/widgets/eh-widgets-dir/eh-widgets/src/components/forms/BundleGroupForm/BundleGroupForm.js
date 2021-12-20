@@ -269,10 +269,10 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isDocumentationAddressValid && !!validationResult["documentationUrl"]}
+                                invalid={!isDocumentationAddressValid && !!validationResult["versionDetails.documentationUrl"]}
                                 invalidText={
-                                    !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
-                                        validationResult["documentationUrl"].join("; "))
+                                    !isDocumentationAddressValid && (validationResult["versionDetails.documentationUrl"] &&
+                                        validationResult["versionDetails.documentationUrl"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.documentationUrl}
@@ -285,10 +285,10 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isBundleVersionValid && !!validationResult["version"]}
+                                invalid={!isBundleVersionValid && !!validationResult["versionDetails.version"]}
                                 invalidText={
-                                    !isBundleVersionValid && (validationResult["version"] &&
-                                    validationResult["version"].join("; "))
+                                    !isBundleVersionValid && (validationResult["versionDetails.version"] &&
+                                        validationResult["versionDetails.version"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.version}
@@ -302,10 +302,10 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={16} lg={16}>
                             <Select
-                                invalid={!!validationResult["status"]}
+                                invalid={!!validationResult["versionDetails.status"]}
                                 invalidText={
-                                    validationResult["status"] &&
-                                    validationResult["status"].join("; ")
+                                    validationResult["versionDetails.status"] &&
+                                    validationResult["versionDetails.status"].join("; ")
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.status}
@@ -331,12 +331,12 @@ const BundleGroupForm = ({
                             <TextArea
                                 invalid={
                                     (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
-                                    !!validationResult["description"]
+                                    !!validationResult["versionDetails.description"]
                                 }
                                 invalidText={
                                     (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
-                                    (validationResult["description"] &&
-                                        validationResult["description"].join("; "))
+                                    (validationResult["versionDetails.description"] &&
+                                        validationResult["versionDetails.description"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description}

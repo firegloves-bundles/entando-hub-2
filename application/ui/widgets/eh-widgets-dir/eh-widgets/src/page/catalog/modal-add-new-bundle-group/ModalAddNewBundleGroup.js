@@ -7,7 +7,7 @@ import {
     addNewBundleGroup,
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
-import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import { newBundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
@@ -186,10 +186,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 let validationError
-                await bundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
+                await newBundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
                     validationError = fillErrors(error)
                 })
-
                 // bypass the validation for Draft(NOT_PUBLISHED) Status.
                 if (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED &&
                     validationError && validationError.children && validationError.children.length === 1 &&
@@ -201,11 +200,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     setMinOneBundleError(validationError.children[0]);
                 }
-                //Uncomment this code for validation: EHUB-147
-                // if (validationError) {
-                //     setValidationResult(validationError)
-                //     return //don't send the form
-                // }
+                if (validationError) {
+                    setValidationResult(validationError)
+                    return //don't send the form
+                }
 
                 const toSend = await createNewBundleGroup(bundleGroup)
                 //WARNING type changed: children (bundle) in new bundle group after the update contains only the id

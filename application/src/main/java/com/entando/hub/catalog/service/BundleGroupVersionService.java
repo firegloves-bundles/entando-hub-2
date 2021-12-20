@@ -134,5 +134,7 @@ public class BundleGroupVersionService {
 		    });
 	  }
 	    
-	    
+	  public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
+	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
+	  }  
 }

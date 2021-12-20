@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,15 +69,21 @@ public class BundleGroupVersionController {
     
 
 	@Operation(summary = "Create a new bundleGroupVersion", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
-    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
+  //  @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroupVersion> createBundleGroup(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
         if (bundleGroupOptional.isPresent()) {
-	        com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
-	        return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.CREATED);
+            List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
+            if (CollectionUtils.isEmpty(bundleGroupVersions)) {
+		        com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
+		        return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.CREATED);
+            }else {
+            	logger.warn("Requested bundleGroupVersion '{}' already exists", bundleGroupVersionView.getVersion());
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);   
+            }
         }else {
         	logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionView.getBundleGroupId().toString());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);        
@@ -209,6 +216,8 @@ public class BundleGroupVersionController {
         protected LocalDateTime lastUpdate;
         protected List<String> categories;
         protected List<String> children;
+        protected List<String> allVersions;
+
 	    
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
@@ -239,6 +248,10 @@ public class BundleGroupVersionController {
             }
             if (entity.getBundleGroup().getBundles() != null) {
                 this.children = entity.getBundleGroup().getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+            }
+            
+            if (entity.getBundleGroup().getVersion() != null) {
+                this.allVersions = entity.getBundleGroup().getVersion().stream().map((version) -> version.getVersion().toString()).collect(Collectors.toList());
             }
 
        }

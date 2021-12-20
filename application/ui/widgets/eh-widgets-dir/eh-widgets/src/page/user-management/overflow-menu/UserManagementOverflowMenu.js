@@ -2,7 +2,7 @@ import { OverflowMenu, OverflowMenuItem } from "carbon-components-react";
 import { useState } from "react";
 import { ModalUpdateUser } from "../modal-update-user/ModalUpdateUser";
 import { ModalRemoveUserFromOrg } from "../modal-remove-user-from-org/ModalRemoveUserFromOrg";
-import { DROPDOWN_OPTIONS } from "../../../helpers/constants";
+import i18n from "../../../i18n";
 
 const UserManagementOverflowMenu = ({ userObj, onAfterSubmit }) => {
     const [openModal, setOpenModal] = useState(false)
@@ -10,8 +10,8 @@ const UserManagementOverflowMenu = ({ userObj, onAfterSubmit }) => {
     return (
         <>
             <OverflowMenu>
-                <OverflowMenuItem itemText={DROPDOWN_OPTIONS.EDIT} onClick={() => setOpenModal(true)} />
-                <OverflowMenuItem itemText={DROPDOWN_OPTIONS.REMOVE} onClick={() => setOpenDeleteModal(true)} />
+                <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)} />
+                <OverflowMenuItem itemText={i18n.t('component.button.remove')} onClick={() => setOpenDeleteModal(true)} />
             </OverflowMenu>
 
             {openModal && <ModalUpdateUser userObj={userObj} open={openModal}

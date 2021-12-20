@@ -1,3 +1,4 @@
+import "./custom-element.scss"
 import ReactDOM from "react-dom"
 import React from "react"
 import '../index.css'
@@ -6,6 +7,7 @@ import {HashRouter as Router} from "react-router-dom"
 
 import {subscribeToWidgetEvent} from '../helpers/widgetEvents'
 import {KEYCLOAK_EVENT_TYPE} from './widgetEventTypes'
+import * as Locale from '../i18n';
 
 const getKeycloakInstance = () =>
     (window && window.entando && window.entando.keycloak && {...window.entando.keycloak, initialized: true}) || {
@@ -26,11 +28,22 @@ class XEhApp extends HTMLElement {
     }
 
     render() {
+        const locale = this.getAttribute('locale') || '';
+        Locale.setLocale(locale);
         ReactDOM.render(<React.StrictMode>
-                <Router>
-                    <AppCarbon/>
-                </Router>
-            </React.StrictMode>,
+            <Router>
+                <div className="locale-button hide-button">
+                    <span id="engLang" onClick={() => { this.setAttribute('locale', 'en'); this.render(); }}>
+                        ENG
+                    </span>
+                    <span> | </span>
+                    <span id="itaLang" onClick={() => { this.setAttribute('locale', 'it'); this.render(); }}>
+                        ITA
+                    </span>
+                </div>
+                <AppCarbon />
+            </Router>
+        </React.StrictMode>,
             this.appendChild(this.mountPoint))
     }
 }

@@ -7,6 +7,8 @@ import "./catalog-page-content.scss"
 import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
+import i18n from '../../../i18n'
+
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
     return {name: "name" + index, categoryId: "" + index}
@@ -136,9 +138,22 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups} categoriesDetails={catList} onAfterSubmit={onAfterSubmit}/>
-                <Pagination pageSizes={[ 12, 18, 24]} page={page} pageSize={pageSize} totalItems={totalItems}
-                            onChange={onPaginationChange}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoriesDetails={catList} onAfterSubmit={onAfterSubmit} />
+                <Pagination
+                    itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
+                    itemRangeText={
+                        (min, max, total) => `${min}–${max} ${i18n.t("component.pagination.of")} ${total} ${i18n.t("component.pagination.items")}`
+                    }
+                    pageSizes={[12, 18, 24]}
+                    totalItems={totalItems}
+                    onChange={onPaginationChange}
+                    backwardText={i18n.t("component.pagination.previousPage")}
+                    forwardText={i18n.t("component.pagination.nextPage")}
+                    pageRangeText={
+                        (total) => `${i18n.t("component.pagination.of")} ${ total }
+                        ${ total === 1 ? `${i18n.t("component.pagination.page")}` : `${i18n.t("component.pagination.pages")}` }`
+                    }
+                />
             </div>
             {loading && <Loading/>}
         </>

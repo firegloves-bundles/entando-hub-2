@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { removeUserFromOrganisation } from "../../../integration/Integration";
 import "./modal-remove-user-from-org.scss";
 import RemoveUserFromOrg from "./remove-user-from-org/RemoveUserFromOrg";
-import { BUTTON_LABELS } from "../../../helpers/constants";
+import i18n from "../../../i18n";
 
 export const ModalRemoveUserFromOrg = ({userObj, open, onCloseModal, onAfterSubmit}) => {
 
@@ -39,9 +39,9 @@ export const ModalRemoveUserFromOrg = ({userObj, open, onCloseModal, onAfterSubm
             <Modal
                 style={{ display: !visible ? "none" : "" }}
                 className="ModalRemoveUserFromOrg"
-                modalLabel={BUTTON_LABELS.REMOVE}
-                primaryButtonText={BUTTON_LABELS.REMOVE}
-                secondaryButtonText={BUTTON_LABELS.CANCEL}
+                modalLabel={i18n.t('component.button.remove')}
+                primaryButtonText={i18n.t('component.button.remove')}
+                secondaryButtonText={i18n.t('component.button.cancel')}
                 open={open}
                 onRequestClose={onRequestClose}
                 onRequestSubmit={onRequestSubmit}>

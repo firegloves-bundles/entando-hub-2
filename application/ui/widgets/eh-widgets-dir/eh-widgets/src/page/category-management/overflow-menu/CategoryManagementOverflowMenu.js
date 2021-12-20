@@ -2,6 +2,7 @@ import { OverflowMenu, OverflowMenuItem } from "carbon-components-react"
 import { useState } from "react"
 import { ModalUpdateCategory } from "../modal-update-category/ModalUpdateCategory"
 import { ModalDeleteCategory } from "../modal-delete-category/ModalDeleteCategory"
+import i18n from "../../../i18n"
 
 const CategoryManagementOverflowMenu = ({
   categoryObj,
@@ -15,8 +16,8 @@ const CategoryManagementOverflowMenu = ({
   return (
     <>
       <OverflowMenu>
-        <OverflowMenuItem itemText="Edit" onClick={() => setOpenModal(true)} />
-        <OverflowMenuItem itemText="Delete" onClick={() => setOpenDeleteModal(true)} />
+        <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)} />
+        <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setOpenDeleteModal(true)} />
       </OverflowMenu>
       {openModal && (
         <ModalUpdateCategory

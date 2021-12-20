@@ -1,6 +1,6 @@
 import { Content } from "carbon-components-react";
 import { TrashCan32 } from '@carbon/icons-react'
-import { MODAL_LABELS } from "../../../../helpers/constants";
+import i18n from "../../../../i18n";
 
 const RemoveUserFromOrg = () => {
 
@@ -12,7 +12,7 @@ const RemoveUserFromOrg = () => {
                         <TrashCan32 />
                     </div>
                     <div>
-                        {MODAL_LABELS.REMOVE_USER_FROM_ORG_MSG}
+                        {i18n.t('modalMsg.removeUserFromOrgMsg')}
                     </div>
                 </div>
             </Content>

@@ -5,6 +5,7 @@ import {editOrganisation, getSingleOrganisation} from "../../../integration/Inte
 import { organisationSchema } from "../../../helpers/validation/organisationSchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import "./modal-update-organization.scss"
+import i18n from "../../../i18n"
 
 export const ModalUpdateOrganisation = ({
   organisationObj,
@@ -51,10 +52,10 @@ export const ModalUpdateOrganisation = ({
 
   return (
         <Modal
-            modalLabel="Edit"
+            modalLabel={i18n.t('component.button.edit')}
             className="Modal-Update-organization"
-            primaryButtonText="Save"
-            secondaryButtonText="Cancel"
+            primaryButtonText={i18n.t('component.button.save')}
+            secondaryButtonText={i18n.t('component.button.cancel')}
             open={open}
             onRequestClose={onRequestClose}
             onRequestSubmit={onRequestSubmit}>

@@ -7,6 +7,7 @@ import {addNewCategory} from "../../../integration/Integration"
 import "./modal-add-new-category.scss"
 import { categorySchema } from "../../../helpers/validation/categorySchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
+import i18n from "../../../i18n"
 export const ModalAddNewCategory = ({onAfterSubmit}) => {
 
 
@@ -74,7 +75,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
     return (
         <ModalStateManager
             renderLauncher={({onRequestOpen}) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add Category</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.addCategory')}</Button>
             )}>
             {({open, onRequestClose, onDataChange, onRequestSubmit, elemKey, validationResult}) => (
                 <ComposedModal
@@ -82,7 +83,7 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
                     open={open}
                     onClose={onRequestClose}
                 >
-                    <ModalHeader label="Add" />
+                    <ModalHeader label={i18n.t('component.button.add')} />
                     <ModalBody>
                         <NewCategory key={elemKey} onDataChange={onDataChange} validationResult={validationResult} />
                     </ModalBody>
@@ -90,12 +91,12 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
                         <Button
                             kind="secondary"
                             onMouseDown={() => { onRequestClose() }}>
-                            Cancel
+                            {i18n.t('component.button.cancel')}
                         </Button>
                         <Button
                             kind="primary"
                             onClick={() => { onRequestSubmit() }}>
-                            Add
+                            {i18n.t('component.button.add')}
                         </Button>
                     </ModalFooter>
                 </ComposedModal>

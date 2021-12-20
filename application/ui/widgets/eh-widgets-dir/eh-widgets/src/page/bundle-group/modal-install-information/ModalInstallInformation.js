@@ -2,6 +2,7 @@ import {Button, CodeSnippet, Modal} from "carbon-components-react"
 import ReactDOM from "react-dom"
 import {useState} from "react"
 import "./modal-install-information.scss"
+import i18n from "../../../i18n"
 
 const InstallationInfo = ({bundleGroup, children}) => {
     const elemList = children.map((bundle, index)=>(
@@ -55,7 +56,7 @@ export const ModalInstallInformation = (props) => {
     return (
       <ModalStateManager
           renderLauncher={({onRequestOpen}) => (
-              <Button onClick={onRequestOpen}>Install</Button>
+              <Button onClick={onRequestOpen}>{i18n.t('component.button.install')}</Button>
           )}>
         {({open, onRequestClose, bundleGroup, children}) => (
             <Modal

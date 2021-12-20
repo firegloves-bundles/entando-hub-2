@@ -22,6 +22,7 @@ import {
 } from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./user-managment-page.scss"
+import i18n from "../../i18n"
 
 /*
 BUNDLEGROUP:
@@ -54,15 +55,15 @@ bundleId	string
 const headers = [
   {
     key: "username",
-    header: "Username",
+    header: "username",
   },
   {
     key: "email",
-    header: "Email",
+    header: "email",
   },
   {
     key: "organisation",
-    header: "Organisation",
+    header: "organisation",
   },
   {
     key: "overflow",
@@ -150,7 +151,7 @@ const UserManagementPage = () => {
                     getHeaderProps,
                     getRowProps,
                   }) => (
-                    <TableContainer title="Users Management">
+                    <TableContainer title={i18n.t("page.admin.userManagement")}>
                       <TableToolbar>
                         <TableToolbarContent>
                           <ModalAddNewUser onAfterSubmit={onAfterSubmit} />
@@ -161,7 +162,7 @@ const UserManagementPage = () => {
                           <TableRow>
                             {headers.map((header) => (
                               <TableHeader {...getHeaderProps({ header })}>
-                                {header.header}
+                                {header.header ? i18n.t(`page.admin.${header.header}`) : ''}
                               </TableHeader>
                             ))}
                           </TableRow>

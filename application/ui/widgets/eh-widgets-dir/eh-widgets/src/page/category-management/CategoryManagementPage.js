@@ -19,6 +19,7 @@ import {ModalAddNewCategory} from "./modal-add-new-category/ModalAddNewCategory"
 import {getAllCategories,} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./category-managment-page.scss"
+import i18n from "../../i18n"
 
 /*
 [
@@ -114,7 +115,7 @@ const CategoryManagementPage = () => {
                   getHeaderProps,
                   getRowProps,
                 }) => (
-                  <TableContainer title="Category Management">
+                  <TableContainer title={i18n.t('page.management.categoryManagement')}>
                     <TableToolbar>
                       <TableToolbarContent>
                         <ModalAddNewCategory onAfterSubmit={onAfterSubmit} />
@@ -125,7 +126,7 @@ const CategoryManagementPage = () => {
                         <TableRow>
                           {headers.map((header) => (
                             <TableHeader {...getHeaderProps({ header })}>
-                              {header.header}
+                              {header.header ? i18n.t(`component.bundleModalFields.${header.header.toLowerCase()}`) : ''}
                             </TableHeader>
                           ))}
                         </TableRow>

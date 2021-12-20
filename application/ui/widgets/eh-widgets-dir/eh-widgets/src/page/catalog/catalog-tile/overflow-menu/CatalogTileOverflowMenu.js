@@ -3,8 +3,9 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS, BUTTON_LABELS, MENU_OPTIONS } from "../../../../helpers/constants"
+import {ADMIN, MANAGER, BUNDLE_STATUS, MENU_OPTIONS } from "../../../../helpers/constants"
 import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-version/ModalAddNewBundleGroupVersion"
+import i18n from "../../../../i18n"
 
 const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup}) => {
 
@@ -24,11 +25,10 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
     return (
         <>
             <OverflowMenu>
-                <OverflowMenuItem itemText={BUTTON_LABELS.EDIT} onClick={() => setOpenModal(true)}/>
-
-                {(isShowDelete && isDeletableBundle) &&
-                    <OverflowMenuItem itemText={BUTTON_LABELS.DELETE} onClick={() => setDeleteModal(true) }/>}
-
+                
+                <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)}/>
+                
+                {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setDeleteModal(true) }/>}
                 {/* Show Add Version option */}
                 {isAddVersionOptionVisible &&
                     <OverflowMenuItem itemText={MENU_OPTIONS.ADD_BUNDLE_GROUP_VERSION} onClick={() => setAddBundleGroupVersionModal(true)}/>}

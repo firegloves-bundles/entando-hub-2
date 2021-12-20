@@ -18,6 +18,7 @@ import { fillErrors } from "../../../../helpers/validation/fillErrors"
 import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
+import i18n from "../../../../i18n"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
@@ -148,9 +149,9 @@ export const ModalUpdateBundleGroup = ({
         <Modal
           passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
-          modalLabel="Edit"
-          primaryButtonText="Save"
-          secondaryButtonText="Cancel"
+          modalLabel={i18n.t('component.button.edit')}
+          primaryButtonText={i18n.t('component.button.save')}
+          secondaryButtonText={i18n.t('component.button.cancel')}
           open={open}
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}

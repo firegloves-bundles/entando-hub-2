@@ -5,6 +5,7 @@ import {
   getSingleOrganisation,
   deleteOrganisation,
 } from "../../../integration/Integration"
+import i18n from "../../../i18n"
 
 const OrganisationManagementOverflowMenu = ({
   organisationObj,
@@ -24,8 +25,8 @@ const OrganisationManagementOverflowMenu = ({
   return (
     <>
       <OverflowMenu>
-        <OverflowMenuItem itemText="Edit" onClick={() => setOpenModal(true)} />
-        <OverflowMenuItem itemText="Delete" onClick={deleteHandler} />
+        <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)} />
+        <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={deleteHandler} />
       </OverflowMenu>
       {openModal && (
         <ModalUpdateOrganisation

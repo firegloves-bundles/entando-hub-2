@@ -2,21 +2,21 @@ import * as Yup from "yup"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .max(25, "Name must not exceed 25 characters")
-    .required("Name is a required field"),
+    .min(3, "min3Char")
+    .max(25, "max25Char")
+    .required("nameRequired"),
   description: Yup.string()
-    .min(3, "Description must be at least 3 characters")
-    .max(600, "Description must not exceed 600 characters")
-    .required("Description is a required field"),
+    .min(3, "minDescription")
+    .max(600, "maxDescription")
+    .required("descriptionRequired"),
   documentationUrl: Yup.string()
     .matches(
       /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,
-      "Documentation must match URL format"
+      "docFormat"
     )
-    .required("Documentation is a required field"),
-  status: Yup.string().required("Status is a required field"),
-  version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)").required("Version is a required field"),
+    .required("docRequired"),
+  status: Yup.string().required("versionRequired"),
+  version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
   children: Yup.array().of(
     Yup.object().shape({
       bundleGroups: Yup.array().of(Yup.string()),
@@ -26,19 +26,19 @@ export const bundleGroupSchema = Yup.object().shape({
       gitRepoAddress: Yup.string(),
       name: Yup.string().required(),
     })
-  ).min(1, "Please add at least one bundle before publishing this bundle group."),
+  ).min(1, "atleastOneUrl"),
   categories: Yup.array()
     .of(Yup.string())
-    .required("Category is a required field"),
+    .required("categoryRequired"),
 })
 
 
 export const bundleOfBundleGroupSchema = Yup.object().shape({
     gitRepo: Yup.string()
-        .required("The bundle address is a required field")
+        .required("bundleUrlRequired")
         .matches(
             /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-z-A-Z-0-9/]+)(?:\.git)$/gm,
-            "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)"
+            "bundleUrlFormat"
         )
 })
 

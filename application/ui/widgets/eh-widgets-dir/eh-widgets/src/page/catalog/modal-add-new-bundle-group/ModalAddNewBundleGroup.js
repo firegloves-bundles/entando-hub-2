@@ -14,6 +14,7 @@ import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
 import { BUNDLE_STATUS } from "../../../helpers/constants";
+import i18n from "../../../i18n"
 
 /*
     This component manages the modal for adding a new bundle group
@@ -52,6 +53,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]
                 }
             }
+            const organizationId = (allowedOrganisations && allowedOrganisations.length > 0) ? allowedOrganisations[0].organisationId : null;
             setBundleGroup(
                 // Remove this commented code later : EHUB-147
             //     {
@@ -70,7 +72,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     name: "",
                     children: [],
                     categories: [defaultCategoryId],
-                    organisationId: allowedOrganisations[0].organisationId,
+                    organisationId: organizationId,
                     versionDetails: {
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
@@ -240,7 +242,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
     return (
         <ModalStateManager
             renderLauncher={({ onRequestOpen }) => (
-                <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
+                // <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
+                <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.add')}</Button>
             )}>
             {ModalContent}
         </ModalStateManager>
@@ -270,7 +273,7 @@ const ModalContent = ({
                     open={open}
                     onClose={onRequestClose}
                 >
-                    <ModalHeader label="Add" />
+                    <ModalHeader label={i18n.t('component.button.add')} />
                     <ModalBody>
                         <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                             categories={categories} selectStatusValues={selectStatusValues}
@@ -280,12 +283,12 @@ const ModalContent = ({
                         <Button
                             kind="secondary"
                             onMouseDown={() => { onRequestClose() }}>
-                            Cancel
+                            {i18n.t('component.button.cancel')}
                         </Button>
                         <Button
                             kind="primary"
                             onClick={() => { onRequestSubmit() }}>
-                            Add
+                            {i18n.t('component.button.add')}
                         </Button>
                     </ModalFooter>
                 </ComposedModal>

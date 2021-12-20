@@ -146,9 +146,9 @@ const BundleGroupForm = ({
         createVersionDetailsObj("documentationUrl", e.target.value);
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
+            validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
+            validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
 
@@ -157,10 +157,10 @@ const BundleGroupForm = ({
         createVersionDetailsObj("version", e.target.value);
         // setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
-            validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
+            validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
         } else if (!(e.target.value.trim().length > 0 && new RegExp(VERSON_REGEX).test(e.target.value))) {
-            validationResult["version"] = [i18n.t('formValidationMsg.versionFormat')]
+            validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionFormat')]
             setIsBundleVersionValid(false);
         } else {
             setIsBundleVersionValid(true);
@@ -214,9 +214,9 @@ const BundleGroupForm = ({
         createVersionDetailsObj("description", e.target.value);
         if (e.target.value.length < CHAR_LENGTH) {
             const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
-            validationResult["description"] = [errorMessageForLengthZeroOrThree]
+            validationResult["versionDetails.description"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
-            validationResult["description"] = [i18n.t('formValidationMsg.maxDescription')]
+            validationResult["versionDetails.description"] = [i18n.t('formValidationMsg.maxDescription')]
         }
     }
 

@@ -77,9 +77,9 @@ class Login extends Component {
 
   render() {
     const {keycloak} = this.props
-    const loginUrl = window.location
-    const handleLogin = () => keycloak.login({redirectUri: loginUrl})
-    const handleLogout = () => keycloak.logout({redirectUri: window.location})
+    const loginUrl = window.location.origin + window.location.pathname;
+    const handleLogin = () => keycloak.login({ redirectUri: loginUrl });
+    const handleLogout = () => keycloak.logout({ redirectUri: loginUrl });
     if (!this.state.loading) {
       return (
           <div className="entando-login">

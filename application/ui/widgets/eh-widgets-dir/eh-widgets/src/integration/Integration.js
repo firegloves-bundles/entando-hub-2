@@ -13,7 +13,7 @@ const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
 const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
 
 //Bundle group version urls
-const urlAddBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/`
+const urlBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions`
 const urlBundleGroupsVersionsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/filtered`
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
@@ -487,8 +487,8 @@ export const getAllKCUsers = async () => {
  * @param {*} bundleGroupId 
  * @returns 
  */
-export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
-  const { data, isError } = await postData(urlAddBundleGroupVersion, bundleGroupVersionData)
+ export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
+  const { data, isError } = await postData(urlBundleGroupVersion, bundleGroupVersionData)
 
   eventHandler(
     isError,
@@ -498,3 +498,20 @@ export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
 }
+
+/**
+ * Get all bundle group versions by bundleGroupId
+ * @param {*} bundleGroupId 
+ */
+ export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
+  let url = `${urlBundleGroupVersion}/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  const { data, isError } = await getData(url);
+
+  eventHandler(
+    isError,
+    `Impossible to load bundle group version : ${data ? data.message : ""}`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, "versions")
+}
+

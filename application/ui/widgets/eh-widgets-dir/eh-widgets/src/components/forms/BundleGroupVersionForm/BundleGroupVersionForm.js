@@ -262,7 +262,7 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-                                disabled={true}
+                                disabled={false}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}

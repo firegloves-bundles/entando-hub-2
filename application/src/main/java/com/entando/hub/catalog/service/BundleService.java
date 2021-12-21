@@ -1,9 +1,11 @@
 package com.entando.hub.catalog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,11 +34,11 @@ public class BundleService {
         }else{
             paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
         }
-        Page<Bundle> response;
+        Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
         if (bundleGroupId.isPresent()) {
             Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
-            BundleGroup bundleGroupEntity = new BundleGroup();
-            bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroup.Status.PUBLISHED);
+            BundleGroup bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroup.Status.PUBLISHED);
+            if(bundleGroupEntity !=null)
             response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity, paging);
         } else {
         	List<BundleGroup>  budlegroups = bundleGroupRepository.findDistinctByStatus(BundleGroup.Status.PUBLISHED);

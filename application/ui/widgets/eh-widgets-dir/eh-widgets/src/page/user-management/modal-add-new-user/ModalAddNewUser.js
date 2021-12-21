@@ -42,7 +42,7 @@ export const ModalAddNewUser = ({onAfterSubmit}) => {
             if (user.organisation &&  user.username) {
                 (async () => {
                     let organisationId = user.organisation.organisationId
-                    await createAUserForAnOrganisation(organisationId, user.username)
+                    await createAUserForAnOrganisation(organisationId, user.username, 'add')
                     onRequestClose()
                     onAfterSubmit()
                 })()

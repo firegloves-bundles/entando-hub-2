@@ -343,15 +343,26 @@ export const deleteBundle = async (id, bundleName) => {
 // req body: username
 export const createAUserForAnOrganisation = async (
   organisationId,
-  userData
+  userData,
+  type
 ) => {
   const newUrl = `${urlUsers}${organisationId}`
   const userDataObject = {
     username: userData,
   }
   const { data, isError } = await postData(newUrl, userDataObject)
-  
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToCreateUser')}`, `${i18n.t('toasterMessage.userCreated')}`)
+  if (type === 'update') {
+    debugger
+    eventHandler(isError,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`
+    )
+  } else {
+    eventHandler(isError,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.created')}`
+    )
+  }
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }
@@ -390,11 +401,15 @@ export const deleteUser = async (username) => {
 // DELETE input: organization id and username -> remove the user from that organization
 // path: username
 // path: organization id
-export const removeUserFromOrganisation = async (organisationId, username) => {
+export const removeUserFromOrganisation = async (organisationId, username, type) => {
   const newUrl = `${urlUsers}${organisationId}/user/${username}`
   const { data, isError } = await deleteData(newUrl)
-
-  eventHandler(isError,  `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, `${i18n.t('toasterMessage.userRemovedFromTheOrganisation')}`);
+  // while updating user no need to show 'user removed toaster'
+  if (type === 'update') {
+    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, ``);
+  } else {
+    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, `${i18n.t('toasterMessage.userRemovedFromTheOrganisation')}`);
+  }
 
   return data
 }

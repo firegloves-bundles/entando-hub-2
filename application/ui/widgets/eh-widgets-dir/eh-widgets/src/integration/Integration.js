@@ -13,7 +13,7 @@ const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
 const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
 
 //Bundle group version urls
-const urlBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions`
+const urlBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/`
 const urlBundleGroupsVersionsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/filtered`
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
@@ -504,14 +504,29 @@ export const getAllKCUsers = async () => {
  * @param {*} bundleGroupId 
  */
  export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
-  let url = `${urlBundleGroupVersion}/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  let url = `${urlBundleGroupVersion}${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
   const { data, isError } = await getData(url);
 
   eventHandler(
     isError,
     `Impossible to load bundle group version : ${data ? data.message : ""}`
   )
-
   return checkForErrorsAndSendResponse(data, isError, "versions")
 }
 
+/**
+ * Delete a bundle group version
+ * @param {*} id 
+ * @param {*} bundleName 
+ * @returns 
+ */
+export const deleteBundleGroupVersion = async (bundleGroupVersionId) => {
+  const { data, isError } = await deleteData(urlBundleGroupVersion, bundleGroupVersionId);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToDeleteBundle')}  ${data ? data.message : ""}`,
+    // `${i18n.t('toasterMessage.bundle')} ${bundleName ? bundleName : ""} ${i18n.t('toasterMessage.deleted')}`
+  )
+  return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE);
+}

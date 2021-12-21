@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface BundleGroupRepository extends JpaRepository<BundleGroup, Long> {
+    List<BundleGroup> findDistinctByStatus(BundleGroup.Status status);
+    BundleGroup findDistinctByIdAndStatus(Long bundleId,BundleGroup.Status statuses);
+    
     List<BundleGroup> findByOrganisationId(Long organisationId);
     Page<BundleGroup> findByOrganisationId(Long organisationId, Pageable pageable);
 

@@ -14,7 +14,7 @@ import {
   newVersionBundleGroupSchema,
 } from "../../../../helpers/validation/newVersionBundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
-import { BUTTON_LABELS, DUPLICATE_VERSION, MODAL_LABELS } from "../../../../helpers/constants"
+import { BUNDLE_STATUS, BUTTON_LABELS, DUPLICATE_VERSION, MODAL_LABELS } from "../../../../helpers/constants"
 
 import "./modal-add-new-bundle-group-version.scss"
 import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
@@ -150,15 +150,15 @@ export const ModalAddNewBundleGroupVersion = ({
         }
         validationError.version = versionValidationError
       }
-      // if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
-      //     validationError && validationError.children && validationError.children.length === 1 &&
-      //     Object.keys(validationError).length === 1) {
-      //     validationError = undefined;
-      // }
-      // if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
-      //   (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
-      //   setMinOneBundleError(validationError.children[0]);
-      // }
+      if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
+        validationError && validationError.children && validationError.children.length === 1 &&
+        Object.keys(validationError).length === 1) {
+        validationError = undefined;
+      }
+      if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
+        (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
+        setMinOneBundleError(validationError.children[0]);
+      }
       if (validationError) {
         setValidationResult(validationError)
         return

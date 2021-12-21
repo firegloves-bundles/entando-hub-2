@@ -14,5 +14,6 @@ import java.util.Set;
 public interface BundleRepository extends JpaRepository<Bundle, Long> {
     Page<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups, Pageable pageable);
     Page<Bundle> findByBundleGroupsIsNotNull(Pageable pageable);
+    Page<Bundle> findByBundleGroupsIn(List<BundleGroup> bundleGroups, Pageable pageable);
     List<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups);
 }

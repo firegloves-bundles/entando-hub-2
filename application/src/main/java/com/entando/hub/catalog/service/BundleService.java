@@ -1,25 +1,27 @@
 package com.entando.hub.catalog.service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.BundleRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.BundleRepository;
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 
 @Service
 public class BundleService {
     final private BundleRepository bundleRepository;
+    final private BundleGroupRepository bundleGroupRepository;
 
-    public BundleService(BundleRepository bundleRepository) {
+    public BundleService(BundleRepository bundleRepository,BundleGroupRepository bundleGroupRepository) {
         this.bundleRepository = bundleRepository;
+        this.bundleGroupRepository = bundleGroupRepository;
     }
 
 
@@ -28,16 +30,17 @@ public class BundleService {
         if(pageSize == 0){
             paging = Pageable.unpaged();
         }else{
-            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
         }
         Page<Bundle> response;
         if (bundleGroupId.isPresent()) {
             Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
             BundleGroup bundleGroupEntity = new BundleGroup();
-            bundleGroupEntity.setId(bundleGroupEntityId);
+            bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroup.Status.PUBLISHED);
             response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity, paging);
         } else {
-            response = bundleRepository.findByBundleGroupsIsNotNull(paging);
+        	List<BundleGroup>  budlegroups = bundleGroupRepository.findDistinctByStatus(BundleGroup.Status.PUBLISHED);
+            response = bundleRepository.findByBundleGroupsIn(budlegroups,paging);
         }
         return response;
     }

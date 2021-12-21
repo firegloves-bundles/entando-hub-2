@@ -22,7 +22,7 @@ export const ModalRemoveUserFromOrg = ({userObj, open, onCloseModal, onAfterSubm
     }
 
     const removeUser = async (user) => {
-        await removeUserFromOrganisation(user && user.organisation && user.organisation.organisationId, user && user.username);
+        await removeUserFromOrganisation(user && user.organisation && user.organisation.organisationId, user && user.username, 'delete');
     }
 
     const onRequestSubmit = (e) => {

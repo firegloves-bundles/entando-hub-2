@@ -1,12 +1,10 @@
 import { Loading, Modal } from "carbon-components-react"
-import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
-  editBundleGroup,
+  editBundleGroupVersion,
   getAllBundlesForABundleGroup,
   getAllCategories,
-  getSingleBundleGroup,
   getSingleOrganisation,
 } from "../../../../integration/Integration"
 import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling"
@@ -19,6 +17,7 @@ import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
+import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
@@ -26,14 +25,16 @@ export const ModalUpdateBundleGroup = ({
   open,
   onCloseModal,
   onAfterSubmit,
+  bundleGroupObj
 }) => {
+  
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
     name: "",
   }])
   const [categories, setCategories] = useState([])
 
-  const [bundleGroup, setBundleGroup] = useState({})
+  const [bundleGroup, setBundleGroup] = useState(bundleGroupObj)
   const [passiveModal, setPassiveModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -62,22 +63,23 @@ export const ModalUpdateBundleGroup = ({
       }
     }
     const initBG = async () => {
-      const res = await getSingleBundleGroup(bundleGroupId)
+      // Old code below, new to remove: EHUB-147
+      // const res = await getSingleBundleGroup(bundleGroupId);
+      // const res = bundleGroupObj
       const childrenFromDb =
-      res && res.bundleGroup && res.bundleGroup.children && res.bundleGroup.children.length > 0
+      bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
           ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
           : []
 
-      const bundleGroupOrganisation = (
-        await getSingleOrganisation(res && res.bundleGroup && res.bundleGroup.organisationId)
-      ).organisation
+      const bundleGroupOrganisation = (await getSingleOrganisation(bundleGroupObj && bundleGroupObj.organisationId)).organisation
+      
       if (isMounted) {
         if (bundleGroupOrganisation) {
           setAllowedOrganisations([bundleGroupOrganisation])
         }
         let bg = {
-          ...res.bundleGroup,
-          children: childrenFromDb,
+          ...bundleGroupObj,
+          children: childrenFromDb
         }
         const selectStatusValues = getProfiledUpdateSelectStatusInfo(
           getHigherRole(),
@@ -112,7 +114,8 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    await editBundleGroup(toSend, toSend.bundleGroupId)
+    // await editBundleGroup(toSend, toSend.bundleGroupId)
+    await editBundleGroupVersion(toSend, toSend.bundleGroupVersionId);
   }
   
   const onRequestSubmit = (e) => {
@@ -156,7 +159,21 @@ export const ModalUpdateBundleGroup = ({
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}
         >
-          <BundleGroupForm
+          {/* <BundleGroupForm
+            mode="Edit"
+            allowedOrganisations={allowedOrganisations}
+            categories={categories}
+            onDataChange={onDataChange}
+            bundleGroup={bundleGroup}
+            theBundleStatus={bundleStatus}
+            selectStatusValues={selectStatusValues}
+            validationResult={validationResult}
+            minOneBundleError={minOneBundleError}
+          />
+          
+          */}
+
+          <BundleGroupVersionForm
             mode="Edit"
             allowedOrganisations={allowedOrganisations}
             categories={categories}

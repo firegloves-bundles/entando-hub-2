@@ -43,6 +43,7 @@ const BundleGroupForm = ({
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
+        // TODO: COMPARE org ids with proper format, need to id numeric in api response.
         const currOrganisation = organisations.find(o=>o.organisationId===currOrganisationId)
 
         if (organisations.length === 1) {

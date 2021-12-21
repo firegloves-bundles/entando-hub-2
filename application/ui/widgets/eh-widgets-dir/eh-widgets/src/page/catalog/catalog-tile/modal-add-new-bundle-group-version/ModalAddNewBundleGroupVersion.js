@@ -14,7 +14,7 @@ import {
   newVersionBundleGroupSchema,
 } from "../../../../helpers/validation/newVersionBundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
-import { BUNDLE_STATUS, BUTTON_LABELS, DUPLICATE_VERSION, MODAL_LABELS } from "../../../../helpers/constants"
+import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-add-new-bundle-group-version.scss"
 import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
@@ -62,7 +62,6 @@ export const ModalAddNewBundleGroupVersion = ({
       }
     }
     const initBG = async () => {
-      // -------------kamlesh----
       const childrenFromDb = theBundleGroup 
                               && theBundleGroup.children 
                               && theBundleGroup.children.length > 0 
@@ -98,7 +97,7 @@ export const ModalAddNewBundleGroupVersion = ({
     }
   }, [theBundleGroup])
 
-  //TODO BE QUERY REFACTORING ---- Remove below method
+  //TODO BE QUERY REFACTORING ---- Remove below method - EHUB-147
   const updateBundleGroup = async (bundleGroup) => {
     let newChildren = []
     if (bundleGroup.children && bundleGroup.children.length) {
@@ -115,7 +114,7 @@ export const ModalAddNewBundleGroupVersion = ({
     await editBundleGroup(toSend, toSend.bundleGroupId)
   }
 
-// -----------------------------kamlesh
+// ------------ Newly added method -----------------
   //Add Bundle Group Version api call
   const addBundleGroupVersion = async(bundleGroupVersion) => {
     let newChildren = []
@@ -163,7 +162,7 @@ export const ModalAddNewBundleGroupVersion = ({
         setValidationResult(validationError)
         return
       }
-      // await updateBundleGroup(bundleGroup)
+      // await updateBundleGroup(bundleGroup); //Remove after verficatin: EHUB-147
       await addBundleGroupVersion(bundleGroup)
       onCloseModal()
       onAfterSubmit()

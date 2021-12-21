@@ -17,7 +17,8 @@ const CatalogTile = ({
   categoriesDetails,
   onAfterSubmit,
   version,
-  bundleGroup
+  bundleGroup,
+  isVersionsPage
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -26,7 +27,7 @@ const CatalogTile = ({
 
     if (categories) {
       const getCategoryNameById = (catId) => {
-        return categoriesDetails.find(cat => cat.categoryId === catId);
+        return categoriesDetails && categoriesDetails.find(cat => cat.categoryId === catId);
       }
       const data = getCategoryNameById(categories[0]) && getCategoryNameById(categories[0]).name;
       setCategoryName(data);
@@ -68,6 +69,7 @@ const CatalogTile = ({
               bundleName={name}
               onAfterSubmit={onAfterSubmit}
               bundleGroup={bundleGroup}
+              isVersionsPage={isVersionsPage}
             />
           </div>
         )}

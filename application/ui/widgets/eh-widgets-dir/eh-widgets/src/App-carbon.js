@@ -10,7 +10,7 @@ import RouteWithGate from "./components/routing/RouteWithGate";
 import {isHubAdmin} from "./helpers/helpers";
 import NotificationDispatcher from "./components/notification/NotificationDispatcher"
 import i18n from "./i18n"
-import BundleGroupVersionsPage from "./page/bundle-group-version/BundleGroupVersionsPage"
+import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 
 function AppCarbon() {
   return (

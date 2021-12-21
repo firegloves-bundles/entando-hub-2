@@ -3,25 +3,24 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS, MENU_OPTIONS } from "../../../../helpers/constants"
+import {ADMIN, MANAGER, BUNDLE_STATUS } from "../../../../helpers/constants"
 import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-version/ModalAddNewBundleGroupVersion"
 import i18n from "../../../../i18n";
 import { useHistory } from "react-router-dom";
 
-const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup}) => {
+const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup, isVersionsPage}) => {
 
     const [openModal, setOpenModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
 
     const [addBundleGroupVersionModal, setAddBundleGroupVersionModal] = useState(false);
-    // const [viewBundleGroupVersionModal, setViewBundleGroupVersionModal] = useState(false);
 
     const higherRole = getHigherRole()
 
     const isShowDelete = (higherRole === MANAGER || higherRole === ADMIN) ? true : false;
     const isDeletableBundle = bundleStatus === BUNDLE_STATUS.DELETE_REQ ? true : false
-    const isAddVersionOptionVisible = bundleStatus === BUNDLE_STATUS.PUBLISHED ? true : false;
-    const isViewVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED) ? true : false;
+    const isAddVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED && !isVersionsPage) ? true : false;
+    const isViewVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED) && !isVersionsPage ? true : false;
 
     const history = useHistory()
 
@@ -47,10 +46,13 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
             </OverflowMenu>
 
-            {openModal && <ModalUpdateBundleGroup open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}
+            {openModal && <ModalUpdateBundleGroup bundleGroupObj={bundleGroup} open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}
                                      onCloseModal={() => setOpenModal(false)}  onAfterSubmit={onAfterSubmit}/>}
 
-            {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupId={bundleGroupId} bundleName={bundleName}
+            {/* {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupId={bundleGroupId} bundleName={bundleName}
+                onCloseModal={() => setDeleteModal(false)} onAfterSubmit={onAfterSubmit} />} */}
+
+            {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupVersionId={bundleGroup && bundleGroup.bundleGroupVersionId} bundleName={bundleName}
                 onCloseModal={() => setDeleteModal(false)} onAfterSubmit={onAfterSubmit} />}
 
             {/* Add bundle group version modal */}

@@ -65,7 +65,10 @@
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
       "remove": "Rimuovere",
-      "selectOneUsername" : "Seleziona un nome utente"
+      "selectOneUsername" : "Seleziona un nome utente",
+      "newVersion": "Nuova versione",
+      "viewVersions": "Visualizza versioni",
+      "submit": "Invia"
     },
     "pagination": {
       "page": "pagina",
@@ -120,6 +123,7 @@
     "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve corrispondere al formato dell'URL",
     "versionRequired": "La versione è un campo obbligatorio",
+    "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
     "statusRequired": "Lo stato è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
     "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
@@ -135,7 +139,8 @@
     "deleteBundleMsg": "Sei sicuro di voler eliminare questo pacchetto?",
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
-    "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+    "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
+    "addNewVersion": "Aggiungi nuova versione"
   },
   "Draft": "Non Pubblicato",
   "Publication Request": "Pubblicare Rich",

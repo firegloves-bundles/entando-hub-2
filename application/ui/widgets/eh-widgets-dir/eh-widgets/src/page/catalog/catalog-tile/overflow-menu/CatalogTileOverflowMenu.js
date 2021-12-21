@@ -39,11 +39,11 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
                 {/* Show Add Version option */}
                 {isAddVersionOptionVisible &&
-                    <OverflowMenuItem itemText={MENU_OPTIONS.ADD_BUNDLE_GROUP_VERSION} onClick={() => setAddBundleGroupVersionModal(true)}/>}
+                    <OverflowMenuItem itemText={i18n.t('component.button.newVersion')} onClick={() => setAddBundleGroupVersionModal(true)}/>}
 
                 {/* Show View Versions option */}
                 {isViewVersionOptionVisible && 
-                    <OverflowMenuItem itemText={MENU_OPTIONS.VIEW_BUNDLE_GROUP_VERSIONS} onClick={handleViewVersionsClick} />}
+                    <OverflowMenuItem itemText={i18n.t('component.button.viewVersions')} onClick={handleViewVersionsClick} />}
 
             </OverflowMenu>
 

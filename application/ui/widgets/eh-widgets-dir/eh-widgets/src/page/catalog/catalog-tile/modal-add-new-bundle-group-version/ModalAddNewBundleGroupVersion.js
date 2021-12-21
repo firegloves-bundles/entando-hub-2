@@ -11,19 +11,21 @@ import {
 import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling"
 import { getHigherRole } from "../../../../helpers/helpers"
 import {
-  bundleGroupSchema,
-} from "../../../../helpers/validation/bundleGroupSchema"
+  newVersionBundleGroupSchema,
+} from "../../../../helpers/validation/newVersionBundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
-import { BUTTON_LABELS, MODAL_LABELS } from "../../../../helpers/constants"
+import { BUTTON_LABELS, DUPLICATE_VERSION, MODAL_LABELS } from "../../../../helpers/constants"
 
 import "./modal-add-new-bundle-group-version.scss"
 import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
+import i18n from "../../../../i18n"
+import { isVersionDuplicate } from "../../../../helpers/validation/isVersionDuplicateValidate"
 
 export const ModalAddNewBundleGroupVersion = ({
   theBundleGroup,
   open,
   onCloseModal,
-  onAfterSubmit
+  onAfterSubmit,
 }) => {
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
@@ -135,12 +137,19 @@ export const ModalAddNewBundleGroupVersion = ({
     
     ;(async () => {
       // Useful code for validation: EHUB-147:
-      // let validationError
-      // await bundleGroupSchema
-      // .validate(bundleGroup, { abortEarly: false })
-      // .catch((err) => {
-      //   validationError = fillErrors(err)
-      // })
+      let validationError
+      await newVersionBundleGroupSchema.validate(bundleGroup, { abortEarly: false })
+        .catch((err) => {
+          validationError = fillErrors(err)
+        })
+
+      if (isVersionDuplicate(bundleGroup.version, theBundleGroup.allVersions)) {
+        let versionValidationError = (validationError && validationError.version) ? [...validationError.version, DUPLICATE_VERSION] : [DUPLICATE_VERSION]
+        if (!validationError) {
+          validationError = { version: versionValidationError }
+        }
+        validationError.version = versionValidationError
+      }
       // if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
       //     validationError && validationError.children && validationError.children.length === 1 &&
       //     Object.keys(validationError).length === 1) {
@@ -150,10 +159,10 @@ export const ModalAddNewBundleGroupVersion = ({
       //   (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
       //   setMinOneBundleError(validationError.children[0]);
       // }
-      // if (validationError) {
-      //   setValidationResult(validationError)
-      //   return
-      // }
+      if (validationError) {
+        setValidationResult(validationError)
+        return
+      }
       // await updateBundleGroup(bundleGroup)
       await addBundleGroupVersion(bundleGroup)
       onCloseModal()
@@ -168,9 +177,9 @@ export const ModalAddNewBundleGroupVersion = ({
         <Modal
           passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
-          modalLabel={MODAL_LABELS.ADD_BUNDLE_GROUP_VERSION}
-          primaryButtonText={BUTTON_LABELS.SUBMIT}
-          secondaryButtonText={BUTTON_LABELS.CANCEL}
+          modalLabel={i18n.t('modalMsg.addNewVersion')}
+          primaryButtonText={i18n.t('component.button.submit')}
+          secondaryButtonText={i18n.t('component.button.cancel')}
           open={open}
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}
@@ -183,6 +192,8 @@ export const ModalAddNewBundleGroupVersion = ({
             selectStatusValues={selectStatusValues}
             validationResult={validationResult}
             minOneBundleError={minOneBundleError}
+            allVersions={theBundleGroup.allVersions}
+            mode="Edit"
           />
         </Modal>
       }

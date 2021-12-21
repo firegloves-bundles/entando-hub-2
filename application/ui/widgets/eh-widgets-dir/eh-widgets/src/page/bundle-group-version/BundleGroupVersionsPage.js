@@ -1,6 +1,6 @@
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import React, {useCallback, useState, useEffect} from "react";
-import { getAllBundleGroupVersionByBundleGroupId, getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllBundleGroupVersionByBundleGroupId } from "../../integration/Integration";
 import { isHubUser } from "../../helpers/helpers";
 // import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import CatalogPageContent from "../catalog/catalog-page-content/CatalogPageContent";

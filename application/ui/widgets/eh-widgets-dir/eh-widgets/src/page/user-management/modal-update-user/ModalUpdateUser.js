@@ -45,7 +45,7 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
     const updateUser = async (user) => {
         //delete all the organisations for the user
         await Promise.all((await getAllOrganisations()).organisationList.map(async (oId) => {
-                await removeUserFromOrganisation(oId.organisationId, user.username)
+                await removeUserFromOrganisation(oId.organisationId, user.username, 'update')
             }
         ))
 

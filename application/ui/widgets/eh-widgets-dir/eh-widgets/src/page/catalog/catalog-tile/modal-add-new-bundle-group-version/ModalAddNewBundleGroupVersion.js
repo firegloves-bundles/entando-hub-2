@@ -144,7 +144,7 @@ export const ModalAddNewBundleGroupVersion = ({
         })
 
       if (isVersionDuplicate(bundleGroup.version, theBundleGroup.allVersions)) {
-        let versionValidationError = (validationError && validationError.version) ? [...validationError.version, DUPLICATE_VERSION] : [DUPLICATE_VERSION]
+        let versionValidationError = (validationError && validationError.version) ? [...validationError.version, i18n.t('formValidationMsg.duplicateVersion')] : [i18n.t('formValidationMsg.duplicateVersion')]
         if (!validationError) {
           validationError = { version: versionValidationError }
         }

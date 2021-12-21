@@ -50,7 +50,7 @@ export const ModalUpdateUser = ({userObj, open, onCloseModal, onAfterSubmit}) =>
         ))
 
         let organisationId = user.organisation.organisationId
-        await createAUserForAnOrganisation(organisationId, user.username)
+        await createAUserForAnOrganisation(organisationId, user.username, 'update')
 
     }
 

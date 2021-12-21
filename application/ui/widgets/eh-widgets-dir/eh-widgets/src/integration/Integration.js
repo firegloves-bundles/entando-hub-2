@@ -343,15 +343,26 @@ export const deleteBundle = async (id, bundleName) => {
 // req body: username
 export const createAUserForAnOrganisation = async (
   organisationId,
-  userData
+  userData,
+  type
 ) => {
   const newUrl = `${urlUsers}${organisationId}`
   const userDataObject = {
     username: userData,
   }
   const { data, isError } = await postData(newUrl, userDataObject)
-  
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToCreateUser')}`, `${i18n.t('toasterMessage.userCreated')}`)
+  if (type === 'update') {
+    debugger
+    eventHandler(isError,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`
+    )
+  } else {
+    eventHandler(isError,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.created')}`
+    )
+  }
 
   return checkForErrorsAndSendResponse(data, isError, "newUserForOrganization")
 }

@@ -1,6 +1,6 @@
 logging:
   level:
-    ROOT: DEBUG
+    ROOT: INFO
     com:
       entando: DEBUG
     org:
@@ -22,15 +22,29 @@ spring:
   datasource:
     continue-on-error: true
     initialization-mode: always
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+# Enable this section for h2
     url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     username: sa
     password: password
+# Enable this section for postgresql
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: hubApp
+#    password:
   jpa:
+    # Enable this section for h2
     database-platform: org.hibernate.dialect.H2Dialect
+    # Enable this section for postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    database: POSTGRESQL
+
     hibernate:
       ddl-auto: update
-
 
 keycloak:
   auth-url: http://localhost:9080/auth

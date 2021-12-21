@@ -1,4 +1,5 @@
 /src/main/docker/keycloak-db/
+/src/main/docker/postgresql-db/
 
 ####
 bundle/

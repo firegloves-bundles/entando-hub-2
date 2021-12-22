@@ -15,6 +15,7 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 
 @Service
 public class BundleService {
@@ -37,11 +38,11 @@ public class BundleService {
         Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
         if (bundleGroupId.isPresent()) {
             Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
-            BundleGroup bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroup.Status.PUBLISHED);
+            BundleGroup bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroupVersion.Status.PUBLISHED);
             if(bundleGroupEntity !=null)
             response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity, paging);
         } else {
-        	List<BundleGroup>  budlegroups = bundleGroupRepository.findDistinctByStatus(BundleGroup.Status.PUBLISHED);
+        	List<BundleGroup>  budlegroups = bundleGroupRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
             response = bundleRepository.findByBundleGroupsIn(budlegroups,paging);
         }
         return response;

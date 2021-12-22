@@ -146,7 +146,7 @@ public class BundleGroupVersionController {
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub by bundleGroupId", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
-    @GetMapping("/{bundleGroupId}")
+    @GetMapping("/bundles/{bundleGroupId}")
     public PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;

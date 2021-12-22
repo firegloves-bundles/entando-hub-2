@@ -519,7 +519,7 @@ export const getAllKCUsers = async () => {
  * @param {*} bundleGroupId 
  */
  export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
-  let url = `${urlBundleGroupVersion}${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  let url = `${urlBundleGroupVersion}bundles/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
   const { data, isError } = await getData(url);
 // TODO: EHUB-147: need to add localization for below message
   eventHandler(

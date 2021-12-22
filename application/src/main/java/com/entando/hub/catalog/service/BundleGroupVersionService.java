@@ -119,13 +119,11 @@ public class BundleGroupVersionService {
 	        }
 
 	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
-
-//	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
 	        
-	        Set<BundleGroupVersion.Status> statusSkip = new HashSet<BundleGroupVersion.Status>();
-	        statusSkip.add(BundleGroupVersion.Status.ARCHIVE); //To skip Archived bundleg group versions
-	        
-	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusInAndStatusNotIn(bundleGroup, statusSet, statusSkip, paging);
+	        if(Objects.nonNull(statusSet) && statusSet.contains(BundleGroupVersion.Status.ARCHIVE)) {
+	        	statusSet.remove(BundleGroupVersion.Status.ARCHIVE);
+	        }
+	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
 	        setBundleGroupUrl(page);
 	        return page;
 	 }

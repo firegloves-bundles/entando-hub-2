@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entando.hub.catalog.rest.BundleGroupController.BundleGroup;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
@@ -170,7 +171,7 @@ public class BundleGroupVersionController {
     @CrossOrigin
     @DeleteMapping("/{bundleGroupVersionId}")
     @Transactional
-    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupVersionId) {
+    public ResponseEntity<BundleGroupRestController.BundleGroupView> deleteBundleGroup(@PathVariable String bundleGroupVersionId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupVersionId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
         if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
@@ -184,6 +185,21 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
+    
+	// PUBLIC
+	@Operation(summary = "Get the bundleGroupVersion details", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
+	@CrossOrigin
+	@GetMapping("/{bundleGroupVersionId}")
+	public ResponseEntity<BundleGroupVersion> getBundleGroup(@PathVariable String bundleGroupVersionId) {
+		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
+		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
+		if (bundleGroupVersionOptional.isPresent()) {
+			return new ResponseEntity<>(bundleGroupVersionOptional.map(BundleGroupVersion::new).get(), HttpStatus.OK);
+		} else {
+			logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionOptional);
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+	}
     
     
     @Getter

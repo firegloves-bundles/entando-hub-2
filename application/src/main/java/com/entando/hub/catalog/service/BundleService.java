@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -21,10 +22,12 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 public class BundleService {
     final private BundleRepository bundleRepository;
     final private BundleGroupRepository bundleGroupRepository;
+    final private BundleGroupVersionRepository bundleGroupVersionRepository;
 
-    public BundleService(BundleRepository bundleRepository,BundleGroupRepository bundleGroupRepository) {
+    public BundleService(BundleRepository bundleRepository,BundleGroupRepository bundleGroupRepository,BundleGroupVersionRepository bundleGroupVersionRepository) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupRepository = bundleGroupRepository;
+        this.bundleGroupVersionRepository = bundleGroupVersionRepository;
     }
 
 
@@ -37,13 +40,18 @@ public class BundleService {
         }
         Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
         if (bundleGroupId.isPresent()) {
-            Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
-            BundleGroup bundleGroupEntity = bundleGroupRepository.findDistinctByIdAndStatus(bundleGroupEntityId,BundleGroupVersion.Status.PUBLISHED);
-            if(bundleGroupEntity !=null)
-            response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity, paging);
+            Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get()); 
+            Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
+            List<BundleGroupVersion> versionList= bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
+            if(versionList !=null  && !versionList.isEmpty())
+            response = bundleRepository.findByBundleGroupsIs(bundleGroupEntity.get(), paging);
         } else {
-        	List<BundleGroup>  budlegroups = bundleGroupRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
-            response = bundleRepository.findByBundleGroupsIn(budlegroups,paging);
+        	List<BundleGroup> bumdleGroups = new ArrayList<BundleGroup>();
+        	List<BundleGroupVersion>  budlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
+        	for( BundleGroupVersion version  : budlegroupsVersion) {
+        		bumdleGroups.add(version.getBundleGroup());
+        	}
+            response = bundleRepository.findByBundleGroupsIn(bumdleGroups,paging);
         }
         return response;
     }

@@ -1,7 +1,7 @@
 package com.entando.hub.catalog.service;
 
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +27,6 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
-import com.entando.hub.catalog.rest.BundleGroupVersionController;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 
 @Service
@@ -121,7 +120,12 @@ public class BundleGroupVersionService {
 
 	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
 
-	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);  
+//	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
+	        
+	        Set<BundleGroupVersion.Status> statusSkip = new HashSet<BundleGroupVersion.Status>();
+	        statusSkip.add(BundleGroupVersion.Status.ARCHIVE); //To skip Archived bundleg group versions
+	        
+	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusInAndStatusNotIn(bundleGroup, statusSet, statusSkip, paging);
 	        setBundleGroupUrl(page);
 	        return page;
 	 }

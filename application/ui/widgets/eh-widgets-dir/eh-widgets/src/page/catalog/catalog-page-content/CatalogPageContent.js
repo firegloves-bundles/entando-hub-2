@@ -4,7 +4,7 @@ import CatalogTiles from "../catalog-tiles/CatalogTiles"
 import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
-import {getHigherRole, isHubUser} from "../../../helpers/helpers"
+import {getHigherRole, isHubAdmin, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'
@@ -60,7 +60,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
 
     const loadData = useCallback(async (page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
         const userOrganisation = currentUserOrg;
-        const organisationId = userOrganisation ? userOrganisation.organisationId : undefined
+        const organisationId = !isHubAdmin() && userOrganisation ? userOrganisation.organisationId : undefined
 
         /**
          *Get all the bundle groups having categoryIds and statuses

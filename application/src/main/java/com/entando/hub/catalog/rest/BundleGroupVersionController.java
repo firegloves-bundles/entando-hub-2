@@ -187,14 +187,15 @@ public class BundleGroupVersionController {
     }
     
 	// PUBLIC
-	@Operation(summary = "Get the bundleGroupVersion details", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
+	@Operation(summary = "Get the bundleGroupVersion details by versionId", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
 	@CrossOrigin
 	@GetMapping("/{bundleGroupVersionId}")
-	public ResponseEntity<BundleGroupVersion> getBundleGroup(@PathVariable String bundleGroupVersionId) {
+	public ResponseEntity<BundleGroupVersionView> getBundleGroup(@PathVariable String bundleGroupVersionId) {
 		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
 		if (bundleGroupVersionOptional.isPresent()) {
-			return new ResponseEntity<>(bundleGroupVersionOptional.map(BundleGroupVersion::new).get(), HttpStatus.OK);
+			BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersionOptional.get());
+			return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
 		} else {
 			logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionOptional);
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

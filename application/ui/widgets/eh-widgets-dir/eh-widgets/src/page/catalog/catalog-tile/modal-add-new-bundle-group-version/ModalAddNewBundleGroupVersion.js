@@ -193,6 +193,8 @@ export const ModalAddNewBundleGroupVersion = ({
             minOneBundleError={minOneBundleError}
             allVersions={theBundleGroup.allVersions}
             mode="Edit"
+            // EHUB:147 For Default Select Status will be Draft
+            isDraftDefault={true}
           />
         </Modal>
       }

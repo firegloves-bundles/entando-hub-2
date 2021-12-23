@@ -554,7 +554,7 @@ export const editBundleGroupVersion = async (bundleGroupVersionData, bundleGroup
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateBundleGroup')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundleGroupVersion')} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('toasterMessage.bundleGroup')} ${bundleGroupVersionData.name} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)

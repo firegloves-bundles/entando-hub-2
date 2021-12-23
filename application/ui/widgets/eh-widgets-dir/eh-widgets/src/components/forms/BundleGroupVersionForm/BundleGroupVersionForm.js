@@ -26,7 +26,8 @@ const BundleGroupVersionForm = ({
     selectStatusValues,
     validationResult,
     minOneBundleError,
-    mode
+    mode,
+    isDraftDefault
 }) => {
 
     // const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
@@ -306,7 +307,8 @@ const BundleGroupVersionForm = ({
                                     validationResult["status"].join("; ")
                                 }
                                 disabled={disabled}
-                                value={bundleGroup && bundleGroup.status}
+                                // EHUB:147 For Default Select Status will be Draft
+                                value={!isDraftDefault && bundleGroup && bundleGroup.status}
                                 onChange={statusChangeHandler}
                                 id={"status"}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>

@@ -559,3 +559,17 @@ export const editBundleGroupVersion = async (bundleGroupVersionData, bundleGroup
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
 }
+
+/**
+ * Get bundle group details by bundle group version id
+ * @param {*} bundleGroupVersionId 
+ * @returns 
+ */
+ export const getBundleGroupDetailsByBundleGroupVersionId = async (bundleGroupVersionId) => {
+  let newUrl = `${urlBundleGroupVersion}${bundleGroupVersionId}`;
+  const { data, isError } = await getData(newUrl)
+
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+
+  return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
+}

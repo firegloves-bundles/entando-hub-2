@@ -5,6 +5,7 @@ import { Content, Loading } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
 import "./bundle-group-versions-page.scss";
+import { MESSAGES } from "../../../helpers/constants";
 
 const BundleGroupVersionsPage = () => {
   
@@ -79,9 +80,9 @@ const BundleGroupVersionsPage = () => {
               <div className="bx--col-lg-16 CatalogVersionPageContent-wrapper">
                 {bgVersionList && bgVersionList.length 
                   ? 
-                    <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoriesDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
+                    <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
                   : 
-                <div> No versions found </div>}
+                  <div> {MESSAGES.NO_VERSIONS_FOUND_MSG} </div>}
               </div>
             </div>
           </div>

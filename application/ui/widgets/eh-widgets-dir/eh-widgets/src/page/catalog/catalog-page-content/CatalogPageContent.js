@@ -138,7 +138,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups} categoriesDetails={catList} onAfterSubmit={onAfterSubmit} />
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} />
                 <Pagination
                     itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                     itemRangeText={

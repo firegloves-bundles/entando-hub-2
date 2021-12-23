@@ -18,7 +18,8 @@ function AppCarbon() {
       <NotificationDispatcher />
         <HashRouter>
             <Switch>
-                <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
+                <Route path="**/bundlegroup/:id" exact component={BundleGroupPage}/>
+                <Route path="**/bundlegroup/versions/:id" component={BundleGroupPage}/>
                 <Route path="**/versions/:id" component={BundleGroupVersionsPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage}/>

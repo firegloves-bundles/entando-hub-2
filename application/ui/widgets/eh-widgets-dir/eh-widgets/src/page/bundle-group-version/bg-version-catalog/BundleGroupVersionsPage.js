@@ -76,7 +76,7 @@ const BundleGroupVersionsPage = () => {
             </div>
 
             <div className="bx--row">
-              <div className="bx--col-lg-16 CatalogPageContent-wrapper">
+              <div className="bx--col-lg-16 CatalogVersionPageContent-wrapper">
                 {bgVersionList && bgVersionList.length 
                   ? 
                     <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoriesDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>

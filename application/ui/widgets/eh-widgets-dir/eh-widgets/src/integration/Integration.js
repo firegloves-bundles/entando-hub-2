@@ -504,11 +504,10 @@ export const getAllKCUsers = async () => {
  */
  export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
   const { data, isError } = await postData(urlBundleGroupVersion, bundleGroupVersionData)
-// TODO: EHUB-147: need to add localization for below message
   eventHandler(
     isError,
-    `Unable to add bundle group version. ${data ? data.message : ""}`,
-    `Bundle Group Version ${data.data ? data.data.name : ""} saved`
+    `${i18n.t('toasterMessage.unableToAddBundleGroupVersion')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${data.data ? data.data.name : ""} saved`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
@@ -521,10 +520,9 @@ export const getAllKCUsers = async () => {
  export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
   let url = `${urlBundleGroupVersion}bundles/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
   const { data, isError } = await getData(url);
-// TODO: EHUB-147: need to add localization for below message
   eventHandler(
     isError,
-    `Impossible to load bundle group versions : ${data ? data.message : ""}`
+    `${i18n.t('toasterMessage.impossibleToLoadBundleGroupVersions')} : ${data ? data.message : ""}`
   )
   return checkForErrorsAndSendResponse(data, isError, "versions")
 }
@@ -537,12 +535,10 @@ export const getAllKCUsers = async () => {
  */
 export const deleteBundleGroupVersion = async (bundleGroupVersionId) => {
   const { data, isError } = await deleteData(urlBundleGroupVersion, bundleGroupVersionId);
-  // TODO: EHUB-147: need to add localization for below message
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToDeleteBundle')}  ${data ? data.message : ""}`,
-    // `${i18n.t('toasterMessage.bundle')} ${bundleName ? bundleName : ""} ${i18n.t('toasterMessage.deleted')}`
-    `Bundle Group Version ${i18n.t('toasterMessage.deleted')}`
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${i18n.t('toasterMessage.deleted')}`
   )
   return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE);
 }
@@ -555,12 +551,10 @@ export const deleteBundleGroupVersion = async (bundleGroupVersionId) => {
  */
 export const editBundleGroupVersion = async (bundleGroupVersionData, bundleGroupVersionId) => {
   const { data, isError } = await postData(urlBundleGroupVersion, bundleGroupVersionData, bundleGroupVersionId)
- // TODO: EHUB-147: need to add localization for below message
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateBundleGroup')} ${data ? data.message : ""}`,
-    // `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
-    `Bundle Group Version ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)

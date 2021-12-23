@@ -70,7 +70,7 @@ public class BundleGroupVersionService {
         if (pageSize == 0) {
             paging = Pageable.unpaged();
         } else {
-            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
             paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
         }
         Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
@@ -119,10 +119,6 @@ public class BundleGroupVersionService {
 	        }
 
 	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
-	        
-	        if(Objects.nonNull(statusSet) && statusSet.contains(BundleGroupVersion.Status.ARCHIVE)) {
-	        	statusSet.remove(BundleGroupVersion.Status.ARCHIVE);
-	        }
 	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
 	        setBundleGroupUrl(page);
 	        return page;

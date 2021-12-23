@@ -234,7 +234,7 @@ public class BundleGroupVersionController {
         protected List<String> categories;
         protected List<String> children;
         protected List<String> allVersions;
-
+        protected Boolean isEditable = false;
 	    
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
@@ -251,6 +251,7 @@ public class BundleGroupVersionController {
             this.documentationUrl = entity.getDocumentationUrl();
             this.bundleGroupUrl = entity.getBundleGroupUrl();
             this.version = entity.getVersion();
+            this.isEditable = entity.getBundleGroup().getVersion().size() > 2 ? false :true;
             if (entity.getBundleGroup()!= null) {
             	this.bundleGroupId = entity.getBundleGroup().getId().toString();
             }

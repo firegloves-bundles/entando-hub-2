@@ -308,7 +308,7 @@ const BundleGroupVersionForm = ({
                                 }
                                 disabled={disabled}
                                 // EHUB:147 For Default Select Status will be Draft
-                                value={!isDraftDefault && bundleGroup && bundleGroup.status}
+                                value={(!isDraftDefault && bundleGroup) ? bundleGroup.status :  null}
                                 onChange={statusChangeHandler}
                                 id={"status"}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>

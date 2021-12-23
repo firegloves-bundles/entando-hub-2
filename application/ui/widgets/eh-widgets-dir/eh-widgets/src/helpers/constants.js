@@ -41,6 +41,9 @@ export const API_RESPONSE_KEY = {
 // Constant String
 export const DELETED_BUNDLE = 'deletedBundle';
 export const GIT_REPO = 'gitRepo';
+export const SLASH_VERSIONS = '/versions';
+export const BREADCRUMB_VERSIONS = 'Versions';
+
 
 // REGEX
 export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
@@ -86,7 +89,8 @@ export const DESCRIPTION_MAX_LENGTH = 'Description must not exceed 100 character
 export const MESSAGES = {
     NOTIFY_GUEST_PORTAL_USER_MSG: 'Your account does not currently have access to the Hub. Please contact your Administrator to request access.',
     IMPOSSIBLE_TO_REMOVE_USERS_MSG: 'Impossible to remove the user',
-    USER_REMOVED_FROM_ORG_MSG: 'User removed from the organisation'
+    USER_REMOVED_FROM_ORG_MSG: 'User removed from the organisation',
+    NO_VERSIONS_FOUND_MSG: 'No versions found'
 }
 
 // All dropdown options
@@ -99,3 +103,7 @@ export const MENU_OPTIONS = {
     ADD_BUNDLE_GROUP_VERSION: 'Add Version',
     VIEW_BUNDLE_GROUP_VERSIONS: 'View Versions'
 }
+
+export const HOME_TO_BG_PAGE_URL = '/bundlegroup/';
+export const VERSIONS_TO_BG_PAGE_URL = '/bundlegroup/versions/';
+

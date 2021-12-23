@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { Tag } from "carbon-components-react"
-import { useHistory } from "react-router-dom"
-import "./catalog-tile.scss"
-import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
-import { isHubUser } from "../../../helpers/helpers"
-import {textFromStatus} from '../../../helpers/profiling';
+import React, { useEffect, useState } from "react";
+import { Tag } from "carbon-components-react";
+import { useHistory } from "react-router-dom";
+import "./catalog-tile.scss";
+import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
+import { isHubUser } from "../../../helpers/helpers";
+import { textFromStatus } from '../../../helpers/profiling';
+import { HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../../../helpers/constants";
 
 const CatalogTile = ({
   bundleGroupId,
@@ -14,7 +15,7 @@ const CatalogTile = ({
   descriptionImage,
   categories,
   status,
-  categoriesDetails,
+  categoryDetails,
   onAfterSubmit,
   version,
   bundleGroup,
@@ -27,19 +28,23 @@ const CatalogTile = ({
 
     if (categories) {
       const getCategoryNameById = (catId) => {
-        return categoriesDetails && categoriesDetails.find(cat => cat.categoryId === catId);
+        return categoryDetails && categoryDetails.find(cat => cat.categoryId === catId);
       }
       const data = getCategoryNameById(categories[0]) && getCategoryNameById(categories[0]).name;
       setCategoryName(data);
     }
 
-  }, [categories, categoriesDetails])
+  }, [categories, categoryDetails])
 
   const history = useHistory()
 
-  //manage the bundle group detail
+  // Manage navigation to bundle group page
   const handleClick = () => {
-    history.push("/bundlegroup/" + bundleGroupId)
+    if (isVersionsPage) {
+      history.push(`${VERSIONS_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+    } else {
+      history.push(`${HOME_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+    }
   }
 
   let tagColor
@@ -87,9 +92,9 @@ const CatalogTile = ({
           <div className="CatalogTile-card-title">{name}</div>
           <div className="CatalogTile-card-status">{organisationName}</div>
           {isHubUser() && (
-              <div className="CatalogTile-card-status">
-                {textFromStatus(status)}
-              </div>
+            <div className="CatalogTile-card-status">
+              {textFromStatus(status)}
+            </div>
           )}
           <div className="CatalogTile-card-description">{description}</div>
           <div className="tag-setting">

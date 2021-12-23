@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
+import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
@@ -114,16 +117,20 @@ public class BundleGroupVersionService {
 	        if (pageSize == 0) {
 	            paging = Pageable.unpaged();
 	        } else {
-	            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
+	        	   Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
 	            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
 	        }
-
+	
 	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
 	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
 	        setBundleGroupUrl(page);
-	        return page;
+	        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
+	        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+	        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+	        Page<BundleGroupVersion> response = new PageImpl<>(versions);
+	        return response;
 	 }
-	 
+	
 	 @Transactional
 	 public void deleteBundleGroupVersion(Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional) {
 		 

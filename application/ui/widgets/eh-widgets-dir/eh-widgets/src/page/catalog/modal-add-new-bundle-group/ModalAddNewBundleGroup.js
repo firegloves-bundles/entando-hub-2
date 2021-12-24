@@ -74,6 +74,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     categories: [defaultCategoryId],
                     organisationId: organizationId,
                     versionDetails: {
+                        bundleGroupVersionId:null,
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
@@ -142,6 +143,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         categories: [defaultCategoryId],
                         organisationId: organizationId,
                         versionDetails: {
+                            bundleGroupVersionId: null,
                           description: "",
                           descriptionImage: values.bundleGroupForm.standardIcon,
                           documentationUrl: "",

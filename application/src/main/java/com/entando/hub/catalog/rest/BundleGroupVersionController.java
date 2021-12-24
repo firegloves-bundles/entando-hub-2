@@ -235,6 +235,7 @@ public class BundleGroupVersionController {
         protected List<String> children;
         protected List<String> allVersions;
         protected Boolean isEditable = false;
+        protected String bundleGroupVersionId;
 	    
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;

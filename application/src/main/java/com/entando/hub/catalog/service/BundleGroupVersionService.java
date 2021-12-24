@@ -2,7 +2,7 @@ package com.entando.hub.catalog.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,10 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
@@ -141,5 +141,18 @@ public class BundleGroupVersionService {
 	    
 	  public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
 	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
-	  }  
+	  }
+
+		/**
+		 * If a bundle group has 1 or no bundle group versions then it is editable.
+		 * 
+		 * @param bundleGroup
+		 * @return
+		 */
+		public boolean isBundleGroupEditable(BundleGroup bundleGroup) {
+			if (bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1) {
+				return true;
+			}
+			return false;
+		}
 }

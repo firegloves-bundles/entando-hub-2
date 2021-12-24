@@ -131,10 +131,13 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setBundles(bundleSet);
         }
-        if (bundleGroup.getVersionDetails()!= null) {
-    	      bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(Optional.empty(),toUpdate), bundleGroup.getVersionDetails());
-        }
+        if (bundleGroup.getVersionDetails() != null) {
+        	 Optional<String> opt =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
+        			 ?  Optional.of(bundleGroup.getVersionDetails().getBundleGroupVersionId())
+        					 : Optional.empty();
 
+        	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(opt, toUpdate), bundleGroup.getVersionDetails());
+        }
     }
 
     @Transactional

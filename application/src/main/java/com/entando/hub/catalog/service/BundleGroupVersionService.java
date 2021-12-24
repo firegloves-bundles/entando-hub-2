@@ -2,7 +2,6 @@ package com.entando.hub.catalog.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,32 +20,34 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
+import com.entando.hub.catalog.persistence.BundleRepository;
+import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 
 @Service
 public class BundleGroupVersionService {
 
-    private final Logger logger = LoggerFactory.getLogger(BundleGroupController.class);
-
+    private final Logger logger = LoggerFactory.getLogger(BundleGroupVersionService.class);
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
-    
     final private BundleGroupRepository bundleGroupRepository;
+    final private BundleRepository bundleRepository;
+    final private CategoryRepository categoryRepository;
 
     @Autowired
     private Environment environment;
 
-    public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository) {
+    public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository,BundleRepository bundleRepository,CategoryRepository categoryRepository) {
     	this.bundleGroupVersionRepository = bundleGroupVersionRepository;
     	this.bundleGroupRepository = bundleGroupRepository;
+    	this.bundleRepository = bundleRepository;
+    	this.categoryRepository = categoryRepository;
     }
     public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionId) {
         return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
@@ -131,13 +132,34 @@ public class BundleGroupVersionService {
 	        return response;
 	 }
 	
-	 @Transactional
-	 public void deleteBundleGroupVersion(Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional) {
-		 
-		    bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
-		    	bundleGroupVersionRepository.delete(bundleGroupVersion);
-		    });
-	  }
+
+		@Transactional
+		public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
+			bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
+				bundleGroupVersionRepository.delete(bundleGroupVersion);
+				List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroup(bundleGroupVersion.getBundleGroup());
+				if (versions.isEmpty()) {			
+					deleteFromCategories(bundleGroupVersion.getBundleGroup());
+					deleteFromBundles(bundleGroupVersion.getBundleGroup());
+					bundleGroupRepository.delete(bundleGroupVersion.getBundleGroup());
+				}
+			});
+		}
+
+		private void deleteFromCategories(BundleGroup bundleGroup) {
+			bundleGroup.getCategories().forEach((category) -> {
+				category.getBundleGroups().remove(bundleGroup);
+				categoryRepository.save(category);
+			});
+		}
+
+		private void deleteFromBundles(BundleGroup bundleGroup) {
+			bundleGroup.getBundles().forEach((bundle) -> {
+				bundle.getBundleGroups().remove(bundleGroup);
+				bundleRepository.save(bundle);
+				
+			});
+		}
 	    
 	  public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
 	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);

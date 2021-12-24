@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -37,9 +36,6 @@ public class BundleGroupVersion{
     private String documentationUrl;
 	
 	@Column(nullable = false)
-    private String bundleGroupUrl;
-	
-	@Column(nullable = false)
     private String version;
 
     @Lob
@@ -52,9 +48,11 @@ public class BundleGroupVersion{
     @ManyToOne
     private BundleGroup bundleGroup;
     
+    @UpdateTimestamp
+    private LocalDateTime createdAt;
+
 	@UpdateTimestamp
     private LocalDateTime lastUpdated;
-    
 
     public  enum Status {
         NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED, ARCHIVE

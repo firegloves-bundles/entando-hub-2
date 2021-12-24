@@ -1,8 +1,11 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,9 +17,6 @@ import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroup;
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
@@ -41,7 +41,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 /*
  * Controller for Bundle group version operations
@@ -70,7 +69,7 @@ public class BundleGroupVersionController {
     
 
 	@Operation(summary = "Create a new bundleGroupVersion", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
-  //  @RolesAllowed({ADMIN, AUTHOR, MANAGER})
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroupVersion> createBundleGroup(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
@@ -81,22 +80,21 @@ public class BundleGroupVersionController {
             if (CollectionUtils.isEmpty(bundleGroupVersions)) {
 		        com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
 		        return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.CREATED);
-            }else {
+            } else {
             	logger.warn("Requested bundleGroupVersion '{}' already exists", bundleGroupVersionView.getVersion());
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);   
             }
-        }else {
+        } else {
         	logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionView.getBundleGroupId().toString());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);        
         }
     }
 	
-	
 	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/filtered")
-    public PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
@@ -110,8 +108,7 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("REST request to get BundleGroupsversions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        Page<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupsPage = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
-        PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroupVersion::new).sorted(Comparator.comparing(BundleGroupVersion::getName,String::compareToIgnoreCase)).collect(Collectors.toList()), bundleGroupsPage);
+        PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
         return pagedContent;
     }
 
@@ -142,24 +139,22 @@ public class BundleGroupVersionController {
         }
     }
     
-    
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub by bundleGroupId", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/bundles/{bundleGroupId}")
-    public PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+    	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
-        PagedContent<BundleGroupVersion, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = null;
+        PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = null;
         if (statusFilterValues == null) {
             statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
         }
         logger.debug("REST request to get BundleGroup by Id: {},  statuses {}", bundleGroupId, statuses);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (bundleGroupOptional.isPresent()) {
-        	Page<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupsPage = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
-        	pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroupVersion::new).sorted(Comparator.comparing(BundleGroupVersion::getName,String::compareToIgnoreCase)).collect(Collectors.toList()), bundleGroupsPage);
-            return pagedContent;                  
+        	pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
+            return pagedContent;
         } else {
             logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
             return pagedContent;
@@ -233,8 +228,6 @@ public class BundleGroupVersionController {
         protected LocalDateTime lastUpdate;
         protected List<String> categories;
         protected List<String> children;
-        protected List<String> allVersions;
-        protected Boolean isEditable = false;
         protected String bundleGroupVersionId;
 	    
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
@@ -250,9 +243,7 @@ public class BundleGroupVersionController {
        	 	this.descriptionImage = entity.getDescriptionImage();
             this.status = entity.getStatus();
             this.documentationUrl = entity.getDocumentationUrl();
-            this.bundleGroupUrl = entity.getBundleGroupUrl();
             this.version = entity.getVersion();
-            this.isEditable = entity.getBundleGroup().getVersion().size() > 2 ? false :true;
             if (entity.getBundleGroup()!= null) {
             	this.bundleGroupId = entity.getBundleGroup().getId().toString();
             }
@@ -268,11 +259,6 @@ public class BundleGroupVersionController {
             if (entity.getBundleGroup().getBundles() != null) {
                 this.children = entity.getBundleGroup().getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
             }
-            
-            if (entity.getBundleGroup().getVersion() != null) {
-                this.allVersions = entity.getBundleGroup().getVersion().stream().map((version) -> version.getVersion().toString()).collect(Collectors.toList());
-            }
-
        }
 
         public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
@@ -280,15 +266,12 @@ public class BundleGroupVersionController {
             bundleBroupVersion.setDescription(this.getDescription());
             bundleBroupVersion.setDescriptionImage(this.getDescriptionImage());
             bundleBroupVersion.setDocumentationUrl(this.getDocumentationUrl());
-            bundleBroupVersion.setBundleGroupUrl(this.getBundleGroupUrl());
             bundleBroupVersion.setStatus(this.getStatus());
             bundleBroupVersion.setVersion(this.getVersion());
             bundleBroupVersion.setBundleGroup(bundleGroup);
             id.map(Long::valueOf).ifPresent(bundleBroupVersion::setId);
             return bundleBroupVersion;
         }
-        
-        
     }
 
 }

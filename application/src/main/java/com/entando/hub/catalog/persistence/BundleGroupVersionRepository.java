@@ -27,5 +27,6 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	
 	List<BundleGroupVersion> findByBundleGroup(BundleGroup bundleGroup);
 
+	List<BundleGroupVersion> findByBundleGroupAndStatusIn(BundleGroup bundleGroup, Set<BundleGroupVersion.Status> statuses);
 
 }

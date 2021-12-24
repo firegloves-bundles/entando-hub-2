@@ -1,7 +1,10 @@
 package com.entando.hub.catalog.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
@@ -29,7 +33,9 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.PagedContent;
 
 @Service
 public class BundleGroupVersionService {
@@ -58,18 +64,19 @@ public class BundleGroupVersionService {
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
     	if (bundleGroupVersionView.getStatus().equals(BundleGroupVersion.Status.PUBLISHED)) {
     		List<BundleGroupVersion> publishedBundles = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
-    		if (! publishedBundles.isEmpty()) {
+    		if (!publishedBundles.isEmpty()) {
     			for(BundleGroupVersion publishedBundle : publishedBundles) {
     				publishedBundle.setStatus(BundleGroupVersion.Status.ARCHIVE);
     			}
     			bundleGroupVersionRepository.saveAll(publishedBundles);
     		}
     	}
+    	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
     	return entity;
     }
     
-    public Page<BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
         Pageable paging;
         if (pageSize == 0) {
             paging = Pageable.unpaged();
@@ -96,24 +103,26 @@ public class BundleGroupVersionService {
         }
         
         Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);  
-        setBundleGroupUrl(page);
-        return page;
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
+        	.sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
+        	.collect(Collectors.toList()), page);
+        return pagedContent;
     }
     
-
-	
-	/**
-	 * Set bundle group url
-	 * @param page
-	 */
-	private void setBundleGroupUrl(Page<BundleGroupVersion> page) {
+    /**
+     * Set bundle group url
+     * @param bundleGroupVersionId
+     * @return
+     */
+	private String getBundleGroupUrl(Long bundleGroupVersionId) {
 		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
 		if (Objects.nonNull(hubGroupDeatilUrl)) {
-			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroupversion/" + entity.getId()));
+			return hubGroupDeatilUrl + "bundlegroupversion/" + bundleGroupVersionId;
 		}
+		return "";
 	}
 	
-	 public Page<BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
+		 public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion>  getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
 	        Pageable paging;
 	        if (pageSize == 0) {
 	            paging = Pageable.unpaged();
@@ -124,12 +133,16 @@ public class BundleGroupVersionService {
 	
 	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
 	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
-	        setBundleGroupUrl(page);
+
 	        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
 	        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
 	        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
-	        Page<BundleGroupVersion> response = new PageImpl<>(versions);
-	        return response;
+	        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
+
+	        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(pageResponse).stream()
+	        		  .sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
+	        		  .collect(Collectors.toList()), pageResponse);
+	        return pagedContent;
 	 }
 	
 
@@ -165,16 +178,83 @@ public class BundleGroupVersionService {
 	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
 	  }
 
-		/**
-		 * If a bundle group has 1 or no bundle group versions then it is editable.
-		 * 
-		 * @param bundleGroup
-		 * @return
-		 */
-		public boolean isBundleGroupEditable(BundleGroup bundleGroup) {
-			if (bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1) {
-				return true;
-			}
+	/**
+	 * If a bundle group has 1 or no bundle group versions then it is editable.
+	 * 
+	 * @param bundleGroup
+	 * @return
+	 */
+	public boolean isBundleGroupEditable(BundleGroup bundleGroup) {
+		if (bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if the current bundle is editable or not
+	 * 
+	 * @param bundleGroup
+	 * @return
+	 */
+	@SuppressWarnings("unlikely-arg-type")
+	public boolean canAddNewVersion(BundleGroup bundleGroup) {
+		Set<BundleGroupVersion.Status> statuses = new HashSet<BundleGroupVersion.Status>();
+		statuses.add(BundleGroupVersion.Status.NOT_PUBLISHED);
+		statuses.add(BundleGroupVersion.Status.PUBLISHED);
+		List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statuses);
+		if (!CollectionUtils.isEmpty(versions) && versions.size() > 1
+				&& versions.contains(BundleGroupVersion.Status.PUBLISHED)) {
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Convert to response view list
+	 * 
+	 * @param page
+	 * @return
+	 */
+	private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page) {
+		List<BundleGroupVersionFilteredResponseView> list = new ArrayList<BundleGroupVersionFilteredResponseView>();
+		page.getContent().stream().forEach((entity) -> {
+			BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
+			viewObj.setBundleGroupVersionId(entity.getId());
+			viewObj.setDescription(entity.getDescription());
+			viewObj.setDescriptionImage(entity.getDescriptionImage());
+			viewObj.setStatus(entity.getStatus());
+			viewObj.setDocumentationUrl(entity.getDocumentationUrl());
+			viewObj.setVersion(entity.getVersion());
+			viewObj.setBundleGroupUrl(getBundleGroupUrl(entity.getId()));
+
+			viewObj.setCreatedAt(entity.getCreatedAt());
+			viewObj.setLastUpdate(entity.getLastUpdated());
+
+			if (Objects.nonNull(entity.getBundleGroup())) {
+				viewObj.setName(entity.getBundleGroup().getName());
+				viewObj.setBundleGroupId(entity.getBundleGroup().getId());
+				viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
+				viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
+				if (entity.getBundleGroup().getOrganisation() != null) {
+					viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
+					viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());
+				}
+				if (entity.getBundleGroup().getCategories() != null) {
+					viewObj.setCategories(entity.getBundleGroup().getCategories().stream()
+							.map((category) -> category.getId().toString()).collect(Collectors.toList()));
+				}
+				if (entity.getBundleGroup().getBundles() != null) {
+					viewObj.setChildren(entity.getBundleGroup().getBundles().stream()
+							.map(child -> child.getId().toString()).collect(Collectors.toList()));
+				}
+				if (entity.getBundleGroup().getVersion() != null) {
+					viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
+							.map(version -> version.getVersion().toString()).collect(Collectors.toList()));
+				}
+			}
+			list.add(viewObj);
+		});
+		return list;
+	}
 }

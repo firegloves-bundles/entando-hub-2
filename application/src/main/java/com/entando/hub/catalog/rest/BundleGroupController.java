@@ -3,6 +3,7 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +35,15 @@ public class BundleGroupController {
     private final BundleGroupService bundleGroupService;
     private final CategoryService categoryService;
     private final SecurityHelperService securityHelperService;
+    
+    private final BundleGroupVersionService bundleGroupVersionService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService,
+    		BundleGroupVersionService bundleGroupVersionService) {
         this.bundleGroupService = bundleGroupService;
         this.categoryService = categoryService;
         this.securityHelperService = securityHelperService;
+        this.bundleGroupVersionService = bundleGroupVersionService;
     }
 
 
@@ -113,10 +118,14 @@ public class BundleGroupController {
     public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent()) {
-            logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
+
+		if (!bundleGroupOptional.isPresent()) {
+			logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		} else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
+			logger.warn("BundleGroup '{}' is not editable", bundleGroupId);
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} else {
             //if the user is not ADMIN
             if (!securityHelperService.hasRoles(Set.of(ADMIN))) {
                 //I'm going to check the organisation

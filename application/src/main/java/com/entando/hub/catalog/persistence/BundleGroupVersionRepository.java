@@ -23,5 +23,9 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	
 	List<BundleGroupVersion> findByBundleGroupAndVersion(BundleGroup bundleGroup, String version);
 
+	int countByBundleGroup(BundleGroup bundleGroup);
+	
+	List<BundleGroupVersion> findByBundleGroup(BundleGroup bundleGroup);
+
 
 }

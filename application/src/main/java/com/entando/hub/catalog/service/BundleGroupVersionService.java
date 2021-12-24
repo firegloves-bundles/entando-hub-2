@@ -163,5 +163,18 @@ public class BundleGroupVersionService {
 	    
 	  public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
 	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
-	  }  
+	  }
+
+		/**
+		 * If a bundle group has 1 or no bundle group versions then it is editable.
+		 * 
+		 * @param bundleGroup
+		 * @return
+		 */
+		public boolean isBundleGroupEditable(BundleGroup bundleGroup) {
+			if (bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1) {
+				return true;
+			}
+			return false;
+		}
 }

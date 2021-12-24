@@ -26,6 +26,7 @@ export const ModalAddNewBundleGroupVersion = ({
   open,
   onCloseModal,
   onAfterSubmit,
+  operation
 }) => {
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
@@ -141,7 +142,6 @@ export const ModalAddNewBundleGroupVersion = ({
         .catch((err) => {
           validationError = fillErrors(err)
         })
-
       if (isVersionDuplicate(bundleGroup.version, theBundleGroup.allVersions)) {
         let versionValidationError = (validationError && validationError.version) ? [...validationError.version, i18n.t('formValidationMsg.duplicateVersion')] : [i18n.t('formValidationMsg.duplicateVersion')]
         if (!validationError) {
@@ -174,7 +174,7 @@ export const ModalAddNewBundleGroupVersion = ({
       {loading && <Loading />}
       {!loading &&
         <Modal
-          passiveModal={passiveModal}
+          // passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
           modalLabel={i18n.t('modalMsg.addNewVersion')}
           primaryButtonText={i18n.t('component.button.submit')}
@@ -193,6 +193,7 @@ export const ModalAddNewBundleGroupVersion = ({
             minOneBundleError={minOneBundleError}
             allVersions={theBundleGroup.allVersions}
             mode="Edit"
+            operation={operation}
             // EHUB:147 For Default Select Status will be Draft
             isDraftDefault={true}
           />

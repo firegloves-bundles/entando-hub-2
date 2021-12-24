@@ -3,7 +3,7 @@ import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBu
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS } from "../../../../helpers/constants"
+import {ADMIN, MANAGER, BUNDLE_STATUS, OPERATION } from "../../../../helpers/constants"
 import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-version/ModalAddNewBundleGroupVersion"
 import i18n from "../../../../i18n";
 import { useHistory } from "react-router-dom";
@@ -57,7 +57,7 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
             {/* Add bundle group version modal */}
             {addBundleGroupVersionModal && <ModalAddNewBundleGroupVersion theBundleGroup={bundleGroup} open={addBundleGroupVersionModal}
-                onCloseModal={() => setAddBundleGroupVersionModal(false)} onAfterSubmit={onAfterSubmit} />}
+                onCloseModal={() => setAddBundleGroupVersionModal(false)} onAfterSubmit={onAfterSubmit} operation={OPERATION.ADD_NEW_VERSION}/>}
 
         </>
     )

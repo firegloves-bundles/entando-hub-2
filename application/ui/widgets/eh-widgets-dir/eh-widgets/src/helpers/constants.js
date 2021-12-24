@@ -107,3 +107,6 @@ export const MENU_OPTIONS = {
 export const HOME_TO_BG_PAGE_URL = '/bundlegroup/';
 export const VERSIONS_TO_BG_PAGE_URL = '/bundlegroup/versions/';
 
+export const OPERATION = {
+    ADD_NEW_VERSION: 'ADD_NEW_VERSION'
+}

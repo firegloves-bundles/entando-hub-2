@@ -28,7 +28,7 @@ const BundleGroupVersionForm = ({
     minOneBundleError,
     mode,
     isDraftDefault,
-    operation
+    operation,
 }) => {
 
     // const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
@@ -239,7 +239,10 @@ const BundleGroupVersionForm = ({
                         <Column sm={16} md={8} lg={8}>
                             <IconUploader
                                 descriptionImage={bundleGroup.descriptionImage}
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+    // TODO: vijay
+                                
+                                disabled={bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
+                                    operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 onImageChange={imagesChangeHandler}
                                 onImageDelete={imagesDeleteHandler}
                             />
@@ -253,7 +256,8 @@ const BundleGroupVersionForm = ({
                                     (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
                                         validationResult["name"].join("; ")) : null
                                 }
-                                disabled={true}
+    // TODO: vijay
+                                disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
@@ -264,7 +268,8 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-                                disabled={true}
+// TODO: vijay
+                                disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
@@ -280,7 +285,10 @@ const BundleGroupVersionForm = ({
                                     !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
                                         validationResult["documentationUrl"].join("; "))
                                 }
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                // TODO: vijay
+                                disabled={
+                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
+                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 value={bundleGroup && bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
@@ -296,7 +304,10 @@ const BundleGroupVersionForm = ({
                                     !isBundleVersionValid && (validationResult["version"] &&
                                         validationResult["version"].join("; "))
                                 }
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                // TODO: vijay
+                                disabled={
+                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
+                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 value={bundleGroup && bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
@@ -313,7 +324,10 @@ const BundleGroupVersionForm = ({
                                     validationResult["status"] &&
                                     validationResult["status"].join("; ")
                                 }
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                // TODO: vijay
+                                disabled={
+                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
+                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 // EHUB:147 For Default Select Status will be Draft
                                 value={(!isDraftDefault && bundleGroup) ? bundleGroup.status :  null}
                                 onChange={statusChangeHandler}
@@ -331,6 +345,10 @@ const BundleGroupVersionForm = ({
                                 minOneBundleError={minOneBundleError}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
+    // TODO: vijay
+
+                                operation={operation}
+                                bundleGroupIsEditable={bundleGroup.isEditable}
                             />
                         </Column>
 
@@ -345,7 +363,10 @@ const BundleGroupVersionForm = ({
                                     (validationResult["description"] &&
                                         validationResult["description"].join("; "))
                                 }
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+    // TODO: vijay
+                                disabled={
+                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
+                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 value={bundleGroup && bundleGroup.description}
                                 onChange={descriptionChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}

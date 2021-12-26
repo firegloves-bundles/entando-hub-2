@@ -2,6 +2,7 @@ import { Loading, Modal } from "carbon-components-react"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
+  editBundleGroup,
   editBundleGroupVersion,
   getAllBundlesForABundleGroup,
   getAllCategories,
@@ -114,7 +115,10 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
+    // TODO: vijay
+    // TODO: NEED TO HIT API ON CHECK OF isEditable
     // await editBundleGroup(toSend, toSend.bundleGroupId)
+    
     await editBundleGroupVersion(toSend, toSend.bundleGroupVersionId);
   }
   
@@ -150,7 +154,8 @@ export const ModalUpdateBundleGroup = ({
       {loading && <Loading />}
       {!loading &&
         <Modal
-          passiveModal={passiveModal}
+    // TODO: vijay
+          passiveModal={!bundleGroup.isEditable && passiveModal}
           className="Modal-edit-bundle-group"
           modalLabel={i18n.t('component.button.edit')}
           primaryButtonText={i18n.t('component.button.save')}

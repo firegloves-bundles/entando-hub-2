@@ -2,8 +2,8 @@ import {OverflowMenu, OverflowMenuItem} from "carbon-components-react"
 import {ModalUpdateBundleGroup} from "../modal-update-bundle-group/ModalUpdateBundleGroup"
 import {useState} from "react"
 import { ModalDeleteBundleGroup } from "../modal-delete-bundle-group/ModalDeleteBundleGroup"
-import { getHigherRole } from "../../../../helpers/helpers"
-import {ADMIN, MANAGER, BUNDLE_STATUS, OPERATION } from "../../../../helpers/constants"
+import { isHubAdmin } from "../../../../helpers/helpers"
+import { BUNDLE_STATUS, OPERATION } from "../../../../helpers/constants"
 import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-version/ModalAddNewBundleGroupVersion"
 import i18n from "../../../../i18n";
 import { useHistory } from "react-router-dom";
@@ -15,10 +15,6 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
     const [addBundleGroupVersionModal, setAddBundleGroupVersionModal] = useState(false);
 
-    const higherRole = getHigherRole()
-
-    const isShowDelete = (higherRole === MANAGER || higherRole === ADMIN) ? true : false;
-    const isDeletableBundle = bundleStatus === BUNDLE_STATUS.DELETE_REQ ? true : false
     const isAddVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED && !isVersionsPage && bundleGroup.isEditable) ? true : false;
     // TODO:
     // TODO: vijay
@@ -37,7 +33,7 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
                 
                 <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)}/>
                 
-                {(isShowDelete && isDeletableBundle) && <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setDeleteModal(true) }/>}
+                {isHubAdmin() && <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setDeleteModal(true) }/>}
 
                 {/* Show Add Version option */}
                 {isAddVersionOptionVisible &&

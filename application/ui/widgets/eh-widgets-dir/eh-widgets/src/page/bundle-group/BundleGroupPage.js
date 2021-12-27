@@ -62,9 +62,9 @@ const BundleGroupPage = () => {
 
   // fetches the bundle group
   useEffect(() => {
-    const getBundleGroupDetail = async (bundleGroupId) => {
+    const getBundleGroupDetail = async (bundleGroupVersionId) => {
       const pageModel = {}
-      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(bundleGroupId)).bgVersionDetails
+      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(bundleGroupVersionId)).bgVersionDetails
       pageModel["bundleGroup"] = fetchedBundleGroup
       pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
         fetchedBundleGroup.organisationId)).organisation : null
@@ -72,9 +72,10 @@ const BundleGroupPage = () => {
         > 0 ? (await getSingleCategory(
           fetchedBundleGroup.categories[0])).category : null
 
+          console.log("fetchedBundleGroup: ", fetchedBundleGroup);
       pageModel["children"] =
         fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
-          ? (await getAllBundlesForABundleGroup(fetchedBundleGroup.bundleGroupId)).bundleList
+          ? (await getAllBundlesForABundleGroup(bundleGroupVersionId)).bundleList
           : []
       return pageModel
     };

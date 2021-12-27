@@ -226,9 +226,10 @@ public class BundleGroupController {
                 this.organisationName = entity.getOrganisation().getName();
             }
             //todo one single iteration
-            if (entity.getBundles() != null) {
-                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
-            }
+//            kamlesh: commented
+//            if (entity.getBundles() != null) {
+//                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+//            }
             if (entity.getCategories() != null) {
                 this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }

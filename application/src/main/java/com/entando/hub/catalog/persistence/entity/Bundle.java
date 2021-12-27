@@ -21,9 +21,11 @@ public class Bundle {
     //comma separated bundle ids
     private String dependencies;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<BundleGroup> bundleGroups;
-
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    private Set<BundleGroup> bundleGroups;
+    
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<BundleGroupVersion> bundleGroupVersions;
 
     @Override
     public boolean equals(Object o) {

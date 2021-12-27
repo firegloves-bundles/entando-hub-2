@@ -1,15 +1,20 @@
 package com.entando.hub.catalog.persistence.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -47,6 +52,10 @@ public class BundleGroupVersion{
     
     @ManyToOne
     private BundleGroup bundleGroup;
+    
+//    Kamlesh
+    @ManyToMany(mappedBy = "bundleGroupVersions", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    private Set<Bundle> bundles = new HashSet<>();
     
     @UpdateTimestamp
     private LocalDateTime createdAt;

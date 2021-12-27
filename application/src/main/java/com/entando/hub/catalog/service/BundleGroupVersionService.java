@@ -73,21 +73,56 @@ public class BundleGroupVersionService {
     		}
     	}
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
-    	if (bundleGroupVersionView.getChildren() != null) {
-            //TODO native query to improve performance
-            bundleRepository.findByBundleGroupsIs(bundleGroupVersionEntity.getBundleGroup()).stream().forEach(bundle -> {
-                bundle.getBundleGroups().remove(bundleGroupVersionEntity.getBundleGroup());
-                bundleRepository.save(bundle);
-            });
-            Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-                bundle.getBundleGroups().add(bundleGroupVersionEntity.getBundleGroup());
-                bundleRepository.save(bundle);
-                return bundle;
-            }).collect(Collectors.toSet());
-            bundleGroupVersionEntity.getBundleGroup().setBundles(bundleSet);
-        }
+//    	kamlesh commented, need to remove
+//    	if (bundleGroupVersionView.getChildren() != null) {
+//            //TODO native query to improve performance
+//            bundleRepository.findByBundleGroupsIs(bundleGroupVersionEntity.getBundleGroup()).stream().forEach(bundle -> {
+//                bundle.getBundleGroups().remove(bundleGroupVersionEntity.getBundleGroup());
+//                bundleRepository.save(bundle);
+//            });
+//            Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+//                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+//                bundle.getBundleGroups().add(bundleGroupVersionEntity.getBundleGroup());
+//                bundleRepository.save(bundle);
+//                return bundle;
+//            }).collect(Collectors.toSet());
+//            bundleGroupVersionEntity.getBundleGroup().setBundles(bundleSet);
+//        }
+    	
+//      if (bundleGroup.getChildren() != null) {
+//      //TODO native query to improve performance
+//      bundleRepository.findByBundleGroupsIs(toUpdate).stream().forEach(bundle -> {
+//          bundle.getBundleGroups().remove(toUpdate);
+//          bundleRepository.save(bundle);
+//      });
+//      Set<Bundle> bundleSet = bundleGroup.getChildren().stream().map((bundleChildId) -> {
+//          com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+//          bundle.getBundleGroups().add(toUpdate);
+//          bundleRepository.save(bundle);
+//          return bundle;
+//      }).collect(Collectors.toSet());
+//      toUpdate.setBundles(bundleSet);
+//  }
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
+    	
+    	if (bundleGroupVersionView.getChildren() != null) {
+  	      //TODO native query to improve performance
+  	      bundleRepository.findByBundleGroupVersionsIs(entity).stream().forEach(bundle -> {
+  	          bundle.getBundleGroupVersions().remove(entity);
+  	          bundleRepository.save(bundle);
+  	      });
+  	      Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+  	          com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+  	          bundle.getBundleGroupVersions().add(entity);
+  	          bundleRepository.save(bundle);
+  	          return bundle;
+  	      }).collect(Collectors.toSet());
+  	    entity.setBundles(bundleSet);
+  	}
+      
+//    	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
+    	
+
     	return entity;
     }
     
@@ -164,13 +199,14 @@ public class BundleGroupVersionService {
 		@Transactional
 		public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
 			bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
-				bundleGroupVersionRepository.delete(bundleGroupVersion);
-				List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroup(bundleGroupVersion.getBundleGroup());
-				if (versions.isEmpty()) {			
-					deleteFromCategories(bundleGroupVersion.getBundleGroup());
-					deleteFromBundles(bundleGroupVersion.getBundleGroup());
-					bundleGroupRepository.delete(bundleGroupVersion.getBundleGroup());
-				}
+//				bundleGroupVersionRepository.delete(bundleGroupVersion);//kamlesh commented
+//				List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroup(bundleGroupVersion.getBundleGroup());
+//				if (versions.isEmpty()) {
+//					deleteFromCategories(bundleGroupVersion.getBundleGroup());
+					deleteFromBundles(bundleGroupVersion);
+//					bundleGroupRepository.delete(bundleGroupVersion.getBundleGroup());//kamlesh commented not required
+					bundleGroupVersionRepository.delete(bundleGroupVersion);
+//				}
 			});
 		}
 
@@ -181,11 +217,19 @@ public class BundleGroupVersionService {
 			});
 		}
 
-		private void deleteFromBundles(BundleGroup bundleGroup) {
-			bundleGroup.getBundles().forEach((bundle) -> {
-				bundle.getBundleGroups().remove(bundleGroup);
+//		Kamlesh commented, need to remove later
+//		private void deleteFromBundles(BundleGroup bundleGroup) {
+//			bundleGroup.getBundles().forEach((bundle) -> {
+//				bundle.getBundleGroups().remove(bundleGroup);
+//				bundleRepository.save(bundle);
+//				
+//			});
+//		}
+//		kamlesh: replaced above code.
+		private void deleteFromBundles(BundleGroupVersion bundleGroupVersion) {
+			bundleGroupVersion.getBundles().forEach((bundle) -> {
+				bundle.getBundleGroupVersions().remove(bundleGroupVersion);
 				bundleRepository.save(bundle);
-				
 			});
 		}
 	    
@@ -245,25 +289,26 @@ public class BundleGroupVersionService {
 
 			viewObj.setCreatedAt(entity.getCreatedAt());
 			viewObj.setLastUpdate(entity.getLastUpdated());
+			
+			if (!CollectionUtils.isEmpty(entity.getBundles())) {
+				viewObj.setChildren(entity.getBundles().stream()
+						.map(child -> child.getId().toString()).collect(Collectors.toList()));
+			}
 
 			if (Objects.nonNull(entity.getBundleGroup())) {
 				viewObj.setName(entity.getBundleGroup().getName());
 				viewObj.setBundleGroupId(entity.getBundleGroup().getId());
 				viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
 				viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
-				if (entity.getBundleGroup().getOrganisation() != null) {
+				if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
 					viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
 					viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());
 				}
-				if (entity.getBundleGroup().getCategories() != null) {
+				if (!CollectionUtils.isEmpty(entity.getBundleGroup().getCategories())) {
 					viewObj.setCategories(entity.getBundleGroup().getCategories().stream()
 							.map((category) -> category.getId().toString()).collect(Collectors.toList()));
 				}
-				if (entity.getBundleGroup().getBundles() != null) {
-					viewObj.setChildren(entity.getBundleGroup().getBundles().stream()
-							.map(child -> child.getId().toString()).collect(Collectors.toList()));
-				}
-				if (entity.getBundleGroup().getVersion() != null) {
+				if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
 					viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
 							.map(version -> version.getVersion().toString()).collect(Collectors.toList()));
 				}

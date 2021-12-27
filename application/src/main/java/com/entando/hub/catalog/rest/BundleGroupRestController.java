@@ -82,10 +82,11 @@ public class BundleGroupRestController {
                 this.organisationId = entity.getOrganisation().getId().toString();
                 this.organisationName = entity.getOrganisation().getName();
             }
-            //todo one single iteration
-            if (entity.getBundles() != null) {
-                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
-            }
+            //todo one single iteration,
+//            Kamlesh
+//            if (entity.getBundles() != null) {
+//                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+//            }
             if (entity.getCategories() != null) {
                 this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }

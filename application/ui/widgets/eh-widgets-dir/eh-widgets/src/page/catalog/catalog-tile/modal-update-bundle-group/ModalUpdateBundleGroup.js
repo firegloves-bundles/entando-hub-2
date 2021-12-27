@@ -69,7 +69,7 @@ export const ModalUpdateBundleGroup = ({
       // const res = bundleGroupObj
       const childrenFromDb =
         bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
-          ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
+          ? (await getAllBundlesForABundleGroup(bundleGroupObj.bundleGroupVersionId)).bundleList
           : []
 
       const bundleGroupOrganisation = (await getSingleOrganisation(bundleGroupObj && bundleGroupObj.organisationId)).organisation

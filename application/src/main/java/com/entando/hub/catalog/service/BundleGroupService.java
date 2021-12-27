@@ -8,11 +8,14 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
+import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -117,20 +120,27 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setCategories(categorySet);
         }
-        if (bundleGroup.getChildren() != null) {
-            //TODO native query to improve performance
-            bundleRepository.findByBundleGroupsIs(toUpdate).stream().forEach(bundle -> {
-                bundle.getBundleGroups().remove(toUpdate);
-                bundleRepository.save(bundle);
-            });
-            Set<Bundle> bundleSet = bundleGroup.getChildren().stream().map((bundleChildId) -> {
-                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-                bundle.getBundleGroups().add(toUpdate);
-                bundleRepository.save(bundle);
-                return bundle;
-            }).collect(Collectors.toSet());
-            toUpdate.setBundles(bundleSet);
-        }
+//        kamlesh commented
+//        if (bundleGroup.getChildren() != null) {
+//            //TODO native query to improve performance
+//            bundleRepository.findByBundleGroupsIs(toUpdate).stream().forEach(bundle -> {
+//                bundle.getBundleGroups().remove(toUpdate);
+//                bundleRepository.save(bundle);
+//            });
+//            Set<Bundle> bundleSet = bundleGroup.getChildren().stream().map((bundleChildId) -> {
+//                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+//                bundle.getBundleGroups().add(toUpdate);
+//                bundleRepository.save(bundle);
+//                return bundle;
+//            }).collect(Collectors.toSet());
+//            toUpdate.setBundles(bundleSet);
+//        }
+//        kamlesh: relaced above code
+      if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
+      //TODO native query to improve performance
+    	  bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
+      }
+        
         if (bundleGroup.getVersionDetails() != null) {
         	 Optional<String> opt =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
         			 ?  Optional.of(bundleGroup.getVersionDetails().getBundleGroupVersionId())
@@ -146,7 +156,7 @@ public class BundleGroupService {
         Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
-            deleteFromBundles(bundleGroup);
+//            deleteFromBundles(bundleGroup); //Need to review EHUB-147
             bundleGroupRepository.delete(bundleGroup);
         });
     }
@@ -156,12 +166,14 @@ public class BundleGroupService {
             categoryRepository.save(category);
         });
     }
-    public void deleteFromBundles(BundleGroup bundleGroup) {
-        bundleGroup.getBundles().forEach((bundle) -> {
-            bundle.getBundleGroups().remove(bundleGroup);
-            bundleRepository.save(bundle);
-        });
-    }
+    
+  //Need to review EHUB-147
+//    public void deleteFromBundles(BundleGroup bundleGroup) {
+//        bundleGroup.getBundles().forEach((bundle) -> {
+//            bundle.getBundleGroups().remove(bundleGroup);
+//            bundleRepository.save(bundle);
+//        });
+//    }
 
 //	/**
 //	 * Set bundle group url

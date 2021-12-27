@@ -1,12 +1,8 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.service.BundleService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +10,34 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.service.BundleService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @RestController
 @RequestMapping("/api/bundles/")
@@ -128,15 +145,17 @@ public class BundleController {
 
         protected final String gitRepoAddress;
         protected final List<String> dependencies;
-        protected final List<String> bundleGroups;
+//        protected final List<String> bundleGroups;
+        protected final List<String> bundleGroups; //Used for bundle group versions
 
-        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
+//        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
+        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
         	this.bundleId = id;
             this.name = name;
             this.description = description;
             this.gitRepoAddress = gitRepoAddress;
             this.dependencies = dependencies;
-            this.bundleGroups = bundleGroups;
+            this.bundleGroups = bundleGroupVersions;
         }
 
 
@@ -146,7 +165,8 @@ public class BundleController {
             this.description = entity.getDescription();
             this.gitRepoAddress = entity.getGitRepoAddress();
             this.dependencies = Arrays.asList(entity.getDependencies().split(","));
-            this.bundleGroups = entity.getBundleGroups().stream().map(bundleGroup -> bundleGroup.getId().toString()).collect(Collectors.toList());
+//            this.bundleGroups = entity.getBundleGroups().stream().map(bundleGroup -> bundleGroup.getId().toString()).collect(Collectors.toList());
+            this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
 
         }
 
@@ -157,17 +177,21 @@ public class BundleController {
             ret.setGitRepoAddress(this.getGitRepoAddress());
             ret.setDependencies(String.join(",", this.getDependencies()));
 
-            Set<BundleGroup> bundleGroups = this.bundleGroups.stream().map((bundleGroupId) -> {
-                BundleGroup bundleGroup = new BundleGroup();
-                bundleGroup.setId(Long.valueOf(bundleGroupId));
-                return bundleGroup;
+//            Kamlesh commented, remove later
+//            Set<BundleGroup> bundleGroups = this.bundleGroups.stream().map((bundleGroupId) -> {
+//                BundleGroup bundleGroup = new BundleGroup();
+//                bundleGroup.setId(Long.valueOf(bundleGroupId));
+//                return bundleGroup;
+//            }).collect(Collectors.toSet());
+            
+            Set<BundleGroupVersion> bundleGroups = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
+            	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+            	bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
+                return bundleGroupVersion;
             }).collect(Collectors.toSet());
-            ret.setBundleGroups(bundleGroups);
+            ret.setBundleGroupVersions(bundleGroups);
             id.map(Long::valueOf).ifPresent(ret::setId);
             return ret;
-
         }
-
     }
-
 }

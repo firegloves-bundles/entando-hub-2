@@ -67,7 +67,7 @@ export const ModalAddNewBundleGroupVersion = ({
                               && theBundleGroup.children 
                               && theBundleGroup.children.length > 0 
                               && theBundleGroup.bundleGroupId
-          ? (await getAllBundlesForABundleGroup(theBundleGroup.bundleGroupId)).bundleList
+          ? (await getAllBundlesForABundleGroup(theBundleGroup.bundleGroupVersionId)).bundleList
           : [];
           
         const bundleGroupOrganisation = (await getSingleOrganisation(theBundleGroup && theBundleGroup.organisationId)).organisation;

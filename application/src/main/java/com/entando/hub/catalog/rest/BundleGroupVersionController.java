@@ -256,8 +256,12 @@ public class BundleGroupVersionController {
             if (entity.getBundleGroup().getCategories() != null) {
                 this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }
-            if (entity.getBundleGroup().getBundles() != null) {
-                this.children = entity.getBundleGroup().getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+//            Kamlesh, commented and added new code
+//            if (entity.getBundleGroup().getBundles() != null) {
+//                this.children = entity.getBundleGroup().getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+//            }
+            if (entity.getBundles() != null) {
+                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
             }
        }
 

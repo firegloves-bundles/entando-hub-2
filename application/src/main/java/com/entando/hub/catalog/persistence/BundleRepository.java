@@ -2,6 +2,7 @@ package com.entando.hub.catalog.persistence;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import org.springframework.data.domain.Page;
@@ -12,8 +13,17 @@ import java.util.List;
 import java.util.Set;
 
 public interface BundleRepository extends JpaRepository<Bundle, Long> {
-    Page<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups, Pageable pageable);
-    Page<Bundle> findByBundleGroupsIsNotNull(Pageable pageable);
-    Page<Bundle> findByBundleGroupsIn(List<BundleGroup> bundleGroups, Pageable pageable);
-    List<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups);
+//    Page<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups, Pageable pageable);
+    Page<Bundle> findByBundleGroupVersionsIs(BundleGroupVersion bundleGroupVersions, Pageable pageable);
+  
+//    Page<Bundle> findByBundleGroupsIsNotNull(Pageable pageable);
+  
+//    Page<Bundle> findByBundleGroupsIn(List<BundleGroup> bundleGroups, Pageable pageable);
+      Page<Bundle> findByBundleGroupVersionsIn(List<BundleGroupVersion> bundleGroupVersions, Pageable pageable);
+  
+//    List<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups);
+    
+//    Kamlesh
+	List<Bundle> findByBundleGroupVersionsIs(BundleGroup bundleGroups);
+    List<Bundle> findByBundleGroupVersionsIs(BundleGroupVersion bundleGroupVersions);
 }

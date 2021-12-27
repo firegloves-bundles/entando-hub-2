@@ -8,7 +8,7 @@ import {
   getAllCategories,
   getSingleOrganisation,
 } from "../../../../integration/Integration"
-import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling"
+import { getProfiledNewSelectStatusInfo } from "../../../../helpers/profiling"
 import { getHigherRole } from "../../../../helpers/helpers"
 import {
   newVersionBundleGroupSchema,

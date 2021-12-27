@@ -73,4 +73,14 @@ public class BundleService {
     public Bundle createBundle(Bundle toSave) {
         return bundleRepository.save(toSave);
     }
+    
+    public void deleteBundle(Bundle toDelete){
+         deleteFromBundleGroupVersion(toDelete);
+         bundleRepository.delete(toDelete);
+    }
+    
+    public void deleteFromBundleGroupVersion(Bundle bundle) {
+       
+    }
+    
 }

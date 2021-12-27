@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
@@ -86,6 +87,17 @@ public class BundleController {
             return new ResponseEntity<>(new Bundle(entity), HttpStatus.OK);
         }
     }
+    @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
+    @RolesAllowed({ADMIN})
+    @CrossOrigin
+    @DeleteMapping("/{bundleId}")
+    @Transactional
+    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleId) {
+        logger.debug("REST request to delete bundle {}", bundleId);
+        Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
+            bundleService.deleteBundle(bundleOptional.get());
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+      }
 
     @Getter
     @Setter

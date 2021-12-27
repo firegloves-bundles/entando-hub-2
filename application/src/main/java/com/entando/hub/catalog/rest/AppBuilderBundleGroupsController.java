@@ -1,34 +1,38 @@
 package com.entando.hub.catalog.rest;
 
 
-import io.swagger.v3.oas.annotations.Operation;
-
 import java.util.Objects;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundlegroups")
 public class AppBuilderBundleGroupsController {
-    private final BundleGroupController bundleGroupController;
+    private final BundleGroupVersionController bundleGroupVersionController;
 
-    public AppBuilderBundleGroupsController(BundleGroupController bundleGroupController) {
-        this.bundleGroupController = bundleGroupController;
+    public AppBuilderBundleGroupsController(BundleGroupVersionController bundleGroupVersionController) {
+        this.bundleGroupVersionController = bundleGroupVersionController;
     }
 
 
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/")
-    public PagedContent<BundleGroupController.BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
 		if (Objects.isNull(statuses)) {
 			statuses = new String[1];
 			statuses[0] = BundleGroupVersion.Status.PUBLISHED.toString();
 		}
-        return bundleGroupController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses);
+        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses);
     }
 
 }

@@ -68,12 +68,12 @@ export const ModalUpdateBundleGroup = ({
       // const res = await getSingleBundleGroup(bundleGroupId);
       // const res = bundleGroupObj
       const childrenFromDb =
-      bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
+        bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
           ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
           : []
 
       const bundleGroupOrganisation = (await getSingleOrganisation(bundleGroupObj && bundleGroupObj.organisationId)).organisation
-      
+
       if (isMounted) {
         if (bundleGroupOrganisation) {
           setAllowedOrganisations([bundleGroupOrganisation])
@@ -115,11 +115,12 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    // TODO: vijay
-    // TODO: NEED TO HIT API ON CHECK OF isEditable
-    // await editBundleGroup(toSend, toSend.bundleGroupId)
-    
-    await editBundleGroupVersion(toSend, toSend.bundleGroupVersionId);
+    // TODO: vijay sachin NEED TO HIT API ON CHECK OF isEditable
+    if (bundleGroup.isEditable) {
+      await editBundleGroup(toSend, toSend.bundleGroupId)
+    } else {
+      await editBundleGroupVersion(toSend, toSend.bundleGroupVersionId);
+    }
   }
   
   const onRequestSubmit = (e) => {

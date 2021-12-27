@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +62,12 @@ public class BundleController {
     @PostMapping("/")
     public ResponseEntity<Bundle> createBundle(@RequestBody BundleNoId bundle) {
         logger.debug("REST request to create new Bundle: {}", bundle);
-        com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(Optional.empty()));
+        
+        Optional<String> opt =  Objects.nonNull(bundle.getBundleId()) 
+   			 ?  Optional.of(bundle.getBundleId())
+   					 : Optional.empty();
+        
+        com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(opt));
         return new ResponseEntity<>(new Bundle(entity), HttpStatus.CREATED);
     }
 
@@ -88,7 +94,7 @@ public class BundleController {
     public static class Bundle extends BundleNoId {
         private final String bundleId;
         public Bundle(String bundleId, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
-            super(name, description, gitRepoAddress, dependencies, bundleGroups);
+            super(bundleId, name, description, gitRepoAddress, dependencies, bundleGroups);
             this.bundleId = bundleId;
         }
 
@@ -100,6 +106,7 @@ public class BundleController {
 
     @Data
     public static class BundleNoId {
+        protected final String bundleId;
         protected final String name;
         protected final String description;
 
@@ -111,7 +118,8 @@ public class BundleController {
         protected final List<String> dependencies;
         protected final List<String> bundleGroups;
 
-        public BundleNoId(String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
+        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
+        	this.bundleId = id;
             this.name = name;
             this.description = description;
             this.gitRepoAddress = gitRepoAddress;
@@ -121,6 +129,7 @@ public class BundleController {
 
 
         public BundleNoId(com.entando.hub.catalog.persistence.entity.Bundle entity) {
+        	this.bundleId = entity.getId().toString();
             this.name = entity.getName();
             this.description = entity.getDescription();
             this.gitRepoAddress = entity.getGitRepoAddress();

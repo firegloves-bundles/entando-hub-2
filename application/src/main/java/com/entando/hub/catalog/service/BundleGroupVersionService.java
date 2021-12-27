@@ -29,6 +29,7 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
+import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
@@ -72,6 +73,20 @@ public class BundleGroupVersionService {
     		}
     	}
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
+    	if (bundleGroupVersionView.getChildren() != null) {
+            //TODO native query to improve performance
+            bundleRepository.findByBundleGroupsIs(bundleGroupVersionEntity.getBundleGroup()).stream().forEach(bundle -> {
+                bundle.getBundleGroups().remove(bundleGroupVersionEntity.getBundleGroup());
+                bundleRepository.save(bundle);
+            });
+            Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+                bundle.getBundleGroups().add(bundleGroupVersionEntity.getBundleGroup());
+                bundleRepository.save(bundle);
+                return bundle;
+            }).collect(Collectors.toSet());
+            bundleGroupVersionEntity.getBundleGroup().setBundles(bundleSet);
+        }
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
     	return entity;
     }

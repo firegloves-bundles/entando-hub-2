@@ -79,10 +79,7 @@ export const ModalAddNewBundleGroupVersion = ({
             ...theBundleGroup,
             children: childrenFromDb,
           }
-          const selectStatusValues = getProfiledUpdateSelectStatusInfo(
-            getHigherRole(),
-            bg.status
-          )
+          const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
           setSelectStatusValues(selectStatusValues);
           setPassiveModal(selectStatusValues.disabled);
           setBundleGroup(bg);
@@ -195,7 +192,7 @@ export const ModalAddNewBundleGroupVersion = ({
             mode="Edit"
             operation={operation}
             // EHUB:147 For Default Select Status will be Draft
-            isDraftDefault={true}
+            // isDraftDefault={true}
           />
         </Modal>
       }

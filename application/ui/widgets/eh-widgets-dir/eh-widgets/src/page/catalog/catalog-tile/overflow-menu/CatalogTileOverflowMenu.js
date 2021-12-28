@@ -19,7 +19,7 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
     // TODO:
     // TODO: vijay
     const isAddVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED && !isVersionsPage && bundleGroup.canAddNewVersion) ? true : false;
-    const isViewVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ) && !isVersionsPage ? true : false;
+    const isViewVersionOptionVisible = (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.DELETE_REQ) & !isVersionsPage ? true : false;
 
     const history = useHistory()
 

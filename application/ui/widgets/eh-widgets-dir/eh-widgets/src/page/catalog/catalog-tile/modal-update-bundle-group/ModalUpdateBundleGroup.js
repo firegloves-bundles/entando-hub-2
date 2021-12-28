@@ -141,7 +141,8 @@ export const ModalUpdateBundleGroup = ({
       toSend.versionDetails = {
         ...toSend.versionDetails,
         children: toSend.children,
-        categories: toSend.categories
+        categories: toSend.categories,
+        name: toSend.name
       }
       await editBundleGroupVersion(toSend.versionDetails, toSend.versionDetails.bundleGroupVersionId);
     }

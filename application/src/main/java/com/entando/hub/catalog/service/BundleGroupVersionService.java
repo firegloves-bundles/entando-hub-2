@@ -256,14 +256,12 @@ public class BundleGroupVersionService {
 	 * @param bundleGroup
 	 * @return
 	 */
-	@SuppressWarnings("unlikely-arg-type")
-	public boolean canAddNewVersion(BundleGroup bundleGroup) {
+	public boolean canAddNewVersion(BundleGroupVersion bundleGroupVersion) {
 		Set<BundleGroupVersion.Status> statuses = new HashSet<BundleGroupVersion.Status>();
 		statuses.add(BundleGroupVersion.Status.NOT_PUBLISHED);
 		statuses.add(BundleGroupVersion.Status.PUBLISHED);
-		List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statuses);
-		if (!CollectionUtils.isEmpty(versions) && versions.size() > 1
-				&& versions.contains(BundleGroupVersion.Status.PUBLISHED)) {
+		List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroupVersionAndStatusIn(bundleGroupVersion, statuses);
+		if (!CollectionUtils.isEmpty(versions) && versions.size() > 1) {
 			return false;
 		}
 		return true;
@@ -299,7 +297,7 @@ public class BundleGroupVersionService {
 				viewObj.setName(entity.getBundleGroup().getName());
 				viewObj.setBundleGroupId(entity.getBundleGroup().getId());
 				viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
-				viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
+				viewObj.setCanAddNewVersion(canAddNewVersion(entity));
 				if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
 					viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
 					viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());

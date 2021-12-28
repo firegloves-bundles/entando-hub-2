@@ -31,7 +31,6 @@ const BundleGroupForm = ({
                              mode
                          }) => {
 
-
     const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
     const [bundleNameLength, setBundleNameLength] = useState(0);
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
@@ -44,7 +43,7 @@ const BundleGroupForm = ({
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
         // TODO: COMPARE org ids with proper format, need to id numeric in api response.
-        const currOrganisation = organisations.find(o=>o.organisationId===currOrganisationId)
+        const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
 
         if (organisations.length === 1) {
             return (<Column sm={16} md={16} lg={16}>
@@ -70,7 +69,7 @@ const BundleGroupForm = ({
             return (<Column sm={16} md={16} lg={16}>
                 <Select
                     disabled={disabled}
-                    value={currOrganisation.organisationId}
+                    value={currOrganisation && currOrganisation.organisationId}
                     onChange={organisationChangeHandler}
                     id={"organisation"}
                     labelText={i18n.t('component.bundleModalFields.organisation')}>
@@ -225,6 +224,7 @@ const BundleGroupForm = ({
         changeBundleGroup("children", newBundleList)
     }
 
+    const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
     return (
         <>
             <Content className="Edit-bundle-group">
@@ -247,7 +247,7 @@ const BundleGroupForm = ({
                                     (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
                                     validationResult["name"].join("; ")) : null
                                 }
-                                disabled={disabled}
+                                disabled={shouldDisable}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
@@ -258,7 +258,7 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-                                disabled={disabled}
+                                disabled={shouldDisable}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}

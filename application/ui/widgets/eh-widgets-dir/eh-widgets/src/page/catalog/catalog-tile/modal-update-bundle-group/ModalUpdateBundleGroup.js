@@ -10,15 +10,13 @@ import {
 } from "../../../../integration/Integration"
 import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {
-  bundleGroupSchema,
-} from "../../../../helpers/validation/bundleGroupSchema"
+import { newBundleGroupSchema } from "../../../../helpers/validation/bundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
 import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
-import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
+import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
@@ -87,8 +85,28 @@ export const ModalUpdateBundleGroup = ({
           bg.status
         )
         setSelectStatusValues(selectStatusValues)
-        setPassiveModal(selectStatusValues.disabled)
-        setBundleGroup(bg)
+        setPassiveModal(selectStatusValues.disabled);
+
+        /**
+         * Prepare required bundle group object to show prefilled values on form
+         */
+        let newObject = {
+          name: bg.name,
+          children: bg.children,
+          categories: bg.categories,
+          organisationId: bg.organisationId,
+          isEditable: bg.isEditable,
+          versionDetails: {
+            bundleGroupVersionId: bg.bundleGroupVersionId,
+            description: bg.description,
+            descriptionImage: bg.descriptionImage,
+            documentationUrl: bg.documentationUrl,
+            bundleGroupUrl: bg.bundleGroupUrl,
+            version: bg.version,
+            status: bg.status
+          }
+        }
+        setBundleGroup(newObject);
       }
     }
 
@@ -115,18 +133,24 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    // TODO: vijay sachin NEED TO HIT API ON CHECK OF isEditable
+    
     if (bundleGroup.isEditable) {
       await editBundleGroup(toSend, toSend.bundleGroupId)
     } else {
-      await editBundleGroupVersion(toSend, toSend.bundleGroupVersionId);
+      // Update payload for version update only
+      toSend.versionDetails = {
+        ...toSend.versionDetails,
+        children: toSend.children,
+        categories: toSend.categories
+      }
+      await editBundleGroupVersion(toSend.versionDetails, toSend.versionDetails.bundleGroupVersionId);
     }
   }
   
   const onRequestSubmit = (e) => {
     ;(async () => {
       let validationError
-      await bundleGroupSchema
+      await newBundleGroupSchema
       .validate(bundleGroup, { abortEarly: false })
       .catch((err) => {
         validationError = fillErrors(err)
@@ -155,7 +179,6 @@ export const ModalUpdateBundleGroup = ({
       {loading && <Loading />}
       {!loading &&
         <Modal
-    // TODO: vijay
           passiveModal={!bundleGroup.isEditable && passiveModal}
           className="Modal-edit-bundle-group"
           modalLabel={i18n.t('component.button.edit')}
@@ -165,21 +188,7 @@ export const ModalUpdateBundleGroup = ({
           onRequestClose={onRequestClose}
           onRequestSubmit={onRequestSubmit}
         >
-          {/* <BundleGroupForm
-            mode="Edit"
-            allowedOrganisations={allowedOrganisations}
-            categories={categories}
-            onDataChange={onDataChange}
-            bundleGroup={bundleGroup}
-            theBundleStatus={bundleStatus}
-            selectStatusValues={selectStatusValues}
-            validationResult={validationResult}
-            minOneBundleError={minOneBundleError}
-          />
-          
-          */}
-
-          <BundleGroupVersionForm
+          <BundleGroupForm
             mode="Edit"
             allowedOrganisations={allowedOrganisations}
             categories={categories}

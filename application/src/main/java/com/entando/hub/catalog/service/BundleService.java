@@ -61,31 +61,33 @@ public class BundleService {
 //    }
     
 //    EHUB-147 newly added
-    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupVersionId) {
-        Pageable paging;
-        if(pageSize == 0){
-            paging = Pageable.unpaged();
-        }else{
-            paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
-        }
-        Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
-        if (bundleGroupVersionId.isPresent()) {
-            Long bundleGroupVersoinEntityId = Long.parseLong(bundleGroupVersionId.get()); 
-            Optional<BundleGroupVersion> bundleGroupVersionEntity = bundleGroupVersionRepository.findById(bundleGroupVersoinEntityId);
-            List<BundleGroupVersion> versionList= bundleGroupVersionRepository.findByBundleGroupVersionAndStatus(bundleGroupVersionEntity.get(), BundleGroupVersion.Status.PUBLISHED);
-            if(versionList !=null  && !versionList.isEmpty())
-            response = bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersionEntity.get(), paging);
-        } else {
-        	List<BundleGroupVersion> bumdleGroupVersions = new ArrayList<BundleGroupVersion>();
-        	List<BundleGroupVersion>  budlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
-        	for( BundleGroupVersion version  : budlegroupsVersion) {
-//        		bumdleGroupVersions.add(version.getBundleGroup());
-        		bumdleGroupVersions.add(version);
-        	}
-            response = bundleRepository.findByBundleGroupVersionsIn(bumdleGroupVersions, paging);
-        }
-        return response;
-    }
+	public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupVersionId) {
+		Pageable paging;
+		if (pageSize == 0) {
+			paging = Pageable.unpaged();
+		} else {
+			paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
+		}
+		Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
+		if (bundleGroupVersionId.isPresent()) {
+			Long bundleGroupVersoinEntityId = Long.parseLong(bundleGroupVersionId.get());
+			Optional<BundleGroupVersion> bundleGroupVersionEntity = bundleGroupVersionRepository.findById(bundleGroupVersoinEntityId);
+			if (bundleGroupVersionEntity.isPresent()) {
+				List<BundleGroupVersion> versionList = bundleGroupVersionRepository.findByBundleGroupVersionAndStatus(bundleGroupVersionEntity.get(), BundleGroupVersion.Status.PUBLISHED);
+				if (versionList != null && !versionList.isEmpty())
+					response = bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersionEntity.get(), paging);
+			}
+		} else {
+			List<BundleGroupVersion> bumdleGroupVersions = new ArrayList<BundleGroupVersion>();
+			List<BundleGroupVersion> budlegroupsVersion = bundleGroupVersionRepository
+					.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
+			for (BundleGroupVersion version : budlegroupsVersion) {
+				bumdleGroupVersions.add(version);
+			}
+			response = bundleRepository.findByBundleGroupVersionsIn(bumdleGroupVersions, paging);
+		}
+		return response;
+	}
 
 //    EHUB-147 commented
 //    public List<Bundle> getBundles(Optional<String> bundleGroupId) {

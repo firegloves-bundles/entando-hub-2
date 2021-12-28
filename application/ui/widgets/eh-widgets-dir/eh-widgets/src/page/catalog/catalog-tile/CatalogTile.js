@@ -5,7 +5,7 @@ import "./catalog-tile.scss";
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
 import { isHubUser } from "../../../helpers/helpers";
 import { textFromStatus } from '../../../helpers/profiling';
-import { HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../../../helpers/constants";
+import { BUNDLE_STATUS, HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../../../helpers/constants";
 
 const CatalogTile = ({
   bundleGroupId,
@@ -66,7 +66,7 @@ const CatalogTile = ({
   return (
     <>
       <div className="CatalogTile">
-        {isHubUser() && (
+        {isHubUser() && bundleStatus !== BUNDLE_STATUS.ARCHIVED && (
           <div className="CatalogTile-dropmenu">
             <CatalogTileOverflowMenu
               bundleGroupId={bundleGroupId}

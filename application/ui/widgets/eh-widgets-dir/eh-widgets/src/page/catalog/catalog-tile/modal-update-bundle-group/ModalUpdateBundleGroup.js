@@ -180,7 +180,7 @@ export const ModalUpdateBundleGroup = ({
       {loading && <Loading />}
       {!loading &&
         <Modal
-          passiveModal={!bundleGroup.isEditable && passiveModal}
+          passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
           modalLabel={i18n.t('component.button.edit')}
           primaryButtonText={i18n.t('component.button.save')}

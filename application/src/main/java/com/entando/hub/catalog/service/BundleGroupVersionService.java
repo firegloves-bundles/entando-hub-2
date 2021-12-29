@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -190,8 +189,7 @@ public class BundleGroupVersionService {
 	        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
 
 	        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(pageResponse).stream()
-	        		  .sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
-	        		  .collect(Collectors.toList()), pageResponse);
+	        		.collect(Collectors.toList()), pageResponse);
 	        return pagedContent;
 	 }
 	
@@ -251,16 +249,13 @@ public class BundleGroupVersionService {
 	}
 
 	/**
-	 * Check if the current bundle is editable or not
+	 * Check if New Version option can be added on menu or not
 	 * 
 	 * @param bundleGroup
 	 * @return
 	 */
-	public boolean canAddNewVersion(BundleGroupVersion bundleGroupVersion) {
-		Set<BundleGroupVersion.Status> statuses = new HashSet<BundleGroupVersion.Status>();
-		statuses.add(BundleGroupVersion.Status.NOT_PUBLISHED);
-		statuses.add(BundleGroupVersion.Status.PUBLISHED);
-		List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroupVersionAndStatusIn(bundleGroupVersion, statuses);
+	public boolean canAddNewVersion(BundleGroup bundleGroup) {
+		List<BundleGroupVersion> versions = bundleGroupVersionRepository.getByBundleGroupAndStatuses(bundleGroup.getId());
 		if (!CollectionUtils.isEmpty(versions) && versions.size() > 1) {
 			return false;
 		}
@@ -297,7 +292,7 @@ public class BundleGroupVersionService {
 				viewObj.setName(entity.getBundleGroup().getName());
 				viewObj.setBundleGroupId(entity.getBundleGroup().getId());
 				viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
-				viewObj.setCanAddNewVersion(canAddNewVersion(entity));
+				viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
 				if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
 					viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
 					viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());

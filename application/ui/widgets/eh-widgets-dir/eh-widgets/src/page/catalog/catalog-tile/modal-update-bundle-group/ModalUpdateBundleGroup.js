@@ -91,6 +91,7 @@ export const ModalUpdateBundleGroup = ({
          * Prepare required bundle group object to show prefilled values on form
          */
         let newObject = {
+          bundleGroupId: bg.bundleGroupId,
           name: bg.name,
           children: bg.children,
           categories: bg.categories,

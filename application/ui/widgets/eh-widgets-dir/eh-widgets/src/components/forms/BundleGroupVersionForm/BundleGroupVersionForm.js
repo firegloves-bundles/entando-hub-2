@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Column,
     Content,
@@ -37,7 +37,11 @@ const BundleGroupVersionForm = ({
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
 
     const previousVersions = bundleGroup && bundleGroup.allVersions ? bundleGroup.allVersions : [];
-
+    useEffect(() => {
+        if (operation === OPERATION.ADD_NEW_VERSION) {
+            statusChangeHandler({ target: { value: BUNDLE_STATUS.NOT_PUBLISHED } })
+        }
+    }, []);
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
 
         if (!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
@@ -307,6 +311,7 @@ const BundleGroupVersionForm = ({
                                 disabled={disableCondition}
                                 onChange={statusChangeHandler}
                                 id={"status"}
+                                value={bundleGroup ? bundleGroup.status : null}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>

@@ -37,7 +37,6 @@ const BundleGroupVersionForm = ({
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
 
-    const DESCRIPTION_MAX_LENGTH = 600;
     const previousVersions = bundleGroup && bundleGroup.allVersions ? bundleGroup.allVersions : [];
 
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
@@ -70,10 +69,10 @@ const BundleGroupVersionForm = ({
             return (<Column sm={16} md={16} lg={16}>
                 <Select
                     disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
-                    value={currOrganisation.organisationId}
+                    value={currOrganisation && currOrganisation.organisationId}
                     onChange={organisationChangeHandler}
                     id={"organisation"}
-                    labelText={"Organisation"}>
+                    labelText={i18n.t('component.bundleModalFields.organisation')}>
                     {organisationSelectItems}
                 </Select>
             </Column>)
@@ -319,7 +318,6 @@ const BundleGroupVersionForm = ({
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
-                                // EHUB:147 For Default Select Status will be Draft
                                 value={(!isDraftDefault && bundleGroup) ? bundleGroup.status :  null}
                                 onChange={statusChangeHandler}
                                 id={"status"}
@@ -361,7 +359,7 @@ const BundleGroupVersionForm = ({
                                 id={"description"}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
-                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.description && bundleGroup.description.length}/{DESCRIPTION_MAX_LENGTH}</div>
+                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.description && bundleGroup.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
                         </Column>
                     </Row>
                 </Grid>

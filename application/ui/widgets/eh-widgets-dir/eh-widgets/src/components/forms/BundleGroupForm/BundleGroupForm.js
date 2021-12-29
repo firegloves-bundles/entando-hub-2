@@ -37,8 +37,6 @@ const BundleGroupForm = ({
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
 
-    const DESCRIPTION_MAX_LENGTH = 600
-
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
@@ -338,7 +336,7 @@ const BundleGroupForm = ({
                                 id={"description"}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
-                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description && bundleGroup.versionDetails.description.length}/{DESCRIPTION_MAX_LENGTH}</div>
+                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description && bundleGroup.versionDetails.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
                         </Column>
                     </Row>
                 </Grid>

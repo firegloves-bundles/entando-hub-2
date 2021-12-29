@@ -299,7 +299,7 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isBundleVersionValid && validationResult["version"]}
+                                invalid={!isBundleVersionValid && !!validationResult["version"]}
                                 invalidText={
                                     !isBundleVersionValid && (validationResult["version"] &&
                                         validationResult["version"].join("; "))

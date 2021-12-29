@@ -94,11 +94,10 @@ const BundleGroupPage = () => {
             <div className="BundleGroupPage-page">
             <div className="bx--row">
               <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
-
                 {(isFromVersionPage)
                   // Breadcrumb when navigated from Version page
                   ? <EhBreadcrumb pathElements={[{
-                    path: `${BREADCRUMB_VERSIONS}`,
+                    path: `${i18n.t('breadCrumb.version')}`,
                     href: `${SLASH_VERSIONS}/` + pageModel.bundleGroup.bundleGroupId
                   }, {
                     path: pageModel.bundleGroup.name,

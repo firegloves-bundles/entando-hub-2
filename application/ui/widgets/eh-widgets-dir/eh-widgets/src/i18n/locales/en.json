@@ -66,7 +66,7 @@
       "addOrganisation": "Add Organisation",
       "addUser": "Add User",
       "remove": "Remove",
-      "selectOneUsername" : "Select one Username",
+      "selectOneUsername": "Select one Username",
       "newVersion": "New Version",
       "viewVersions": "View Versions",
       "submit": "Submit"
@@ -149,5 +149,8 @@
   "Publication Request": "Publication Request",
   "Published": "Published",
   "Deletion Request": "Deletion Request",
-  "All": "All"
+  "All": "All",
+  "breadCrumb": {
+    "version": "Version"
+  }
 }

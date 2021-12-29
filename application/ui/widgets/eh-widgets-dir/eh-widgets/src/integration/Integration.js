@@ -261,37 +261,6 @@ export const getAllBundleGroups = async (organisationId) => {
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }
 
-//Need to remove-EHUB-147
-export const getAllBundleGroupsFilteredPagedOld = async (
-  page,
-  pageSize,
-  organisationId,
-  categoryIds,
-  statuses
-) => {
-  let url = `${urlBundleGroupsFilteredPaged}?page=${page}&pageSize=${pageSize}`
-  if (categoryIds && categoryIds.length > 0) {
-    url =
-      url +
-      "&" +
-      categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&")
-  }
-  if (statuses && statuses.length > 0) {
-    statuses.map((status) => `statuses=${status}`).join("&")
-    url = url + "&" + statuses.map((status) => `statuses=${status}`).join("&")
-  }
-
-  if (organisationId) url = url + "&organisationId=" + organisationId
-  const { data, isError } = await getData(url)
-
-  eventHandler(
-    isError,
-    `${i18n.t('toasterMessage.impossibleToLoadBundleGroups')} ${data ? data.message : ""}`
-  )
-
-  return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
-}
-
 /**
  * GET bundle groups/versions filtered
  * @param {*} page 

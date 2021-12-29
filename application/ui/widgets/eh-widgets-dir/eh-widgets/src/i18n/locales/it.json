@@ -65,7 +65,7 @@
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
       "remove": "Rimuovere",
-      "selectOneUsername" : "Seleziona un nome utente",
+      "selectOneUsername": "Seleziona un nome utente",
       "newVersion": "Nuova versione",
       "viewVersions": "Visualizza versioni",
       "submit": "Invia"
@@ -126,13 +126,11 @@
     "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve essere fornita tramite un URL",
     "versionRequired": "La versione è un campo obbligatorio",
-
     "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
     "statusRequired": "Lo stato è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
     "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
     "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
-
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 600 caratteri",
@@ -151,5 +149,8 @@
   "Publication Request": "Richiesta di pubblicazione",
   "Published": "Pubblicato",
   "Deletion Request": "Richiesta di eliminazione",
-  "All": "Tutto"
+  "All": "Tutto",
+  "breadCrumb": {
+    "version": "Versione"
+  }
 }

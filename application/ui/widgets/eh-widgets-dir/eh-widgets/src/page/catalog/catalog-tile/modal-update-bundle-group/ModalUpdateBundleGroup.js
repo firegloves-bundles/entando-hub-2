@@ -62,9 +62,6 @@ export const ModalUpdateBundleGroup = ({
       }
     }
     const initBG = async () => {
-      // Old code below, new to remove: EHUB-147
-      // const res = await getSingleBundleGroup(bundleGroupId);
-      // const res = bundleGroupObj
       const childrenFromDb =
         bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
           ? (await getAllBundlesForABundleGroup(bundleGroupObj.bundleGroupVersionId)).bundleList

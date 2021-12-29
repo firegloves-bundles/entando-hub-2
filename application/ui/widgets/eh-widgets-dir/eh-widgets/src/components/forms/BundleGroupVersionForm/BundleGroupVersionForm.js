@@ -31,7 +31,6 @@ const BundleGroupVersionForm = ({
     operation,
 }) => {
 
-    // const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
     const [bundleStatus, setBundleStatus] = useState(BUNDLE_STATUS.NOT_PUBLISHED);
     const [bundleNameLength, setBundleNameLength] = useState(0);
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
@@ -147,8 +146,6 @@ const BundleGroupVersionForm = ({
 
     const versionChangeHandler = (e) => {
         changeBundleGroup("version", e.target.value)
-
-        // setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
             validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
@@ -240,8 +237,6 @@ const BundleGroupVersionForm = ({
                         <Column sm={16} md={8} lg={8}>
                             <IconUploader
                                 descriptionImage={bundleGroup.descriptionImage}
-    // TODO: vijay
-                                
                                 disabled={bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                     operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 onImageChange={imagesChangeHandler}
@@ -257,7 +252,6 @@ const BundleGroupVersionForm = ({
                                     (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
                                         validationResult["name"].join("; ")) : null
                                 }
-    // TODO: vijay
                                 disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
@@ -269,7 +263,6 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-// TODO: vijay
                                 disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
@@ -286,7 +279,6 @@ const BundleGroupVersionForm = ({
                                     !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
                                         validationResult["documentationUrl"].join("; "))
                                 }
-                                // TODO: vijay
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
@@ -305,7 +297,6 @@ const BundleGroupVersionForm = ({
                                     !isBundleVersionValid && (validationResult["version"] &&
                                         validationResult["version"].join("; "))
                                 }
-                                // TODO: vijay
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
@@ -325,7 +316,6 @@ const BundleGroupVersionForm = ({
                                     validationResult["status"] &&
                                     validationResult["status"].join("; ")
                                 }
-                                // TODO: vijay
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
@@ -346,8 +336,6 @@ const BundleGroupVersionForm = ({
                                 minOneBundleError={minOneBundleError}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
-    // TODO: vijay
-
                                 operation={operation}
                                 bundleGroupIsEditable={bundleGroup.isEditable}
                             />
@@ -364,7 +352,6 @@ const BundleGroupVersionForm = ({
                                     (validationResult["description"] &&
                                         validationResult["description"].join("; "))
                                 }
-    // TODO: vijay
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}

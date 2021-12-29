@@ -38,7 +38,6 @@ const CatalogTile = ({
 
   const history = useHistory()
 
-  // Manage navigation to bundle group page
   const handleClick = () => {
     if (isVersionsPage) {
       history.push(`${VERSIONS_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);

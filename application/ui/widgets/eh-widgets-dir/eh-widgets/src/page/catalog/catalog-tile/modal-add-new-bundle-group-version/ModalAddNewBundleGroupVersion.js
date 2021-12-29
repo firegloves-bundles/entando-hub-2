@@ -34,7 +34,6 @@ export const ModalAddNewBundleGroupVersion = ({
   const [categories, setCategories] = useState([])
 
   const [bundleGroup, setBundleGroup] = useState({})
-  // const [passiveModal, setPassiveModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
@@ -80,7 +79,6 @@ export const ModalAddNewBundleGroupVersion = ({
           }
           const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
           setSelectStatusValues(selectStatusValues);
-          // setPassiveModal(selectStatusValues.disabled);
           setBundleGroup(bg);
         }
     }
@@ -115,7 +113,6 @@ export const ModalAddNewBundleGroupVersion = ({
   const onRequestSubmit = (e) => {
     
     ;(async () => {
-      // Useful code for validation: EHUB-147:
       let validationError
       await newVersionBundleGroupSchema.validate(bundleGroup, { abortEarly: false })
         .catch((err) => {
@@ -141,7 +138,6 @@ export const ModalAddNewBundleGroupVersion = ({
         setValidationResult(validationError)
         return
       }
-      // await updateBundleGroup(bundleGroup); //Remove after verficatin: EHUB-147
       await addBundleGroupVersion(bundleGroup)
       onCloseModal()
       onAfterSubmit()
@@ -153,7 +149,6 @@ export const ModalAddNewBundleGroupVersion = ({
       {loading && <Loading />}
       {!loading &&
         <Modal
-          // passiveModal={passiveModal}
           className="Modal-edit-bundle-group"
           modalLabel={i18n.t('modalMsg.addNewVersion')}
           primaryButtonText={i18n.t('component.button.submit')}
@@ -173,8 +168,6 @@ export const ModalAddNewBundleGroupVersion = ({
             allVersions={theBundleGroup.allVersions}
             mode="Edit"
             operation={operation}
-            // EHUB:147 For Default Select Status will be Draft
-            // isDraftDefault={true}
           />
         </Modal>
       }

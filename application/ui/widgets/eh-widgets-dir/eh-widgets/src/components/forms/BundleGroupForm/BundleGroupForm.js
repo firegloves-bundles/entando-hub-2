@@ -42,7 +42,6 @@ const BundleGroupForm = ({
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
-        // TODO: COMPARE org ids with proper format, need to id numeric in api response.
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
 
         if (organisations.length === 1) {
@@ -142,7 +141,6 @@ const BundleGroupForm = ({
     }
 
     const documentationChangeHandler = (e) => {
-        // changeBundleGroup("documentationUrl", e.target.value)
         createVersionDetailsObj("documentationUrl", e.target.value);
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
@@ -153,9 +151,7 @@ const BundleGroupForm = ({
     }
 
     const versionChangeHandler = (e) => {
-        // changeBundleGroup("version", e.target.value.trim())
         createVersionDetailsObj("version", e.target.value);
-        // setIsValid(e.target.value, 'version')
         if (!e.target.value.trim().length) {
             validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
@@ -192,25 +188,21 @@ const BundleGroupForm = ({
         ;(async () => {
             const file = e.target.files[0]
             const base64 = await convertToBase64(file)
-            // changeBundleGroup("descriptionImage", base64)
             createVersionDetailsObj("descriptionImage", base64);
         })()
     }
 
     const imagesDeleteHandler = (e) => {
-        // changeBundleGroup("descriptionImage", values.bundleGroupForm.standardIcon)
         createVersionDetailsObj("descriptionImage", values.bundleGroupForm.standardIcon);
     }
 
     const statusChangeHandler = (e) => {
-        // changeBundleGroup("status", e.target.value)
         createVersionDetailsObj("status", e.target.value);
         setBundleStatus(e.target.value)
     }
 
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);
-        // changeBundleGroup("description", e.target.value)
         createVersionDetailsObj("description", e.target.value);
         if (e.target.value.length < CHAR_LENGTH) {
             const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')

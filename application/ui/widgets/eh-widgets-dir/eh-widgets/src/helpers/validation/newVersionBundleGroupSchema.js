@@ -16,7 +16,6 @@ export const newVersionBundleGroupSchema = Yup.object().shape({
     children: Yup.array().of(
         Yup.object().shape({
             bundleGroups: Yup.array().of(Yup.string()),
-            // bundleId: Yup.number().positive().integer(),
             dependencies: Yup.array().of(Yup.string()),
             description: Yup.string(),
             gitRepoAddress: Yup.string(),

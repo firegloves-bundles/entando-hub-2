@@ -35,7 +35,6 @@ const BundleGroupVersionsPage = () => {
 
   useEffect(() => {
     const getVersionList = async () => {
-      // const data = (await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, PAGE, PAGE_SIZE));
       const data = await loadVersionData(bundleGroupId, PAGE, PAGE_SIZE);
       if (data && data.versions && data.versions.payload && data.versions.payload.length) {
         setBgVersionList(data.versions.payload);

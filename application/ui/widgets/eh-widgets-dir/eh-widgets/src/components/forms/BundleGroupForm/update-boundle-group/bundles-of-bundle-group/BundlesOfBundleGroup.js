@@ -78,7 +78,6 @@ const BundlesOfBundleGroup = ({
     const [validationResult, setValidationResult] = useState({})
     const [isUrlReqValid, setIsUrlReqValid] = useState(false)
     const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false)
-    // TODO: vijay
     disabled = bundleGroupIsEditable && operation !== OPERATION.ADD_NEW_VERSION ? false : operation === OPERATION.ADD_NEW_VERSION ? false : disabled
 
     useEffect(() => {

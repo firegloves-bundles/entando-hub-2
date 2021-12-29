@@ -55,19 +55,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             }
             const organizationId = (allowedOrganisations && allowedOrganisations.length > 0) ? allowedOrganisations[0].organisationId : null;
             setBundleGroup(
-                // Remove this commented code later : EHUB-147
-            //     {
-            //         name: "",
-            //         description: "",
-            //         descriptionImage: values.bundleGroupForm.standardIcon,
-            //         documentationUrl: "",
-            //         children: [],
-            //         categories: [defaultCategoryId],
-            //         version: "",
-            //         status: "NOT_PUBLISHED",
-            //         organisationId: allowedOrganisations[0].organisationId
-            //     }
-
                 {
                     name: "",
                     children: [],
@@ -124,18 +111,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         }
                     }
                     const organizationId = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0].organisationId : null;
-                    // Remove this commented code later: EHUB-147
-                    // const newObj = {
-                    //     name: "",
-                    //     description: "",
-                    //     descriptionImage: values.bundleGroupForm.standardIcon,
-                    //     documentationUrl: "",
-                    //     children: [],
-                    //     categories: [defaultCategoryId],
-                    //     version: "",
-                    //     status: "NOT_PUBLISHED",
-                    //     organisationId: organizationId,
-                    // }
 
                     const newObj = {
                         name: "",
@@ -242,7 +217,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
     return (
         <ModalStateManager
             renderLauncher={({ onRequestOpen }) => (
-                // <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
                 <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.add')}</Button>
             )}>
             {ModalContent}

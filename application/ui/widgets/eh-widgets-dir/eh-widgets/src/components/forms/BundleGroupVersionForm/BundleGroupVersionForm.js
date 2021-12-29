@@ -205,16 +205,17 @@ const BundleGroupVersionForm = ({
         changeBundleGroup("descriptionImage", values.bundleGroupForm.standardIcon)
     }
 
-    useEffect(() => {
-        if (operation === OPERATION.ADD_NEW_VERSION) {
-            statusChangeHandler({ target: { value: BUNDLE_STATUS.NOT_PUBLISHED } })
-        }
-    }, []);
 
     const statusChangeHandler = (e) => {
         changeBundleGroup("status", e.target.value)
         setBundleStatus(e.target.value)
     }
+
+    useEffect(() => {
+        if (operation === OPERATION.ADD_NEW_VERSION) {
+            statusChangeHandler({ target: { value: BUNDLE_STATUS.NOT_PUBLISHED } })
+        }
+    });
 
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
   addNewBundleGroupVersion,
-  editBundleGroup,
   getAllBundlesForABundleGroup,
   getAllCategories,
   getSingleOrganisation,
@@ -35,7 +34,7 @@ export const ModalAddNewBundleGroupVersion = ({
   const [categories, setCategories] = useState([])
 
   const [bundleGroup, setBundleGroup] = useState({})
-  const [passiveModal, setPassiveModal] = useState(false)
+  // const [passiveModal, setPassiveModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
@@ -81,7 +80,7 @@ export const ModalAddNewBundleGroupVersion = ({
           }
           const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
           setSelectStatusValues(selectStatusValues);
-          setPassiveModal(selectStatusValues.disabled);
+          // setPassiveModal(selectStatusValues.disabled);
           setBundleGroup(bg);
         }
     }
@@ -94,23 +93,6 @@ export const ModalAddNewBundleGroupVersion = ({
       isMounted = false
     }
   }, [theBundleGroup])
-
-  //TODO BE QUERY REFACTORING ---- Remove below method - EHUB-147
-  const updateBundleGroup = async (bundleGroup) => {
-    let newChildren = []
-    if (bundleGroup.children && bundleGroup.children.length) {
-      //call addNewBundle rest api, saving every bundle
-      //WARNING a new bundle is created even if already exists
-      //the call is async in respArray there will be the new bundles id
-      let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-      newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
-    }
-    const toSend = {
-      ...bundleGroup,
-      children: newChildren,
-    }
-    await editBundleGroup(toSend, toSend.bundleGroupId)
-  }
 
 // ------------ Newly added method -----------------
   //Add Bundle Group Version api call

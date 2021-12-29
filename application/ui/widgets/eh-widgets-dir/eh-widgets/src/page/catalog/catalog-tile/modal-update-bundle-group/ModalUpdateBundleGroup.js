@@ -117,7 +117,7 @@ export const ModalUpdateBundleGroup = ({
     return () => {
       isMounted = false
     }
-  }, [bundleGroupId])
+  }, [bundleGroupId, bundleGroupObj])
 
   //TODO BE QUERY REFACTORING
   const updateBundleGroup = async (bundleGroup) => {

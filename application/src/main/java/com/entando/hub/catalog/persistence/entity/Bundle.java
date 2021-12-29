@@ -7,6 +7,10 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * This entity class is for BUNDLE table
+ *
+ */
 @Entity
 @Setter
 @Getter
@@ -16,9 +20,7 @@ public class Bundle {
     private Long id;
     private String name;
     private String description;
-    //private String descriptionImage;
     private String gitRepoAddress;
-    //comma separated bundle ids
     private String dependencies;
 
 //    @ManyToMany(fetch = FetchType.EAGER)

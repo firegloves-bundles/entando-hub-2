@@ -17,6 +17,10 @@ import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * This entity class is for BUNDLE_GROUP table 
+ *
+ */
 @Entity
 @Setter
 @Getter
@@ -38,27 +42,6 @@ public class BundleGroup {
     @OneToMany(mappedBy = "bundleGroup", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<BundleGroupVersion> version = new HashSet<>();
 
-/*
-    public void addCategory(Category category) {
-        this.categories.add(category);
-        Objects.requireNonNullElseGet(category.getBundleGroups(), category::getBundleGroups).add(this);
-    }
-
-    //TODO performance check, we can do better
-    public void mergeCategories(Set<Category> newCategories) {
-        //add all the new ones
-        newCategories.stream().forEach(this::addCategory);
-        //to exclude
-        Set<Category> toExclude = this.categories.stream().filter(category -> !newCategories.contains(category)).collect(Collectors.toSet());
-        //remove the old ones
-        toExclude.stream().forEach(category -> {
-            this.categories.remove(category);
-            Objects.requireNonNullElseGet(category.getBundleGroups(), category::getBundleGroups).remove(this);
-        });
-    }
-*/
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,21 +54,5 @@ public class BundleGroup {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-//    @Override
-//    public String toString() {
-//        return "BundleGroup{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", description='" + description + '\'' +
-//                ", descriptionImage='" + descriptionImage + '\'' +
-//                ", organisation=" + organisation +
-//                ", version=" + version +
-//                '}';
-//    }
-
-//    public  enum Status {
-//        NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED
-//    }
 }
 

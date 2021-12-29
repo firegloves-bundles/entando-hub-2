@@ -58,7 +58,6 @@ public class BundleGroupVersionService {
     public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionId) {
         return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
     }
-
     
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
@@ -71,57 +70,25 @@ public class BundleGroupVersionService {
     			bundleGroupVersionRepository.saveAll(publishedBundles);
     		}
     	}
-    	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
-//    	kamlesh commented, need to remove
-//    	if (bundleGroupVersionView.getChildren() != null) {
-//            //TODO native query to improve performance
-//            bundleRepository.findByBundleGroupsIs(bundleGroupVersionEntity.getBundleGroup()).stream().forEach(bundle -> {
-//                bundle.getBundleGroups().remove(bundleGroupVersionEntity.getBundleGroup());
-//                bundleRepository.save(bundle);
-//            });
-//            Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-//                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-//                bundle.getBundleGroups().add(bundleGroupVersionEntity.getBundleGroup());
-//                bundleRepository.save(bundle);
-//                return bundle;
-//            }).collect(Collectors.toSet());
-//            bundleGroupVersionEntity.getBundleGroup().setBundles(bundleSet);
-//        }
     	
-//      if (bundleGroup.getChildren() != null) {
-//      //TODO native query to improve performance
-//      bundleRepository.findByBundleGroupsIs(toUpdate).stream().forEach(bundle -> {
-//          bundle.getBundleGroups().remove(toUpdate);
-//          bundleRepository.save(bundle);
-//      });
-//      Set<Bundle> bundleSet = bundleGroup.getChildren().stream().map((bundleChildId) -> {
-//          com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-//          bundle.getBundleGroups().add(toUpdate);
-//          bundleRepository.save(bundle);
-//          return bundle;
-//      }).collect(Collectors.toSet());
-//      toUpdate.setBundles(bundleSet);
-//  }
+    	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
     	
-    	if (bundleGroupVersionView.getChildren() != null) {
-  	      //TODO native query to improve performance
-  	      bundleRepository.findByBundleGroupVersionsIs(entity).stream().forEach(bundle -> {
-  	          bundle.getBundleGroupVersions().remove(entity);
-  	          bundleRepository.save(bundle);
-  	      });
-  	      Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-  	          com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-  	          bundle.getBundleGroupVersions().add(entity);
-  	          bundleRepository.save(bundle);
-  	          return bundle;
-  	      }).collect(Collectors.toSet());
-  	    entity.setBundles(bundleSet);
-  	}
-      
-//    	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
-    	
-
+		if (bundleGroupVersionView.getChildren() != null) {
+			// TODO native query to improve performance
+			bundleRepository.findByBundleGroupVersionsIs(entity).stream().forEach(bundle -> {
+				bundle.getBundleGroupVersions().remove(entity);
+				bundleRepository.save(bundle);
+			});
+			Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+				com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository
+						.findById(Long.valueOf(bundleChildId)).get();
+				bundle.getBundleGroupVersions().add(entity);
+				bundleRepository.save(bundle);
+				return bundle;
+			}).collect(Collectors.toSet());
+			entity.setBundles(bundleSet);
+		}
     	return entity;
     }
     
@@ -144,10 +111,8 @@ public class BundleGroupVersionService {
         if (organisationId.isPresent()) {
             Organisation organisation = new Organisation();
             organisation.setId(Long.valueOf(organisationId.get()));
-            bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(
-                    organisation,
-                    categories);
-        }else {
+            bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(organisation, categories);
+        } else {
         	bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
         }
         
@@ -166,78 +131,61 @@ public class BundleGroupVersionService {
 	private String getBundleGroupUrl(Long bundleGroupVersionId) {
 		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
 		if (Objects.nonNull(hubGroupDeatilUrl)) {
-			return hubGroupDeatilUrl + "bundlegroupversion/" + bundleGroupVersionId;
+			return hubGroupDeatilUrl + "bundlegroup/versions/" + bundleGroupVersionId;
 		}
 		return "";
 	}
 	
-		 public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion>  getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
-	        Pageable paging;
-	        if (pageSize == 0) {
-	            paging = Pageable.unpaged();
-	        } else {
-	        	   Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
-	            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
-	        }
-	
-	        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
-	        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
+	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion>  getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
+        Pageable paging;
+        if (pageSize == 0) {
+            paging = Pageable.unpaged();
+        } else {
+        	   Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
+            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
+        }
 
-	        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
-	        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
-	        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
-	        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
+        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
+        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
 
-	        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(pageResponse).stream()
-	        		.collect(Collectors.toList()), pageResponse);
-	        return pagedContent;
+        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
+        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
+
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(pageResponse).stream()
+        		.collect(Collectors.toList()), pageResponse);
+        return pagedContent;
 	 }
-	
 
-		@Transactional
-		public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
-			bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
-//				bundleGroupVersionRepository.delete(bundleGroupVersion);//kamlesh commented
-//				List<BundleGroupVersion> versions = bundleGroupVersionRepository.findByBundleGroup(bundleGroupVersion.getBundleGroup());
-//				if (versions.isEmpty()) {
-//					deleteFromCategories(bundleGroupVersion.getBundleGroup());
-					deleteFromBundles(bundleGroupVersion);
-//					bundleGroupRepository.delete(bundleGroupVersion.getBundleGroup());//kamlesh commented not required
-					bundleGroupVersionRepository.delete(bundleGroupVersion);
-//				}
-			});
-		}
+	@Transactional
+	public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
+		bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
+			deleteFromBundles(bundleGroupVersion);
+			bundleGroupVersionRepository.delete(bundleGroupVersion);
+		});
+	}
 
-		private void deleteFromCategories(BundleGroup bundleGroup) {
-			bundleGroup.getCategories().forEach((category) -> {
-				category.getBundleGroups().remove(bundleGroup);
-				categoryRepository.save(category);
-			});
-		}
+	private void deleteFromCategories(BundleGroup bundleGroup) {
+		bundleGroup.getCategories().forEach((category) -> {
+			category.getBundleGroups().remove(bundleGroup);
+			categoryRepository.save(category);
+		});
+	}
 
-//		Kamlesh commented, need to remove later
-//		private void deleteFromBundles(BundleGroup bundleGroup) {
-//			bundleGroup.getBundles().forEach((bundle) -> {
-//				bundle.getBundleGroups().remove(bundleGroup);
-//				bundleRepository.save(bundle);
-//				
-//			});
-//		}
-//		kamlesh: replaced above code.
-		private void deleteFromBundles(BundleGroupVersion bundleGroupVersion) {
-			bundleGroupVersion.getBundles().forEach((bundle) -> {
-				bundle.getBundleGroupVersions().remove(bundleGroupVersion);
-				bundleRepository.save(bundle);
-			});
-		}
-	    
-	  public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
-	        return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
-	  }
+	private void deleteFromBundles(BundleGroupVersion bundleGroupVersion) {
+		bundleGroupVersion.getBundles().forEach((bundle) -> {
+			bundle.getBundleGroupVersions().remove(bundleGroupVersion);
+			bundleRepository.save(bundle);
+		});
+	}
+
+	public List<BundleGroupVersion> getBundleGroupVersions(com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup, String version ){
+		return bundleGroupVersionRepository.findByBundleGroupAndVersion(bundleGroup, version);
+	}
 
 	/**
 	 * If a bundle group has 1 or no bundle group versions then it is editable.
-	 * 
 	 * @param bundleGroup
 	 * @return
 	 */
@@ -250,7 +198,6 @@ public class BundleGroupVersionService {
 
 	/**
 	 * Check if New Version option can be added on menu or not
-	 * 
 	 * @param bundleGroup
 	 * @return
 	 */
@@ -264,7 +211,6 @@ public class BundleGroupVersionService {
 
 	/**
 	 * Convert to response view list
-	 * 
 	 * @param page
 	 * @return
 	 */
@@ -279,8 +225,6 @@ public class BundleGroupVersionService {
 			viewObj.setDocumentationUrl(entity.getDocumentationUrl());
 			viewObj.setVersion(entity.getVersion());
 			viewObj.setBundleGroupUrl(getBundleGroupUrl(entity.getId()));
-
-			viewObj.setCreatedAt(entity.getCreatedAt());
 			viewObj.setLastUpdate(entity.getLastUpdated());
 			
 			if (!CollectionUtils.isEmpty(entity.getBundles())) {

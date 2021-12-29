@@ -19,7 +19,7 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	
 	List<BundleGroupVersion> findByBundleGroupAndStatus(BundleGroup bundleGroup, BundleGroupVersion.Status status);
 	
-	List<BundleGroupVersion> findByBundleGroupVersionAndStatus(BundleGroupVersion bundleGroupVesion, BundleGroupVersion.Status status);
+	BundleGroupVersion findDistinctByIdAndStatus(Long bundleGroupVesionId, BundleGroupVersion.Status status);
 
 	List<BundleGroupVersion> findDistinctByStatus(BundleGroupVersion.Status status);
 	

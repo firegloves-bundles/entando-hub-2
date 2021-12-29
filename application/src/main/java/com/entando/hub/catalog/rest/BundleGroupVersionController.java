@@ -66,13 +66,12 @@ public class BundleGroupVersionController {
     	this.categoryService = categoryService;
     	this.securityHelperService = securityHelperService;
     }
-    
 
 	@Operation(summary = "Create a new bundleGroupVersion", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
-    public ResponseEntity<BundleGroupVersion> createBundleGroup(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
+    public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
         if (bundleGroupOptional.isPresent()) {
@@ -142,8 +141,8 @@ public class BundleGroupVersionController {
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub by bundleGroupId", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
-    @GetMapping("/bundles/{bundleGroupId}")
-    	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+    @GetMapping("/versions/{bundleGroupId}")
+    	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
         PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = null;
@@ -166,7 +165,7 @@ public class BundleGroupVersionController {
     @CrossOrigin
     @DeleteMapping("/{bundleGroupVersionId}")
     @Transactional
-    public ResponseEntity<BundleGroupRestController.BundleGroupView> deleteBundleGroup(@PathVariable String bundleGroupVersionId) {
+    public ResponseEntity<BundleGroupVersionView> deleteBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupVersionId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
         if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
@@ -177,7 +176,7 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
         	bundleGroupVersionService.deleteBundleGroupVersion(bundleGroupVersionOptional);
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
     }
     
@@ -185,7 +184,7 @@ public class BundleGroupVersionController {
 	@Operation(summary = "Get the bundleGroupVersion details by versionId", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
 	@CrossOrigin
 	@GetMapping("/{bundleGroupVersionId}")
-	public ResponseEntity<BundleGroupVersionView> getBundleGroup(@PathVariable String bundleGroupVersionId) {
+	public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
 		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
 		if (bundleGroupVersionOptional.isPresent()) {
@@ -197,7 +196,7 @@ public class BundleGroupVersionController {
 		}
 	}
     
-    
+
     @Getter
     @Setter
     @ToString
@@ -211,15 +210,13 @@ public class BundleGroupVersionController {
             this.bundleGroupVersionId = entity.getId().toString();
         }
     }
-    
+
 	@Data
     public static class BundleGroupVersionView {
-		
 	    protected String bundleGroupId;
 	    protected String description;
 	    protected String descriptionImage;
 	    protected String documentationUrl;
-	    protected String bundleGroupUrl;
 	    protected String version;
 	    protected com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status status;
 	    protected Long organisationId;
@@ -236,7 +233,6 @@ public class BundleGroupVersionController {
             this.descriptionImage = descriptionImage;
             this.version = version;
          }
-
 
         public BundleGroupVersionView(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
        	 	this.description = entity.getDescription();
@@ -256,10 +252,6 @@ public class BundleGroupVersionController {
             if (entity.getBundleGroup().getCategories() != null) {
                 this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }
-//            Kamlesh, commented and added new code
-//            if (entity.getBundleGroup().getBundles() != null) {
-//                this.children = entity.getBundleGroup().getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
-//            }
             if (entity.getBundles() != null) {
                 this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
             }

@@ -51,7 +51,6 @@ public class BundleController {
         this.bundleService = bundleService;
     }
 
-
     @Operation(summary = "Get all the bundles", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles in that")
     @CrossOrigin
     @GetMapping("/")
@@ -109,12 +108,12 @@ public class BundleController {
     @CrossOrigin
     @DeleteMapping("/{bundleId}")
     @Transactional
-    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleId) {
+    public ResponseEntity<Bundle> deleteBundleGroup(@PathVariable String bundleId) {
         logger.debug("REST request to delete bundle {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
             bundleService.deleteBundle(bundleOptional.get());
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-      }
+    }
 
     @Getter
     @Setter
@@ -142,13 +141,10 @@ public class BundleController {
         @Setter(AccessLevel.PUBLIC)
         protected String descriptionImage;
 
-
         protected final String gitRepoAddress;
         protected final List<String> dependencies;
-//        protected final List<String> bundleGroups;
         protected final List<String> bundleGroups; //Used for bundle group versions
 
-//        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
         public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
         	this.bundleId = id;
             this.name = name;
@@ -158,16 +154,13 @@ public class BundleController {
             this.bundleGroups = bundleGroupVersions;
         }
 
-
         public BundleNoId(com.entando.hub.catalog.persistence.entity.Bundle entity) {
         	this.bundleId = entity.getId().toString();
             this.name = entity.getName();
             this.description = entity.getDescription();
             this.gitRepoAddress = entity.getGitRepoAddress();
             this.dependencies = Arrays.asList(entity.getDependencies().split(","));
-//            this.bundleGroups = entity.getBundleGroups().stream().map(bundleGroup -> bundleGroup.getId().toString()).collect(Collectors.toList());
             this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
-
         }
 
         public com.entando.hub.catalog.persistence.entity.Bundle createEntity(Optional<String> id) {
@@ -177,19 +170,12 @@ public class BundleController {
             ret.setGitRepoAddress(this.getGitRepoAddress());
             ret.setDependencies(String.join(",", this.getDependencies()));
 
-//            Kamlesh commented, remove later
-//            Set<BundleGroup> bundleGroups = this.bundleGroups.stream().map((bundleGroupId) -> {
-//                BundleGroup bundleGroup = new BundleGroup();
-//                bundleGroup.setId(Long.valueOf(bundleGroupId));
-//                return bundleGroup;
-//            }).collect(Collectors.toSet());
-            
-            Set<BundleGroupVersion> bundleGroups = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
+            Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
             	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
             	bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
                 return bundleGroupVersion;
             }).collect(Collectors.toSet());
-            ret.setBundleGroupVersions(bundleGroups);
+            ret.setBundleGroupVersions(bundleGroupVersions);
             id.map(Long::valueOf).ifPresent(ret::setId);
             return ret;
         }

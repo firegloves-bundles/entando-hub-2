@@ -518,7 +518,7 @@ export const getAllKCUsers = async () => {
  * @param {*} bundleGroupId 
  */
  export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
-  let url = `${urlBundleGroupVersion}bundles/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  let url = `${urlBundleGroupVersion}versions/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
   const { data, isError } = await getData(url);
   eventHandler(
     isError,

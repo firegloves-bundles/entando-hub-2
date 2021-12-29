@@ -8,7 +8,6 @@ const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
 const urlCategories = `${process.env.REACT_APP_PUBLIC_API_URL}/category/`
 const urlBundles = `${process.env.REACT_APP_PUBLIC_API_URL}/bundles/`
 const urlBundleGroups = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/`
-const urlBundleGroupsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/filtered`
 const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
 const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
 

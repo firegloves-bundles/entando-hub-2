@@ -13,7 +13,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import { ModalInstallInformation } from "./modal-install-information/ModalInstallInformation"
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
-import { BREADCRUMB_VERSIONS, SLASH_VERSIONS } from "../../helpers/constants"
+import { SLASH_VERSIONS } from "../../helpers/constants"
 
 /*
 BUNDLEGROUP:

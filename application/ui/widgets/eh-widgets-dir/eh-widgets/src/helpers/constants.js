@@ -43,7 +43,6 @@ export const API_RESPONSE_KEY = {
 export const DELETED_BUNDLE = 'deletedBundle';
 export const GIT_REPO = 'gitRepo';
 export const SLASH_VERSIONS = '/versions';
-export const BREADCRUMB_VERSIONS = 'Versions';
 
 
 // REGEX

@@ -200,13 +200,10 @@ const BundleGroupVersionForm = ({
         changeBundleGroup("descriptionImage", values.bundleGroupForm.standardIcon)
     }
 
-
     const statusChangeHandler = (e) => {
         changeBundleGroup("status", e.target.value)
         setBundleStatus(e.target.value)
     }
-
-    const defaultStatusDraft = bundleGroup && operation !== OPERATION.ADD_NEW_VERSION ? BUNDLE_STATUS.NOT_PUBLISHED : bundleGroup.status;
 
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);
@@ -222,6 +219,8 @@ const BundleGroupVersionForm = ({
     const onAddOrRemoveBundleFromList = (newBundleList) => {
         changeBundleGroup("children", newBundleList)
     }
+    const isEditableAndNotAddNewVersion = bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION;
+    const disableCondition = (isEditableAndNotAddNewVersion || operation === OPERATION.ADD_NEW_VERSION) ? false : disabled;
 
     return (
         <>
@@ -231,8 +230,7 @@ const BundleGroupVersionForm = ({
                         <Column sm={16} md={8} lg={8}>
                             <IconUploader
                                 descriptionImage={bundleGroup.descriptionImage}
-                                disabled={bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
-                                    operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                disabled={disableCondition}
                                 onImageChange={imagesChangeHandler}
                                 onImageDelete={imagesDeleteHandler}
                             />
@@ -246,7 +244,7 @@ const BundleGroupVersionForm = ({
                                     (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
                                         validationResult["name"].join("; ")) : null
                                 }
-                                disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
+                                disabled={isEditableAndNotAddNewVersion ? false : true}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
@@ -257,7 +255,7 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-                                disabled={(bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION) ? false : true}
+                                disabled={isEditableAndNotAddNewVersion ? false : true}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
@@ -273,9 +271,7 @@ const BundleGroupVersionForm = ({
                                     !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
                                         validationResult["documentationUrl"].join("; "))
                                 }
-                                disabled={
-                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
-                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                disabled={disableCondition}
                                 value={bundleGroup && bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
@@ -291,9 +287,7 @@ const BundleGroupVersionForm = ({
                                     !isBundleVersionValid && (validationResult["version"] &&
                                         validationResult["version"].join("; "))
                                 }
-                                disabled={
-                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
-                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                disabled={disableCondition}
                                 value={bundleGroup && bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
@@ -310,10 +304,7 @@ const BundleGroupVersionForm = ({
                                     validationResult["status"] &&
                                     validationResult["status"].join("; ")
                                 }
-                                disabled={
-                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
-                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
-                                value={defaultStatusDraft}
+                                disabled={disableCondition}
                                 onChange={statusChangeHandler}
                                 id={"status"}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
@@ -345,9 +336,7 @@ const BundleGroupVersionForm = ({
                                     (validationResult["description"] &&
                                         validationResult["description"].join("; "))
                                 }
-                                disabled={
-                                    bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
-                                        operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                disabled={disableCondition}
                                 value={bundleGroup && bundleGroup.description}
                                 onChange={descriptionChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}

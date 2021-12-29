@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Column,
     Content,
@@ -27,7 +27,6 @@ const BundleGroupVersionForm = ({
     validationResult,
     minOneBundleError,
     mode,
-    isDraftDefault,
     operation,
 }) => {
 
@@ -207,11 +206,7 @@ const BundleGroupVersionForm = ({
         setBundleStatus(e.target.value)
     }
 
-    useEffect(() => {
-        if (operation === OPERATION.ADD_NEW_VERSION) {
-            statusChangeHandler({ target: { value: BUNDLE_STATUS.NOT_PUBLISHED } })
-        }
-    });
+    const defaultStatusDraft = bundleGroup && operation !== OPERATION.ADD_NEW_VERSION ? BUNDLE_STATUS.NOT_PUBLISHED : bundleGroup.status;
 
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);
@@ -318,7 +313,7 @@ const BundleGroupVersionForm = ({
                                 disabled={
                                     bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION ? false :
                                         operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
-                                value={(!isDraftDefault && bundleGroup) ? bundleGroup.status :  null}
+                                value={defaultStatusDraft}
                                 onChange={statusChangeHandler}
                                 id={"status"}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>

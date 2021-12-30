@@ -51,12 +51,12 @@ public class BundleController {
         this.bundleService = bundleService;
     }
 
-    @Operation(summary = "Get all the bundles", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
+    @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
     @CrossOrigin
     @GetMapping("/")
-    public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupId) {
-        logger.debug("REST request to get Bundles by group: {}", bundleGroupId);
-        return bundleService.getBundles(Optional.ofNullable(bundleGroupId)).stream().map(Bundle::new).collect(Collectors.toList());
+    public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupVersionId) {
+        logger.debug("REST request to get Bundles by bundle group version id: {}", bundleGroupVersionId);
+        return bundleService.getBundles(Optional.ofNullable(bundleGroupVersionId)).stream().map(Bundle::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the bundle details", description = "Public api, no authentication required. You have to provide the bundleId")
@@ -93,16 +93,17 @@ public class BundleController {
     @CrossOrigin
     @PostMapping("/{bundleId}")
     public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleNoId bundle) {
-        logger.debug("REST request to updare Bundle with id {}: {}", bundleId, bundle);
+        logger.debug("REST request to updare a Bundle with id {}: {}", bundleId, bundle);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
+        	logger.warn("Bundle '{}' does not exists", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            logger.warn("Bundle '{}' does not exists", bundleId);
             com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(Optional.of(bundleId)));
             return new ResponseEntity<>(new Bundle(entity), HttpStatus.OK);
         }
     }
+
     @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundlegId")
     @RolesAllowed({ADMIN})
     @CrossOrigin
@@ -111,8 +112,13 @@ public class BundleController {
     public ResponseEntity<Bundle> deleteBundle(@PathVariable String bundleId) {
         logger.debug("REST request to delete bundle {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
-            bundleService.deleteBundle(bundleOptional.get());
+        if (!bundleOptional.isPresent()) {
+        	logger.warn("Bundle '{}' does not exists", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } else {
+        	bundleService.deleteBundle(bundleOptional.get());
+        	return new ResponseEntity<>(null, HttpStatus.OK);
+        }
     }
 
     @Getter

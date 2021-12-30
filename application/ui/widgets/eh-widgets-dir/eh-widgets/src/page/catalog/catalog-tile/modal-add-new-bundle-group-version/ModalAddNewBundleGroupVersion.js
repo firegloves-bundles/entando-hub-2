@@ -76,6 +76,7 @@ export const ModalAddNewBundleGroupVersion = ({
           let bg = {
             ...theBundleGroup,
             children: childrenFromDb,
+            status: BUNDLE_STATUS.NOT_PUBLISHED
           }
           const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
           setSelectStatusValues(selectStatusValues);

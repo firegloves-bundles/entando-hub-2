@@ -61,7 +61,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     categories: [defaultCategoryId],
                     organisationId: organizationId,
                     versionDetails: {
-                        bundleGroupVersionId:null,
+                        bundleGroupVersionId: null,
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
@@ -119,14 +119,14 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         organisationId: organizationId,
                         versionDetails: {
                             bundleGroupVersionId: null,
-                          description: "",
-                          descriptionImage: values.bundleGroupForm.standardIcon,
-                          documentationUrl: "",
-                          bundleGroupUrl: "",
-                          version: "",
-                          status: "NOT_PUBLISHED",
+                            description: "",
+                            descriptionImage: values.bundleGroupForm.standardIcon,
+                            documentationUrl: "",
+                            bundleGroupUrl: "",
+                            version: "",
+                            status: "NOT_PUBLISHED",
                         }
-                      }
+                    }
 
                     setBundleGroup(newObj)
                     setLoading(false)

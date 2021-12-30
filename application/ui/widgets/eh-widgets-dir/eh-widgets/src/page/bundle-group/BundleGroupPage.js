@@ -13,6 +13,7 @@ import {ModalInstallInformation} from "./modal-install-information/ModalInstallI
 
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
+import { clickableSSHGitURL } from "../../helpers/helpers"
 
 /*
 BUNDLEGROUP:
@@ -172,18 +173,18 @@ const BundleGroupPage = () => {
 
 }
 
-const BundleList = ({children}) => {
-    const elemList = children.map((bundle, index) =>
-        <li key={index.toString()}><a href={bundle.gitRepoAddress}
-                                      target={"_new"}>{bundle.name}</a></li>)
+const BundleList = ({ children }) => {
+  const elemList = children.map((bundle, index) =>
+    <li key={index.toString()}><a href={clickableSSHGitURL(bundle.gitRepoAddress)}
+      target={"_new"}>{bundle.name}</a></li>)
 
   return (
-      <div className="BundleGroupPage-list-wrapper">
-        <div className="BundleGroupPage-list">
-        {i18n.t('page.bundleGroupInfo.listToBundles')}
-        </div>
-        <ul>{elemList}</ul>
+    <div className="BundleGroupPage-list-wrapper">
+      <div className="BundleGroupPage-list">
+        {i18n.t('page.bundleGroupInfo.listToBundles')} ssss
       </div>
+      <ul>{elemList}</ul>
+    </div>
   )
 
 }

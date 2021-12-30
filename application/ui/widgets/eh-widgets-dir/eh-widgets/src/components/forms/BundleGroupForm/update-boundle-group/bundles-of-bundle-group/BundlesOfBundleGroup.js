@@ -9,6 +9,7 @@ import {
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
+import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
 BUNDLE:
 {
@@ -34,19 +35,19 @@ const parseGitRepoAddr = (gitRepoAddress) => {
 const BundleList = ({children = [], onDeleteBundle, disabled}) => {
     const elemList = children.map(bundle => bundle.gitRepoAddress).map(
         parseGitRepoAddr).map((childrenInfo, index) =>
-        <li key={index.toString()}>
-            <Tag disabled={disabled}>
-                {disabled && childrenInfo.name}
-                {!disabled && <a href={childrenInfo.gitRepoAddress}
-                   target={"_new"}>{childrenInfo.name}</a>}
-                {!disabled && <span
-                    className="button-delete"
-                    onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
-                +
-              </span>}
-            </Tag>
-        </li>
-    )
+            <li key={index.toString()}>
+                <Tag disabled={disabled}>
+                    {disabled && childrenInfo.name}
+                    {!disabled && <a href={clickableSSHGitURL(childrenInfo.gitRepoAddress)}
+                        target={"_new"}>{childrenInfo.name}</a>}
+                    {!disabled && <span
+                        className="button-delete"
+                        onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
+                        +
+                    </span>}
+                </Tag>
+            </li>
+        )
 
     return (
         <div className="BundlesOfBundleGroup-Bundle-list">

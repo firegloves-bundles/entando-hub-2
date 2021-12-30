@@ -91,3 +91,7 @@ export const DROPDOWN_OPTIONS = {
     EDIT: "Edit",
     REMOVE: "Remove",
 }
+
+// Git Repo Address
+export const MATCHER = 'git@github.com'
+export const GIT_DOMAIN = 'https://github.com/'

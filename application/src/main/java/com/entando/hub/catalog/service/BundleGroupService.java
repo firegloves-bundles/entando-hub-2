@@ -128,9 +128,10 @@ public class BundleGroupService {
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {
         Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(id); //No need to fetch here from db, can be passed from controller
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
+//            TODO: Delete the bundle group from Bundle Group Versions
             bundleGroupRepository.delete(bundleGroup);
         });
     }

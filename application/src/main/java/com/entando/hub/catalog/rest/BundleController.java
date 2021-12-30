@@ -51,7 +51,7 @@ public class BundleController {
         this.bundleService = bundleService;
     }
 
-    @Operation(summary = "Get all the bundles", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles in that")
+    @Operation(summary = "Get all the bundles", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
     @CrossOrigin
     @GetMapping("/")
     public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupId) {
@@ -103,12 +103,12 @@ public class BundleController {
             return new ResponseEntity<>(new Bundle(entity), HttpStatus.OK);
         }
     }
-    @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
+    @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundlegId")
     @RolesAllowed({ADMIN})
     @CrossOrigin
     @DeleteMapping("/{bundleId}")
     @Transactional
-    public ResponseEntity<Bundle> deleteBundleGroup(@PathVariable String bundleId) {
+    public ResponseEntity<Bundle> deleteBundle(@PathVariable String bundleId) {
         logger.debug("REST request to delete bundle {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
             bundleService.deleteBundle(bundleOptional.get());
@@ -143,7 +143,7 @@ public class BundleController {
 
         protected final String gitRepoAddress;
         protected final List<String> dependencies;
-        protected final List<String> bundleGroups; //Used for bundle group versions
+        protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 
         public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
         	this.bundleId = id;

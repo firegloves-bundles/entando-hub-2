@@ -43,7 +43,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /*
- * Controller for Bundle group version operations
+ * Controller for Bundle Group Version operations
  * 
  */
 @RestController
@@ -67,7 +67,7 @@ public class BundleGroupVersionController {
     	this.securityHelperService = securityHelperService;
     }
 
-	@Operation(summary = "Create a new bundleGroupVersion", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
+	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/")
@@ -90,7 +90,7 @@ public class BundleGroupVersionController {
     }
 	
 	//PUBLIC
-    @Operation(summary = "Get all the bundle group versions in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
@@ -111,7 +111,7 @@ public class BundleGroupVersionController {
         return pagedContent;
     }
 
-    @Operation(summary = "Update a bundleGroupVersion", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
+    @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @CrossOrigin
     @PostMapping("/{bundleGroupVersionId}")
@@ -139,7 +139,7 @@ public class BundleGroupVersionController {
     }
     
     //PUBLIC
-    @Operation(summary = "Get all the bundle group versions in the hub by bundleGroupId", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @Operation(summary = "Get all the bundle group versions in the hub filtered by bundleGroupId and statuses", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/versions/{bundleGroupId}")
     	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
@@ -160,7 +160,7 @@ public class BundleGroupVersionController {
         }
     }
     
-    @Operation(summary = "Delete a bundleGroupVersion", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroupVersion can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupVersionId identifying the category")
+    @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
     @RolesAllowed({ADMIN, MANAGER})
     @CrossOrigin
     @DeleteMapping("/{bundleGroupVersionId}")
@@ -181,7 +181,7 @@ public class BundleGroupVersionController {
     }
     
 	// PUBLIC
-	@Operation(summary = "Get the bundleGroupVersion details by versionId", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
+	@Operation(summary = "Get the BundleGroupVersion details by id", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
 	@CrossOrigin
 	@GetMapping("/{bundleGroupVersionId}")
 	public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
@@ -195,7 +195,7 @@ public class BundleGroupVersionController {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 	}
-    
+
 
     @Getter
     @Setter

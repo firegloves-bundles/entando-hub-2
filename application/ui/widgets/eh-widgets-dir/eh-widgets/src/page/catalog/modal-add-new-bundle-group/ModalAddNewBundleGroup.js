@@ -44,8 +44,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             setBundleGroup(bundleGroup)
         }, [])
 
-        const onRequestClose = (e) => {
-            // Reset Form on Modal Close
+        const resetData = () => {
+            setElemKey(((new Date()).getTime()).toString())
+            // Reset Form
             let defaultCategoryId = null;
             if (categories) {
                 const filtered = categories && categories.filter(cat => cat.name === "Solution Template")
@@ -67,6 +68,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     organisationId: organizationId
                 }
             )
+        }
+
+        const onRequestClose = (e) => {
             setOpen(false)
             setValidationResult({})
             resetData()
@@ -74,10 +78,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
         const onRequestOpen = (e) => {
             setOpen(true)
-        }
-
-        const resetData = () => {
-            setElemKey(((new Date()).getTime()).toString())
         }
 
         useEffect(() => {

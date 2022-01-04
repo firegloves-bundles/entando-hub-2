@@ -203,7 +203,7 @@ const BundleGroupForm = ({
         setBundleDescriptionLength(e.target.value.length);
         createVersionDetailsObj("description", e.target.value);
         if (e.target.value.length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.descriptionRequired') : i18n.t('formValidationMsg.minDescription')
             validationResult["versionDetails.description"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
             validationResult["versionDetails.description"] = [i18n.t('formValidationMsg.maxDescription')]

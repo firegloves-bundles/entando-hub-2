@@ -40,7 +40,7 @@ export const newBundleGroupSchema = Yup.object().shape({
       .max(25, "max25Char")
       .required("nameRequired"),
   versionDetails: Yup.object().shape({
-      description: Yup.string().min(3, "min3Char").max(600, "maxDescription").required("statusRequired"),
+      description: Yup.string().min(3, "minDescription").max(600, "maxDescription").required("descriptionRequired"),
       documentationUrl: Yup.string()
           .matches(
               /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,

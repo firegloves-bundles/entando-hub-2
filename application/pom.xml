@@ -18,7 +18,7 @@
         <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
         <jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
         <keycloak-adapter-bom.version>12.0.4</keycloak-adapter-bom.version>
-        <log4j.version>2.17.0</log4j.version>
+        <log4j.version>2.17.1</log4j.version>
     </properties>
     <dependencyManagement>
         <dependencies>

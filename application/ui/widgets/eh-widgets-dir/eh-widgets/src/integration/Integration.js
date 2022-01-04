@@ -196,7 +196,7 @@ export const getAllBundles = async () => {
 }
 
 export const getAllBundlesForABundleGroup = async (id) => {
-  const newUrl = `${urlBundles}?bundleGroupId=${id}`
+  const newUrl = `${urlBundles}?bundleGroupVersionId=${id}`
   const { data, isError } = await getData(newUrl)
 
   eventHandler(

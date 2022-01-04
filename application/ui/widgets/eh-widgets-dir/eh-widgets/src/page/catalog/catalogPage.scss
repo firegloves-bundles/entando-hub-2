@@ -151,3 +151,14 @@ button:focus, button {
     flex: 0 1 45%;
   }
 }
+.navigation-bar{
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 50%;
+  display: flex;
+  margin-left: auto;
+  margin-right: 9rem;
+}
+.navigation-breadcrumb{
+  margin-top: 0.3rem;
+}

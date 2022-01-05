@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Column,
     Content,
@@ -6,49 +7,49 @@ import {
     Select,
     SelectItem,
     TextArea,
-    TextInput
+    TextInput,
 } from "carbon-components-react";
-import { useState } from "react";
+import './BundleGroupVersionForm.scss';
+import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSON_REGEX } from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
+import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import BundlesOfBundleGroup from "../BundleGroupForm/update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
 import i18n from "../../../i18n";
-import './bundle-group-form.scss';
-import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
-import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
-import "./update-boundle-group/update-bundle-group.scss";
+import { isVersionDuplicate } from "../../../helpers/validation/isVersionDuplicateValidate";
 
+const BundleGroupVersionForm = ({
+    bundleGroup,
+    categories,
+    allowedOrganisations, //organisations on which the user can operate
+    onDataChange,
+    selectStatusValues,
+    validationResult,
+    minOneBundleError,
+    mode,
+    operation,
+}) => {
 
-const BundleGroupForm = ({
-                             bundleGroup,
-                             categories,
-                             allowedOrganisations, //organisations on which the user can operate
-                             onDataChange,
-                             selectStatusValues,
-                             validationResult,
-                             minOneBundleError,
-                             theBundleStatus,
-                             mode
-                         }) => {
-
-    const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
+    const [bundleStatus, setBundleStatus] = useState(BUNDLE_STATUS.NOT_PUBLISHED);
     const [bundleNameLength, setBundleNameLength] = useState(0);
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
 
+    const previousVersions = bundleGroup && bundleGroup.allVersions ? bundleGroup.allVersions : [];
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
-        if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
-        const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
+        if (!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
+
+        const currOrganisation = organisations.find(o => Number(o.organisationId) === currOrganisationId);
 
         if (organisations.length === 1) {
             return (<Column sm={16} md={16} lg={16}>
                 <TextInput
                     disabled={true}
                     id="organisation"
-                    labelText={i18n.t('component.bundleModalFields.organisation')}
-                    value={currOrganisation.name ? currOrganisation.name : currOrganisation.organisationName}
+                    labelText="Organisation"
+                    value={currOrganisation && currOrganisation.name}
                 />
             </Column>)
         }
@@ -65,7 +66,7 @@ const BundleGroupForm = ({
 
             return (<Column sm={16} md={16} lg={16}>
                 <Select
-                    disabled={disabled}
+                    disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                     value={currOrganisation && currOrganisation.organisationId}
                     onChange={organisationChangeHandler}
                     id={"organisation"}
@@ -74,7 +75,6 @@ const BundleGroupForm = ({
                 </Select>
             </Column>)
         }
-
     }
 
     const changeBundleGroup = (field, value) => {
@@ -85,18 +85,10 @@ const BundleGroupForm = ({
         onDataChange(newObj)
     }
 
-    const createVersionDetailsObj = (field, value) => {
-        const versionDetails = {
-            ...bundleGroup.versionDetails,
-        }
-        versionDetails[field] = value
-        changeBundleGroup("versionDetails", versionDetails)
-    }
-
     const disabled = selectStatusValues.disabled
     const createSelectOptionsForRoleAndSetSelectStatus =
         selectStatusValues.values.map((curr, index) => (
-            <SelectItem key={index} value={curr.value} text={i18n.t(curr.text)}/>
+            <SelectItem key={index} value={curr.value} text={curr.text} />
         ))
 
     const selectItems_Category = categories && categories.map((category) => {
@@ -112,10 +104,10 @@ const BundleGroupForm = ({
     const nameChangeHandler = (e) => {
         setBundleNameLength(e.target.value.trim().length);
         if (e.target.value.trim().length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.nameRequired') : i18n.t('formValidationMsg.min3Char')
+            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? NAME_REQ_MSG : LEAST_CHAR_NAME_MSG
             validationResult["name"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.trim().length > MAX_CHAR_LENGTH) {
-            validationResult["name"] = [i18n.t('formValidationMsg.max25Char')]
+            validationResult["name"] = [MAX_CHAR_NAME_MSG]
         }
         changeBundleGroup("name", e.target.value)
     }
@@ -139,24 +131,31 @@ const BundleGroupForm = ({
     }
 
     const documentationChangeHandler = (e) => {
-        createVersionDetailsObj("documentationUrl", e.target.value);
+        changeBundleGroup("documentationUrl", e.target.value)
+
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
-            validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
         } else if (e.target.value.trim().length) {
-            validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
+            validationResult["documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
 
     const versionChangeHandler = (e) => {
-        createVersionDetailsObj("version", e.target.value);
+        changeBundleGroup("version", e.target.value)
         if (!e.target.value.trim().length) {
-            validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionRequired')]
+            validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
-        } else if (!(e.target.value.trim().length > 0 && new RegExp(VERSON_REGEX).test(e.target.value))) {
-            validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionFormat')]
+        }
+        else if (!(e.target.value.trim().length > 0 && new RegExp(VERSON_REGEX).test(e.target.value))) {
+            validationResult["version"] = [i18n.t('formValidationMsg.versionFormat')]
             setIsBundleVersionValid(false);
-        } else {
+        }
+        else if (isVersionDuplicate(e.target.value, bundleGroup.allVersions ? bundleGroup.allVersions : [])) {
+            validationResult["version"] = [i18n.t('formValidationMsg.duplicateVersion')]
+            setIsBundleVersionValid(false);
+        }
+        else {
             setIsBundleVersionValid(true);
         }
     }
@@ -165,7 +164,13 @@ const BundleGroupForm = ({
         if (inputTypeName === 'documentationUrl') {
             val.trim().length > 0 && new RegExp(DOCUMENTATION_ADDRESS_URL_REGEX).test(val) ? setIsDocumentationAddressValid(true) : setIsDocumentationAddressValid(false)
         } else if (inputTypeName === 'version') {
-            val.trim().length > 0 && new RegExp(VERSON_REGEX).test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
+            if (!(previousVersions.includes(val.trim()))) {
+                setIsBundleVersionValid(true)
+            } else if (val.trim().length > 0 && new RegExp(VERSON_REGEX).test(val)) {
+                setIsBundleVersionValid(true)
+            } else {
+                setIsBundleVersionValid(false);
+            }
         }
     }
 
@@ -183,38 +188,39 @@ const BundleGroupForm = ({
     }
 
     const imagesChangeHandler = (e) => {
-        ;(async () => {
+        ; (async () => {
             const file = e.target.files[0]
             const base64 = await convertToBase64(file)
-            createVersionDetailsObj("descriptionImage", base64);
+            changeBundleGroup("descriptionImage", base64)
         })()
     }
 
     const imagesDeleteHandler = (e) => {
-        createVersionDetailsObj("descriptionImage", values.bundleGroupForm.standardIcon);
+        changeBundleGroup("descriptionImage", values.bundleGroupForm.standardIcon)
     }
 
     const statusChangeHandler = (e) => {
-        createVersionDetailsObj("status", e.target.value);
+        changeBundleGroup("status", e.target.value)
         setBundleStatus(e.target.value)
     }
 
     const descriptionChangeHandler = (e) => {
         setBundleDescriptionLength(e.target.value.length);
-        createVersionDetailsObj("description", e.target.value);
+        changeBundleGroup("description", e.target.value)
         if (e.target.value.length < CHAR_LENGTH) {
-            const errorMessageForLengthZeroOrThree = e.target.value.trim().length === 0 ? i18n.t('formValidationMsg.descriptionRequired') : i18n.t('formValidationMsg.minDescription')
-            validationResult["versionDetails.description"] = [errorMessageForLengthZeroOrThree]
+            const errorMessageForLengthZeroOrThree = e.target.value.length === 0 ? i18n.t('formValidationMsg.descriptionRequired') : i18n.t('formValidationMsg.minDescription')
+            validationResult["description"] = [errorMessageForLengthZeroOrThree]
         } else if (e.target.value.length > MAX_CHAR_LENGTH_FOR_DESC) {
-            validationResult["versionDetails.description"] = [i18n.t('formValidationMsg.maxDescription')]
+            validationResult["description"] = [i18n.t('formValidationMsg.maxDescription')]
         }
     }
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
         changeBundleGroup("children", newBundleList)
     }
+    const isEditableAndNotAddNewVersion = bundleGroup.isEditable && operation !== OPERATION.ADD_NEW_VERSION;
+    const disableCondition = (isEditableAndNotAddNewVersion || operation === OPERATION.ADD_NEW_VERSION) ? false : disabled;
 
-    const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
     return (
         <>
             <Content className="Edit-bundle-group">
@@ -222,8 +228,8 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <IconUploader
-                                descriptionImage={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.descriptionImage}
-                                disabled={disabled}
+                                descriptionImage={bundleGroup.descriptionImage}
+                                disabled={disableCondition}
                                 onImageChange={imagesChangeHandler}
                                 onImageDelete={imagesDeleteHandler}
                             />
@@ -235,9 +241,9 @@ const BundleGroupForm = ({
                                 invalid={(bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) && !!validationResult["name"]}
                                 invalidText={
                                     (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
-                                    validationResult["name"].join("; ")) : null
+                                        validationResult["name"].join("; ")) : null
                                 }
-                                disabled={shouldDisable}
+                                disabled={isEditableAndNotAddNewVersion ? false : true}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
@@ -248,25 +254,24 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <Select
-                                disabled={shouldDisable}
+                                disabled={isEditableAndNotAddNewVersion ? false : true}
                                 value={bundleGroup.categories[0]}
                                 onChange={categoryChangeHandler}
                                 id={"category"}
-                                labelText={`${i18n.t('component.bundleModalFields.category')} ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}
-                            >
+                                labelText={`${i18n.t('component.bundleModalFields.category')} ${bundleGroupSchema.fields.categories.exclusiveTests.required ? " *" : ""}`}>
                                 {selectItems_Category}
                             </Select>
                         </Column>
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isDocumentationAddressValid && !!validationResult["versionDetails.documentationUrl"]}
+                                invalid={!isDocumentationAddressValid && !!validationResult["documentationUrl"]}
                                 invalidText={
-                                    !isDocumentationAddressValid && (validationResult["versionDetails.documentationUrl"] &&
-                                        validationResult["versionDetails.documentationUrl"].join("; "))
+                                    !isDocumentationAddressValid && (validationResult["documentationUrl"] &&
+                                        validationResult["documentationUrl"].join("; "))
                                 }
-                                disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.documentationUrl}
+                                disabled={disableCondition}
+                                value={bundleGroup && bundleGroup.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
                                 id={"documentation"}
@@ -276,13 +281,13 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isBundleVersionValid && !!validationResult["versionDetails.version"]}
+                                invalid={!isBundleVersionValid && !!validationResult["version"]}
                                 invalidText={
-                                    !isBundleVersionValid && (validationResult["versionDetails.version"] &&
-                                        validationResult["versionDetails.version"].join("; "))
+                                    !isBundleVersionValid && (validationResult["version"] &&
+                                        validationResult["version"].join("; "))
                                 }
-                                disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.version}
+                                disabled={disableCondition}
+                                value={bundleGroup && bundleGroup.version}
                                 onChange={versionChangeHandler}
                                 id={"version"}
                                 labelText={`${i18n.t('component.bundleModalFields.version')} ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
@@ -293,15 +298,15 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={16} lg={16}>
                             <Select
-                                invalid={!!validationResult["versionDetails.status"]}
+                                invalid={!!validationResult["status"]}
                                 invalidText={
-                                    validationResult["versionDetails.status"] &&
-                                    validationResult["versionDetails.status"].join("; ")
+                                    validationResult["status"] &&
+                                    validationResult["status"].join("; ")
                                 }
-                                disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.status}
+                                disabled={disableCondition}
                                 onChange={statusChangeHandler}
                                 id={"status"}
+                                value={bundleGroup.status}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>
@@ -311,10 +316,12 @@ const BundleGroupForm = ({
                             <BundlesOfBundleGroup
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                 initialBundleList={bundleGroup.children}
-                                disabled={disabled}
+                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 minOneBundleError={minOneBundleError}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
+                                operation={operation}
+                                bundleGroupIsEditable={bundleGroup.isEditable}
                             />
                         </Column>
 
@@ -322,21 +329,21 @@ const BundleGroupForm = ({
                             <TextArea
                                 invalid={
                                     (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
-                                    !!validationResult["versionDetails.description"]
+                                    !!validationResult["description"]
                                 }
                                 invalidText={
                                     (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
-                                    (validationResult["versionDetails.description"] &&
-                                        validationResult["versionDetails.description"].join("; "))
+                                    (validationResult["description"] &&
+                                        validationResult["description"].join("; "))
                                 }
-                                disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description}
+                                disabled={disableCondition}
+                                value={bundleGroup && bundleGroup.description}
                                 onChange={descriptionChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
                                 id={"description"}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
-                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description && bundleGroup.versionDetails.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
+                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.description && bundleGroup.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
                         </Column>
                     </Row>
                 </Grid>
@@ -344,4 +351,4 @@ const BundleGroupForm = ({
         </>
     )
 }
-export default BundleGroupForm
+export default BundleGroupVersionForm

@@ -121,7 +121,7 @@
     "docFormat": "La documentazione deve essere fornita tramite un URL",
     "versionRequired": "La versione è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato vx.x.x oppure x.x.x",
-    "bundleUrlFormat": "L'URL deve essere un repository Git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:reponame/myrepo.git)",
+    "bundleUrlFormat": "L'URL deve essere un repository Git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "bundleUrlRequired": "L'indirizzo del bundle è un campo obbligatorio",
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",

@@ -121,7 +121,7 @@
     "docFormat": "Documentation must match URL format",
     "versionRequired": "Version is a required field",
     "versionFormat": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
-    "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:reponame/myrepo.git)",
+    "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)",
     "bundleUrlRequired": "The bundle address is a required field",
     "descriptionRequired": "Description is a required field",
     "minDescription": "The description must contain at least 3 characters",

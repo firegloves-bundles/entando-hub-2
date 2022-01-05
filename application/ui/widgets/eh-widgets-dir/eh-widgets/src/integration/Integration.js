@@ -97,7 +97,6 @@ export const editOrganisation = async (organisationData, id) => {
 export const deleteOrganisation = async (id) => {
   const { data, isError } = await deleteData(urlOrganisations, id)
 
-  console.log("HERE", data, isError)
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToDeleteOrganisation')} ${data ? data.message : ""}`,

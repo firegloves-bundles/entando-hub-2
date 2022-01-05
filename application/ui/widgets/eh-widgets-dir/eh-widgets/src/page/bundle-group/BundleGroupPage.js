@@ -181,7 +181,7 @@ const BundleList = ({ children }) => {
   return (
     <div className="BundleGroupPage-list-wrapper">
       <div className="BundleGroupPage-list">
-        {i18n.t('page.bundleGroupInfo.listToBundles')} ssss
+        {i18n.t('page.bundleGroupInfo.listToBundles')}
       </div>
       <ul>{elemList}</ul>
     </div>

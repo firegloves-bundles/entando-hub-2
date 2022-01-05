@@ -1,22 +1,32 @@
 import EhBreadcrumb from "../../../components/eh-breadcrumb/EhBreadcrumb";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getAllBundleGroupVersionByBundleGroupId, getAllCategories } from "../../../integration/Integration";
-import { Content, Loading } from "carbon-components-react";
+import { Button, Content, Loading, Pagination } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
 import "./bundle-group-versions-page.scss";
 import { MESSAGES } from "../../../helpers/constants";
+import i18n from "../../../i18n";
+import { Add16 } from '@carbon/icons-react'
+import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTile";
+import BundleGroupStatusFilter from "../../catalog/bundle-group-status-filter/BundleGroupStatusFilter";
 
 const BundleGroupVersionsPage = () => {
-  
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(12)
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
+  const [totalItems, setTotalItems] = useState(12)
+
+  //filter the BG query by status (only published by default)
+  //LOADING means ho use the filter value has to wait
+  const [statusFilterValue, setStatusFilterValue] = useState("LOADING")
 
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
-  const { id: bundleGroupId } = useParams();
+  const { id: bundleGroupId, categoryId } = useParams();
   const IS_VERSIONS_PAGE = true;
   const PAGE = 0;
   const PAGE_SIZE = 12;
@@ -32,6 +42,18 @@ const BundleGroupVersionsPage = () => {
   const loadVersionData = (bundleGroupId, PAGE, PAGE_SIZE) => {
     return (getAllBundleGroupVersionByBundleGroupId(bundleGroupId, PAGE, PAGE_SIZE));
   }
+
+  const onPaginationChange = ({ page, pageSize }) => {
+    setPageSize(pageSize)
+    setPage(page)
+  }
+
+  const changeStatusFilterValue = useCallback(async (newValue) => {
+    // console.log(bgVersionList);
+    const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, PAGE, PAGE_SIZE, newValue);
+    response && response.versions && response.versions.payload && setBgVersionList(response.versions.payload)
+    setReloadToken()
+  }, [])
 
   useEffect(() => {
     const getVersionList = async () => {
@@ -61,7 +83,7 @@ const BundleGroupVersionsPage = () => {
         <div className="CatalogPage-wrapper">
           <div className="bx--grid bx--grid--full-width catalog-page">
             <div className="bx--row">
-              <div className="bx--col-lg-16 CatalogPage-breadcrumb">
+              <div className="bx--col-lg-12 CatalogPage-breadcrumb">
                 <EhBreadcrumb pathElements={[{
                   path: bgVersionList && bgVersionList.length ? bgVersionList[0].name : "",
                   href: window.location.href
@@ -70,20 +92,65 @@ const BundleGroupVersionsPage = () => {
             </div>
 
             <div className="bx--row">
-              <div className="bx--col-lg-4 CatalogPage-section">
+                {/* TODO: 1-Start */}
+                <div className="bx--col-lg-4 CatalogPage-section">
+                    {i18n.t('page.catlogPanel.catlogHomePage.categories')}
+                </div>
+                {/* TODO: 1-End */}
+              <div className="bx--col-lg-5 CatalogPage-section">
                 Catalog
+              </div>
+              <div className="bx--col-lg-3 CatalogPage-section">
+                {/* TODO: NEED TO CONFIRM IF ADD BUTTON SHOULD BE THERE OR NOT.*/}
+                <Button renderIcon={Add16} disabled={true}>{i18n.t('component.button.add')}</Button>
+              </div>
+              <div className="bx--col-lg-4 CatalogPage-section">
+                {i18n.t('component.button.search')}
               </div>
             </div>
 
+            {/* TODO: 2-Start */}
             <div className="bx--row">
-              <div className="bx--col-lg-16 CatalogVersionPageContent-wrapper">
+              <div className="bx--col-lg-4 CatalogPage-section">
+                {/*Empty col4 over checkbox filters */}
+              </div>
+              <div className="bx--col-lg-12 CatalogPage-section">
+                <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue} />
+              </div>
+            </div>
+            {/* TODO: 2-End */}
+
+            <div className="bx--row">
+              {/* TODO: 3-Start */}
+              <div className="bx--col-lg-4">
+                {categories && categories.length > 0 &&
+                  <CatalogFilterTile categories={categories} categoryId={categoryId}/>}
+              </div>
+              {/* TODO: 3-End */}
+              <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 {bgVersionList && bgVersionList.length 
                   ? 
                     <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
                   : 
                   <div> {MESSAGES.NO_VERSIONS_FOUND_MSG} </div>}
+                <Pagination
+                  itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
+                  itemRangeText={
+                    (min, max, total) => `${min}–${max} ${i18n.t("component.pagination.of")} ${total} ${i18n.t("component.pagination.items")}`
+                  }
+                  pageSizes={[12, 18, 24]}
+                  // TODO:
+                  totalItems={totalItems}
+                  onChange={onPaginationChange}
+                  backwardText={i18n.t("component.pagination.previousPage")}
+                  forwardText={i18n.t("component.pagination.nextPage")}
+                  pageRangeText={
+                    (total) => `${i18n.t("component.pagination.of")} ${total}
+                        ${total === 1 ? `${i18n.t("component.pagination.page")}` : `${i18n.t("component.pagination.pages")}`}`
+                  }
+                />
               </div>
-            </div>
+              </div>
           </div>
         </div>
       </Content>

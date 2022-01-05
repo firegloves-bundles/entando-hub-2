@@ -22,7 +22,7 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
     const history = useHistory()
 
     const handleViewVersionsClick = () => {
-        history.push("/versions/" + bundleGroupId)
+        history.push("/versions/" + bundleGroupId + `/${bundleGroup.categories[0]}`)
     }
 
     return (

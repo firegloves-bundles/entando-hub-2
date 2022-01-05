@@ -37,21 +37,24 @@ let STATUS = (() => {
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "DELETE_REQ", text: "Deletion Request"}
+        {value: "DELETE_REQ", text: "Deletion Request"},
+        {value: "ARCHIVE", text: "Archived"},
     ]
     ret[MANAGER] = [
         {value: ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "DELETE_REQ", text: "Deletion Request"}
+        {value: "DELETE_REQ", text: "Deletion Request"},
+        {value: "ARCHIVE", text: "Archived"},
     ]
     ret[AUTHOR] = [
         {value: ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"], text: "All"},
         {value: "NOT_PUBLISHED", text: "Draft"},
         {value: "PUBLISH_REQ", text: "Publication Request"},
         {value: "PUBLISHED", text: "Published"},
-        {value: "DELETE_REQ", text: "Deletion Request"}
+        {value: "DELETE_REQ", text: "Deletion Request"},
+        {value: "ARCHIVE", text: "Archived"},
     ]
     return ret
 })()

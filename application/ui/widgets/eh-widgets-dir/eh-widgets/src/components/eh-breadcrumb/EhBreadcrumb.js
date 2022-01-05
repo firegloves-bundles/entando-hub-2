@@ -12,7 +12,8 @@ href
 }
  */
 const EhBreadcrumb = ({pathElements = []}) => {
-    const currentUrl = useHistory().location.pathname.split("/")[1]
+    const currentUrl = useHistory().location.pathname
+    const showNavBar = currentUrl === '/' || currentUrl === '/admin' || currentUrl === '/category' || currentUrl === '/organisation';
     const linkStyle = {
         margin: "4px",
         textDecoration: "none",
@@ -30,13 +31,13 @@ const EhBreadcrumb = ({pathElements = []}) => {
     })
 
     if (!elementList.length) {
-      if (currentUrl === "admin")
-        elementList = <span className="navigation-breadcrumb">User</span>;
-      else if (currentUrl === "category")
-        elementList = <span className="navigation-breadcrumb">Category</span>;
-      else if (currentUrl === "organisation")
+      if (currentUrl === "/admin")
+        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.userManagement')}</span>;
+      else if (currentUrl === "/category")
+        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.categoryManagement')}</span>;
+      else if (currentUrl === "/organisation")
         elementList = (
-          <span className="navigation-breadcrumb">Organisation</span>
+          <span className="navigation-breadcrumb">{i18n.t('navLink.organisationManagement')}</span>
         );
     }
     return (
@@ -45,16 +46,16 @@ const EhBreadcrumb = ({pathElements = []}) => {
           <Link to="/">{i18n.t("page.catlogPanel.catlogHomePage.home")}</Link>
         </BreadcrumbItem>
         {elementList}
-        {getHigherRole() === ADMIN && (
-          <div className="navigation-bar">
+        {getHigherRole() === ADMIN && showNavBar && (
+          <div className="navigation-bar" style={currentUrl === '/' ? {"marginRight": "3rem"} : {"marginRight": "1.8rem"}}>
             <Link style={linkStyle} to="/admin">
-              User Management
+              {i18n.t('navLink.userManagement')}
             </Link>
             <Link style={linkStyle} to="/category">
-              Category Management
+              {i18n.t('navLink.categoryManagement')}
             </Link>
             <Link style={linkStyle} to="/organisation">
-              Organisation Management
+              {i18n.t('navLink.organisationManagement')}
             </Link>
           </div>
         )}

@@ -37,7 +37,7 @@
         "description": "Descrizione"
       },
       "categoryManagement": "Gestione delle Categorie",
-      "organisationsManagement": "Gestione delle Organizzazioni"
+      "organisationsManagement": "Gestione delle Organizzazionie"
     },
     "unauthorized": "NON AUTORIZZATO"
   },
@@ -135,6 +135,11 @@
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+  },
+  "navLink": {
+    "userManagement": "Gestione utente",
+    "categoryManagement": "Gestione delle categorie",
+    "organisationManagement": "Gestione dell'organizzazione"
   },
   "Draft": "Non Pubblicato",
   "Publication Request": "Pubblicare Rich",

@@ -39,6 +39,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
         const [minOneBundleError, setMinOneBundleError] = useState("")
+        const [reqOnWay, setReqOnWay] = useState(false)
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)
@@ -154,6 +155,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 children: newChildren
             }
             await addNewBundleGroup(toSend)
+            setReqOnWay(false);
             return toSend
         }
 
@@ -180,7 +182,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     setValidationResult(validationError)
                     return //don't send the form
                 }
-
+                setReqOnWay(true);
                 const toSend = await createNewBundleGroup(bundleGroup)
                 //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setBundleGroup(toSend)
@@ -205,6 +207,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             bundleGroup={bundleGroup}
                             loading={loading}
                             minOneBundleError={minOneBundleError}
+                            reqOnWay={reqOnWay}
                         />,
                         document.body
                     )}
@@ -235,7 +238,8 @@ const ModalContent = ({
     allowedOrganisations,
     categories,
     loading,
-    minOneBundleError
+    minOneBundleError,
+    reqOnWay
 }) => {
     return (
         <>
@@ -259,7 +263,7 @@ const ModalContent = ({
                             {i18n.t('component.button.cancel')}
                         </Button>
                         <Button
-                            kind="primary"
+                            kind="primary" disabled={reqOnWay}
                             onClick={() => { onRequestSubmit() }}>
                             {i18n.t('component.button.add')}
                         </Button>

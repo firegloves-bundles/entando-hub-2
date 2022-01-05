@@ -8,7 +8,7 @@ import {
     TextArea,
     TextInput
 } from "carbon-components-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import values from "../../../config/common-configuration";
 import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -17,7 +17,8 @@ import './bundle-group-form.scss';
 import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
 import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
 import "./update-boundle-group/update-bundle-group.scss";
-
+import { getAllOrganisations } from "../../../integration/Integration";
+import { isHubAdmin } from "../../../helpers/helpers";
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -36,13 +37,24 @@ const BundleGroupForm = ({
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
+    const [orgList, setOrgList] = useState([]);
+
+    useEffect(() => {
+        let unmounted = false;
+        const setOrg = async () => {
+            const orgData = await getAllOrganisations()
+            orgData && orgData.organisationList && !unmounted && setOrgList(orgData.organisationList)
+        }
+        setOrg();
+        return () => unmounted = true
+    }, [])
 
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
-
-        if (organisations.length === 1) {
+        const enableOrg = isHubAdmin && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ)
+        if (!enableOrg && currOrganisation) {
             return (<Column sm={16} md={16} lg={16}>
                 <TextInput
                     disabled={true}
@@ -52,7 +64,7 @@ const BundleGroupForm = ({
                 />
             </Column>)
         }
-        if (organisations.length > 1) {
+        if (enableOrg) {
             const organisationSelectItems = organisations.map((o) => {
                 return (
                     <SelectItem
@@ -289,8 +301,7 @@ const BundleGroupForm = ({
                             />
                         </Column>
 
-                        {renderOrganisationColumn(bundleGroup.organisationId, allowedOrganisations)}
-
+                        {renderOrganisationColumn(bundleGroup.organisationId, orgList)}
                         <Column sm={16} md={16} lg={16}>
                             <Select
                                 invalid={!!validationResult["versionDetails.status"]}

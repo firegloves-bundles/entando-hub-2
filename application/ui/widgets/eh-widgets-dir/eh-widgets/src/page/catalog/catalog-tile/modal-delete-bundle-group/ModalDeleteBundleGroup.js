@@ -1,18 +1,18 @@
 import { Modal } from "carbon-components-react"
 import { TrashCan32 } from '@carbon/icons-react'
-import { deleteBundle } from "../../../../integration/Integration"
+import { deleteBundleGroupVersion } from "../../../../integration/Integration"
 
 import "./modal-delete-bundle-group.scss"
 import i18n from "../../../../i18n";
 
-export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleName, bundleGroupId, onAfterSubmit}) => {
+export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleGroupVersionId, onAfterSubmit}) => {
 
     const onRequestClose = (e) => {
         onCloseModal()
     }
 
     const onRequestDelete = async (e) => {
-        await deleteBundle(bundleGroupId, bundleName);
+        await deleteBundleGroupVersion(bundleGroupVersionId);
         onCloseModal()
         onAfterSubmit()
     }

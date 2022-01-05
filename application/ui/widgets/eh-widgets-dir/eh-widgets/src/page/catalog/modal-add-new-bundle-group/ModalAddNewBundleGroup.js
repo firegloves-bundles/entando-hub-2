@@ -7,7 +7,7 @@ import {
     addNewBundleGroup,
 } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
-import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
+import { newBundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
@@ -57,16 +57,21 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             setBundleGroup(
                 {
                     name: "",
-                    description: "",
-                    descriptionImage: values.bundleGroupForm.standardIcon,
-                    documentationUrl: "",
                     children: [],
                     categories: [defaultCategoryId],
-                    version: "",
-                    status: "NOT_PUBLISHED",
-                    organisationId: organizationId
+                    organisationId: organizationId,
+                    versionDetails: {
+                        bundleGroupVersionId: null,
+                        description: "",
+                        descriptionImage: values.bundleGroupForm.standardIcon,
+                        documentationUrl: "",
+                        bundleGroupUrl: "",
+                        version: "",
+                        status: "NOT_PUBLISHED",
+                    }
                 }
             )
+
             setOpen(false)
             setValidationResult({})
             resetData()
@@ -106,16 +111,21 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         }
                     }
                     const organizationId = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0].organisationId : null;
+
                     const newObj = {
                         name: "",
-                        description: "",
-                        descriptionImage: values.bundleGroupForm.standardIcon,
-                        documentationUrl: "",
                         children: [],
                         categories: [defaultCategoryId],
-                        version: "",
-                        status: "NOT_PUBLISHED",
-                        organisationId: organizationId
+                        organisationId: organizationId,
+                        versionDetails: {
+                            bundleGroupVersionId: null,
+                            description: "",
+                            descriptionImage: values.bundleGroupForm.standardIcon,
+                            documentationUrl: "",
+                            bundleGroupUrl: "",
+                            version: "",
+                            status: "NOT_PUBLISHED",
+                        }
                     }
 
                     setBundleGroup(newObj)
@@ -126,7 +136,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             return () => {
                 isMounted = false
             }
-
         }, [])
 
 
@@ -154,19 +163,18 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 let validationError
-                await bundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
+                await newBundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
                     validationError = fillErrors(error)
                 })
-
                 // bypass the validation for Draft(NOT_PUBLISHED) Status.
-                if (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED &&
+                if (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED &&
                     validationError && validationError.children && validationError.children.length === 1 &&
                     Object.keys(validationError).length === 1) {
                     validationError = undefined;
                 }
 
                 if (bundleGroup.children && bundleGroup.children.length === 0 &&
-                    bundleGroup.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
+                    bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     setMinOneBundleError(validationError.children[0]);
                 }
                 if (validationError) {
@@ -206,17 +214,14 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         )
     }
 
-
     return (
         <ModalStateManager
             renderLauncher={({ onRequestOpen }) => (
-                // <Button onClick={onRequestOpen} renderIcon={Add16}>Add</Button>
                 <Button onClick={onRequestOpen} renderIcon={Add16}>{i18n.t('component.button.add')}</Button>
             )}>
             {ModalContent}
         </ModalStateManager>
     )
-
 }
 
 const ModalContent = ({

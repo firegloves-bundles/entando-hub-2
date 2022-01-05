@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { Tag } from "carbon-components-react"
-import { useHistory } from "react-router-dom"
-import "./catalog-tile.scss"
-import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu"
-import { isHubUser } from "../../../helpers/helpers"
-import {textFromStatus} from '../../../helpers/profiling';
+import React, { useEffect, useState } from "react";
+import { Tag } from "carbon-components-react";
+import { useHistory } from "react-router-dom";
+import "./catalog-tile.scss";
+import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
+import { isHubUser } from "../../../helpers/helpers";
+import { textFromStatus } from '../../../helpers/profiling';
+import { BUNDLE_STATUS, HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../../../helpers/constants";
 
 const CatalogTile = ({
   bundleGroupId,
@@ -14,9 +15,11 @@ const CatalogTile = ({
   descriptionImage,
   categories,
   status,
-  categoriesDetails,
+  categoryDetails,
   onAfterSubmit,
-  version
+  version,
+  bundleGroup,
+  isVersionsPage
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -25,19 +28,22 @@ const CatalogTile = ({
 
     if (categories) {
       const getCategoryNameById = (catId) => {
-        return categoriesDetails.find(cat => cat.categoryId === catId);
+        return categoryDetails && categoryDetails.find(cat => cat.categoryId === catId);
       }
       const data = getCategoryNameById(categories[0]) && getCategoryNameById(categories[0]).name;
       setCategoryName(data);
     }
 
-  }, [categories, categoriesDetails])
+  }, [categories, categoryDetails])
 
   const history = useHistory()
 
-  //manage the bundle group detail
   const handleClick = () => {
-    history.push("/bundlegroup/" + bundleGroupId)
+    if (isVersionsPage) {
+      history.push(`${VERSIONS_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+    } else {
+      history.push(`${HOME_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+    }
   }
 
   let tagColor
@@ -59,13 +65,15 @@ const CatalogTile = ({
   return (
     <>
       <div className="CatalogTile">
-        {isHubUser() && (
+        {isHubUser() && bundleStatus !== BUNDLE_STATUS.ARCHIVED && (
           <div className="CatalogTile-dropmenu">
             <CatalogTileOverflowMenu
               bundleGroupId={bundleGroupId}
               bundleStatus={bundleStatus}
               bundleName={name}
               onAfterSubmit={onAfterSubmit}
+              bundleGroup={bundleGroup}
+              isVersionsPage={isVersionsPage}
             />
           </div>
         )}
@@ -83,9 +91,9 @@ const CatalogTile = ({
           <div className="CatalogTile-card-title">{name}</div>
           <div className="CatalogTile-card-status">{organisationName}</div>
           {isHubUser() && (
-              <div className="CatalogTile-card-status">
-                {textFromStatus(status)}
-              </div>
+            <div className="CatalogTile-card-status">
+              {textFromStatus(status)}
+            </div>
           )}
           <div className="CatalogTile-card-description">{description}</div>
           <div className="tag-setting">

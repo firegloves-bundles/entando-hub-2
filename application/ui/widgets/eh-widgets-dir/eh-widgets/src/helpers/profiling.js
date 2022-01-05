@@ -172,4 +172,5 @@ export const textFromStatus = (bundleGroupStatus) => {
     if (bundleGroupStatus === "PUBLISHED") return "Published"
     if (bundleGroupStatus === "DELETE_REQ") return "Deletion Request"
     if (bundleGroupStatus === "DELETED") return "Deleted"
+    if (bundleGroupStatus === "ARCHIVE") return "Archived"
 }

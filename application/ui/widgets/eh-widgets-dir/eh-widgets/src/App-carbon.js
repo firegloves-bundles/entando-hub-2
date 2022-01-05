@@ -10,6 +10,7 @@ import RouteWithGate from "./components/routing/RouteWithGate";
 import {isHubAdmin} from "./helpers/helpers";
 import NotificationDispatcher from "./components/notification/NotificationDispatcher"
 import i18n from "./i18n"
+import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 
 function AppCarbon() {
   return (
@@ -17,7 +18,9 @@ function AppCarbon() {
       <NotificationDispatcher />
         <HashRouter>
             <Switch>
-                <Route path="**/bundlegroup/:id" component={BundleGroupPage}/>
+                <Route path="**/bundlegroup/:id" exact component={BundleGroupPage}/>
+                <Route path="**/bundlegroup/versions/:id" component={BundleGroupPage}/>
+                <Route path="**/versions/:id" component={BundleGroupVersionsPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage}/>
                 <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage}/>

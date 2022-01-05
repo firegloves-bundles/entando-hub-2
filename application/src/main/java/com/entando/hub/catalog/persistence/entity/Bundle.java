@@ -23,9 +23,6 @@ public class Bundle {
     private String gitRepoAddress;
     private String dependencies;
 
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private Set<BundleGroup> bundleGroups;
-    
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<BundleGroupVersion> bundleGroupVersions;
 

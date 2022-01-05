@@ -71,8 +71,6 @@ const BundleGroupPage = () => {
       pageModel["category"] = fetchedBundleGroup && fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
         > 0 ? (await getSingleCategory(
           fetchedBundleGroup.categories[0])).category : null
-
-          console.log("fetchedBundleGroup: ", fetchedBundleGroup);
       pageModel["children"] =
         fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
           ? (await getAllBundlesForABundleGroup(bundleGroupVersionId)).bundleList

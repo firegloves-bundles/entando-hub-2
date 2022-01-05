@@ -50,10 +50,10 @@ const EhBreadcrumb = ({pathElements = []}) => {
           <div className="navigation-bar" style={currentUrl === '/' ? {"marginRight": "3rem"} : {"marginRight": "1.8rem"}}>
             <Link style={linkStyle} to="/admin">
               {i18n.t('navLink.userManagement')}
-            </Link>
+            </Link><span style={linkStyle}>|</span>
             <Link style={linkStyle} to="/category">
               {i18n.t('navLink.categoryManagement')}
-            </Link>
+            </Link><span style={linkStyle}>|</span>
             <Link style={linkStyle} to="/organisation">
               {i18n.t('navLink.organisationManagement')}
             </Link>

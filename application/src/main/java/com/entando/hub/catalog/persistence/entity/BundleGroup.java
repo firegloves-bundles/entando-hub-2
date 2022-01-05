@@ -35,9 +35,6 @@ public class BundleGroup {
 
     @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Category> categories = new HashSet<>();
-
-//    @ManyToMany(mappedBy = "bundleGroups", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-//    private Set<Bundle> bundles = new HashSet<>();
     
     @OneToMany(mappedBy = "bundleGroup", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<BundleGroupVersion> version = new HashSet<>();

@@ -1,15 +1,15 @@
 {
   "page": {
     "header": {
-      "logout": "Disconnettersi",
+      "logout": "Disconnetti",
       "login": "Login"
     },
     "catlogPanel": {
       "catlogHomePage": {
-        "home": "Casa",
+        "home": "Home",
         "categories": "Categorie",
-        "catalog": "Catalogare",
-        "select": "Selezionare"
+        "catalog": "Catalogo",
+        "select": "Seleziona"
       },
       "AuthMessage": {
         "notifyGuestPortalUserMsg": "Il tuo account non ha attualmente accesso all'Hub. Contatta il tuo amministratore per richiedere l'accesso."
@@ -18,15 +18,15 @@
     "bundleGroupInfo": {
       "lastUpdate": "Ultimo aggiornamento",
       "linkToDocument": "Link alla documentazione",
-      "listToBundles": "Elenco dei pacchetti",
+      "listToBundles": "Elenco dei bundle",
       "version": "Versione",
       "category": "Categoria",
       "organisation": "Organizzazione",
-      "documentation": "documentazione"
+      "documentation": "Documentazione"
     },
     "admin": {
-      "userManagement": "Gestione Utenti",
-      "username": "Nome Utente",
+      "userManagement": "Gestione utenti",
+      "username": "Nome utente",
       "email": "E-mail",
       "organisation": "Organizzazione",
       "addUser": "Aggiungi utente"
@@ -36,28 +36,28 @@
         "name": "Nome",
         "description": "Descrizione"
       },
-      "categoryManagement": "Gestione delle Categorie",
-      "organisationsManagement": "Gestione delle Organizzazionie"
+      "categoryManagement": "Gestione delle categorie",
+      "organisationsManagement": "Gestione delle organizzazioni"
     },
     "unauthorized": "NON AUTORIZZATO"
   },
   "component": {
     "bundleModalFields": {
-      "addFiles": "Aggiungere i file",
+      "addFiles": "Aggiungi file",
       "name": "Nome",
       "category": "Categoria",
       "documentAddress": "Indirizzo della documentazione",
       "version": "Versione",
       "organisation": "Organizzazione",
       "status": "Stato",
-      "addUrlBundle": "Aggiungi pacchetto URL",
+      "addUrlBundle": "Aggiungi l'URL del bundle",
       "description": "Descrizione"
     },
     "button": {
-      "add": "Aggiungere",
-      "create": "Creare",
+      "add": "Aggiungi",
+      "create": "Crea",
       "save": "Salva",
-      "edit": "Modificare",
+      "edit": "Modifica",
       "delete": "Elimina",
       "search": "Ricerca",
       "cancel": "Annulla",
@@ -65,14 +65,17 @@
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
       "remove": "Rimuovere",
-      "selectOneUsername" : "Seleziona un nome utente"
+      "selectOneUsername": "Seleziona un nome utente",
+      "newVersion": "Nuova versione",
+      "viewVersions": "Visualizza versioni",
+      "submit": "Invia"
     },
     "pagination": {
       "page": "pagina",
       "pages": "pagine",
-      "items": "Oggetti",
+      "items": "elementi",
       "of": "di",
-      "itemsPerPage": "oggetti per pagina:",
+      "itemsPerPage": "elementi per pagina:",
       "previousPage": "Pagina precedente",
       "nextPage": "Pagina successiva"
     },
@@ -81,9 +84,9 @@
     }
   },
   "toasterMessage": {
-    "impossibleToLoadOrganisations": "Impossibile caricare le organizzazioni",
+    "impossibleToLoadOrganisations": "Impossibile caricare le organizzazioni.",
     "impossibleToLoadOrganisation": "Impossibile caricare l'organizzazione.",
-    "impossibleToCreateOrganisation": "Impossibile creare organizzazione.",
+    "impossibleToCreateOrganisation": "Impossibile creare l'organizzazione.",
     "impossibleToUpdateOrganisation": "Impossibile aggiornare l'organizzazione.",
     "impossibleToDeleteOrganisation": "Impossibile eliminare l'organizzazione.",
     "impossibleToLoadCategories": "Impossibile caricare le categorie.",
@@ -92,23 +95,26 @@
     "impossibleToUpdateCategory": "Impossibile aggiornare la categoria.",
     "impossibleToDeleteCategory": "Impossibile eliminare la categoria.",
     "impossibleToLoadBundles": "Impossibile caricare i bundle.",
-    "impossibleToLoadBundle": "Impossibile caricare il pacchetto.",
+    "impossibleToLoadBundle": "Impossibile caricare il bundle.",
     "impossibleToCreateBundle": "Impossibile creare il bundle.",
-    "impossibleToUpdateBundle": "Impossibile aggiornare il pacchetto.",
-    "impossibleToLoadBundleGroups": "Impossibile caricare i gruppi di bundle",
-    "impossibleToLoadBundleGroup": "Impossibile caricare il gruppo bundle",
-    "impossibleToCreateBundleGroup": "Impossibile creare un gruppo di bundle.",
-    "impossibleToUpdateBundleGroup": "Impossibile aggiornare il gruppo di bundle.",
-    "impossibleToDeleteBundle": "Impossibile eliminare il pacchetto.",
+    "impossibleToUpdateBundle": "Impossibile aggiornare il bundle.",
+    "impossibleToLoadBundleGroups": "Impossibile caricare i bundle group.",
+    "impossibleToLoadBundleGroup": "Impossibile caricare il bundle group.",
+    "impossibleToCreateBundleGroup": "Impossibile creare il bundle group.",
+    "impossibleToUpdateBundleGroup": "Impossibile aggiornare il bundle group.",
+    "impossibleToDeleteBundle": "Impossibile eliminare il bundle.",
     "impossibleToCreateUser": "Impossibile creare l'utente.",
     "impossibleToLoadUsers": "Impossibile caricare gli utenti.",
     "impossibleToDeleteUser": "Impossibile eliminare l'utente.",
     "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
-    "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione",
-    "userCreated": "Utente creato",
-    "bundle": "Fascio",
-    "bundleGroup": "Fascio Gruppo",
-    "created": "Creata",
+    "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
+    "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
+    "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
+    "bundleGroupVersion": "Versione gruppo bundle",
+    "user": "Utente",
+    "bundle": "Bundle",
+    "bundleGroup": "Bundle Group",
+    "created": "Creato",
     "updated": "Aggiornato",
     "deleted": "Cancellato"
   },
@@ -118,8 +124,10 @@
     "min3Char": "Il nome deve contenere almeno 3 caratteri",
     "max25Char": "Il nome non deve superare i 25 caratteri",
     "docRequired": "La documentazione è un campo obbligatorio",
-    "docFormat": "La documentazione deve corrispondere al formato dell'URL",
+    "docFormat": "La documentazione deve essere fornita tramite un URL",
     "versionRequired": "La versione è un campo obbligatorio",
+    "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
+    "statusRequired": "Lo stato è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
     "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
     "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
@@ -127,23 +135,27 @@
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 600 caratteri",
     "categoryRequired": "La categoria è un campo obbligatorio",
-    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo gruppo di bundle.",
+    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group.",
     "description": "La descrizione non deve superare i 100 caratteri"
   },
   "modalMsg": {
-    "deleteBundleMsg": "Sei sicuro di voler eliminare questo pacchetto?",
+    "deleteBundleMsg": "Sei sicuro di voler eliminare questo bundle?",
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
-    "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+    "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
+    "addNewVersion": "Aggiungi nuova versione"
   },
   "navLink": {
     "userManagement": "Gestione utente",
     "categoryManagement": "Gestione delle categorie",
     "organisationManagement": "Gestione dell'organizzazione"
   },
-  "Draft": "Non Pubblicato",
-  "Publication Request": "Pubblicare Rich",
+  "Draft": "Non pubblicato",
+  "Publication Request": "Richiesta di pubblicazione",
   "Published": "Pubblicato",
-  "Deletion Request": "Elimina Rich",
-  "All": "Tutto"
+  "Deletion Request": "Richiesta di eliminazione",
+  "All": "Tutto",
+  "breadCrumb": {
+    "version": "Versione"
+  }
 }

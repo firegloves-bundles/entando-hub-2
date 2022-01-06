@@ -1,42 +1,47 @@
 package com.entando.hub.catalog.service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.BundleRepository;
-import com.entando.hub.catalog.persistence.CategoryRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.CategoryRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.BundleController;
+import com.entando.hub.catalog.rest.BundleGroupController;
 
 @Service
 public class BundleGroupService {
     final private BundleGroupRepository bundleGroupRepository;
     final private CategoryRepository categoryRepository;
-    final private BundleRepository bundleRepository;
+    private final BundleGroupVersionService bundleGroupVersionService;
 
-    @Autowired
-    private Environment environment;
+    private final Logger logger = LoggerFactory.getLogger(BundleController.class);
+    private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleRepository bundleRepository) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleGroupVersionService bundleGroupVersionService) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
-        this.bundleRepository = bundleRepository;
+        this.bundleGroupVersionService = bundleGroupVersionService;
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
+    	logger.debug("{}: getBundleGroups: Get bundle groups organisation id: {}", CLASS_NAME, organisationId);
         if (organisationId.isPresent()) {
             return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
         }
@@ -44,6 +49,7 @@ public class BundleGroupService {
     }
 
     public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
+    	logger.debug("{}: getBundleGroups: Get bundle groups paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         Pageable paging;
         if (pageSize == 0) {
             paging = Pageable.unpaged();
@@ -57,33 +63,28 @@ public class BundleGroupService {
             return category;
         }).collect(Collectors.toSet());
 
-        Set<BundleGroup.Status> statusSet = Arrays.stream(statuses).map(BundleGroup.Status::valueOf).collect(Collectors.toSet());
         if (organisationId.isPresent()) {
             Organisation organisation = new Organisation();
             organisation.setId(Long.valueOf(organisationId.get()));
-            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesInAndStatusIn(
+            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(
                     organisation,
                     categories,
-                    statusSet
-                    , paging);
-            setBundleGroupUrl(page);
+                    paging);
             return page;
         }
 
-        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesInAndStatusIn(
-                categories,
-                statusSet
-                , paging);
-        setBundleGroupUrl(page);
+        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesIn(categories, paging);
+        logger.debug("{}: getBundleGroups: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
         return page;
     }
 
     public Page<BundleGroup> findByOrganisationId(String organisationId, Pageable pageable) {
-        return bundleGroupRepository.findByOrganisationId(Long.valueOf(organisationId), pageable);
-
+    	logger.debug("{}: findByOrganisationId: Get bundle groups paginated by organisation id: {}", CLASS_NAME, organisationId);
+    	return bundleGroupRepository.findByOrganisationId(Long.valueOf(organisationId), pageable);
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId, Optional<String[]> categoryIds, Optional<String[]> statuses) {
+    	logger.debug("{}: getBundleGroups: Get bundle groups paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         if (organisationId.isPresent()) {
             return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
         }
@@ -91,11 +92,13 @@ public class BundleGroupService {
     }
 
     public Optional<BundleGroup> getBundleGroup(String bundleGroupId) {
-        return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
+    	logger.debug("{}: getBundleGroup: Get a bundle group by bundle group id: {}", CLASS_NAME, bundleGroupId);
+    	return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
     }
 
     @Transactional
     public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
         updateMappedBy(entity, bundleGroupNoId);
         return entity;
@@ -103,6 +106,7 @@ public class BundleGroupService {
 
 
     public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
+    	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
 
         if (bundleGroup.getCategories() != null) {
@@ -120,54 +124,36 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setCategories(categorySet);
         }
-        if (bundleGroup.getChildren() != null) {
-            //TODO native query to improve performance
-            bundleRepository.findByBundleGroupsIs(toUpdate).stream().forEach(bundle -> {
-                bundle.getBundleGroups().remove(toUpdate);
-                bundleRepository.save(bundle);
-            });
-            Set<Bundle> bundleSet = bundleGroup.getChildren().stream().map((bundleChildId) -> {
-                com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-                bundle.getBundleGroups().add(toUpdate);
-                bundleRepository.save(bundle);
-                return bundle;
-            }).collect(Collectors.toSet());
-            toUpdate.setBundles(bundleSet);
-        }
+	    if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
+	    	bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
+	    }
 
+        if (bundleGroup.getVersionDetails() != null) {
+        	 Optional<String> optBundleGroupVersionId =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
+        			 ?  Optional.of(bundleGroup.getVersionDetails().getBundleGroupVersionId())
+        					 : Optional.empty();
+        	 logger.debug("{}: updateMappedBy: bundle group version id: {}", CLASS_NAME, optBundleGroupVersionId);
+        	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(optBundleGroupVersionId, toUpdate), bundleGroup.getVersionDetails());
+        }
     }
 
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {
+    	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
         Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(id); //No need to fetch here from db, can be passed from controller
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
-            deleteFromBundles(bundleGroup);
+//            TODO: Delete the bundle group from Bundle Group Versions
             bundleGroupRepository.delete(bundleGroup);
         });
     }
+
     public void deleteFromCategories(BundleGroup bundleGroup) {
+    	logger.debug("{}: deleteFromCategories: Delete a bundle group from categoris", CLASS_NAME);
         bundleGroup.getCategories().forEach((category) -> {
             category.getBundleGroups().remove(bundleGroup);
             categoryRepository.save(category);
         });
     }
-    public void deleteFromBundles(BundleGroup bundleGroup) {
-        bundleGroup.getBundles().forEach((bundle) -> {
-            bundle.getBundleGroups().remove(bundleGroup);
-            bundleRepository.save(bundle);
-        });
-    }
-
-	/**
-	 * Set bundle group url
-	 * @param page
-	 */
-	private void setBundleGroupUrl(Page<BundleGroup> page) {
-		String hubGroupDeatilUrl = environment.getProperty("HUB_GROUP_DETAIL_BASE_URL");
-		if (Objects.nonNull(hubGroupDeatilUrl)) {
-			page.forEach(entity -> entity.setBundleGroupUrl(hubGroupDeatilUrl + "bundlegroup/" + entity.getId()));
-		}
-	}
 }

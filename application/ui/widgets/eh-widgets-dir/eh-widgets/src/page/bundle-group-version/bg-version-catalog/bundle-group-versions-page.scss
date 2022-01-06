@@ -1,0 +1,65 @@
+.CatalogVersionPageContent-wrapper>div:nth-of-type(1) {
+	display: grid;
+	overflow: hidden;
+	grid-template-columns: repeat(4, 1fr);
+	grid-auto-rows: 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 10px;
+	max-width: 100%;
+	padding: 0 0 5%;
+}
+
+.CatalogVersionPageContent-wrapper .CatalogTile {
+	position: relative;
+	margin: 0 2% 2% 0;
+	background: #fff;
+	padding: 1rem 1rem 1rem 1.5rem;
+	cursor: pointer;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	transition: box-shadow 0.3s ease-in-out;
+	min-width: 220px;
+}
+
+.CatalogVersionPageContent-wrapper {
+	background-color: var(--clr-transparent);
+}
+
+.CatalogVersionPageContent-wrapper .CatalogTile:hover {
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 1240px) {
+	.CatalogVersionPageContent-wrapper>div:nth-of-type(1) {
+		display: grid;
+		overflow: hidden;
+		grid-template-columns: repeat(3, 1fr);
+		grid-auto-rows: 1fr;
+		grid-column-gap: 5px;
+		grid-row-gap: 5px;
+		max-width: 100%;
+	}
+}
+
+@media screen and (max-width: 1040px) {
+	.CatalogVersionPageContent-wrapper>div:nth-of-type(1) {
+		display: grid;
+		overflow: hidden;
+		grid-template-columns: repeat(3, 1fr);
+		grid-auto-rows: 1fr;
+		grid-column-gap: 5px;
+		grid-row-gap: 5px;
+		max-width: 100%;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.CatalogVersionPageContent-wrapper>div:nth-of-type(1) {
+		display: grid;
+		overflow: hidden;
+		grid-template-columns: repeat(1, 1fr);
+		grid-auto-rows: 1fr;
+		grid-column-gap: 5px;
+		grid-row-gap: 5px;
+		max-width: 100%;
+	}
+}

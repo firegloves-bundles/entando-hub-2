@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
@@ -65,7 +65,9 @@ const BundlesOfBundleGroup = ({
     disabled = false,
     minOneBundleError,
     bundleStatus,
-    mode
+    mode,
+    operation,
+    bundleGroupIsEditable
 }) => {
 
     useEffect(() => {
@@ -75,8 +77,9 @@ const BundlesOfBundleGroup = ({
     const [bundleList, setBundleList] = useState([])
     const [gitRepo, setGitRepo] = useState("")
     const [validationResult, setValidationResult] = useState({})
-    const [isUrlReqValid, setIsUrlReqValid] = useState(false);
-    const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false);
+    const [isUrlReqValid, setIsUrlReqValid] = useState(false)
+    const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false)
+    disabled = bundleGroupIsEditable && operation !== OPERATION.ADD_NEW_VERSION ? false : operation === OPERATION.ADD_NEW_VERSION ? false : disabled
 
     useEffect(() => {
         !bundleList.length && setIsUrlReqValid(false);

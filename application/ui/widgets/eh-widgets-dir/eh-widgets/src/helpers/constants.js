@@ -8,7 +8,8 @@ export const BUNDLE_STATUS = {
     NOT_PUBLISHED: 'NOT_PUBLISHED',
     PUBLISHED: 'PUBLISHED',
     PUBLISH_REQ: 'PUBLISH_REQ',
-    DELETE_REQ: 'DELETE_REQ'
+    DELETE_REQ: 'DELETE_REQ',
+    ARCHIVED :'ARCHIVE'
 }
 
 // HTTP Status
@@ -22,12 +23,14 @@ export const BUTTON_LABELS = {
     EDIT: "Edit",
     CANCEL: "Cancel",
     REMOVE: "Remove",
+    SUBMIT: "Submit"
 }
 
 // All Modal Labels
 export const MODAL_LABELS = {
     DELETE_BUNDLE_MSG: "Are you sure you want to delete this bundle?",
     REMOVE_USER_FROM_ORG_MSG: "Are you sure you want to remove this User from the Organization?",
+    ADD_BUNDLE_GROUP_VERSION: 'Add New Version'
 }
 
 // All API Response Key
@@ -39,6 +42,8 @@ export const API_RESPONSE_KEY = {
 // Constant String
 export const DELETED_BUNDLE = 'deletedBundle';
 export const GIT_REPO = 'gitRepo';
+export const SLASH_VERSIONS = '/versions';
+
 
 // REGEX
 export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
@@ -68,6 +73,7 @@ export const DOCUMENTATION_URL_FORMAT_MSG = 'Documentation must match URL format
 // Version
 export const VERSION_REQ_MSG = 'Version is a required field'
 export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
+export const DUPLICATE_VERSION = 'This version number already exists, please enter a new version number.'
 // Bundle
 export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)'
 
@@ -83,7 +89,8 @@ export const DESCRIPTION_MAX_LENGTH = 'Description must not exceed 100 character
 export const MESSAGES = {
     NOTIFY_GUEST_PORTAL_USER_MSG: 'Your account does not currently have access to the Hub. Please contact your Administrator to request access.',
     IMPOSSIBLE_TO_REMOVE_USERS_MSG: 'Impossible to remove the user',
-    USER_REMOVED_FROM_ORG_MSG: 'User removed from the organisation'
+    USER_REMOVED_FROM_ORG_MSG: 'User removed from the organisation',
+    NO_VERSIONS_FOUND_MSG: 'No versions found'
 }
 
 // All dropdown options
@@ -95,3 +102,14 @@ export const DROPDOWN_OPTIONS = {
 // Git Repo Address
 export const MATCHER = 'git@github.com'
 export const GIT_DOMAIN = 'https://github.com/'
+export const MENU_OPTIONS = {
+    ADD_BUNDLE_GROUP_VERSION: 'Add Version',
+    VIEW_BUNDLE_GROUP_VERSIONS: 'View Versions'
+}
+
+export const HOME_TO_BG_PAGE_URL = '/bundlegroup/';
+export const VERSIONS_TO_BG_PAGE_URL = '/bundlegroup/versions/';
+
+export const OPERATION = {
+    ADD_NEW_VERSION: 'ADD_NEW_VERSION'
+}

@@ -8,9 +8,12 @@ const urlOrganisations = `${process.env.REACT_APP_PUBLIC_API_URL}/organisation/`
 const urlCategories = `${process.env.REACT_APP_PUBLIC_API_URL}/category/`
 const urlBundles = `${process.env.REACT_APP_PUBLIC_API_URL}/bundles/`
 const urlBundleGroups = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/`
-const urlBundleGroupsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroups/filtered`
 const urlUsers = `${process.env.REACT_APP_PUBLIC_API_URL}/users/`
 const urlKC = `${process.env.REACT_APP_PUBLIC_API_URL}/keycloak/`
+
+//Bundle group version urls
+const urlBundleGroupVersion = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/`
+const urlBundleGroupsVersionsFilteredPaged = `${process.env.REACT_APP_PUBLIC_API_URL}/bundlegroupversions/filtered`
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
@@ -192,7 +195,7 @@ export const getAllBundles = async () => {
 }
 
 export const getAllBundlesForABundleGroup = async (id) => {
-  const newUrl = `${urlBundles}?bundleGroupId=${id}`
+  const newUrl = `${urlBundles}?bundleGroupVersionId=${id}`
   const { data, isError } = await getData(newUrl)
 
   eventHandler(
@@ -256,6 +259,15 @@ export const getAllBundleGroups = async (organisationId) => {
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
 }
 
+/**
+ * GET bundle groups/versions filtered
+ * @param {*} page 
+ * @param {*} pageSize 
+ * @param {*} organisationId 
+ * @param {*} categoryIds 
+ * @param {*} statuses 
+ * @returns 
+ */
 export const getAllBundleGroupsFilteredPaged = async (
   page,
   pageSize,
@@ -263,7 +275,7 @@ export const getAllBundleGroupsFilteredPaged = async (
   categoryIds,
   statuses
 ) => {
-  let url = `${urlBundleGroupsFilteredPaged}?page=${page}&pageSize=${pageSize}`
+  let url = `${urlBundleGroupsVersionsFilteredPaged}?page=${page}&pageSize=${pageSize}`
   if (categoryIds && categoryIds.length > 0) {
     url =
       url +
@@ -280,7 +292,7 @@ export const getAllBundleGroupsFilteredPaged = async (
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToLoadBundleGroups')} ${data ? data.message : ""}`
+    `Impossible to load bundle groups: ${data ? data.message : ""}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "bundleGroupList")
@@ -445,4 +457,86 @@ export const getAllKCUsers = async () => {
   const { data, isError } = await getData(newUrl)
 
   return checkForErrorsAndSendResponse(data, isError, "kcUsers")
+}
+
+/**************************
+ * Bundle Group Version
+***************************/
+
+/**
+ * Add new bundle group version
+ * @param {*} bundleGroupVersionData 
+ * @param {*} bundleGroupId 
+ * @returns 
+ */
+ export const addNewBundleGroupVersion = async (bundleGroupVersionData) => {
+  const { data, isError } = await postData(urlBundleGroupVersion, bundleGroupVersionData)
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.unableToAddBundleGroupVersion')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${data.data ? data.data.name : ""} saved`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
+}
+
+/**
+ * Get all bundle group versions by bundleGroupId
+ * @param {*} bundleGroupId 
+ */
+ export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
+  let url = `${urlBundleGroupVersion}versions/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  const { data, isError } = await getData(url);
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToLoadBundleGroupVersions')} : ${data ? data.message : ""}`
+  )
+  return checkForErrorsAndSendResponse(data, isError, "versions")
+}
+
+/**
+ * Delete a bundle group version
+ * @param {*} id 
+ * @param {*} bundleName 
+ * @returns 
+ */
+export const deleteBundleGroupVersion = async (bundleGroupVersionId) => {
+  const { data, isError } = await deleteData(urlBundleGroupVersion, bundleGroupVersionId);
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToDeleteBundle')}  ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${i18n.t('toasterMessage.deleted')}`
+  )
+  return checkForErrorsAndSendResponse(data, isError, DELETED_BUNDLE);
+}
+
+/**
+ * Update a bundle group version
+ * @param {*} bundleGroupVersionData 
+ * @param {*} bundleGroupVersionId 
+ * @returns 
+ */
+export const editBundleGroupVersion = async (bundleGroupVersionData, bundleGroupVersionId) => {
+  const { data, isError } = await postData(urlBundleGroupVersion, bundleGroupVersionData, bundleGroupVersionId)
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToUpdateBundleGroup')} ${data ? data.message : ""}`,
+    `${i18n.t('toasterMessage.bundleGroup')} ${bundleGroupVersionData.name} ${i18n.t('toasterMessage.updated')}`
+  )
+
+  return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
+}
+
+/**
+ * Get bundle group details by bundle group version id
+ * @param {*} bundleGroupVersionId 
+ * @returns 
+ */
+ export const getBundleGroupDetailsByBundleGroupVersionId = async (bundleGroupVersionId) => {
+  let newUrl = `${urlBundleGroupVersion}${bundleGroupVersionId}`;
+  const { data, isError } = await getData(newUrl)
+
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+
+  return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }

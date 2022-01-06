@@ -1,28 +1,46 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.CategoryService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -33,29 +51,30 @@ public class BundleGroupController {
     private final BundleGroupService bundleGroupService;
     private final CategoryService categoryService;
     private final SecurityHelperService securityHelperService;
+    private final BundleGroupVersionService bundleGroupVersionService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService) {
         this.bundleGroupService = bundleGroupService;
         this.categoryService = categoryService;
         this.securityHelperService = securityHelperService;
+        this.bundleGroupVersionService = bundleGroupVersionService;
     }
-
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @CrossOrigin
     @GetMapping("/")
-    public List<BundleGroup> getBundleGroups(@RequestParam(required = false) String organisationId) {
+    public List<BundleGroup> getBundleGroupsByOrgnisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
     }
-
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+    	logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
@@ -65,10 +84,10 @@ public class BundleGroupController {
 
         String[] statusFilterValues = statuses;
         if (statusFilterValues == null) {
-            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.values()).map(Enum::toString).toArray(String[]::new);
+            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
         }
 
-        logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
+        logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Page<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupsPage = bundleGroupService.getBundleGroups(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
         PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroup::new).collect(Collectors.toList()), bundleGroupsPage);
         return pagedContent;
@@ -88,7 +107,6 @@ public class BundleGroupController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
 
     @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
@@ -112,10 +130,14 @@ public class BundleGroupController {
     public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent()) {
-            logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else {
+
+		if (!bundleGroupOptional.isPresent()) {
+			logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		} else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
+			logger.warn("BundleGroup '{}' is not editable", bundleGroupId);
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} else {
             //if the user is not ADMIN
             if (!securityHelperService.hasRoles(Set.of(ADMIN))) {
                 //I'm going to check the organisation
@@ -141,9 +163,9 @@ public class BundleGroupController {
     public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent() || !bundleGroupOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroup.Status.DELETE_REQ)) {
+        if (!bundleGroupOptional.isPresent()) {
             bundleGroupOptional.ifPresentOrElse(
-                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not in DELETE_REQ status: {}", bundleGroupId, bundleGroup.getStatus()),
+                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not present", bundleGroupId),
                     () -> logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId)
             );
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -153,7 +175,6 @@ public class BundleGroupController {
         }
     }
 
-
     @Getter
     @Setter
     @ToString
@@ -161,8 +182,8 @@ public class BundleGroupController {
     public static class BundleGroup extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroup(String bundleGroupId, String name, String description, String descriptionImage, String version) {
-            super(name, description, descriptionImage, version);
+        public BundleGroup(String bundleGroupId, String name, String organizationId) {
+            super(name, organizationId);
             this.bundleGroupId = bundleGroupId;
         }
 
@@ -175,46 +196,24 @@ public class BundleGroupController {
     @Data
     public static class BundleGroupNoId {
         protected final String name;
-        protected final String description;
-        protected final String descriptionImage;
-        protected String documentationUrl;
-        protected String bundleGroupUrl;
-        protected String version;
-        protected com.entando.hub.catalog.persistence.entity.BundleGroup.Status status;
-        protected LocalDateTime lastUpdate;
-
         //the following must be merged with the entity using mappedBy
         protected List<String> children;
         protected String organisationId;
         protected String organisationName;
         protected List<String> categories;
+        protected BundleGroupVersionView versionDetails;
 
-
-        public BundleGroupNoId(String name, String description, String descriptionImage, String version) {
+        public BundleGroupNoId(String name ,String organisationId) {
             this.name = name;
-            this.description = description;
-            this.descriptionImage = descriptionImage;
-            this.version = version;
+            this.organisationId = organisationId;
         }
 
-
         public BundleGroupNoId(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
-            this.description = entity.getDescription();
-            this.descriptionImage = entity.getDescriptionImage();
             this.name = entity.getName();
-            this.status = entity.getStatus();
-            this.documentationUrl = entity.getDocumentationUrl();
-            this.bundleGroupUrl = entity.getBundleGroupUrl();
-            this.version = entity.getVersion();
-            this.lastUpdate = entity.getLastUpdate();
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId().toString();
                 this.organisationName = entity.getOrganisation().getName();
-            }
-            //todo one single iteration
-            if (entity.getBundles() != null) {
-                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
             }
             if (entity.getCategories() != null) {
                 this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
@@ -223,12 +222,7 @@ public class BundleGroupController {
 
         public com.entando.hub.catalog.persistence.entity.BundleGroup createEntity(Optional<String> id) {
             com.entando.hub.catalog.persistence.entity.BundleGroup ret = new com.entando.hub.catalog.persistence.entity.BundleGroup();
-            ret.setDescription(this.getDescription());
             ret.setName(this.getName());
-            ret.setDescriptionImage(this.getDescriptionImage());
-            ret.setDocumentationUrl(this.getDocumentationUrl());
-            ret.setStatus(this.getStatus());
-            ret.setVersion(this.getVersion());
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
                 organisation.setId(Long.parseLong(this.organisationId));
@@ -239,6 +233,4 @@ public class BundleGroupController {
             return ret;
         }
     }
-
-
 }

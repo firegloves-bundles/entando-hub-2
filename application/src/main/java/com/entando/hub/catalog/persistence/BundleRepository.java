@@ -1,19 +1,17 @@
 package com.entando.hub.catalog.persistence;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Set;
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 
 public interface BundleRepository extends JpaRepository<Bundle, Long> {
-    Page<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups, Pageable pageable);
-    Page<Bundle> findByBundleGroupsIsNotNull(Pageable pageable);
-    Page<Bundle> findByBundleGroupsIn(List<BundleGroup> bundleGroups, Pageable pageable);
-    List<Bundle> findByBundleGroupsIs(BundleGroup bundleGroups);
+
+    Page<Bundle> findByBundleGroupVersionsIs(BundleGroupVersion bundleGroupVersions, Pageable pageable);
+    Page<Bundle> findByBundleGroupVersionsIn(List<BundleGroupVersion> bundleGroupVersions, Pageable pageable);
+    List<Bundle> findByBundleGroupVersionsIs(BundleGroupVersion bundleGroupVersions);
 }

@@ -1,24 +1,22 @@
 import { Loading, Modal } from "carbon-components-react"
-import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 import { useCallback, useEffect, useState } from "react"
 import {
   addNewBundle,
   editBundleGroup,
+  editBundleGroupVersion,
   getAllBundlesForABundleGroup,
   getAllCategories,
-  getSingleBundleGroup,
   getSingleOrganisation,
 } from "../../../../integration/Integration"
 import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling"
 import { getHigherRole } from "../../../../helpers/helpers"
-import {
-  bundleGroupSchema,
-} from "../../../../helpers/validation/bundleGroupSchema"
+import { newBundleGroupSchema } from "../../../../helpers/validation/bundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
 import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
+import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
@@ -26,14 +24,16 @@ export const ModalUpdateBundleGroup = ({
   open,
   onCloseModal,
   onAfterSubmit,
+  bundleGroupObj
 }) => {
+  
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
     organisationId: "",
     name: "",
   }])
   const [categories, setCategories] = useState([])
 
-  const [bundleGroup, setBundleGroup] = useState({})
+  const [bundleGroup, setBundleGroup] = useState(bundleGroupObj)
   const [passiveModal, setPassiveModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -62,30 +62,49 @@ export const ModalUpdateBundleGroup = ({
       }
     }
     const initBG = async () => {
-      const res = await getSingleBundleGroup(bundleGroupId)
       const childrenFromDb =
-      res && res.bundleGroup && res.bundleGroup.children && res.bundleGroup.children.length > 0
-          ? (await getAllBundlesForABundleGroup(bundleGroupId)).bundleList
+        bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
+          ? (await getAllBundlesForABundleGroup(bundleGroupObj.bundleGroupVersionId)).bundleList
           : []
 
-      const bundleGroupOrganisation = (
-        await getSingleOrganisation(res.bundleGroup.organisationId)
-      ).organisation
+      const bundleGroupOrganisation = (await getSingleOrganisation(bundleGroupObj && bundleGroupObj.organisationId)).organisation
+
       if (isMounted) {
         if (bundleGroupOrganisation) {
           setAllowedOrganisations([bundleGroupOrganisation])
         }
         let bg = {
-          ...res.bundleGroup,
-          children: childrenFromDb,
+          ...bundleGroupObj,
+          children: childrenFromDb
         }
         const selectStatusValues = getProfiledUpdateSelectStatusInfo(
           getHigherRole(),
           bg.status
         )
         setSelectStatusValues(selectStatusValues)
-        setPassiveModal(selectStatusValues.disabled)
-        setBundleGroup(bg)
+        setPassiveModal(selectStatusValues.disabled);
+
+        /**
+         * Prepare required bundle group object to show prefilled values on form
+         */
+        let newObject = {
+          bundleGroupId: bg.bundleGroupId,
+          name: bg.name,
+          children: bg.children,
+          categories: bg.categories,
+          organisationId: bg.organisationId,
+          isEditable: bg.isEditable,
+          versionDetails: {
+            bundleGroupVersionId: bg.bundleGroupVersionId,
+            description: bg.description,
+            descriptionImage: bg.descriptionImage,
+            documentationUrl: bg.documentationUrl,
+            bundleGroupUrl: bg.bundleGroupUrl,
+            version: bg.version,
+            status: bg.status
+          }
+        }
+        setBundleGroup(newObject);
       }
     }
 
@@ -96,7 +115,7 @@ export const ModalUpdateBundleGroup = ({
     return () => {
       isMounted = false
     }
-  }, [bundleGroupId])
+  }, [bundleGroupId, bundleGroupObj])
 
   //TODO BE QUERY REFACTORING
   const updateBundleGroup = async (bundleGroup) => {
@@ -112,29 +131,41 @@ export const ModalUpdateBundleGroup = ({
       ...bundleGroup,
       children: newChildren,
     }
-    await editBundleGroup(toSend, toSend.bundleGroupId)
+    
+    if (bundleGroup.isEditable) {
+      await editBundleGroup(toSend, toSend.bundleGroupId)
+    } else {
+      // Update payload for version update only
+      toSend.versionDetails = {
+        ...toSend.versionDetails,
+        children: toSend.children,
+        categories: toSend.categories,
+        name: toSend.name
+      }
+      await editBundleGroupVersion(toSend.versionDetails, toSend.versionDetails.bundleGroupVersionId);
+    }
   }
   
   const onRequestSubmit = (e) => {
     ;(async () => {
       let validationError
-      await bundleGroupSchema
+      await newBundleGroupSchema
       .validate(bundleGroup, { abortEarly: false })
       .catch((err) => {
         validationError = fillErrors(err)
       })
-      if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
+      if ((bundleGroup && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.DELETE_REQ)) &&
           validationError && validationError.children && validationError.children.length === 1 &&
           Object.keys(validationError).length === 1) {
           validationError = undefined;
       }
-      if (bundleGroup && bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
-        (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
+      if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
+        (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
         setMinOneBundleError(validationError.children[0]);
       }
       if (validationError) {
         setValidationResult(validationError)
-        return
+        return //don't send the form
       }
       await updateBundleGroup(bundleGroup)
       onCloseModal()

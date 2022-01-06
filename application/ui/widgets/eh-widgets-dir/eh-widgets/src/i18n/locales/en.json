@@ -66,7 +66,10 @@
       "addOrganisation": "Add Organisation",
       "addUser": "Add User",
       "remove": "Remove",
-      "selectOneUsername" : "Select one Username"
+      "selectOneUsername": "Select one Username",
+      "newVersion": "New Version",
+      "viewVersions": "View Versions",
+      "submit": "Submit"
     },
     "pagination": {
       "page": "page",
@@ -106,6 +109,9 @@
     "impossibleToDeleteUser": "Impossible to delete user.",
     "impossibleToRemoveUser": "Impossible to remove user.",
     "userRemovedFromTheOrganisation": "User removed from the organisation",
+    "unableToAddBundleGroupVersion": "Unable to add bundle group version.",
+    "impossibleToLoadBundleGroupVersions": "Impossible to load bundle group versions",
+    "bundleGroupVersion": "Bundle Group Version",
     "user": "User",
     "bundle": "Bundle",
     "bundleGroup": "Bundle Group",
@@ -120,6 +126,8 @@
     "docRequired": "Documentation is a required field",
     "docFormat": "Documentation must match URL format",
     "versionRequired": "Version is a required field",
+    "duplicateVersion": "This version number already exists, please enter a new version number",
+    "statusRequired": "Status is a required field",
     "versionFormat": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
     "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)",
     "bundleUrlRequired": "The bundle address is a required field",
@@ -134,11 +142,15 @@
     "deleteBundleMsg": "Are you sure you want to delete this bundle?",
     "removeUserFromOrgMsg": "Are you sure you want to remove this User from the Organization?",
     "impossibleToRemoveCat": "This category is already in use.",
-    "deleteCat": "Are you sure you want to delete this Category?"
+    "deleteCat": "Are you sure you want to delete this Category?",
+    "addNewVersion": "Add New Version"
   },
   "Draft": "Draft",
   "Publication Request": "Publication Request",
   "Published": "Published",
   "Deletion Request": "Deletion Request",
-  "All": "All"
+  "All": "All",
+  "breadCrumb": {
+    "version": "Version"
+  }
 }

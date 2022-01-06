@@ -61,11 +61,14 @@
       "delete": "Elimina",
       "search": "Ricerca",
       "cancel": "Annulla",
-      "install": "Installa",
-      "addCategory": "Aggiungi categoria",
-      "addOrganisation": "Aggiungi organizzazione",
-      "remove": "Rimuovi",
-      "selectOneUsername": "Seleziona un nome utente"
+      "install": "Installare",
+      "addCategory": "Aggiungi Categoria",
+      "addOrganisation": "Aggiungi Organizzazione",
+      "remove": "Rimuovere",
+      "selectOneUsername": "Seleziona un nome utente",
+      "newVersion": "Nuova versione",
+      "viewVersions": "Visualizza versioni",
+      "submit": "Invia"
     },
     "pagination": {
       "page": "pagina",
@@ -105,6 +108,9 @@
     "impossibleToDeleteUser": "Impossibile eliminare l'utente.",
     "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
+    "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
+    "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
+    "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",
     "bundle": "Bundle",
     "bundleGroup": "Bundle Group",
@@ -120,9 +126,11 @@
     "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve essere fornita tramite un URL",
     "versionRequired": "La versione è un campo obbligatorio",
-    "versionFormat": "La versione deve corrispondere al formato vx.x.x oppure x.x.x",
-    "bundleUrlFormat": "L'URL deve essere un repository Git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
-    "bundleUrlRequired": "L'indirizzo del bundle è un campo obbligatorio",
+    "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
+    "statusRequired": "Lo stato è un campo obbligatorio",
+    "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
+    "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
+    "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 600 caratteri",
@@ -134,11 +142,15 @@
     "deleteBundleMsg": "Sei sicuro di voler eliminare questo bundle?",
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
-    "deleteCat": "Sei sicuro di voler eliminare questa categoria?"
+    "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
+    "addNewVersion": "Aggiungi nuova versione"
   },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",
   "Published": "Pubblicato",
   "Deletion Request": "Richiesta di eliminazione",
-  "All": "Tutto"
+  "All": "Tutto",
+  "breadCrumb": {
+    "version": "Versione"
+  }
 }

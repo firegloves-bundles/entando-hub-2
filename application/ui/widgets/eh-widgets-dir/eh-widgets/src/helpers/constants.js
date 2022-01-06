@@ -91,3 +91,11 @@ export const DROPDOWN_OPTIONS = {
     EDIT: "Edit",
     REMOVE: "Remove",
 }
+
+// To show Nav-Bar on given pages.
+export const SHOW_NAVBAR_ON_MOUNTED_PAGE = {
+    isCatalogPage: "CatalogPage",
+    isCategoryManagementPage: "CategoryManagementPage",
+    isUserManagementPage: "UserManagementPage",
+    isOrganisationManagementPage: "OrganisationManagementPage",
+}

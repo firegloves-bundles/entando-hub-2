@@ -1,9 +1,9 @@
 import React from 'react'
 import {Breadcrumb, BreadcrumbItem} from "carbon-components-react"
-import {Link, useHistory} from "react-router-dom"
+import {Link} from "react-router-dom"
 import './eh-breadcrumb.scss'
 import i18n from '../../i18n'
-import { ADMIN } from '../../helpers/constants'
+import { ADMIN, SHOW_NAVBAR_ON_MOUNTED_PAGE } from '../../helpers/constants'
 import { getHigherRole } from '../../helpers/helpers'
 /*
 {
@@ -11,9 +11,8 @@ path,
 href
 }
  */
-const EhBreadcrumb = ({pathElements = []}) => {
-    const currentUrl = useHistory().location.pathname
-    const showNavBar = currentUrl === '/' || currentUrl === '/admin' || currentUrl === '/category' || currentUrl === '/organisation';
+const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
+    const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(mountedPage) && getHigherRole() === ADMIN;
     const linkStyle = {
         margin: "4px",
         textDecoration: "none",
@@ -31,11 +30,11 @@ const EhBreadcrumb = ({pathElements = []}) => {
     })
 
     if (!elementList.length) {
-      if (currentUrl === "/admin")
+      if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage === mountedPage)
         elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.userManagement')}</span>;
-      else if (currentUrl === "/category")
+      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage === mountedPage)
         elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.categoryManagement')}</span>;
-      else if (currentUrl === "/organisation")
+      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage === mountedPage)
         elementList = (
           <span className="navigation-breadcrumb">{i18n.t('navLink.organisationManagement')}</span>
         );
@@ -46,8 +45,8 @@ const EhBreadcrumb = ({pathElements = []}) => {
           <Link to="/">{i18n.t("page.catlogPanel.catlogHomePage.home")}</Link>
         </BreadcrumbItem>
         {elementList}
-        {getHigherRole() === ADMIN && showNavBar && (
-          <div className="navigation-bar" style={currentUrl === '/' ? {"marginRight": "3rem"} : {"marginRight": "1.8rem"}}>
+        {showNavBar && (
+          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? {"marginRight": "3rem"} : {"marginRight": "1.8rem"}}>
             <Link style={linkStyle} to="/admin">
               {i18n.t('navLink.userManagement')}
             </Link><span style={linkStyle}>|</span>

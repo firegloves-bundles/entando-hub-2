@@ -129,7 +129,7 @@
     "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
     "statusRequired": "Lo stato è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
-    "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/reponame/myrepo.git o git@github.com:github/reponame/myrepo.git)",
+    "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",

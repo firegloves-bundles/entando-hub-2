@@ -6,6 +6,7 @@ import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
 import { isHubUser } from "../../../helpers/helpers";
 import { textFromStatus } from '../../../helpers/profiling';
 import { BUNDLE_STATUS, HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../../../helpers/constants";
+import i18n from "../../../i18n";
 
 const CatalogTile = ({
   bundleGroupId,
@@ -92,7 +93,7 @@ const CatalogTile = ({
           <div className="CatalogTile-card-status">{organisationName}</div>
           {isHubUser() && (
             <div className="CatalogTile-card-status">
-              {textFromStatus(status)}
+              {i18n.t(textFromStatus(status))}
             </div>
           )}
           <div className="CatalogTile-card-description">{description}</div>

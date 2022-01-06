@@ -1,7 +1,6 @@
 import { Loading, Modal } from "carbon-components-react"
 import { useCallback, useEffect, useState } from "react"
 import {
-  addNewBundle,
   editBundleGroup,
   editBundleGroupVersion,
   getAllBundlesForABundleGroup,
@@ -75,7 +74,7 @@ export const ModalUpdateBundleGroup = ({
         }
         let bg = {
           ...bundleGroupObj,
-          children: childrenFromDb
+          // children: childrenFromDb //EHUB-175
         }
         const selectStatusValues = getProfiledUpdateSelectStatusInfo(
           getHigherRole(),
@@ -90,7 +89,7 @@ export const ModalUpdateBundleGroup = ({
         let newObject = {
           bundleGroupId: bg.bundleGroupId,
           name: bg.name,
-          children: bg.children,
+          // children: bg.children, //EHUB-175
           categories: bg.categories,
           organisationId: bg.organisationId,
           isEditable: bg.isEditable,
@@ -101,7 +100,8 @@ export const ModalUpdateBundleGroup = ({
             documentationUrl: bg.documentationUrl,
             bundleGroupUrl: bg.bundleGroupUrl,
             version: bg.version,
-            status: bg.status
+            status: bg.status,
+            bundles: childrenFromDb //EHUB-175
           }
         }
         setBundleGroup(newObject);
@@ -119,26 +119,28 @@ export const ModalUpdateBundleGroup = ({
 
   //TODO BE QUERY REFACTORING
   const updateBundleGroup = async (bundleGroup) => {
-    let newChildren = []
-    if (bundleGroup.children && bundleGroup.children.length) {
-      //call addNewBundle rest api, saving every bundle
-      //WARNING a new bundle is created even if already exists
-      //the call is async in respArray there will be the new bundles id
-      let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-      newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
-    }
+    // EHUB-175, commented
+    // let newChildren = []
+    // if (bundleGroup.children && bundleGroup.children.length) {
+    //   //call addNewBundle rest api, saving every bundle
+    //   //WARNING a new bundle is created even if already exists
+    //   //the call is async in respArray there will be the new bundles id
+    //   let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
+    //   newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
+    // }
     const toSend = {
       ...bundleGroup,
-      children: newChildren,
+      // children: newChildren, //EHUB-175
     }
     
+    console.log("update tosend: ", toSend);
     if (bundleGroup.isEditable) {
       await editBundleGroup(toSend, toSend.bundleGroupId)
     } else {
       // Update payload for version update only
       toSend.versionDetails = {
         ...toSend.versionDetails,
-        children: toSend.children,
+        // children: toSend.children, //EHUB-175
         categories: toSend.categories,
         name: toSend.name
       }

@@ -154,7 +154,6 @@ public class BundleGroupController {
         }
     }
 
-
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
     @CrossOrigin
@@ -196,8 +195,6 @@ public class BundleGroupController {
     @Data
     public static class BundleGroupNoId {
         protected final String name;
-        //the following must be merged with the entity using mappedBy
-        protected List<String> children;
         protected String organisationId;
         protected String organisationName;
         protected List<String> categories;

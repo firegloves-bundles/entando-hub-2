@@ -34,7 +34,9 @@ public class BundleGroupService {
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleGroupVersionService bundleGroupVersionService) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 
+    		BundleGroupVersionService bundleGroupVersionService,
+    		BundleService bundleService) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
@@ -96,6 +98,15 @@ public class BundleGroupService {
     	return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
     }
 
+//    EHUB-175: Remove this code.
+//    @Transactional
+//    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+//    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
+//        BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
+//        updateMappedBy(entity, bundleGroupNoId);
+//        return entity;
+//    }
+
     @Transactional
     public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
     	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
@@ -103,7 +114,6 @@ public class BundleGroupService {
         updateMappedBy(entity, bundleGroupNoId);
         return entity;
     }
-
 
     public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
@@ -124,9 +134,6 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setCategories(categorySet);
         }
-	    if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
-	    	bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
-	    }
 
         if (bundleGroup.getVersionDetails() != null) {
         	 Optional<String> optBundleGroupVersionId =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
@@ -137,14 +144,47 @@ public class BundleGroupService {
         }
     }
 
+//    EHUB-175: Remove this
+//    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
+//    	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
+//        Objects.requireNonNull(toUpdate.getId());
+//
+//        if (bundleGroup.getCategories() != null) {
+//            //remove the bundle group from all the categories containing it
+//            //TODO native query to improve performance
+//            categoryRepository.findByBundleGroupsIs(toUpdate).stream().forEach(category -> {
+//                category.getBundleGroups().remove(toUpdate);
+//                categoryRepository.save(category);
+//            });
+//            Set<Category> categorySet = bundleGroup.getCategories().stream().map((categoryId) -> {
+//                Category category = categoryRepository.findById(Long.valueOf(categoryId)).get();
+//                category.getBundleGroups().add(toUpdate);
+//                categoryRepository.save(category);
+//                return category;
+//            }).collect(Collectors.toSet());
+//            toUpdate.setCategories(categorySet);
+//        }
+////	    if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
+////	    	bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
+////	    }
+//
+//        if (bundleGroup.getVersionDetails() != null) {
+//        	 Optional<String> optBundleGroupVersionId =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
+//        			 ?  Optional.of(bundleGroup.getVersionDetails().getBundleGroupVersionId())
+//        					 : Optional.empty();
+//        	 logger.debug("{}: updateMappedBy: bundle group version id: {}", CLASS_NAME, optBundleGroupVersionId);
+//        	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(optBundleGroupVersionId, toUpdate), bundleGroup.getVersionDetails());
+//        }
+//    }
+
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {
     	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
         Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id); //No need to fetch here from db, can be passed from controller
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
-//            TODO: Delete the bundle group from Bundle Group Versions
+//          TODO: Delete the bundle group from Bundle Group Versions
             bundleGroupRepository.delete(bundleGroup);
         });
     }
@@ -155,5 +195,10 @@ public class BundleGroupService {
             category.getBundleGroups().remove(bundleGroup);
             categoryRepository.save(category);
         });
+    }
+
+    public void deleteFromOrganisations(BundleGroup bundleGroup) {
+    	logger.debug("{}: deleteFromOrganisations: Delete a bundle group from organisation", CLASS_NAME);
+        bundleGroup.getOrganisation().getBundleGroups().remove(bundleGroup);
     }
 }

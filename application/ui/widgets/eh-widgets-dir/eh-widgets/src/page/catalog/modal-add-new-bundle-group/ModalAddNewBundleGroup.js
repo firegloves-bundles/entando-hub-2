@@ -2,10 +2,7 @@ import { Button, ComposedModal, Loading, ModalBody, ModalFooter, ModalHeader } f
 import { Add16 } from '@carbon/icons-react'
 import ReactDOM from "react-dom"
 import { useCallback, useEffect, useState } from "react"
-import {
-    addNewBundle,
-    addNewBundleGroup,
-} from "../../../integration/Integration"
+import { addNewBundleGroup } from "../../../integration/Integration"
 import './modal-add-new-bundle-group.scss'
 import { newBundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../helpers/validation/fillErrors"
@@ -57,7 +54,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             setBundleGroup(
                 {
                     name: "",
-                    children: [],
+                    // children: [], //EHUB-175
                     categories: [defaultCategoryId],
                     organisationId: organizationId,
                     versionDetails: {
@@ -65,9 +62,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
-                        bundleGroupUrl: "",
+                        // bundleGroupUrl: "", //EHUB-175
                         version: "",
                         status: "NOT_PUBLISHED",
+                        bundles: [] //EHUB-175
                     }
                 }
             )
@@ -114,7 +112,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
                     const newObj = {
                         name: "",
-                        children: [],
+                        // children: [], //EHUB-175
                         categories: [defaultCategoryId],
                         organisationId: organizationId,
                         versionDetails: {
@@ -122,9 +120,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             description: "",
                             descriptionImage: values.bundleGroupForm.standardIcon,
                             documentationUrl: "",
-                            bundleGroupUrl: "",
+                            // bundleGroupUrl: "", //EHUB-175
                             version: "",
                             status: "NOT_PUBLISHED",
+                            bundles: [] //EHUB-175
                         }
                     }
 
@@ -141,18 +140,20 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
         //TODO BE QUERY REFACTORING
         const createNewBundleGroup = async (bundleGroup) => {
-            let newChildren = [] //children are the bundles
-            if (bundleGroup.children && bundleGroup.children.length) {
-                //call addNewBundle rest api, saving every bundle
-                //the call is async in respArray there will be the new bundles id
-                let respArray = await Promise.all(bundleGroup.children.map(addNewBundle)) //addNewBundle creates a new bundle in the DB
-                //new children will be an array of bundle ids
-                newChildren = respArray.map(res => res.newBundle.data.bundleId)
-            }
+            // EHUB-175, commented
+            // let newChildren = [] //children are the bundles
+            // if (bundleGroup.children && bundleGroup.children.length) {
+            //     //call addNewBundle rest api, saving every bundle
+            //     //the call is async in respArray there will be the new bundles id
+            //     // let respArray = await Promise.all(bundleGroup.children.map(addNewBundle)) //addNewBundle creates a new bundle in the DB
+            //     //new children will be an array of bundle ids
+            //     // newChildren = respArray.map(res => res.newBundle.data.bundleId)
+            // }
+
             //build a new bundleGroup object with only the ids in the children array
             const toSend = {
                 ...bundleGroup,
-                children: newChildren
+                // children: newChildren //EHUB-175
             }
             await addNewBundleGroup(toSend)
             return toSend
@@ -173,7 +174,12 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     validationError = undefined;
                 }
 
-                if (bundleGroup.children && bundleGroup.children.length === 0 &&
+                // EHUB-175
+                // if (bundleGroup.children && bundleGroup.children.length === 0 &&
+                //     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
+                //     setMinOneBundleError(validationError.children[0]);
+                // }
+                if (bundleGroup.versionDetails.bundles && bundleGroup.versionDetails.bundles.length === 0 &&
                     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     setMinOneBundleError(validationError.children[0]);
                 }

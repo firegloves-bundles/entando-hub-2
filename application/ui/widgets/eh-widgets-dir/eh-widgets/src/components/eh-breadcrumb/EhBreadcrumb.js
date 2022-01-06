@@ -46,7 +46,7 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
         </BreadcrumbItem>
         {elementList}
         {showNavBar && (
-          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? {"marginRight": "3rem"} : {"marginRight": "1.8rem"}}>
+          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? {"marginRight": "1rem"} : {"marginRight": "1.8rem"}}>
             <Link style={linkStyle} to="/admin">
               {i18n.t('navLink.userManagement')}
             </Link><span style={linkStyle}>|</span>

@@ -98,7 +98,7 @@ const BundleGroupVersionsPage = () => {
                 </div>
                 {/* TODO: 1-End */}
               <div className="bx--col-lg-5 CatalogPage-section">
-                Catalog
+              {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
               </div>
               <div className="bx--col-lg-3 CatalogPage-section">
                 {/* TODO: NEED TO CONFIRM IF ADD BUTTON SHOULD BE THERE OR NOT.*/}

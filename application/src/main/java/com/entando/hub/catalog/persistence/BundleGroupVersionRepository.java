@@ -17,7 +17,7 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 
 	Page<BundleGroupVersion> findByBundleGroupInAndStatusIn(List<BundleGroup> bundleGroup, Set<BundleGroupVersion.Status> statuses, Pageable pageable);
 	
-	List<BundleGroupVersion> findByBundleGroupAndStatus(BundleGroup bundleGroup, BundleGroupVersion.Status status);
+	BundleGroupVersion findByBundleGroupAndStatus(BundleGroup bundleGroup, BundleGroupVersion.Status status);
 	
 	BundleGroupVersion findDistinctByIdAndStatus(Long bundleGroupVesionId, BundleGroupVersion.Status status);
 

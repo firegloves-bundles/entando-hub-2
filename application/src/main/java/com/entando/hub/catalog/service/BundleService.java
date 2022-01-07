@@ -13,9 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.BundleController;
 
@@ -24,17 +26,19 @@ public class BundleService {
 
     final private BundleRepository bundleRepository;
     final private BundleGroupVersionRepository bundleGroupVersionRepository;
+    final private BundleGroupRepository bundleGroupRepository;
 
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository) {
+    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,BundleGroupRepository bundleGroupRepository) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
+        this.bundleGroupRepository =  bundleGroupRepository;
     }
 
-	public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupVersionId) {
-		logger.debug("{}: getBundles: Get bundles paginated by bundle group version id: {}", CLASS_NAME, bundleGroupVersionId);
+    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId) {
+		logger.debug("{}: getBundles: Get bundles paginated by bundle group  id: {}", CLASS_NAME, bundleGroupId);
 		Pageable paging;
 		if (pageSize == 0) {
 			paging = Pageable.unpaged();
@@ -42,18 +46,18 @@ public class BundleService {
 			paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
 		}
 		Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
-		if (bundleGroupVersionId.isPresent()) {
-			Long bundleGroupVersoinEntityId = Long.parseLong(bundleGroupVersionId.get());
-			Optional<BundleGroupVersion> bundleGroupVersionEntity = bundleGroupVersionRepository.findById(bundleGroupVersoinEntityId);
-			if (bundleGroupVersionEntity.isPresent()) {
-				BundleGroupVersion version = bundleGroupVersionRepository.findDistinctByIdAndStatus(bundleGroupVersionEntity.get().getId(), BundleGroupVersion.Status.PUBLISHED);
-				if (version != null)
-					response = bundleRepository.findByBundleGroupVersionsIs(version, paging);
+		if (bundleGroupId.isPresent()) {
+			Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
+			Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
+			if (bundleGroupEntity.isPresent()) {
+				BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
+				if (publishedVersion != null)
+					response = bundleRepository.findByBundleGroupVersionsIs(publishedVersion, paging);
 			} else {
-				logger.warn("{}: getBundles: bundle group version does not exist: {}", CLASS_NAME, bundleGroupVersoinEntityId);
+				logger.warn("{}: getBundles: bundle group does not exist: {}", CLASS_NAME, bundleGroupEntityId);
 			}
 		} else {
-			logger.debug("{}: getBundles: bundle group version id is not present: {}", CLASS_NAME, bundleGroupVersionId);
+			logger.debug("{}: getBundles: bundle group id is not present: {}", CLASS_NAME, bundleGroupId);
 			List<BundleGroupVersion> budlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
 			response = bundleRepository.findByBundleGroupVersionsIn(budlegroupsVersion, paging);
 		}

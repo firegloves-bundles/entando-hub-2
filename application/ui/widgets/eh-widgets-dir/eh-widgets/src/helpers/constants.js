@@ -75,7 +75,7 @@ export const VERSION_REQ_MSG = 'Version is a required field'
 export const VERSION_FORMAT_MSG = 'Version must match semantic versioning format (e.g. vx.x.x or x.x.x)'
 export const DUPLICATE_VERSION = 'This version number already exists, please enter a new version number.'
 // Bundle
-export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/reponame/myrepo.git or git@github.com:github/reponame/myrepo.git)'
+export const BUNDLE_URL_REGEX_FAIL = 'Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)'
 
 /**
  * Bundle Form Validatin Error Message
@@ -99,6 +99,9 @@ export const DROPDOWN_OPTIONS = {
     REMOVE: "Remove",
 }
 
+// Git Repo Address
+export const MATCHER = 'git@github.com'
+export const GIT_DOMAIN = 'https://github.com/'
 export const MENU_OPTIONS = {
     ADD_BUNDLE_GROUP_VERSION: 'Add Version',
     VIEW_BUNDLE_GROUP_VERSIONS: 'View Versions'

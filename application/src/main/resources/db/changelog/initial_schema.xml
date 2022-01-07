@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<!-- EHUB core tables. The initial schema -->
+	<changeSet id="1" author="admin">
+		<createTable tableName="CATEGORY">
+			<column autoIncrement="true" name="ID" type="INT">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="NAME" type="varchar(255)" />
+			<column name="DESCRIPTION" type="varchar(255)" />
+		</createTable>
+
+		<createTable tableName="ORGANISATION">
+			<column autoIncrement="true" name="ID" type="INT">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="NAME" type="varchar(255)" />
+			<column name="DESCRIPTION" type="varchar(255)" />
+		</createTable>
+
+		<insert tableName="CATEGORY">
+			<column name="ID" valueNumeric="1" />
+			<column name="NAME" value="Component Collection" />
+			<column name="DESCRIPTION" value="Component Collection1" />
+		</insert>
+
+		<insert tableName="CATEGORY">
+			<column name="ID" valueNumeric="2" />
+			<column name="NAME" value="PBC" />
+			<column name="DESCRIPTION" value="PBC" />
+		</insert>
+
+		<insert tableName="CATEGORY">
+			<column name="ID" valueNumeric="3" />
+			<column name="NAME" value="Solution Template" />
+			<column name="DESCRIPTION" value="Solution Template" />
+		</insert>
+
+		<insert tableName="ORGANISATION">
+			<column name="ID" valueNumeric="1" />
+			<column name="NAME" value="Entando" />
+			<column name="DESCRIPTION" value="Entando" />
+		</insert>
+
+		<insert tableName="ORGANISATION">
+			<column name="ID" valueNumeric="2" />
+			<column name="NAME" value="Partner 1" />
+			<column name="DESCRIPTION" value="Partner 1" />
+		</insert>
+
+		<insert tableName="ORGANISATION">
+			<column name="ID" valueNumeric="3" />
+			<column name="NAME" value="Partner 2" />
+			<column name="DESCRIPTION" value="Partner 2" />
+		</insert>
+		<rollback>
+			<dropTable tableName="CATEGORY" />
+			<dropTable tableName="ORGANISATION" />
+		</rollback>
+		<!-- <addForeignKeyConstraint -->
+		<!-- baseColumnNames="organisation_id" baseTableName="bundle_group" -->
+		<!-- constraintName="fk_organisation_id" referencedColumnNames="id" -->
+		<!-- referencedTableName="ORGANISATION" /> -->
+	</changeSet>
+</databaseChangeLog>

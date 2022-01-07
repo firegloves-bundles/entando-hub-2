@@ -159,13 +159,13 @@ public class BundleGroupVersionService {
         Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
         Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
         logger.debug("{}: getBundleGroupVersions: Found pages, number of elements: {}", CLASS_NAME, page.getNumberOfElements());
-        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
-        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
-        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
-        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
+//        List<BundleGroupVersion> versions = new ArrayList<BundleGroupVersion>();
+//        versions.addAll(page.getContent().stream().filter(version -> !version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+//        versions.addAll(page.getContent().stream().filter(version -> version.getStatus().equals(BundleGroupVersion.Status.ARCHIVE)).collect(Collectors.toList()));
+//        Page<BundleGroupVersion> pageResponse = new PageImpl<>(versions);
 
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(pageResponse).stream()
-        		.collect(Collectors.toList()), pageResponse);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
+        .collect(Collectors.toList()), page);
         return pagedContent;
 	 }
 

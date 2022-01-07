@@ -12,12 +12,8 @@ href
 }
  */
 const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
-    const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(mountedPage) && getHigherRole() === ADMIN;
-    const linkStyle = {
-        margin: "4px",
-        textDecoration: "none",
-      };
-
+  const currentPath = (pathElements && pathElements.length && pathElements[0].path) ? pathElements[0].path : mountedPage;
+  const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(currentPath) && getHigherRole() === ADMIN;
     let elementList = pathElements.map((pathElement, index) => {
         if (index === pathElements.length - 1) {
             return (
@@ -28,17 +24,6 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
             <Link to={pathElement.href}>{pathElement.path}</Link>
         </BreadcrumbItem>)
     })
-
-    if (!elementList.length) {
-      if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage === mountedPage)
-        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.userManagement')}</span>;
-      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage === mountedPage)
-        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.categoryManagement')}</span>;
-      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage === mountedPage)
-        elementList = (
-          <span className="navigation-breadcrumb">{i18n.t('navLink.organisationManagement')}</span>
-        );
-    }
     return (
       <Breadcrumb aria-label="Page navigation">
         <BreadcrumbItem>
@@ -46,14 +31,16 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
         </BreadcrumbItem>
         {elementList}
         {showNavBar && (
-          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? {"marginRight": "1rem"} : {"marginRight": "1.8rem"}}>
-            <Link style={linkStyle} to="/admin">
+          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? { "marginRight": "1rem" } : { "marginRight": "1.8rem" }}>
+            <Link to="/admin">
               {i18n.t('navLink.userManagement')}
-            </Link><span style={linkStyle}>|</span>
-            <Link style={linkStyle} to="/category">
+            </Link>
+            <pre> | </pre>
+            <Link to="/category">
               {i18n.t('navLink.categoryManagement')}
-            </Link><span style={linkStyle}>|</span>
-            <Link style={linkStyle} to="/organisation">
+            </Link>
+            <pre> | </pre>
+            <Link to="/organisation">
               {i18n.t('navLink.organisationManagement')}
             </Link>
           </div>

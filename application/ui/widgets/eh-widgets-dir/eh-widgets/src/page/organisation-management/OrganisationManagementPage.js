@@ -20,7 +20,6 @@ import {getAllOrganisations,} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
 import i18n from "../../i18n"
-import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
 
 /*
 [
@@ -102,7 +101,9 @@ const OrganisationManagementPage = () => {
         <div className="OrganizationManagmentPage-wrapper">
           <div className="bx--row">
             <div className="bx--col-lg-16 OrganizationManagmentPage-breadcrumb">
-              <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage}/>
+              <EhBreadcrumb pathElements={[{
+                path: i18n.t('navLink.organisationManagement')
+              }]} />
             </div>
           </div>
           <div className="bx--row">

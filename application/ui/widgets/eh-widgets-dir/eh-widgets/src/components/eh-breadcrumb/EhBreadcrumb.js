@@ -12,8 +12,7 @@ href
 }
  */
 const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
-  const currentPath = (pathElements && pathElements.length && pathElements[0].path) ? pathElements[0].path : mountedPage;
-  const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(currentPath) && getHigherRole() === ADMIN;
+    const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(mountedPage) && getHigherRole() === ADMIN;
     let elementList = pathElements.map((pathElement, index) => {
         if (index === pathElements.length - 1) {
             return (
@@ -24,6 +23,17 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
             <Link to={pathElement.href}>{pathElement.path}</Link>
         </BreadcrumbItem>)
     })
+
+    if (!elementList.length) {
+      if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage === mountedPage)
+        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.userManagement')}</span>;
+      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage === mountedPage)
+        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.categoryManagement')}</span>;
+      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage === mountedPage)
+        elementList = (
+          <span className="navigation-breadcrumb">{i18n.t('navLink.organisationManagement')}</span>
+        );
+    }
     return (
       <Breadcrumb aria-label="Page navigation">
         <BreadcrumbItem>

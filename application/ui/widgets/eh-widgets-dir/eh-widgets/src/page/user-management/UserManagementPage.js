@@ -23,6 +23,7 @@ import {
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./user-managment-page.scss"
 import i18n from "../../i18n"
+import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
 
 /*
 BUNDLEGROUP:
@@ -135,9 +136,7 @@ const UserManagementPage = () => {
         <div className="UserManagementPage-wrapper">
           <div className="bx--row">
             <div className="bx--col-lg-16 UserManagementPage-breadcrumb">
-              <EhBreadcrumb pathElements={[{
-                path: i18n.t('navLink.userManagement')
-              }]} />
+              <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage}/>
             </div>
           </div>
           <div className="bx--row">

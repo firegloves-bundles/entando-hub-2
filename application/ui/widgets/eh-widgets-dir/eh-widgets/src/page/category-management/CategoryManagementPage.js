@@ -20,6 +20,7 @@ import {getAllCategories,} from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./category-managment-page.scss"
 import i18n from "../../i18n"
+import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
 
 /*
 [
@@ -101,9 +102,7 @@ const CategoryManagementPage = () => {
         <div className="OrganizationManagmentPage-wrapper">
           <div className="bx--row">
             <div className="bx--col-lg-16 OrganizationManagmentPage-breadcrumb">
-              <EhBreadcrumb pathElements={[{
-                path: i18n.t('navLink.categoryManagement')
-              }]} />
+              <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage}/>
             </div>
           </div>
           <div className="bx--row">

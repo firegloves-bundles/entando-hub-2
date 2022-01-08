@@ -18,6 +18,7 @@ const BundleGroupVersionsPage = () => {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
   const [totalItems, setTotalItems] = useState(12)
+  const [currentPage, setCurrentPage] = useState(1)
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
   const [statusFilterValue, setStatusFilterValue] = useState("")
@@ -45,6 +46,7 @@ const BundleGroupVersionsPage = () => {
   const onPaginationChange = async ({ page, pageSize }) => {
     setPageSize(pageSize)
     setPage(page)
+    setCurrentPage(page)
     const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, page, pageSize, statusFilterValue);
     if (response && response.versions) {
       response.versions.payload && setBgVersionList(response.versions.payload)
@@ -54,9 +56,10 @@ const BundleGroupVersionsPage = () => {
 
   const changeStatusFilterValue = useCallback(async (newValue) => {
     setStatusFilterValue(newValue);
-    const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, page, pageSize, newValue);
     setPageSize(12)
     setPage(1)
+    setCurrentPage(1)
+    const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, page, pageSize, newValue);
     if (response && response.versions) {
       response.versions.payload && setBgVersionList(response.versions.payload)
       setTotalItems(response.versions.metadata.totalItems)
@@ -139,6 +142,7 @@ const BundleGroupVersionsPage = () => {
                   itemRangeText={
                     (min, max, total) => `${min}–${max} ${i18n.t("component.pagination.of")} ${total} ${i18n.t("component.pagination.items")}`
                   }
+                  page={currentPage}
                   pageSizes={[12, 18, 24]}
                   totalItems={totalItems}
                   onChange={onPaginationChange}

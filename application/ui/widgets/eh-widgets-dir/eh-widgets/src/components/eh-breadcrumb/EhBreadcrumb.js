@@ -15,7 +15,7 @@ const EhBreadcrumb = ({pathElements = []}) => {
   const currentPath = (pathElements && pathElements.length && pathElements[0].page) ? pathElements[0].page : '';
   const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(currentPath) && getHigherRole() === ADMIN;
 
-  let elementList = pathElements.map((pathElement, index) => {
+  const elementList = pathElements.map((pathElement, index) => {
     if (index === pathElements.length - 1) {
       return (
         <span key={index.toString()}>{pathElement.path}</span>

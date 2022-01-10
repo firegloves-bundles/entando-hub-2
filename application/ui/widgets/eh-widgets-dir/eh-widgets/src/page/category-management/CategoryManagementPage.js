@@ -102,7 +102,12 @@ const CategoryManagementPage = () => {
         <div className="OrganizationManagmentPage-wrapper">
           <div className="bx--row">
             <div className="bx--col-lg-16 OrganizationManagmentPage-breadcrumb">
-              <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage}/>
+              <EhBreadcrumb
+                pathElements={[{
+                  path: i18n.t('navLink.categoryManagement'),
+                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage
+                }]}
+              />
             </div>
           </div>
           <div className="bx--row">

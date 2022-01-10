@@ -11,10 +11,12 @@ path,
 href
 }
  */
-const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
-    const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(mountedPage) && getHigherRole() === ADMIN;
+const EhBreadcrumb = ({pathElements = []}) => {
+  const currentPath = (pathElements && pathElements.length && pathElements[0].page) ? pathElements[0].page : '';
+  const showNavBar = Object.values(SHOW_NAVBAR_ON_MOUNTED_PAGE).includes(currentPath) && getHigherRole() === ADMIN;
+
     const linkStyle = {
-        margin: "4px",
+        margin: "0px 4px",
         textDecoration: "none",
       };
 
@@ -29,16 +31,6 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
         </BreadcrumbItem>)
     })
 
-    if (!elementList.length) {
-      if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage === mountedPage)
-        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.userManagement')}</span>;
-      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage === mountedPage)
-        elementList = <span className="navigation-breadcrumb">{i18n.t('navLink.categoryManagement')}</span>;
-      else if (SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage === mountedPage)
-        elementList = (
-          <span className="navigation-breadcrumb">{i18n.t('navLink.organisationManagement')}</span>
-        );
-    }
     return (
       <Breadcrumb aria-label="Page navigation">
         <BreadcrumbItem>
@@ -46,7 +38,10 @@ const EhBreadcrumb = ({mountedPage, pathElements = []}) => {
         </BreadcrumbItem>
         {elementList}
         {showNavBar && (
-          <div className="navigation-bar" style={mountedPage === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? {"marginRight": "1rem"} : {"marginRight": "1.8rem"}}>
+          <div
+            className="navigation-bar"
+            style={currentPath === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? { "marginRight": "0rem" } : { "marginRight": "1.8rem" }}
+          >
             <Link style={linkStyle} to="/admin">
               {i18n.t('navLink.userManagement')}
             </Link><span style={linkStyle}>|</span>

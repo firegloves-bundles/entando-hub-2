@@ -136,7 +136,12 @@ const UserManagementPage = () => {
         <div className="UserManagementPage-wrapper">
           <div className="bx--row">
             <div className="bx--col-lg-16 UserManagementPage-breadcrumb">
-              <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage}/>
+              <EhBreadcrumb
+                pathElements={[{
+                  path: i18n.t('navLink.userManagement'),
+                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage
+                }]}
+              />
             </div>
           </div>
           <div className="bx--row">

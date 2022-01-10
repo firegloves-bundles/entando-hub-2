@@ -105,7 +105,11 @@ const CatalogPage = () => {
             <div className="bx--grid bx--grid--full-width catalog-page">
               <div className="bx--row">
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
-                  <EhBreadcrumb mountedPage={SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage}/>
+                  <EhBreadcrumb
+                    pathElements={[{
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage
+                    }]}
+                  />
                 </div>
               </div>
               <div className="bx--row">

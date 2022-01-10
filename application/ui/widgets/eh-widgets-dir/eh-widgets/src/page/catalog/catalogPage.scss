@@ -157,3 +157,7 @@ button:focus, button {
   display: flex;
   margin-left: auto;
 }
+
+.navigation-bar > :link {
+  text-decoration: none;
+}

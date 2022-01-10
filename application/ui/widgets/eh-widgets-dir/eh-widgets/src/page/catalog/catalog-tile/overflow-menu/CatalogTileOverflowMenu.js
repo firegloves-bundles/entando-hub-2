@@ -8,7 +8,7 @@ import { ModalAddNewBundleGroupVersion } from "../modal-add-new-bundle-group-ver
 import i18n from "../../../../i18n";
 import { useHistory } from "react-router-dom";
 
-const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup, isVersionsPage}) => {
+const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAfterSubmit, bundleGroup, isVersionsPage, orgList}) => {
 
     const [openModal, setOpenModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
@@ -43,7 +43,7 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
             </OverflowMenu>
 
-            {openModal && <ModalUpdateBundleGroup bundleGroupObj={bundleGroup} open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus}
+            {openModal && <ModalUpdateBundleGroup bundleGroupObj={bundleGroup} open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus} orgList={orgList}
                 onCloseModal={() => setOpenModal(false)} onAfterSubmit={onAfterSubmit} />}
 
             {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupVersionId={bundleGroup && bundleGroup.bundleGroupVersionId} bundleName={bundleName}

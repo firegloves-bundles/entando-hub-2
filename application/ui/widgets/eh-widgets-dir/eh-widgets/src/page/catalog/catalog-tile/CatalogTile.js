@@ -20,7 +20,8 @@ const CatalogTile = ({
   onAfterSubmit,
   version,
   bundleGroup,
-  isVersionsPage
+  isVersionsPage,
+  orgList
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -75,6 +76,7 @@ const CatalogTile = ({
               onAfterSubmit={onAfterSubmit}
               bundleGroup={bundleGroup}
               isVersionsPage={isVersionsPage}
+              orgList={orgList}
             />
           </div>
         )}

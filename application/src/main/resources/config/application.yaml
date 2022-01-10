@@ -33,5 +33,8 @@ app:
     realm: ${keycloak.realm}
     client-ui: entando-web
 
+# CORS Configyrations
+ALLOWED_ORIGIN:
+
 # Hub UI url for bundle groups
 #HUB_GROUP_DETAIL_BASE_URL:

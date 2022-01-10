@@ -13,6 +13,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import { ModalInstallInformation } from "./modal-install-information/ModalInstallInformation"
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
+import { clickableSSHGitURL } from "../../helpers/helpers"
 import { SLASH_VERSIONS } from "../../helpers/constants"
 
 /*
@@ -174,7 +175,7 @@ const BundleGroupPage = () => {
 
 const BundleList = ({ children }) => {
   const elemList = children.map((bundle, index) =>
-    <li key={index.toString()}><a href={bundle.gitRepoAddress}
+    <li key={index.toString()}><a href={clickableSSHGitURL(bundle.gitRepoAddress)}
       target={"_new"}>{bundle.name}</a></li>)
 
   return (

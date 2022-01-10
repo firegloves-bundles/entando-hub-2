@@ -19,6 +19,7 @@ const BundleGroupVersionsPage = () => {
   const [categories, setCategories] = useState([])
   const [totalItems, setTotalItems] = useState(12)
   const [currentPage, setCurrentPage] = useState(1)
+  const [bundleName, setBundleName] = useState("")
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
   const [statusFilterValue, setStatusFilterValue] = useState("")
@@ -72,6 +73,7 @@ const BundleGroupVersionsPage = () => {
       const data = await loadVersionData(bundleGroupId, PAGE, PAGE_SIZE);
       if (data && data.versions && data.versions.payload && data.versions.payload.length) {
         setBgVersionList(data.versions.payload);
+        data.versions.payload && data.versions.payload[0].name && setBundleName(data.versions.payload[0].name)
       }
       setLoading(false);
     }
@@ -97,7 +99,7 @@ const BundleGroupVersionsPage = () => {
             <div className="bx--row">
               <div className="bx--col-lg-12 CatalogPage-breadcrumb">
                 <EhBreadcrumb pathElements={[{
-                  path: bgVersionList && bgVersionList.length ? bgVersionList[0].name : "",
+                  path: bgVersionList && bundleName ? bundleName+" "+`${i18n.t("component.button.viewVersions")}` : "",
                   href: window.location.href
                 }]} />
               </div>
@@ -136,7 +138,7 @@ const BundleGroupVersionsPage = () => {
                   ? 
                     <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
                   : 
-                  <div> {MESSAGES.NO_VERSIONS_FOUND_MSG} </div>}
+                  <div> {i18n.t('page.catlogPanel.noVersionsFound')} </div>}
                 <Pagination
                   itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                   itemRangeText={

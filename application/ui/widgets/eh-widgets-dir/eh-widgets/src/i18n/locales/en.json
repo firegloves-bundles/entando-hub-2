@@ -11,6 +11,7 @@
         "catalog": "Catalog",
         "select": "Select"
       },
+      "noVersionsFound": "No versions found",
       "AuthMessage": {
         "notifyGuestPortalUserMsg": "Your account does not currently have access to the Hub. Please contact your Administrator to request access."
       }

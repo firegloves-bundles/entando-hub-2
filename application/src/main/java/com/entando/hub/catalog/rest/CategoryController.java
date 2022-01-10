@@ -31,7 +31,6 @@ public class CategoryController {
     }
 
     @Operation(summary = "Get all the categories", description = "Public api, no authentication required.")
-    @CrossOrigin
     @GetMapping("/")
     public List<Category> getCategories() {
         logger.debug("REST request to get Categories");
@@ -39,7 +38,6 @@ public class CategoryController {
     }
 
     @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")
-    @CrossOrigin
     @GetMapping("/{categoryId}")
     public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
         logger.debug("REST request to get Category Id: {}", categoryId);
@@ -54,7 +52,6 @@ public class CategoryController {
 
     @Operation(summary = "Create a new category", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
         logger.debug("REST request to create Category: {}", category);
@@ -64,7 +61,6 @@ public class CategoryController {
 
     @Operation(summary = "Update a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @PostMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {
         logger.debug("REST request to update Category {}: {}", categoryId, category);
@@ -80,7 +76,6 @@ public class CategoryController {
 
     @Operation(summary = "Delete a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable String categoryId) {
         logger.debug("REST request to delete gategory {}", categoryId);

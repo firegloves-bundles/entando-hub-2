@@ -30,7 +30,6 @@ public class OrganisationController {
     }
 
     @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
-    @CrossOrigin
     @GetMapping("/")
     public List<Organisation> getOrganisations() {
         logger.debug("REST request to get organisations");
@@ -38,7 +37,6 @@ public class OrganisationController {
     }
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
-    @CrossOrigin
     @GetMapping("/{organisationId}")
     public ResponseEntity<Organisation> getOrganisation(@PathVariable String organisationId) {
         logger.debug("REST request to get organisation by id: {}", organisationId);
@@ -53,7 +51,6 @@ public class OrganisationController {
 
     @Operation(summary = "Create a new organisation", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
@@ -64,7 +61,6 @@ public class OrganisationController {
 
     @Operation(summary = "Update an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @PostMapping("/{organisationId}")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
@@ -81,7 +77,6 @@ public class OrganisationController {
 
     @Operation(summary = "Delete an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @DeleteMapping("/{organisationId}")
     public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {
         logger.debug("REST request to delete organisation {}", organisationId);

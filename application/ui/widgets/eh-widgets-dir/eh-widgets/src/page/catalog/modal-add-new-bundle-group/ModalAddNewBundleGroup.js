@@ -208,6 +208,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             loading={loading}
                             minOneBundleError={minOneBundleError}
                             reqOnWay={reqOnWay}
+                            orgList={orgList}
                         />,
                         document.body
                     )}
@@ -239,7 +240,8 @@ const ModalContent = ({
     categories,
     loading,
     minOneBundleError,
-    reqOnWay
+    reqOnWay,
+    orgList
 }) => {
     return (
         <>
@@ -254,7 +256,7 @@ const ModalContent = ({
                     <ModalBody>
                         <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                             categories={categories} selectStatusValues={selectStatusValues}
-                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} />
+                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} orgList={orgList}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button

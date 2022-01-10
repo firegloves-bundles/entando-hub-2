@@ -55,6 +55,9 @@ Please set the property `HUB_GROUP_DETAIL_BASE_URL` in the appropriate src/main/
 * `HUB_GROUP_DETAIL_BASE_URL: http://hubdev.okd-entando.org/entando-de-app/en/test.page#/`
 * `HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/`
 
+Please set the property `ALLOWED_ORIGIN` in the appropriate src/main/resources/config yaml file or as an environment variable. This is used for allowing the origin mentioned in given URL.
+* `Example:`
+* `ALLOWED_ORIGIN: http://localhost:3000`
 
 ## Local alternative - running microservice in docker
 You can also choose to run the current microservice in a docker container. 

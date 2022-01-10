@@ -53,7 +53,8 @@ const BundleGroupForm = ({
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
-        const enableOrg = isHubAdmin && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ)
+        const enableOrg = isHubAdmin && bundleGroup.isEditable &&
+            (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ)
         if (!enableOrg && currOrganisation) {
             return (<Column sm={16} md={16} lg={16}>
                 <TextInput

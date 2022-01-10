@@ -24,7 +24,7 @@
 }
 
 .CatalogPage-breadcrumb {
-  margin: 2rem 1rem;
+  margin: 2rem 0rem;
 }
 
 .CatalogPage-section {
@@ -149,4 +149,15 @@ button:focus, button {
     height: 4rem;
     flex: 0 1 45%;
   }
+}
+.navigation-bar{
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 50%;
+  display: flex;
+  margin-left: auto;
+}
+
+.navigation-bar > :link {
+  text-decoration: none;
 }

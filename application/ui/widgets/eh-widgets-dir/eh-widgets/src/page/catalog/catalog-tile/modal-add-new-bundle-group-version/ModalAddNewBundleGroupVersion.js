@@ -129,7 +129,7 @@ export const ModalAddNewBundleGroupVersion = ({
         validationError.version = versionValidationError
       }
       if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
-        validationError && validationError.children && validationError.children.length === 1 &&
+        validationError && validationError.bundles && validationError.bundles.length === 1 &&
         Object.keys(validationError).length === 1) {
         validationError = undefined;
       }
@@ -137,7 +137,7 @@ export const ModalAddNewBundleGroupVersion = ({
       // if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
       if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
         (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError.children[0]);
+        setMinOneBundleError(validationError.bundles[0]);
       }
       if (validationError) {
         setValidationResult(validationError)

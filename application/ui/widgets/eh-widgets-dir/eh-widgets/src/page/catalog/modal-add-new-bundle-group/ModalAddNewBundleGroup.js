@@ -169,7 +169,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 })
                 // bypass the validation for Draft(NOT_PUBLISHED) Status.
                 if (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED &&
-                    validationError && validationError.children && validationError.children.length === 1 &&
+                    validationError && validationError['versionDetails.bundles'] && validationError['versionDetails.bundles'].length === 1 &&
                     Object.keys(validationError).length === 1) {
                     validationError = undefined;
                 }
@@ -181,7 +181,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 // }
                 if (bundleGroup.versionDetails.bundles && bundleGroup.versionDetails.bundles.length === 0 &&
                     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
-                    setMinOneBundleError(validationError.children[0]);
+                    validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
                 }
                 if (validationError) {
                     setValidationResult(validationError)

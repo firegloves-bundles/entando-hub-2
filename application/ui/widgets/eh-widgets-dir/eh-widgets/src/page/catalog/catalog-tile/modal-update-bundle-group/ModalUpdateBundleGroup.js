@@ -157,13 +157,13 @@ export const ModalUpdateBundleGroup = ({
         validationError = fillErrors(err)
       })
       if ((bundleGroup && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.DELETE_REQ)) &&
-          validationError && validationError.children && validationError.children.length === 1 &&
+          validationError && validationError['versionDetails.bundles'] && validationError['versionDetails.bundles'].length === 1 &&
           Object.keys(validationError).length === 1) {
           validationError = undefined;
       }
-      if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
+      if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
         (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError.children[0]);
+        setMinOneBundleError(validationError['versionDetails.bundles'][0]);
       }
       if (validationError) {
         setValidationResult(validationError)

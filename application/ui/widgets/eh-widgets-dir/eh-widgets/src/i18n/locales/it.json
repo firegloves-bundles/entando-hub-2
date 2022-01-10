@@ -145,6 +145,11 @@
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
     "addNewVersion": "Aggiungi nuova versione"
   },
+  "navLink": {
+    "userManagement": "Gestione utente",
+    "categoryManagement": "Gestione delle categorie",
+    "organisationManagement": "Gestione dell'organizzazione"
+  },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",
   "Published": "Pubblicato",

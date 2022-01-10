@@ -99,6 +99,14 @@ export const DROPDOWN_OPTIONS = {
     REMOVE: "Remove",
 }
 
+// To show Nav-Bar on given pages.
+export const SHOW_NAVBAR_ON_MOUNTED_PAGE = {
+    isCatalogPage: "catalogPage",
+    isCategoryManagementPage: "categoryManagementPage",
+    isUserManagementPage: "userManagementPage",
+    isOrganisationManagementPage: "organisationManagementPage",
+}
+
 // Git Repo Address
 export const MATCHER = 'git@github.com'
 export const GIT_DOMAIN = 'https://github.com/'

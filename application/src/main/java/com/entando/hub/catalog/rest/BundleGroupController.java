@@ -62,7 +62,6 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
-    @CrossOrigin
     @GetMapping("/")
     public List<BundleGroup> getBundleGroupsByOrgnisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
@@ -71,7 +70,6 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
@@ -95,7 +93,6 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get the bundleGroup details", description = "Public api, no authentication required. You have to provide the bundleGroupId")
-    @CrossOrigin
     @GetMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
@@ -110,7 +107,6 @@ public class BundleGroupController {
 
     @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
@@ -125,7 +121,6 @@ public class BundleGroupController {
 
     @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @PostMapping("/{bundleGroupId}")
     public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
@@ -156,7 +151,6 @@ public class BundleGroupController {
 
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
-    @CrossOrigin
     @DeleteMapping("/{bundleGroupId}")
     @Transactional
     public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {

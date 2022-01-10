@@ -34,7 +34,6 @@ public class PortalUserController {
 
     @Operation(summary = "Get all the portal users", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the organisationId to filter the results")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @GetMapping("/")
     public ResponseEntity<List<RestUserRepresentation>> getUsers(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get users by organisation id: {}", organisationId);
@@ -48,7 +47,6 @@ public class PortalUserController {
 
     @Operation(summary = "Add a Keycloak user to an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @PostMapping("/{organisationId}")
     public ResponseEntity<Map<String, Boolean>> addUserToOrganisation(@PathVariable String organisationId, @RequestBody UserOrganisationRequest request) {
         logger.debug("REST request to add user to organisation id: {}", organisationId);
@@ -66,7 +64,6 @@ public class PortalUserController {
 
     @Operation(summary = "Remove a Keycloak user from an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId and the username")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @DeleteMapping("/{organisationId}/user/{username}")
     public ResponseEntity<Map<String, Boolean>> deleteUserFromOrganisation(@PathVariable String organisationId, @PathVariable String username) {
         logger.debug("REST request to delete user from organisation id: {}", organisationId);
@@ -78,7 +75,6 @@ public class PortalUserController {
 
     @Operation(summary = "Delete a Portal User", description = "Protected api, only eh-admin can access it. You have to provide the username")
     @RolesAllowed({ADMIN})
-    @CrossOrigin
     @DeleteMapping("/{username}")
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable String username) {
         logger.debug("REST request to delete user: {}", username);
@@ -95,7 +91,6 @@ public class PortalUserController {
 	 */
 	@Operation(summary = "Get a user by username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
 	@RolesAllowed({ ADMIN, AUTHOR, MANAGER })
-	@CrossOrigin
 	@GetMapping("/{username}")
 	public ResponseEntity<PortalUserResponseView> getPortalUserByUsername(@PathVariable("username") String username) {
 		logger.debug("REST request to get a user by username: {}", username);

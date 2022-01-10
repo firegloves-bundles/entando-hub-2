@@ -33,9 +33,8 @@ const CatalogTileOverflowMenu = ({bundleGroupId, bundleStatus, bundleName, onAft
 
                 {isShowDelete && <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={() => setDeleteModal(true)} />}
 
-                {/* Show Add Version option */}
-                {isAddVersionOptionVisible &&
-                    <OverflowMenuItem itemText={i18n.t('component.button.newVersion')} onClick={() => setAddBundleGroupVersionModal(true)} />}
+                {/* Disabled Add Version option EHUB-182 */}
+                <OverflowMenuItem disabled={!isAddVersionOptionVisible} itemText={i18n.t('component.button.newVersion')} onClick={() => setAddBundleGroupVersionModal(true)} />
 
                 {/* Show View Versions option */}
                 {isViewVersionOptionVisible &&

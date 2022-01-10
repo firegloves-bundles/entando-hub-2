@@ -70,7 +70,6 @@ public class BundleGroupVersionController {
 
 	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
@@ -94,7 +93,6 @@ public class BundleGroupVersionController {
 	
 	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @CrossOrigin
     @GetMapping("/filtered")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
@@ -117,7 +115,6 @@ public class BundleGroupVersionController {
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @PostMapping("/{bundleGroupVersionId}")
     public ResponseEntity<BundleGroupVersion> updateBundleGroupVersion(@PathVariable String bundleGroupVersionId, @RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to update BundleGroupVersion with id {}, request object: {}", bundleGroupVersionId, bundleGroupVersionView);
@@ -144,7 +141,6 @@ public class BundleGroupVersionController {
     
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub filtered by bundleGroupId and statuses", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @CrossOrigin
     @GetMapping("/versions/{bundleGroupId}")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get bundle group versions by bundleGroupId: {} and statuses {}", bundleGroupId, statuses);
@@ -166,7 +162,6 @@ public class BundleGroupVersionController {
     
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
     @RolesAllowed({ADMIN, MANAGER})
-    @CrossOrigin
     @DeleteMapping("/{bundleGroupVersionId}")
     @Transactional
     public ResponseEntity<BundleGroupVersionView> deleteBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
@@ -186,7 +181,6 @@ public class BundleGroupVersionController {
     
 	// PUBLIC
 	@Operation(summary = "Get the BundleGroupVersion details by id", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
-	@CrossOrigin
 	@GetMapping("/{bundleGroupVersionId}")
 	public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
 		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);

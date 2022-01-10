@@ -98,7 +98,7 @@ const BundleGroupVersionsPage = () => {
             <div className="bx--row">
               <div className="bx--col-lg-12 CatalogPage-breadcrumb">
                 <EhBreadcrumb pathElements={[{
-                  path: bgVersionList && bundleName ? bundleName+" "+`${i18n.t("component.button.viewVersions")}` : "",
+                  path: bgVersionList && bundleName ? `${bundleName} ${i18n.t("component.button.viewVersions")}` : "",
                   href: window.location.href
                 }]} />
               </div>

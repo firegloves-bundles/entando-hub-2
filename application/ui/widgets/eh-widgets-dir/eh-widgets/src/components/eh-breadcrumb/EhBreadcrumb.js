@@ -44,10 +44,12 @@ const EhBreadcrumb = ({pathElements = []}) => {
           >
             <Link style={linkStyle} to="/admin">
               {i18n.t('navLink.userManagement')}
-            </Link><span style={linkStyle}>|</span>
+            </Link>
+            <pre> | </pre>
             <Link style={linkStyle} to="/category">
               {i18n.t('navLink.categoryManagement')}
-            </Link><span style={linkStyle}>|</span>
+            </Link>
+            <pre> | </pre>
             <Link style={linkStyle} to="/organisation">
               {i18n.t('navLink.organisationManagement')}
             </Link>

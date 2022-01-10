@@ -88,7 +88,7 @@ const BundleGroupVersionForm = ({
     const disabled = selectStatusValues.disabled
     const createSelectOptionsForRoleAndSetSelectStatus =
         selectStatusValues.values.map((curr, index) => (
-            <SelectItem key={index} value={curr.value} text={curr.text} />
+            <SelectItem key={index} value={curr.value} text={i18n.t(curr.text)}/>
         ))
 
     const selectItems_Category = categories && categories.map((category) => {

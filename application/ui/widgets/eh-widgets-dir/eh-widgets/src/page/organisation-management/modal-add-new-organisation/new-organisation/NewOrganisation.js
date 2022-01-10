@@ -67,6 +67,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
           value={organisation.name}
           labelText={`${i18n.t('page.management.label.name')} ${organisationSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
+          maxLength={MAX_CHAR_LENGTH}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
         />
         <TextInput
@@ -78,6 +79,7 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
           value={organisation.description}
           labelText={`${i18n.t('page.management.label.description')} ${organisationSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
+          maxLength={MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />
       </Content>

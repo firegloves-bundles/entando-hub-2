@@ -10,7 +10,7 @@ import {
 } from "carbon-components-react";
 import { useState } from "react";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX ,MAX_l} from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import i18n from "../../../i18n";
 import './bundle-group-form.scss';
@@ -240,6 +240,7 @@ const BundleGroupForm = ({
                                 disabled={shouldDisable}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
                                 id={"name"}
                                 labelText={`${i18n.t('component.bundleModalFields.name')} ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
@@ -332,6 +333,7 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description}
                                 onChange={descriptionChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH_FOR_DESC}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
                                 id={"description"}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}

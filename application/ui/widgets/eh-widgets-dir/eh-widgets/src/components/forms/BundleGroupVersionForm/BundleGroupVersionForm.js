@@ -246,6 +246,7 @@ const BundleGroupVersionForm = ({
                                 disabled={isEditableAndNotAddNewVersion ? false : true}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
                                 id={"name"}
                                 labelText={`${i18n.t('component.bundleModalFields.name')} ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
@@ -339,6 +340,7 @@ const BundleGroupVersionForm = ({
                                 disabled={disableCondition}
                                 value={bundleGroup && bundleGroup.description}
                                 onChange={descriptionChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH_FOR_DESC}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
                                 id={"description"}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}

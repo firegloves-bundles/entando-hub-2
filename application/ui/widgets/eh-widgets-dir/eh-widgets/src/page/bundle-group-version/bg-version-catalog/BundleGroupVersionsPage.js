@@ -5,7 +5,6 @@ import { Button, Content, Loading, Pagination } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
 import "./bundle-group-versions-page.scss";
-import { MESSAGES } from "../../../helpers/constants";
 import i18n from "../../../i18n";
 import { Add16 } from '@carbon/icons-react'
 import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTile";

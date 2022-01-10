@@ -10,7 +10,7 @@ import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
 import './catalogPage.scss';
-import { BUNDLE_STATUS } from "../../helpers/constants";
+import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 
 /*
 This is the HUB landing page
@@ -106,7 +106,11 @@ const CatalogPage = () => {
             <div className="bx--grid bx--grid--full-width catalog-page">
               <div className="bx--row">
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
-                  <EhBreadcrumb />
+                  <EhBreadcrumb
+                    pathElements={[{
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage
+                    }]}
+                  />
                 </div>
               </div>
               <div className="bx--row">

@@ -1,4 +1,4 @@
-import {ADMIN, AUTHOR, MANAGER} from './constants'
+import {ADMIN, AUTHOR, GIT_DOMAIN, MANAGER, MATCHER} from './constants'
 
 export const getKeycloakToken = () => {
     if (window && window.entando && window.entando.keycloak && window.entando.keycloak.authenticated) {
@@ -77,3 +77,9 @@ export const getDefaultOptions = () => {
     }
 }
 
+export const clickableSSHGitURL= (gitRepoUrl) => {
+    if (gitRepoUrl.startsWith(MATCHER)) {
+        return `${GIT_DOMAIN}${gitRepoUrl.split(':')[1]}`;
+    }
+    return gitRepoUrl;
+}

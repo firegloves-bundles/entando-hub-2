@@ -67,14 +67,13 @@ public class BundleGroupVersionService {
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
     	logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME, bundleGroupVersionView);
     	if (bundleGroupVersionView.getStatus().equals(BundleGroupVersion.Status.PUBLISHED)) {
-    		List<BundleGroupVersion> publishedBundles = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
-    		if (!publishedBundles.isEmpty()) {
-    			logger.debug("{}: createBundleGroupVersion: Published bundle list size : {}", CLASS_NAME, publishedBundles.size());
-    			for(BundleGroupVersion publishedBundle : publishedBundles) {
-    				publishedBundle.setStatus(BundleGroupVersion.Status.ARCHIVE);
-    			}
-    			bundleGroupVersionRepository.saveAll(publishedBundles);
-    		}
+    		BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
+			if (publishedVersion != null) {
+				logger.debug("{}: createBundleGroupVersion: Published bundle : {}", CLASS_NAME, publishedVersion);
+				publishedVersion.setStatus(BundleGroupVersion.Status.ARCHIVE);
+				bundleGroupVersionRepository.save(publishedVersion);
+			}
+    		
     	}
     	
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());

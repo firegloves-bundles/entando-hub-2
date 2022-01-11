@@ -211,8 +211,6 @@ const BundleGroupForm = ({
     }
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
-        // changeBundleGroup("children", newBundleList)
-        // EHUB-175
         createVersionDetailsObj("bundles", newBundleList)
     }
 
@@ -312,8 +310,6 @@ const BundleGroupForm = ({
                         <Column sm={16} md={16} lg={16}>
                             <BundlesOfBundleGroup
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                // initialBundleList={bundleGroup.children}
-                                // EHUB-175
                                 initialBundleList={bundleGroup.versionDetails.bundles}
                                 disabled={disabled}
                                 minOneBundleError={minOneBundleError}

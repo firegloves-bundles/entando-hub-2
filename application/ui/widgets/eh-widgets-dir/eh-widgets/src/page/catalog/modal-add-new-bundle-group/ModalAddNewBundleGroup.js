@@ -54,7 +54,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             setBundleGroup(
                 {
                     name: "",
-                    // children: [], //EHUB-175
                     categories: [defaultCategoryId],
                     organisationId: organizationId,
                     versionDetails: {
@@ -62,10 +61,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
-                        // bundleGroupUrl: "", //EHUB-175
                         version: "",
                         status: "NOT_PUBLISHED",
-                        bundles: [] //EHUB-175
+                        bundles: []
                     }
                 }
             )
@@ -112,7 +110,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
                     const newObj = {
                         name: "",
-                        // children: [], //EHUB-175
                         categories: [defaultCategoryId],
                         organisationId: organizationId,
                         versionDetails: {
@@ -120,10 +117,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             description: "",
                             descriptionImage: values.bundleGroupForm.standardIcon,
                             documentationUrl: "",
-                            // bundleGroupUrl: "", //EHUB-175
                             version: "",
                             status: "NOT_PUBLISHED",
-                            bundles: [] //EHUB-175
+                            bundles: []
                         }
                     }
 
@@ -137,23 +133,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             }
         }, [])
 
-
         //TODO BE QUERY REFACTORING
         const createNewBundleGroup = async (bundleGroup) => {
-            // EHUB-175, commented
-            // let newChildren = [] //children are the bundles
-            // if (bundleGroup.children && bundleGroup.children.length) {
-            //     //call addNewBundle rest api, saving every bundle
-            //     //the call is async in respArray there will be the new bundles id
-            //     // let respArray = await Promise.all(bundleGroup.children.map(addNewBundle)) //addNewBundle creates a new bundle in the DB
-            //     //new children will be an array of bundle ids
-            //     // newChildren = respArray.map(res => res.newBundle.data.bundleId)
-            // }
-
-            //build a new bundleGroup object with only the ids in the children array
             const toSend = {
                 ...bundleGroup,
-                // children: newChildren //EHUB-175
             }
             await addNewBundleGroup(toSend)
             return toSend
@@ -173,12 +156,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     Object.keys(validationError).length === 1) {
                     validationError = undefined;
                 }
-
-                // EHUB-175
-                // if (bundleGroup.children && bundleGroup.children.length === 0 &&
-                //     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
-                //     setMinOneBundleError(validationError.children[0]);
-                // }
                 if (bundleGroup.versionDetails.bundles && bundleGroup.versionDetails.bundles.length === 0 &&
                     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);

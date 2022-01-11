@@ -64,54 +64,6 @@ public class BundleGroupVersionService {
     	logger.debug("{}: getBundleGroupVersion: Get a bundle group version by id: {}", CLASS_NAME, bundleGroupVersionId);
         return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
     }
-    
-//    EHUB-175: Remove this later.
-//    @Transactional
-//    public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
-//    	logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME, bundleGroupVersionView);
-//    	if (bundleGroupVersionView.getStatus().equals(BundleGroupVersion.Status.PUBLISHED)) {
-//    		BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
-//			if (publishedVersion != null) {
-//				logger.debug("{}: createBundleGroupVersion: Published bundle : {}", CLASS_NAME, publishedVersion);
-//				publishedVersion.setStatus(BundleGroupVersion.Status.ARCHIVE);
-//				bundleGroupVersionRepository.save(publishedVersion);
-//			}
-//    	}
-//
-//    	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
-//    	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
-//
-//		if (bundleGroupVersionView.getChildren() != null) {
-//			List<Bundle> mappedBundles = bundleRepository.findByBundleGroupVersionsIs(entity);
-//			List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
-//			mappedBundles.stream().forEach(bundle -> {
-//				bundle.getBundleGroupVersions().remove(entity);
-//				bundleRepository.save(bundle);
-//			});
-//
-//			Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-//				com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-//				bundle.getBundleGroupVersions().add(entity);
-//				bundleRepository.save(bundle);
-//				return bundle;
-//			}).collect(Collectors.toSet());
-//			entity.setBundles(bundleSet);
-//
-////			Remove orphan bundles from database
-//			mappedBundleIds.forEach((bundleId) -> {
-//				Optional<Bundle> optBundle = bundleRepository.findById(bundleId);
-//				optBundle.ifPresent((bundle) -> {
-//					Set<BundleGroupVersion> bundleGroups = bundle.getBundleGroupVersions();
-//					if (CollectionUtils.isEmpty(bundleGroups)) {
-//						bundleRepository.deleteById(bundleId);
-//						logger.debug("{}: Removed bundle {} from db", CLASS_NAME, bundleId);
-//					}
-//				});
-//			});
-//			logger.debug("{}: createBundleGroupVersion: Bundles: {}", CLASS_NAME, bundleSet);
-//		}
-//    	return entity;
-//    }
 
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {

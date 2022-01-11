@@ -98,15 +98,6 @@ public class BundleGroupService {
     	return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
     }
 
-//    EHUB-175: Remove this code.
-//    @Transactional
-//    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
-//    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
-//        BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
-//        updateMappedBy(entity, bundleGroupNoId);
-//        return entity;
-//    }
-
     @Transactional
     public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
     	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
@@ -143,39 +134,6 @@ public class BundleGroupService {
         	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(optBundleGroupVersionId, toUpdate), bundleGroup.getVersionDetails());
         }
     }
-
-//    EHUB-175: Remove this
-//    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
-//    	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
-//        Objects.requireNonNull(toUpdate.getId());
-//
-//        if (bundleGroup.getCategories() != null) {
-//            //remove the bundle group from all the categories containing it
-//            //TODO native query to improve performance
-//            categoryRepository.findByBundleGroupsIs(toUpdate).stream().forEach(category -> {
-//                category.getBundleGroups().remove(toUpdate);
-//                categoryRepository.save(category);
-//            });
-//            Set<Category> categorySet = bundleGroup.getCategories().stream().map((categoryId) -> {
-//                Category category = categoryRepository.findById(Long.valueOf(categoryId)).get();
-//                category.getBundleGroups().add(toUpdate);
-//                categoryRepository.save(category);
-//                return category;
-//            }).collect(Collectors.toSet());
-//            toUpdate.setCategories(categorySet);
-//        }
-////	    if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
-////	    	bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
-////	    }
-//
-//        if (bundleGroup.getVersionDetails() != null) {
-//        	 Optional<String> optBundleGroupVersionId =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
-//        			 ?  Optional.of(bundleGroup.getVersionDetails().getBundleGroupVersionId())
-//        					 : Optional.empty();
-//        	 logger.debug("{}: updateMappedBy: bundle group version id: {}", CLASS_NAME, optBundleGroupVersionId);
-//        	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(optBundleGroupVersionId, toUpdate), bundleGroup.getVersionDetails());
-//        }
-//    }
 
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {

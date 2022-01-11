@@ -9,15 +9,17 @@ import i18n from "../../../i18n";
 import { Add16 } from '@carbon/icons-react'
 import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTile";
 import BundleGroupStatusFilter from "../../catalog/bundle-group-status-filter/BundleGroupStatusFilter";
+import { INIT_PAGE, ITEMS_PER_PAGE } from "../../../helpers/constants";
+
+let page_ = INIT_PAGE
+let pageSizes = ITEMS_PER_PAGE
+let currentPage = INIT_PAGE
 
 const BundleGroupVersionsPage = () => {
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(12)
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
   const [totalItems, setTotalItems] = useState(12)
-  const [currentPage, setCurrentPage] = useState(1)
   const [bundleName, setBundleName] = useState("")
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
@@ -28,8 +30,6 @@ const BundleGroupVersionsPage = () => {
 
   const { id: bundleGroupId, categoryId } = useParams();
   const IS_VERSIONS_PAGE = true;
-  const PAGE = 0;
-  const PAGE_SIZE = 12;
 
   /*
   Callback to the Add and Edit (New Bundle Group) modal form submit
@@ -39,15 +39,15 @@ const BundleGroupVersionsPage = () => {
     setReloadToken(((new Date()).getTime()).toString()) //internal status change will rerender this component
   }
 
-  const loadVersionData = (bundleGroupId, PAGE, PAGE_SIZE) => {
-    return (getAllBundleGroupVersionByBundleGroupId(bundleGroupId, PAGE, PAGE_SIZE));
+  const loadVersionData = (bundleGroupId, PAGE, ITEMS_PER_PAGE, statusFilterValue) => {
+    return (getAllBundleGroupVersionByBundleGroupId(bundleGroupId, PAGE, ITEMS_PER_PAGE, statusFilterValue && statusFilterValue));
   }
 
   const onPaginationChange = async ({ page, pageSize }) => {
-    setPageSize(pageSize)
-    setPage(page)
-    setCurrentPage(page)
-    const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, page, pageSize, statusFilterValue);
+    pageSizes = pageSize
+    page_ = page
+    currentPage = page
+    const response = await loadVersionData(bundleGroupId, page, pageSize, statusFilterValue);
     if (response && response.versions) {
       response.versions.payload && setBgVersionList(response.versions.payload)
       setTotalItems(response.versions.metadata.totalItems)
@@ -56,20 +56,19 @@ const BundleGroupVersionsPage = () => {
 
   const changeStatusFilterValue = useCallback(async (newValue) => {
     setStatusFilterValue(newValue);
-    setPageSize(12)
-    setPage(1)
-    setCurrentPage(1)
-    const response = await getAllBundleGroupVersionByBundleGroupId(bundleGroupId, page, pageSize, newValue);
+    pageSizes = ITEMS_PER_PAGE
+    page_ = INIT_PAGE
+    currentPage = INIT_PAGE
+    const response = await loadVersionData(bundleGroupId, page_, pageSizes, newValue);
     if (response && response.versions) {
       response.versions.payload && setBgVersionList(response.versions.payload)
       setTotalItems(response.versions.metadata.totalItems)
     }
-    // setReloadToken()
-  },[])
+  },[bundleGroupId])
 
   useEffect(() => {
     const getVersionList = async () => {
-      const data = await loadVersionData(bundleGroupId, PAGE, PAGE_SIZE);
+      const data = await loadVersionData(bundleGroupId, page_, ITEMS_PER_PAGE);
       if (data && data.versions && data.versions.payload && data.versions.payload.length) {
         setBgVersionList(data.versions.payload);
         data.versions.payload && data.versions.payload[0].name && setBundleName(data.versions.payload[0].name)

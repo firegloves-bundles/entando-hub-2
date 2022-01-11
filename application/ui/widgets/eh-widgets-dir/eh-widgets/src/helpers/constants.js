@@ -60,7 +60,6 @@ export const MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM = 100;
 export const ITEMS_PER_PAGE = 12;
 export const INIT_PAGE = 1;
 
-
 /**
  * Bundle Form Validatin Error Message
  */

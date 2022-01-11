@@ -12,7 +12,7 @@ const CatalogFilterTile = ({categories, categoryId, onFilterChange}) => {
         categories.forEach((category) => {
             checkBoxInitialStatuses[category.categoryId] = false
         })
-        if (categoryId && categoryId.length) {
+        if (categoryId) {
             checkBoxInitialStatuses[categoryId] = true
         } else {
             checkBoxInitialStatuses["-1"] = true

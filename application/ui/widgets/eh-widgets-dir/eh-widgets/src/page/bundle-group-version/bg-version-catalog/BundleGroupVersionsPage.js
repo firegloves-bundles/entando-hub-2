@@ -21,8 +21,6 @@ const BundleGroupVersionsPage = () => {
   const [categories, setCategories] = useState([])
   const [totalItems, setTotalItems] = useState(12)
   const [bundleName, setBundleName] = useState("")
-  //filter the BG query by status (only published by default)
-  //LOADING means ho use the filter value has to wait
   const [statusFilterValue, setStatusFilterValue] = useState("")
 
   //signals the reloading need of the right side

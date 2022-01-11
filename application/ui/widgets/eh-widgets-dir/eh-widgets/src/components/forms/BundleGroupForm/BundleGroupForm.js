@@ -45,8 +45,7 @@ const BundleGroupForm = ({
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
         const enableOrg = isHubAdmin() && bundleGroup.isEditable &&
             (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ)
-
-        let organisationSelectItems = orgList.length && organisations.map((o) => {
+        let organisationSelectItems = organisations.length && organisations.map((o) => {
             return (
                 <SelectItem
                     key={o.organisationId}

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +67,8 @@ public class BundleGroupController {
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
     }
 
+    //This API is currently not in use. After data model changes for Bundle Group Version we have started using new filtered api to fetch bundle group versions.
+    //Should we keep this api or should delete ?
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @GetMapping("/filtered")
@@ -149,6 +150,9 @@ public class BundleGroupController {
         }
     }
 
+    //This API is currently not in use. After data model changes for Bundle Group Version we do not allow users to directly delete Bundle Group from UI.
+    //Although it can be accessed from Swagger or Postman
+    //Should we keep this api or should delete ?
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
     @DeleteMapping("/{bundleGroupId}")

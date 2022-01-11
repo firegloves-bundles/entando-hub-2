@@ -87,34 +87,38 @@ public class BundleGroupVersionService {
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
 
-		if (bundleGroupVersionView.getChildren() != null) {
-			List<Bundle> mappedBundles = bundleRepository.findByBundleGroupVersionsIs(entity);
-			List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
-			mappedBundles.stream().forEach(bundle -> {
-				bundle.getBundleGroupVersions().remove(entity);
-				bundleRepository.save(bundle);
-			});
+		try {
+			if (bundleGroupVersionView.getChildren() != null) {
+				List<Bundle> mappedBundles = bundleRepository.findByBundleGroupVersionsIs(entity);
+				List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
+				mappedBundles.stream().forEach(bundle -> {
+					bundle.getBundleGroupVersions().remove(entity);
+					bundleRepository.save(bundle);
+				});
 
-			Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-				com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
-				bundle.getBundleGroupVersions().add(entity);
-				bundleRepository.save(bundle);
-				return bundle;
-			}).collect(Collectors.toSet());
-			entity.setBundles(bundleSet);
+				Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+					com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+					bundle.getBundleGroupVersions().add(entity);
+					bundleRepository.save(bundle);
+					return bundle;
+				}).collect(Collectors.toSet());
+				entity.setBundles(bundleSet);
 
 //			Remove orphan bundles from database
-			mappedBundleIds.forEach((bundleId) -> {
-				Optional<Bundle> optBundle = bundleRepository.findById(bundleId);
-				optBundle.ifPresent((bundle) -> {
-					Set<BundleGroupVersion> bundleGroups = bundle.getBundleGroupVersions();
-					if (CollectionUtils.isEmpty(bundleGroups)) {
-						bundleRepository.deleteById(bundleId);
-						logger.debug("{}: Removed bundle {} from db", CLASS_NAME, bundleId);
-					}
+				mappedBundleIds.forEach((bundleId) -> {
+					Optional<Bundle> optBundle = bundleRepository.findById(bundleId);
+					optBundle.ifPresent((bundle) -> {
+						Set<BundleGroupVersion> bundleGroups = bundle.getBundleGroupVersions();
+						if (CollectionUtils.isEmpty(bundleGroups)) {
+							bundleRepository.deleteById(bundleId);
+							logger.debug("{}: Removed bundle {} from db", CLASS_NAME, bundleId);
+						}
+					});
 				});
-			});
-			logger.debug("{}: createBundleGroupVersion: Bundles: {}", CLASS_NAME, bundleSet);
+				logger.debug("{}: createBundleGroupVersion: Bundles: {}", CLASS_NAME, bundleSet);
+			}
+		} catch (Exception e) {
+			logger.error("{}: createBundleGroupVersion: Error: {}", CLASS_NAME, e.getStackTrace());
 		}
     	return entity;
     }
@@ -192,30 +196,34 @@ public class BundleGroupVersionService {
 	@Transactional
 	public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
 		logger.debug("{}: deleteBundleGroupVersion: Delete a bundle group version: {}", CLASS_NAME, bundleGroupVersionOptional);
-		bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
-			BundleGroup parentBundleGroup = bundleGroupVersion.getBundleGroup();
-			/**
-			 * First remove this bundle group version from bundles if mapped, and also delete the orphan bundles.
-			 */
-			removeBundleGroupVersionFromBundles(bundleGroupVersion);
-
-			/**
-			 * Now remove this bundle group version from the parent bundle group and delete it.
-			 */
-			parentBundleGroup.getVersion().remove(bundleGroupVersion);
-			bundleGroupVersionRepository.delete(bundleGroupVersion);
-
-			/**
-			 * Delete the parent bundle group if it does not have any other version.
-			 */
-			if(parentBundleGroup.getVersion().size() == 0) {
+		try {
+			bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
+				BundleGroup parentBundleGroup = bundleGroupVersion.getBundleGroup();
 				/**
-				 * First remove the bundle group from categories.
+				 * First remove this bundle group version from bundles if mapped, and also delete the orphan bundles.
 				 */
-				removeBundleGroupFromCategories(parentBundleGroup);
-				bundleGroupRepository.delete(parentBundleGroup);
-			}
-		});
+				removeBundleGroupVersionFromBundles(bundleGroupVersion);
+
+				/**
+				 * Now remove this bundle group version from the parent bundle group and delete it.
+				 */
+				parentBundleGroup.getVersion().remove(bundleGroupVersion);
+				bundleGroupVersionRepository.delete(bundleGroupVersion);
+
+				/**
+				 * Delete the parent bundle group if it does not have any other version.
+				 */
+				if(parentBundleGroup.getVersion().size() == 0) {
+					/**
+					 * First remove the bundle group from categories.
+					 */
+					removeBundleGroupFromCategories(parentBundleGroup);
+					bundleGroupRepository.delete(parentBundleGroup);
+				}
+			});
+		} catch (Exception e) {
+			logger.debug("{}: deleteBundleGroupVersion: Error: {}", CLASS_NAME, e.getStackTrace());
+		}
 	}
 
 	private void removeBundleGroupFromCategories(BundleGroup bundleGroup) {

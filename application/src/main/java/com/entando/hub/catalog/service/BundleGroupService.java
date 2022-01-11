@@ -135,6 +135,7 @@ public class BundleGroupService {
         }
     }
 
+    //This method is called from deleteBundleGroup() from BundleGroupController. In case if we remove Delete Bundle Group api this method also can be removed.
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {
     	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
@@ -142,7 +143,6 @@ public class BundleGroupService {
         Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
-//          TODO: Delete the bundle group from Bundle Group Versions
             bundleGroupRepository.delete(bundleGroup);
         });
     }

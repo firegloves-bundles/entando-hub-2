@@ -115,15 +115,19 @@ public class BundleService {
 	 * @return list of saved bundles or empty list
 	 */
 	public List<Bundle> createBundleEntitiesAndSave(List<BundleNoId> bundleRequest) {
-		logger.debug("{}: createBundles: Create bundles: {}", CLASS_NAME, bundleRequest);
-		List<Bundle> bundles = new ArrayList<Bundle>();
-		if (!CollectionUtils.isEmpty(bundleRequest)) {
-			bundleRequest.forEach((element) -> {
-				Optional<String> opt = Objects.nonNull(element.getBundleId()) ? Optional.of(element.getBundleId())
-						: Optional.empty();
-				bundles.add(element.createEntity(opt));
-			});
-			return createBundles(bundles);
+		logger.debug("{}: createBundleEntitiesAndSave: Create bundles: {}", CLASS_NAME, bundleRequest);
+		try {
+			List<Bundle> bundles = new ArrayList<Bundle>();
+			if (!CollectionUtils.isEmpty(bundleRequest)) {
+				bundleRequest.forEach((element) -> {
+					Optional<String> opt = Objects.nonNull(element.getBundleId()) ? Optional.of(element.getBundleId())
+							: Optional.empty();
+					bundles.add(element.createEntity(opt));
+				});
+				return createBundles(bundles);
+			}
+		} catch (Exception e) {
+			logger.debug("{}: createBundleEntitiesAndSave: Error {}", CLASS_NAME, e.getStackTrace());
 		}
 		return Collections.emptyList();
 	}

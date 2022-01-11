@@ -1,6 +1,6 @@
 import EhBreadcrumb from "../../../components/eh-breadcrumb/EhBreadcrumb";
 import React, { useState, useEffect } from "react";
-import { getAllBundleGroupVersionByBundleGroupId, getAllCategories } from "../../../integration/Integration";
+import { getAllBundleGroupVersionByBundleGroupId, getAllCategories, getAllOrganisations } from "../../../integration/Integration";
 import { Content, Loading } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
@@ -12,6 +12,7 @@ const BundleGroupVersionsPage = () => {
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
+  const [orgList, setOrgList] = useState([]);
 
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
@@ -53,6 +54,14 @@ const BundleGroupVersionsPage = () => {
       setCategories(data.categoryList);
     }
     getCategories();
+
+    let unmounted = false;
+    const setOrg = async () => {
+      const orgData = await getAllOrganisations()
+      orgData && orgData.organisationList && !unmounted && setOrgList(orgData.organisationList)
+    }
+    setOrg();
+    return () => unmounted = true
   }, [reloadToken])
 
   return (
@@ -77,10 +86,12 @@ const BundleGroupVersionsPage = () => {
 
             <div className="bx--row">
               <div className="bx--col-lg-16 CatalogVersionPageContent-wrapper">
-                {bgVersionList && bgVersionList.length 
-                  ? 
-                    <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
-                  : 
+                {bgVersionList && bgVersionList.length
+                  ?
+                  <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories}
+                    orgList={orgList}
+                    reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} />
+                  :
                   <div> {MESSAGES.NO_VERSIONS_FOUND_MSG} </div>}
               </div>
             </div>

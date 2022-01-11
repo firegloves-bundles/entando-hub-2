@@ -13,5 +13,5 @@
     <property name="clobType" value="clob" dbms="mysql, oracle, mssql, mariadb, postgresql"/>
     <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
 
-    <include file="db/changelog/initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/initial_schema.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -7,10 +7,11 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 	<!-- EHUB core tables. The initial schema -->
+	<!-- The changeset id 1 & 2 are only for new hub otherwise these changeset should be commented -->
 	<changeSet id="1" author="admin">
 		<createTable tableName="CATEGORY">
 			<column autoIncrement="true" name="ID" type="INT">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="NAME" type="varchar(255)" />
 			<column name="DESCRIPTION" type="varchar(255)" />
@@ -23,7 +24,10 @@
 			<column name="NAME" type="varchar(255)" />
 			<column name="DESCRIPTION" type="varchar(255)" />
 		</createTable>
+	</changeSet>
 
+	<!-- pre-populating category and organization data -->
+	<changeSet id="2" author="admin">
 		<insert tableName="CATEGORY">
 			<column name="ID" valueNumeric="1" />
 			<column name="NAME" value="Component Collection" />
@@ -59,13 +63,5 @@
 			<column name="NAME" value="Partner 2" />
 			<column name="DESCRIPTION" value="Partner 2" />
 		</insert>
-		<rollback>
-			<dropTable tableName="CATEGORY" />
-			<dropTable tableName="ORGANISATION" />
-		</rollback>
-		<!-- <addForeignKeyConstraint -->
-		<!-- baseColumnNames="organisation_id" baseTableName="bundle_group" -->
-		<!-- constraintName="fk_organisation_id" referencedColumnNames="id" -->
-		<!-- referencedTableName="ORGANISATION" /> -->
 	</changeSet>
 </databaseChangeLog>

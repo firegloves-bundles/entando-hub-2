@@ -34,7 +34,6 @@ public class KeycloakUserController {
 
     @Operation(summary = "Search on keycloak for specific users", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide filters using the JSON in the body")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @GetMapping("/users")
     public List<RestUserRepresentation> searchUsers(SearchKeycloackUserRequest request) {
         logger.debug("REST request to get users by filters: {}", request);
@@ -44,7 +43,6 @@ public class KeycloakUserController {
 
     @Operation(summary = "Search on keycloak for specific user having provided username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the username")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @CrossOrigin
     @GetMapping("/users/{username}")
     public ResponseEntity<RestUserRepresentation> getUser(@PathVariable String username) {
         logger.debug("REST request to get user by username: {}", username);

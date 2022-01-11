@@ -17,7 +17,7 @@ import './bundle-group-form.scss';
 import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
 import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
 import "./update-boundle-group/update-bundle-group.scss";
-
+import { isHubAdmin } from "../../../helpers/helpers";
 
 const BundleGroupForm = ({
                              bundleGroup,
@@ -28,7 +28,8 @@ const BundleGroupForm = ({
                              validationResult,
                              minOneBundleError,
                              theBundleStatus,
-                             mode
+                             mode,
+                             orgList
                          }) => {
 
     const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
@@ -36,13 +37,40 @@ const BundleGroupForm = ({
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
+    const orgsList = orgList && orgList.length ? orgList : [];
 
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
 
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
+        const enableOrg = isHubAdmin() && bundleGroup.isEditable &&
+            (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ)
+        let organisationSelectItems = organisations.length && organisations.map((o) => {
+            return (
+                <SelectItem
+                    key={o.organisationId}
+                    value={o.organisationId}
+                    text={o.name}
+                />
+            )
+        })
 
-        if (organisations.length === 1) {
+        let selectItem = <Select
+            disabled={disabled}
+            value={currOrganisation && currOrganisation.organisationId}
+            onChange={organisationChangeHandler}
+            id={"organisation"}
+            labelText={i18n.t('component.bundleModalFields.organisation')}>
+            {organisationSelectItems}
+        </Select>
+
+        if (mode === 'Add' && orgList.length && isHubAdmin()) {
+            return (<Column sm={16} md={16} lg={16}>
+                {selectItem}
+            </Column>)
+        }
+
+        if (!enableOrg && currOrganisation) {
             return (<Column sm={16} md={16} lg={16}>
                 <TextInput
                     disabled={true}
@@ -52,27 +80,9 @@ const BundleGroupForm = ({
                 />
             </Column>)
         }
-        if (organisations.length > 1) {
-            const organisationSelectItems = organisations.map((o) => {
-                return (
-                    <SelectItem
-                        key={o.organisationId}
-                        value={o.organisationId}
-                        text={o.name}
-                    />
-                )
-            })
 
-            return (<Column sm={16} md={16} lg={16}>
-                <Select
-                    disabled={disabled}
-                    value={currOrganisation && currOrganisation.organisationId}
-                    onChange={organisationChangeHandler}
-                    id={"organisation"}
-                    labelText={i18n.t('component.bundleModalFields.organisation')}>
-                    {organisationSelectItems}
-                </Select>
-            </Column>)
+        if (enableOrg && orgList.length) {
+            return (<Column sm={16} md={16} lg={16}>{selectItem}</Column>)
         }
 
     }
@@ -290,8 +300,7 @@ const BundleGroupForm = ({
                             />
                         </Column>
 
-                        {renderOrganisationColumn(bundleGroup.organisationId, allowedOrganisations)}
-
+                        {renderOrganisationColumn(bundleGroup.organisationId, orgsList)}
                         <Column sm={16} md={16} lg={16}>
                             <Select
                                 invalid={!!validationResult["versionDetails.status"]}

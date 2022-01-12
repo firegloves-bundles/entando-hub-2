@@ -484,8 +484,9 @@ export const getAllKCUsers = async () => {
  * Get all bundle group versions by bundleGroupId
  * @param {*} bundleGroupId 
  */
- export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize) => {
-  let url = `${urlBundleGroupVersion}versions/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+ export const getAllBundleGroupVersionByBundleGroupId = async (bundleGroupId, page, pageSize, bundleStatuses) => {
+  // let url = `${urlBundleGroupVersion}versions/${bundleGroupId}?page=${page}&pageSize=${pageSize}`;
+  let url = `${urlBundleGroupVersion}versions/${bundleGroupId}?page=${page}&pageSize=${pageSize}${(!bundleStatuses || bundleStatuses.toString() === '-1') ? '' : `&statuses=${bundleStatuses}`}`;
   const { data, isError } = await getData(url);
   eventHandler(
     isError,

@@ -55,7 +55,7 @@ export const CHAR_LENGTH = 3;
 export const MAX_CHAR_LENGTH = 25;
 export const MAX_CHAR_LENGTH_FOR_DESC = 600;
 export const MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM = 100;
-
+export const CHAR_LENGTH_255 = 255;
 /**
  * Bundle Form Validatin Error Message
  */

@@ -60,6 +60,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           value={categoryObj.name}
           labelText={`${i18n.t('component.bundleModalFields.name')} ${categorySchema.fields.name.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "name")}
+          maxLength={MAX_CHAR_LENGTH}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
         />
         <TextInput
@@ -73,6 +74,7 @@ const UpdateCategory = ({ categoryObj, onDataChange, validationResult }) => {
           value={categoryObj.description}
           labelText={`${i18n.t('component.bundleModalFields.description')} ${categorySchema.fields.description.exclusiveTests.required ? " *" : ""}`}
           onChange={(e) => onChangeHandler(e, "description")}
+          maxLength={MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM}
           onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
         />
       </Content>

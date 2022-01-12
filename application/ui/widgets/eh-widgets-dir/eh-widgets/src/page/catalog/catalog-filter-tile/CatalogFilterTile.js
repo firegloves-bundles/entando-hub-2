@@ -6,13 +6,17 @@ import './catalog-filter-tile.scss'
 /**
  * renders a list of categories
  */
-const CatalogFilterTile = ({categories, onFilterChange}) => {
+const CatalogFilterTile = ({categories, categoryId, onFilterChange}) => {
     const init = ()=>{
         let checkBoxInitialStatuses = {}
         categories.forEach((category) => {
             checkBoxInitialStatuses[category.categoryId] = false
         })
-        checkBoxInitialStatuses["-1"] = true
+        if (categoryId) {
+            checkBoxInitialStatuses[categoryId] = true
+        } else {
+            checkBoxInitialStatuses["-1"] = true
+        }
         return checkBoxInitialStatuses
     }
 
@@ -31,12 +35,12 @@ const CatalogFilterTile = ({categories, onFilterChange}) => {
         onFilterChange(Object.keys(checkboxStatuses).filter(key => (key!=="-1" && checkboxStatuses[key])))
     }
     const prefix = "catalog-filter"
-    const listItems = categories.map((category) => <Checkbox checked={checkboxStatuses[category.categoryId]} onChange={onChange} key={category.categoryId}
+    const listItems = categories.map((category) => <Checkbox disabled={categoryId ? true : false} checked={checkboxStatuses[category.categoryId]} onChange={onChange} key={category.categoryId}
                                                              labelText={category.name} id={category.categoryId}/>)
     return (
         <Tile className="CatalogFilterTile">
             <fieldset className={`${prefix}--fieldset`}>
-                <Checkbox checked={checkboxStatuses["-1"]} onChange={onChange} key={"-1"} labelText={"All"}
+                <Checkbox disabled={categoryId ? true : false} checked={checkboxStatuses["-1"]} onChange={onChange} key={"-1"} labelText={"All"}
                           id={"-1"}/>
                 {listItems}
             </fieldset>

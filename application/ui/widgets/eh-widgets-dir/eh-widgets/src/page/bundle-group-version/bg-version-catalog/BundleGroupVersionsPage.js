@@ -1,6 +1,6 @@
 import EhBreadcrumb from "../../../components/eh-breadcrumb/EhBreadcrumb";
 import React, { useState, useEffect, useCallback } from "react";
-import { getAllBundleGroupVersionByBundleGroupId, getAllCategories } from "../../../integration/Integration";
+import { getAllBundleGroupVersionByBundleGroupId, getAllCategories, getAllOrganisations } from "../../../integration/Integration";
 import { Button, Content, Loading, Pagination } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
@@ -22,6 +22,7 @@ const BundleGroupVersionsPage = () => {
   const [totalItems, setTotalItems] = useState(12)
   const [bundleName, setBundleName] = useState("")
   const [statusFilterValue, setStatusFilterValue] = useState("")
+  const [orgList, setOrgList] = useState([]);
 
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
@@ -85,6 +86,14 @@ const BundleGroupVersionsPage = () => {
       setCategories(data.categoryList);
     }
     getCategories();
+
+    let unmounted = false;
+    const setOrg = async () => {
+      const orgData = await getAllOrganisations()
+      orgData && orgData.organisationList && !unmounted && setOrgList(orgData.organisationList)
+    }
+    setOrg();
+    return () => unmounted = true
   }, [reloadToken])
 
   return (
@@ -132,7 +141,9 @@ const BundleGroupVersionsPage = () => {
               <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 {bgVersionList && bgVersionList.length 
                   ? 
-                    <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories} reloadToken={reloadToken} onAfterSubmit={onAfterSubmit}/>
+                  <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories}
+                  orgList={orgList}
+                  reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} />
                   : 
                   <div> {i18n.t('page.catlogPanel.noVersionsFound')} </div>}
                 <Pagination

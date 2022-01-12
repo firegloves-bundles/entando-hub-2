@@ -150,7 +150,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

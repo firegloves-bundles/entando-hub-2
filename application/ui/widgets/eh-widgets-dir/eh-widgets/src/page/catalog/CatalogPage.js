@@ -96,6 +96,11 @@ const CatalogPage = () => {
   const searchTermHandler = async (e) => {
     if (e.keyCode === 13 && e.nativeEvent.srcElement) setSearchTerm(e.nativeEvent.srcElement.value);
   }
+
+  const onClearHandler = (e) => {
+    if (e.type === 'click') setSearchTerm('')
+  }
+
   return (
     <>
       {window.entando
@@ -136,7 +141,7 @@ const CatalogPage = () => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} labelText={'Search'} size="xl" id="search-1" />
+                  <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

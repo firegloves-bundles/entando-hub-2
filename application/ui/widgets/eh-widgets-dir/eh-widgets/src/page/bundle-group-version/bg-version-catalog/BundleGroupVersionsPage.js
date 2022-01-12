@@ -7,6 +7,7 @@ import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
 import "./bundle-group-versions-page.scss";
 import i18n from "../../../i18n";
 import { Add16 } from '@carbon/icons-react'
+import { useHistory } from "react-router-dom";
 import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTile";
 import BundleGroupStatusFilter from "../../catalog/bundle-group-status-filter/BundleGroupStatusFilter";
 import { INIT_PAGE, ITEMS_PER_PAGE } from "../../../helpers/constants";
@@ -23,7 +24,7 @@ const BundleGroupVersionsPage = () => {
   const [bundleName, setBundleName] = useState("")
   const [statusFilterValue, setStatusFilterValue] = useState("")
   const [orgList, setOrgList] = useState([]);
-
+  const history = useHistory()
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
@@ -68,10 +69,12 @@ const BundleGroupVersionsPage = () => {
   useEffect(() => {
     const getVersionList = async () => {
       const data = await loadVersionData(bundleGroupId, page_, ITEMS_PER_PAGE);
-      if (data && data.versions && data.versions.payload && data.versions.payload.length) {
-        setBgVersionList(data.versions.payload);
-        data.versions.payload && data.versions.payload[0].name && setBundleName(data.versions.payload[0].name)
+      if (!data || !data.versions || !data.versions.payload.length) {
+        history.push("/")
+        return
       }
+      setBgVersionList(data.versions.payload);
+      data.versions.payload && data.versions.payload[0].name && setBundleName(data.versions.payload[0].name)
       setLoading(false);
     }
     getVersionList();

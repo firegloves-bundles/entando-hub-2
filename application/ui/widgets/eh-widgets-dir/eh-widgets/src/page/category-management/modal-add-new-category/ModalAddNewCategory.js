@@ -36,6 +36,8 @@ export const ModalAddNewCategory = ({onAfterSubmit}) => {
 
         const resetData = ()=>{
             setElemKey(((new Date()).getTime()).toString())
+            setCategory({})
+            setValidationResult({})
         }
 
         //Manage the modal submit

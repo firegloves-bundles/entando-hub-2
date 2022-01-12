@@ -273,9 +273,11 @@ export const getAllBundleGroupsFilteredPaged = async (
   pageSize,
   organisationId,
   categoryIds,
-  statuses
+  statuses,
+  searchText = null
 ) => {
   let url = `${urlBundleGroupsVersionsFilteredPaged}?page=${page}&pageSize=${pageSize}`
+
   if (categoryIds && categoryIds.length > 0) {
     url =
       url +
@@ -286,8 +288,9 @@ export const getAllBundleGroupsFilteredPaged = async (
     statuses.map((status) => `statuses=${status}`).join("&")
     url = url + "&" + statuses.map((status) => `statuses=${status}`).join("&")
   }
-
   if (organisationId) url = url + "&organisationId=" + organisationId
+
+  if (searchText) url = url + `&searchText=${searchText}`
   const { data, isError } = await getData(url)
 
   eventHandler(

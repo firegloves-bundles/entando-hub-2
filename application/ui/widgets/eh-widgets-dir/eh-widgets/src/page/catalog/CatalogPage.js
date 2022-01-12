@@ -1,11 +1,11 @@
-import { Content } from "carbon-components-react";
+import { Content, Search } from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, { useCallback, useEffect, useState } from "react";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllBundleGroupsFilteredPaged, getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
@@ -27,9 +27,10 @@ const CatalogPage = () => {
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
   const [loaded, setLoaded] = useState(false)
-
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+  const [activeCategory, setActiveCategory] = useState({"1": false, "2": false, "3": false})
+  const [activeBundleStatus, setActiveBundleStatus] = useState(-1)
 
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
@@ -88,6 +89,23 @@ const CatalogPage = () => {
     }
   }, [])
 
+  /**
+   * @description This will invoke api to search bundle groups
+   * @param {*} e event
+   */
+  const searchTermHandler = async (e) => {
+    if (e.keyCode === 13 && e.nativeEvent.srcElement.value.length) {
+      activeCategory["-1"] && delete activeCategory["-1"]
+      const keys = Object.keys(activeCategory);
+      let filteredCategory = keys.filter(function (key) {
+        return activeCategory[key]
+      });
+      let activeStatus = activeBundleStatus === -1 ? ["NOT_PUBLISHED", "PUBLISH_REQ", "PUBLISHED", "DELETE_REQ"] : [activeBundleStatus]
+      let orgId = currentUserOrg && currentUserOrg.organisationId ? currentUserOrg.organisationId : null;
+      const result = await getAllBundleGroupsFilteredPaged(1, 12, orgId, filteredCategory, activeStatus, e.nativeEvent.srcElement.value);
+    }
+  }
+
   return (
     <>
       {window.entando
@@ -127,7 +145,7 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  {i18n.t('component.button.search')}
+                  <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} labelText={'Search'} size="xl" id="search-1" />
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)
@@ -140,7 +158,7 @@ const CatalogPage = () => {
                     {/*Empty col4 over checkbox filters */}
                   </div>
                   <div className="bx--col-lg-12 CatalogPage-section">
-                    <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue} />
+                    <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue} setActiveBundleStatus={setActiveBundleStatus}/>
                   </div>
                 </div>
               }
@@ -149,7 +167,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} setActiveCategory={setActiveCategory}/>}
               </div>
             </div>
           </div>

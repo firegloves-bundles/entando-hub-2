@@ -6,7 +6,7 @@ import './catalog-filter-tile.scss'
 /**
  * renders a list of categories
  */
-const CatalogFilterTile = ({categories, categoryId, onFilterChange, setActiveCategory}) => {
+const CatalogFilterTile = ({categories, categoryId, onFilterChange}) => {
     const init = ()=>{
         let checkBoxInitialStatuses = {}
         categories.forEach((category) => {
@@ -33,7 +33,6 @@ const CatalogFilterTile = ({categories, categoryId, onFilterChange, setActiveCat
         }
         setCheckboxStatuses(checkboxStatuses)
         onFilterChange(Object.keys(checkboxStatuses).filter(key => (key!=="-1" && checkboxStatuses[key])))
-        setActiveCategory(checkboxStatuses)
     }
     const prefix = "catalog-filter"
     const listItems = categories.map((category) => <Checkbox disabled={categoryId ? true : false} checked={checkboxStatuses[category.categoryId]} onChange={onChange} key={category.categoryId}

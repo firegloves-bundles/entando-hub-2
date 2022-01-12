@@ -41,7 +41,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList }) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, setActiveCategory }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -135,7 +135,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
         <>
             <div className="bx--col-lg-4">
                 {categories && categories.length > 0 &&
-                <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
+                <CatalogFilterTile categories={categories} onFilterChange={onFilterChange} setActiveCategory={setActiveCategory}/>}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList}/>

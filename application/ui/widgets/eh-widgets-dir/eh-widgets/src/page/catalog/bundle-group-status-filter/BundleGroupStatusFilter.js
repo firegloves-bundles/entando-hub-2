@@ -6,7 +6,7 @@ import {getProfiledStatusSelectInfo} from "../../../helpers/profiling"
 import './bundle-group-status-filter.scss'
 import i18n from '../../../i18n'
 
-const BundleGroupStatusFilter = ({onFilterValueChange}) => {
+const BundleGroupStatusFilter = ({onFilterValueChange, setActiveBundleStatus}) => {
     const [selectedStatus, setSelectedStatus] = useState("")
     const [statusArray, setStatusArray] = useState([])
 
@@ -29,6 +29,7 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
     const statusChangeHandler = (e) => {
         const value = e.target.value
         changeSelectedStatus(value)
+        setActiveBundleStatus(value)
     }
 
     const render = () => {

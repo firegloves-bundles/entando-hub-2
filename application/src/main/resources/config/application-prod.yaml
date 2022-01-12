@@ -20,5 +20,8 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
 
+# CORS Configyrations
+ALLOWED_ORIGIN:
+
 # Hub UI url for bundle groups
 #HUB_GROUP_DETAIL_BASE_URL:

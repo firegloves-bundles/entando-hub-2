@@ -10,6 +10,7 @@ import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
 import './catalogPage.scss';
+import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants";
 
 /*
 This is the HUB landing page
@@ -104,7 +105,11 @@ const CatalogPage = () => {
             <div className="bx--grid bx--grid--full-width catalog-page">
               <div className="bx--row">
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
-                  <EhBreadcrumb />
+                  <EhBreadcrumb
+                    pathElements={[{
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage
+                    }]}
+                  />
                 </div>
               </div>
               <div className="bx--row">
@@ -144,7 +149,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

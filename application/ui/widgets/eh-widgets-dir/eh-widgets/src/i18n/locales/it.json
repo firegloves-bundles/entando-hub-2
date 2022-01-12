@@ -11,6 +11,7 @@
         "catalog": "Catalogo",
         "select": "Seleziona"
       },
+      "noVersionsFound": "Nessuna Versione Trovata",
       "AuthMessage": {
         "notifyGuestPortalUserMsg": "Il tuo account non ha attualmente accesso all'Hub. Contatta il tuo amministratore per richiedere l'accesso."
       }

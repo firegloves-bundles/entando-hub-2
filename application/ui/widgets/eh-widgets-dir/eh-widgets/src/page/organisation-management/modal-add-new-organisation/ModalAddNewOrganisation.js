@@ -36,6 +36,8 @@ export const ModalAddNewOrganisation = ({onAfterSubmit}) => {
 
         const resetData = ()=>{
             setElemKey(((new Date()).getTime()).toString())
+            setOrganisation({})
+            setValidationResult({})
         }
 
         //Manage the modal submit

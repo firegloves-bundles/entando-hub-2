@@ -23,7 +23,8 @@ export const ModalUpdateBundleGroup = ({
   open,
   onCloseModal,
   onAfterSubmit,
-  bundleGroupObj
+  bundleGroupObj,
+  orgList
 }) => {
   
   const [allowedOrganisations, setAllowedOrganisations] = useState([{
@@ -186,6 +187,7 @@ export const ModalUpdateBundleGroup = ({
             selectStatusValues={selectStatusValues}
             validationResult={validationResult}
             minOneBundleError={minOneBundleError}
+            orgList={orgList}
           />
         </Modal>
       }

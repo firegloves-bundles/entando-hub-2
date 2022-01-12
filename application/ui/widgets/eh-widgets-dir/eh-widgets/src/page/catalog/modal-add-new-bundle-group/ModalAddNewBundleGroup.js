@@ -36,13 +36,15 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
         const [minOneBundleError, setMinOneBundleError] = useState("")
+        const [reqOnWay, setReqOnWay] = useState(false)
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)
         }, [])
 
-        const onRequestClose = (e) => {
-            // Reset Form on Modal Close
+        const resetData = () => {
+            setElemKey(((new Date()).getTime()).toString())
+            // Reset Form
             let defaultCategoryId = null;
             if (categories) {
                 const filtered = categories && categories.filter(cat => cat.name === "Solution Template")
@@ -67,7 +69,9 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     }
                 }
             )
+        }
 
+        const onRequestClose = (e) => {
             setOpen(false)
             setValidationResult({})
             resetData()
@@ -75,10 +79,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
         const onRequestOpen = (e) => {
             setOpen(true)
-        }
-
-        const resetData = () => {
-            setElemKey(((new Date()).getTime()).toString())
         }
 
         useEffect(() => {
@@ -139,6 +139,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 ...bundleGroup,
             }
             await addNewBundleGroup(toSend)
+            setReqOnWay(false);
             return toSend
         }
 
@@ -164,7 +165,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     setValidationResult(validationError)
                     return //don't send the form
                 }
-
+                setReqOnWay(true);
                 const toSend = await createNewBundleGroup(bundleGroup)
                 //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setBundleGroup(toSend)
@@ -189,6 +190,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             bundleGroup={bundleGroup}
                             loading={loading}
                             minOneBundleError={minOneBundleError}
+                            reqOnWay={reqOnWay}
+                            orgList={orgList}
                         />,
                         document.body
                     )}
@@ -219,7 +222,9 @@ const ModalContent = ({
     allowedOrganisations,
     categories,
     loading,
-    minOneBundleError
+    minOneBundleError,
+    reqOnWay,
+    orgList
 }) => {
     return (
         <>
@@ -234,7 +239,7 @@ const ModalContent = ({
                     <ModalBody>
                         <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
                             categories={categories} selectStatusValues={selectStatusValues}
-                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} />
+                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} orgList={orgList}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button
@@ -243,7 +248,7 @@ const ModalContent = ({
                             {i18n.t('component.button.cancel')}
                         </Button>
                         <Button
-                            kind="primary"
+                            kind="primary" disabled={reqOnWay}
                             onClick={() => { onRequestSubmit() }}>
                             {i18n.t('component.button.add')}
                         </Button>

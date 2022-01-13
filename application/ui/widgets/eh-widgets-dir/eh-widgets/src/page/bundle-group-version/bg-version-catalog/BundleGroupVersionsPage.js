@@ -136,7 +136,7 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
                 <Button renderIcon={Add16} disabled={true}>{i18n.t('component.button.add')}</Button>
               </div>
               <div className="bx--col-lg-4 CatalogPage-section">
-                <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
+                <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
               </div>
             </div>
 

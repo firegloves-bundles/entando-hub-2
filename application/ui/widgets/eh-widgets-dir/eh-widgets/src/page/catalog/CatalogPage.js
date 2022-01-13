@@ -148,8 +148,8 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  {versionSearchTerm && <Search value={searchTerm} placeholder="Search by Org/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
-                  {!versionSearchTerm && <Search placeholder="Search by Org/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {versionSearchTerm && <Search value={searchTerm} placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

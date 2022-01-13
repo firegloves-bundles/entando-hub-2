@@ -78,7 +78,7 @@ const BundleGroupVersionsPage = () => {
       setLoading(false);
     }
     getVersionList();
-  }, [reloadToken, bundleGroupId]);
+  }, [reloadToken, bundleGroupId, history]);
 
   useEffect(() => {
     const getCategories = async () => {

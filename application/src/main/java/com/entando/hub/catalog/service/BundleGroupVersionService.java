@@ -275,6 +275,17 @@ public class BundleGroupVersionService {
 		return list;
 	}
 
+	/**
+	 * This will search the Bundle groups based on bundle name and organization name and apply the filters.
+	 *
+	 * @param pageNum
+	 * @param pageSize
+	 * @param organisationId
+	 * @param categoryIds
+	 * @param statuses
+	 * @param searchText
+	 * @return
+	 */
 	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
 		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
 		Pageable paging;
@@ -308,7 +319,7 @@ public class BundleGroupVersionService {
 				organisation.setId(Long.valueOf(organisationId.get()));
 				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation.getId())).collect(Collectors.toList());
 			} else {
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getCategories().containsAll(categories)).collect(Collectors.toList());
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> categories.containsAll(bundleGroup.getCategories())).collect(Collectors.toList());
 			}
 		} else {
 			if (organisationId.isPresent()) {
@@ -319,7 +330,9 @@ public class BundleGroupVersionService {
 				bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
 			}
 			if(null != searchText && !searchText.isEmpty())
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getName().matches(String.valueOf(searchText))).collect(Collectors.toList());
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getName().toLowerCase().startsWith(searchText) ||
+						bundleGroup.getName().toLowerCase().endsWith(searchText) ||
+						bundleGroup.getName().toLowerCase().contains(searchText)).collect(Collectors.toList());
 		}
 
 		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);

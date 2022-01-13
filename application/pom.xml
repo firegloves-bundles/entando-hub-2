@@ -19,6 +19,7 @@
         <jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
         <keycloak-adapter-bom.version>12.0.4</keycloak-adapter-bom.version>
         <log4j.version>2.17.1</log4j.version>
+        <liquibase.version>3.7.0</liquibase.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -128,6 +129,7 @@
                             </environment>
                             <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                         </container>
+                        <changeLogFile>${project.basedir}/src/main/resources/config/changelog/master.xml</changeLogFile>
                     </configuration>
                 </plugin>
             </plugins>
@@ -140,6 +142,7 @@
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase.version}</version>
 			</plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

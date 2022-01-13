@@ -34,9 +34,9 @@ spring:
 #    password: password
 # Enable this section for postgresql
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/entando_local_dev
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: hubApp
+    password: password
   jpa:
     # Enable this section for h2
     #database-platform: org.hibernate.dialect.H2Dialect
@@ -51,7 +51,6 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
   liquibase.enabled: true
-  liquibase.change-log: classpath:config/changelog/master.xml
 
 keycloak:
   auth-url: http://localhost:9080/auth

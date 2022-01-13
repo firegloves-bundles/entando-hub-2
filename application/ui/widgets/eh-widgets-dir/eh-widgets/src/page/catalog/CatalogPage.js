@@ -94,15 +94,18 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
    * @param {*} e event
    */
   const searchTermHandler = async (e) => {
-    if (e.keyCode === 13 && e.nativeEvent.srcElement) setSearchTerm(e.nativeEvent.srcElement.value);
+    if (e.keyCode === 13 && e.nativeEvent.srcElement) {
+      setSearchTerm(e.nativeEvent.srcElement.value);
+    }
   }
 
   const onClearHandler = (e) => {
-    if (versionSearchTerm) {
-      setVersionSearchTerm('')
+    if (e.type === 'click' || versionSearchTerm) setSearchTerm('')
+    if (versionSearchTerm && e.nativeEvent && e.nativeEvent.srcElement) {
+      setSearchTerm(e.nativeEvent.srcElement.value)
+      // setVersionSearchTerm('')
       return
     }
-    if (e.type === 'click') setSearchTerm('')
   }
 
   return (
@@ -145,8 +148,8 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  {versionSearchTerm && <Search value={versionSearchTerm} placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
-                  {!versionSearchTerm && <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {versionSearchTerm && <Search value={searchTerm} placeholder="Search by Org/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {!versionSearchTerm && <Search placeholder="Search by Org/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

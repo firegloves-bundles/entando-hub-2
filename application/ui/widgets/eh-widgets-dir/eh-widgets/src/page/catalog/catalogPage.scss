@@ -135,6 +135,12 @@ button:focus, button {
   background: var(--clr-grey);
 }
 
+.bx--search-input {
+  font-size: 11px;
+  padding: 0px;
+  letter-spacing: 0px
+}
+
 @media screen and (max-width: 1040px) {
   .CatalogPage-wrapper {
     padding: 0 3.8% 4rem;

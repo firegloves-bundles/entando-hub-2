@@ -22,7 +22,6 @@ import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleController;
 import com.entando.hub.catalog.rest.BundleGroupController;
 
 @Service
@@ -31,7 +30,7 @@ public class BundleGroupService {
     final private CategoryRepository categoryRepository;
     private final BundleGroupVersionService bundleGroupVersionService;
 
-    private final Logger logger = LoggerFactory.getLogger(BundleController.class);
+    private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 

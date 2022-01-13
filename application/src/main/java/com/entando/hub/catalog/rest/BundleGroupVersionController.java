@@ -50,7 +50,7 @@ import lombok.ToString;
 @RequestMapping("/api/bundlegroupversions")
 public class BundleGroupVersionController {
 	
-    private final Logger logger = LoggerFactory.getLogger(BundleGroupController.class);
+    private final Logger logger = LoggerFactory.getLogger(BundleGroupVersionController.class);
     
     private final BundleGroupVersionService bundleGroupVersionService;
     

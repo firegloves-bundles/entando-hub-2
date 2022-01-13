@@ -51,6 +51,7 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
   liquibase.enabled: true
+  liquibase.change-log: classpath:config/changelog/master.xml
 
 keycloak:
   auth-url: http://localhost:9080/auth

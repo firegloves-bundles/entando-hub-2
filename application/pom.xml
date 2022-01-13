@@ -129,7 +129,6 @@
                             </environment>
                             <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                         </container>
-                        <changeLogFile>${project.basedir}/src/main/resources/config/changelog/master.xml</changeLogFile>
                     </configuration>
                 </plugin>
             </plugins>

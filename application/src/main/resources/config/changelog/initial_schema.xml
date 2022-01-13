@@ -7,10 +7,12 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 	<!-- EHUB core tables. The initial schema -->
-	<!-- The changeset id 1 & 2 are only for new hub otherwise these changeset should be commented -->
+	<!-- Enable this section in case of new hub setup only -->
 	<changeSet id="1" author="admin">
+		<createSequence dataType="int" incrementBy="1" sequenceName="SEQ_CATEGORY_ID" startValue="1" />
+		<createSequence dataType="int" incrementBy="1" sequenceName="SEQ_ORGANISATION_ID" startValue="1" />
 		<createTable tableName="CATEGORY">
-			<column autoIncrement="true" name="ID" type="INT">
+			<column name="ID" type="INT">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="NAME" type="varchar(255)" />
@@ -18,7 +20,7 @@
 		</createTable>
 
 		<createTable tableName="ORGANISATION">
-			<column autoIncrement="true" name="ID" type="INT">
+			<column name="ID" type="INT">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="NAME" type="varchar(255)" />
@@ -27,41 +29,33 @@
 	</changeSet>
 
 	<!-- pre-populating category and organization data -->
+	<!-- Enable this section in case of new hub setup only -->
 	<changeSet id="2" author="admin">
 		<insert tableName="CATEGORY">
-			<column name="ID" valueNumeric="1" />
+			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
 			<column name="NAME" value="Component Collection" />
-			<column name="DESCRIPTION" value="Component Collection1" />
+			<column name="DESCRIPTION" value="Component Collection" />
 		</insert>
-
 		<insert tableName="CATEGORY">
-			<column name="ID" valueNumeric="2" />
+			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
 			<column name="NAME" value="PBC" />
 			<column name="DESCRIPTION" value="PBC" />
 		</insert>
-
 		<insert tableName="CATEGORY">
-			<column name="ID" valueNumeric="3" />
+			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
 			<column name="NAME" value="Solution Template" />
 			<column name="DESCRIPTION" value="Solution Template" />
 		</insert>
-
 		<insert tableName="ORGANISATION">
-			<column name="ID" valueNumeric="1" />
+			<column name="ID"  valueSequenceNext="SEQ_ORGANISATION_ID" />
 			<column name="NAME" value="Entando" />
 			<column name="DESCRIPTION" value="Entando" />
 		</insert>
 
 		<insert tableName="ORGANISATION">
-			<column name="ID" valueNumeric="2" />
+			<column name="ID" valueSequenceNext="SEQ_ORGANISATION_ID" />
 			<column name="NAME" value="Partner 1" />
 			<column name="DESCRIPTION" value="Partner 1" />
-		</insert>
-
-		<insert tableName="ORGANISATION">
-			<column name="ID" valueNumeric="3" />
-			<column name="NAME" value="Partner 2" />
-			<column name="DESCRIPTION" value="Partner 2" />
 		</insert>
 	</changeSet>
 </databaseChangeLog>

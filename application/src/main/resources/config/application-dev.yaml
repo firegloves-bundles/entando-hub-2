@@ -14,11 +14,12 @@ logging:
         security: DEBUG
 
 spring:
-  h2:
-    console:
-      settings:
-        web-allow-others: true
-      enabled: true
+# Enable this section for h2
+#  h2:
+#    console:
+#      settings:
+#        web-allow-others: true
+#      enabled: true
   datasource:
     continue-on-error: true
     initialization-mode: always
@@ -27,24 +28,30 @@ spring:
       poolName: Hikari
       auto-commit: false
 # Enable this section for h2
-    url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+#    url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password: password
 # Enable this section for postgresql
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: hubApp
-#    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/entando_local_dev
+    username: postgres
+    password: postgres
   jpa:
     # Enable this section for h2
-    database-platform: org.hibernate.dialect.H2Dialect
+    #database-platform: org.hibernate.dialect.H2Dialect
     # Enable this section for postgresql
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#    database: POSTGRESQL
-
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+  liquibase.enabled: true
+  liquibase.change-log: classpath:config/changelog/master.xml
 
 keycloak:
   auth-url: http://localhost:9080/auth

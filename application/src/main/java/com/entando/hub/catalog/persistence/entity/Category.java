@@ -11,9 +11,10 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@SequenceGenerator(name = "category_id", sequenceName = "SEQ_CATEGORY_ID", allocationSize = 1)
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "category_id")
     private Long id;
 
     @Column(unique = true)

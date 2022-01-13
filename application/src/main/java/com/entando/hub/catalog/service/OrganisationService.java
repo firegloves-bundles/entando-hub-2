@@ -5,9 +5,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -18,6 +23,7 @@ import com.entando.hub.catalog.rest.OrganisationController;
 public class OrganisationService {
     final private OrganisationRepository organisationRepository;
     final private BundleGroupRepository bundleGroupRepository;
+    private final Logger logger = LoggerFactory.getLogger(OrganisationService.class);
 
     public OrganisationService(OrganisationRepository organisationRepository, BundleGroupRepository bundleGroupRepository) {
         this.organisationRepository = organisationRepository;
@@ -32,7 +38,8 @@ public class OrganisationService {
      * @param organisation
      */
     public void updateMappedBy(com.entando.hub.catalog.persistence.entity.Organisation toUpdate, OrganisationController.OrganisationNoId organisation) {
-        Objects.requireNonNull(toUpdate.getId());
+    	logger.debug("update organisation entity");
+    	Objects.requireNonNull(toUpdate.getId());
         if (organisation.getBundleGroups() != null) {
             //TODO replace with native query
             //delete all old connections
@@ -60,6 +67,7 @@ public class OrganisationService {
 
     @Transactional
     public Organisation createOrganisation(Organisation organisationEntity, OrganisationController.OrganisationNoId organisation) {
+    	logger.debug("create organisation entity");
         Organisation entity = organisationRepository.save(organisationEntity);
         updateMappedBy(entity, organisation);
         return entity;

@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +26,10 @@ public class AppBuilderBundleController {
 
 	private final BundleService bundleService;
 	private final BundleGroupVersionService bundleGroupVersionService;
+	private final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
+    private final String CLASS_NAME = this.getClass().getSimpleName();
 
-	public AppBuilderBundleController(BundleService bundleService,
-			BundleGroupVersionService bundleGroupVersionService) {
+	public AppBuilderBundleController(BundleService bundleService,BundleGroupVersionService bundleGroupVersionService) {
 		this.bundleService = bundleService;
 		this.bundleGroupVersionService = bundleGroupVersionService;
 	}
@@ -35,8 +37,8 @@ public class AppBuilderBundleController {
 	@Operation(summary = "Get all the bundles in the hub", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles in that")
 	@GetMapping("/")
 	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId) {
+		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
-
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize,Optional.ofNullable(bundleGroupId));
 		PagedContent<BundleController.Bundle, Bundle> pagedContent = new PagedContent<>(
 				bundlesPage.getContent().stream().map(BundleController.Bundle::new).peek(bundle -> {

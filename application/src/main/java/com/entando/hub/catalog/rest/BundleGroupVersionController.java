@@ -108,8 +108,7 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-//        PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, Optional.ofNullable(searchText));
-        PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, Optional.ofNullable(searchText));
+        PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, searchText);
         return pagedContent;
     }
 

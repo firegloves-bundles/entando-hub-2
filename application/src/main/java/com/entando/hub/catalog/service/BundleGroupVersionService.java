@@ -20,13 +20,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.reflect.Typed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -59,8 +57,6 @@ public class BundleGroupVersionService {
 
     @Autowired
     private Environment environment;
-	@PersistenceContext
-	private EntityManager em;
 
     public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository,BundleRepository bundleRepository,CategoryRepository categoryRepository) {
     	this.bundleGroupVersionRepository = bundleGroupVersionRepository;
@@ -279,7 +275,7 @@ public class BundleGroupVersionService {
 		return list;
 	}
 
-	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
+	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
 		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
 		Pageable paging;
 		if (pageSize == 0) {
@@ -296,24 +292,21 @@ public class BundleGroupVersionService {
 
 		Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
 		List<BundleGroup> bunleGroups = new ArrayList<>();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<BundleGroup> cq = cb.createQuery(BundleGroup.class);
-		Root<BundleGroup> iRoot = cq.from(BundleGroup.class);
-		List<Predicate> predicates = new ArrayList<Predicate>();
 
-		if(searchText.isPresent()){
-			predicates.add(cb.like(iRoot.get("name"), "%" + searchText + "%"));
-			predicates.add(cb.like(iRoot.get("organisation").get("name"), "%" + searchText + "%"));
-			cq.where(predicates.toArray(new Predicate[]{}));
-			TypedQuery<BundleGroup> query = em.createQuery(cq);
-			bunleGroups = query.getResultList();
+		if(null != searchText && !searchText.isEmpty()){
+
+			bunleGroups = bundleGroupRepository.findAll();
+			bunleGroups = bunleGroups.stream().filter(bundleGroup -> {
+				String bg = bundleGroup.getName().toLowerCase(), st = searchText.toLowerCase(), o = bundleGroup.getOrganisation().getName().toLowerCase();
+				return bg.startsWith(st) || bg.endsWith(st) || bg.contains(st) || o.startsWith(st) || o.endsWith(st) || o.contains(st);
+		}).collect(Collectors.toList());
 		}
 
 		if(!bunleGroups.isEmpty()){
 			if (organisationId.isPresent()) {
 				Organisation organisation = new Organisation();
 				organisation.setId(Long.valueOf(organisationId.get()));
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation)).collect(Collectors.toList());
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation.getId())).collect(Collectors.toList());
 			} else {
 				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getCategories().containsAll(categories)).collect(Collectors.toList());
 			}
@@ -325,17 +318,9 @@ public class BundleGroupVersionService {
 			} else {
 				bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
 			}
-			if(searchText.isPresent())
+			if(null != searchText && !searchText.isEmpty())
 				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getName().matches(String.valueOf(searchText))).collect(Collectors.toList());
 		}
-/*		if (organisationId.isPresent()) {
-			Organisation organisation = new Organisation();
-			organisation.setId(Long.valueOf(organisationId.get()));
-//            bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(organisation, categories);
-			bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesInAndNameLike(organisation, categories, String.valueOf(searchText));
-		} else {
-			bunleGroups = bundleGroupRepository.findDistinctByCategoriesInAndNameLike(categories, String.valueOf(searchText));
-		}*/
 
 		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
 		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()

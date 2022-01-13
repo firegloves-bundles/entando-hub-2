@@ -56,6 +56,7 @@ public class KeycloakService {
     }
     
     public UserRepresentation getUser(String username) {
+    	logger.info("{}: getUser: Requested User found {}", username );
         if (StringUtils.isBlank(username)) {
             return null;
         }
@@ -65,6 +66,7 @@ public class KeycloakService {
     }
     
     private List<UserRepresentation> listUsers(Map<String, String> params) {
+    	logger.info("listUsers: getting the keycloack usess " );
         final String url = String.format("%s/admin/realms/%s/users", configuration.getAuthServerUrl(), configuration.getRealm());
         final ResponseEntity<UserRepresentation[]> response = this.executeRequest(url,
                 HttpMethod.GET, createEntity(), UserRepresentation[].class, params);

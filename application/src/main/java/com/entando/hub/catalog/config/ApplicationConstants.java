@@ -10,5 +10,7 @@ public final class ApplicationConstants {
     public static final String CATEGORY_NOT_EXIST_MSG = "This category is not exist.";
     
     public static final String CATEGORY_DELETED= "Category deleted successfully.";
+    
+    public static final String SPRING_PROFILE_DEVELOPMENT = "dev";
 
 }

@@ -1,7 +1,7 @@
 import EhBreadcrumb from "../../../components/eh-breadcrumb/EhBreadcrumb";
 import React, { useState, useEffect, useCallback } from "react";
 import { getAllBundleGroupVersionByBundleGroupId, getAllCategories, getAllOrganisations } from "../../../integration/Integration";
-import { Button, Content, Loading, Pagination } from "carbon-components-react";
+import { Button, Content, Loading, Pagination, Search } from "carbon-components-react";
 import { useParams } from "react-router-dom";
 import CatalogTiles from "../../catalog/catalog-tiles/CatalogTiles";
 import "./bundle-group-versions-page.scss";
@@ -16,7 +16,7 @@ let page_ = INIT_PAGE
 let pageSizes = ITEMS_PER_PAGE
 let currentPage = INIT_PAGE
 
-const BundleGroupVersionsPage = () => {
+const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
@@ -24,6 +24,7 @@ const BundleGroupVersionsPage = () => {
   const [bundleName, setBundleName] = useState("")
   const [statusFilterValue, setStatusFilterValue] = useState("")
   const [orgList, setOrgList] = useState([]);
+  const setSearchTerm = '';
   const history = useHistory()
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
@@ -78,7 +79,7 @@ const BundleGroupVersionsPage = () => {
       setLoading(false);
     }
     getVersionList();
-  }, [reloadToken, bundleGroupId]);
+  }, [reloadToken, bundleGroupId, history]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -98,6 +99,17 @@ const BundleGroupVersionsPage = () => {
     setOrg();
     return () => unmounted = true
   }, [reloadToken])
+
+  const searchTermHandler = async (e) => {
+    if (e.keyCode === 13 && e.nativeEvent.srcElement) {
+      setVersionSearchTerm(e.nativeEvent.srcElement.value)
+      history.push('/')
+    }
+  }
+
+  const onClearHandler = (e) => {
+    if (e.type === 'click') setSearchTerm('')
+  }
 
   return (
     <>
@@ -124,7 +136,7 @@ const BundleGroupVersionsPage = () => {
                 <Button renderIcon={Add16} disabled={true}>{i18n.t('component.button.add')}</Button>
               </div>
               <div className="bx--col-lg-4 CatalogPage-section">
-                {i18n.t('component.button.search')}
+                <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
               </div>
             </div>
 

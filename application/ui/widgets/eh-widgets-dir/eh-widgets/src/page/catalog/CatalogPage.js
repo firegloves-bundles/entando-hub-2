@@ -15,7 +15,7 @@ import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/consta
 /*
 This is the HUB landing page
 */
-const CatalogPage = () => {
+const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   const hubUser = isHubUser()
 
   const [categories, setCategories] = useState([])
@@ -31,7 +31,7 @@ const CatalogPage = () => {
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(versionSearchTerm ? versionSearchTerm : '')
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
   const [statusFilterValue, setStatusFilterValue] = useState("LOADING")
@@ -89,7 +89,7 @@ const CatalogPage = () => {
       setLoaded(true);
     }
   }, [])
-/**
+  /**
    * @description This will invoke api to search bundle groups
    * @param {*} e event
    */
@@ -98,6 +98,10 @@ const CatalogPage = () => {
   }
 
   const onClearHandler = (e) => {
+    if (versionSearchTerm) {
+      setVersionSearchTerm('')
+      return
+    }
     if (e.type === 'click') setSearchTerm('')
   }
 
@@ -141,7 +145,8 @@ const CatalogPage = () => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
+                  {versionSearchTerm && <Search value={versionSearchTerm} placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {!versionSearchTerm && <Search placeholder="Search by Organisation/Bundle Name" onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)
@@ -163,7 +168,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

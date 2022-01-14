@@ -16,7 +16,6 @@ import { useState } from "react"
 function AppCarbon() {
   const [versionSearchTerm, setVersionSearchTerm] = useState('');
 
-
   return (
     <>
       <NotificationDispatcher />
@@ -24,7 +23,7 @@ function AppCarbon() {
         <Switch>
           <Route path="**/bundlegroup/:id" exact component={BundleGroupPage}/>
           <Route path="**/bundlegroup/versions/:id" component={BundleGroupPage}/>
-          <Route path="**/versions/:id/:categoryId" component={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} {...props} />}/>
+          <Route path="**/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm}  {...props}/>}/>
           <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage}/>
           <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage}/>
           <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage}/>
@@ -33,7 +32,7 @@ function AppCarbon() {
           <Route path="**/unauthorized">
             {i18n.t('page.unauthorized')}
           </Route>
-          <Route path="**/" component={(props) => <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
+          <Route path="**/" render={(props) => <CatalogPage  setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
         </Switch>
       </HashRouter>
     </>

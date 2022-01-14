@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,16 +11,13 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
 
 @Service
@@ -47,36 +43,6 @@ public class BundleGroupService {
             return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
         }
         return bundleGroupRepository.findAll();
-    }
-
-    public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
-    	logger.debug("{}: getBundleGroups: Get bundle groups paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
-        Pageable paging;
-        if (pageSize == 0) {
-            paging = Pageable.unpaged();
-        } else {
-            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name");
-            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
-        }
-        Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
-            Category category = new Category();
-            category.setId(Long.valueOf(cid));
-            return category;
-        }).collect(Collectors.toSet());
-
-        if (organisationId.isPresent()) {
-            Organisation organisation = new Organisation();
-            organisation.setId(Long.valueOf(organisationId.get()));
-            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(
-                    organisation,
-                    categories,
-                    paging);
-            return page;
-        }
-
-        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesIn(categories, paging);
-        logger.debug("{}: getBundleGroups: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
-        return page;
     }
 
     public Page<BundleGroup> findByOrganisationId(String organisationId, Pageable pageable) {

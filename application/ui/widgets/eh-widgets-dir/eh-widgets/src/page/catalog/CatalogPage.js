@@ -100,11 +100,15 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   }
 
   const onClearHandler = (e) => {
-    if (e.type === 'click' || versionSearchTerm) setSearchTerm('')
-    if (versionSearchTerm && e.nativeEvent && e.nativeEvent.srcElement) {
-      setSearchTerm(e.nativeEvent.srcElement.value)
-      // setVersionSearchTerm('')
-      return
+    if (e.type === 'click' || versionSearchTerm) {
+      setSearchTerm('')
+      setVersionSearchTerm('')
+    }
+    if (e.nativeEvent && e.nativeEvent.srcElement) {
+      if (versionSearchTerm || e.nativeEvent.srcElement.value.length === 0) {
+        setSearchTerm(e.nativeEvent.srcElement.value)
+        return
+      }
     }
   }
 

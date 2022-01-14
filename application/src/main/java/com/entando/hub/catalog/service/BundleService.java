@@ -19,7 +19,6 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.BundleController;
 
 @Service
 public class BundleService {
@@ -28,7 +27,7 @@ public class BundleService {
     final private BundleGroupVersionRepository bundleGroupVersionRepository;
     final private BundleGroupRepository bundleGroupRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(BundleController.class);
+    private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,BundleGroupRepository bundleGroupRepository) {

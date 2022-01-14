@@ -3,7 +3,8 @@ package com.entando.hub.catalog.rest;
 
 import java.util.Objects;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,8 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("/appbuilder/api/bundlegroups")
 public class AppBuilderBundleGroupsController {
     private final BundleGroupVersionController bundleGroupVersionController;
-
+	private final Logger logger = LoggerFactory.getLogger(AppBuilderBundleGroupsController.class);
+	
     public AppBuilderBundleGroupsController(BundleGroupVersionController bundleGroupVersionController) {
         this.bundleGroupVersionController = bundleGroupVersionController;
     }
@@ -26,12 +28,13 @@ public class AppBuilderBundleGroupsController {
 
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @GetMapping("/")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
-		if (Objects.isNull(statuses)) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
+    	logger.debug("REST request to get bundle group versions and filter them by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
+    	if (Objects.isNull(statuses)) {
 			statuses = new String[1];
 			statuses[0] = BundleGroupVersion.Status.PUBLISHED.toString();
 		}
-        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses, searchText);
+        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses, null);
     }
 
 }

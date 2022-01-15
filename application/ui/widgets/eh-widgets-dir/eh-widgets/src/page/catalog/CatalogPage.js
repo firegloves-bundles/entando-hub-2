@@ -89,10 +89,11 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
       setLoaded(true);
     }
   }, [])
+
   /**
    * @description This will invoke api to search bundle groups
    * @param {*} e event
-   */
+  */
   const searchTermHandler = async (e) => {
     if (e.keyCode === 13 && e.nativeEvent.srcElement) {
       setSearchTerm(e.nativeEvent.srcElement.value);
@@ -100,12 +101,26 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   }
 
   const onClearHandler = (e) => {
-    if (e.type === 'click' || versionSearchTerm) {
+    // clear term on cross click
+    if (e.type === 'click') {
       setSearchTerm('')
       setVersionSearchTerm('')
+      return
+    }
+    // if searchTerm come's from version page and we click cross on home page in that case below logic works
+    if (e.type === undefined && versionSearchTerm) {
+      setSearchTerm('')
+      setVersionSearchTerm('')
+      return
     }
     if (e.nativeEvent && e.nativeEvent.srcElement) {
-      if (versionSearchTerm || e.nativeEvent.srcElement.value.length === 0) {
+      // on clear through backspace refetch to all data.
+      if (!e.nativeEvent.srcElement.value) {
+        setSearchTerm(e.nativeEvent.srcElement.value)
+        return
+      }
+      // if searchTerm come's from version page then we assign that term to catalog-page search term.
+      if (versionSearchTerm) {
         setSearchTerm(e.nativeEvent.srcElement.value)
         return
       }

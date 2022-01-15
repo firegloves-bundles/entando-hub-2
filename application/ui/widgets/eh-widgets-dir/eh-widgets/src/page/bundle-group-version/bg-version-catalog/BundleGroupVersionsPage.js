@@ -24,7 +24,6 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
   const [bundleName, setBundleName] = useState("")
   const [statusFilterValue, setStatusFilterValue] = useState("")
   const [orgList, setOrgList] = useState([]);
-  const setSearchTerm = '';
   const history = useHistory()
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
@@ -101,6 +100,7 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
   }, [reloadToken])
 
   const searchTermHandler = async (e) => {
+    // search data on enter click
     if (e.keyCode === 13 && e.nativeEvent.srcElement) {
       setVersionSearchTerm(e.nativeEvent.srcElement.value)
       history.push('/')
@@ -108,7 +108,8 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
   }
 
   const onClearHandler = (e) => {
-    if (e.type === 'click') setSearchTerm('')
+    // on clear cross icon clean the version search team
+    if (e.type === 'click') setVersionSearchTerm('')
   }
 
   return (

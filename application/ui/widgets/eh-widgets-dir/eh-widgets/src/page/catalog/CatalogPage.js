@@ -27,6 +27,9 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
   const [loaded, setLoaded] = useState(false)
+  // worker is a state that handle state of search input when terms comes from versionPage.
+  // it helps to handle Api hit on every change Event.
+  const [worker, setWorker] = useState(versionSearchTerm ? versionSearchTerm : '')
 
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
@@ -91,15 +94,21 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   }, [])
 
   /**
-   * @description This will invoke api to search bundle groups
-   * @param {*} e event
-  */
+   * @param {*} e Event object.
+   * @param {*} field Name of the field
+   * @description This will invoke on onKeyDown Event.
+   */
   const searchTermHandler = async (e) => {
     if (e.keyCode === 13 && e.nativeEvent.srcElement) {
       setSearchTerm(e.nativeEvent.srcElement.value);
     }
   }
 
+  /**
+   * @param {*} e Event object.
+   * @param {*} field Name of the field
+   * @description This will invoke on onChange Event.
+   */
   const onClearHandler = (e) => {
     // clear term on cross click
     if (e.type === 'click') {
@@ -114,13 +123,12 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
       return
     }
     if (e.nativeEvent && e.nativeEvent.srcElement) {
+      // if searchTerm come's from version page then we assign that term to catalog-page search term.
+      if (versionSearchTerm || worker) {
+        setWorker(e.nativeEvent.srcElement.value)
+      }
       // on clear through backspace refetch to all data.
       if (!e.nativeEvent.srcElement.value) {
-        setSearchTerm(e.nativeEvent.srcElement.value)
-        return
-      }
-      // if searchTerm come's from version page then we assign that term to catalog-page search term.
-      if (versionSearchTerm) {
         setSearchTerm(e.nativeEvent.srcElement.value)
         return
       }
@@ -167,7 +175,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  {versionSearchTerm && <Search value={searchTerm} placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {versionSearchTerm && <Search value={worker} placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                   {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>

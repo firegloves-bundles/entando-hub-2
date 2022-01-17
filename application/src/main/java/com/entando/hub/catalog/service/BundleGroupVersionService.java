@@ -392,9 +392,7 @@ public class BundleGroupVersionService {
 		}
 
 		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
-		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
-				.sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
-				.collect(Collectors.toList()), page);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page), page);
 		logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
 		return pagedContent;
 	}

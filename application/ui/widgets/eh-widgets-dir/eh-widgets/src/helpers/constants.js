@@ -54,6 +54,7 @@ export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-
 export const CHAR_LENGTH = 3;
 export const MAX_CHAR_LENGTH = 25;
 export const MAX_CHAR_LENGTH_FOR_DESC = 600;
+
 export const MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM = 100;
 export const CHAR_LENGTH_255 = 255;
 
@@ -126,3 +127,7 @@ export const VERSIONS_TO_BG_PAGE_URL = '/bundlegroup/versions/';
 export const OPERATION = {
     ADD_NEW_VERSION: 'ADD_NEW_VERSION'
 }
+
+export const CHAR_LIMIT_MSG_SHOW_TIME = 2000; //Time in milli seconds
+export const NAME_FIELD_ID = 'name';
+export const DESCRIPTION_FIELD_ID = 'description';

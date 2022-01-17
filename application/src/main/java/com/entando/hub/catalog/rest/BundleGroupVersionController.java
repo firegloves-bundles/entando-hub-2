@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
@@ -192,7 +193,6 @@ public class BundleGroupVersionController {
 		}
 	}
 
-
     @Getter
     @Setter
     @ToString
@@ -220,8 +220,9 @@ public class BundleGroupVersionController {
         protected String name;
         protected LocalDateTime lastUpdate;
         protected List<String> categories;
-        protected List<String> children;
+        protected List<Long> children;
         protected String bundleGroupVersionId;
+        protected List<BundleNoId> bundles;
 	    
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
@@ -249,7 +250,7 @@ public class BundleGroupVersionController {
                 this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }
             if (entity.getBundles() != null) {
-                this.children = entity.getBundles().stream().map((children) -> children.getId().toString()).collect(Collectors.toList());
+            	this.children = entity.getBundles().stream().map((children) -> children.getId()).collect(Collectors.toList());
             }
        }
 

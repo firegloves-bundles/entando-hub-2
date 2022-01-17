@@ -1,7 +1,6 @@
 import { Loading, Modal } from "carbon-components-react"
 import { useCallback, useEffect, useState } from "react"
 import {
-  addNewBundle,
   editBundleGroup,
   editBundleGroupVersion,
   getAllBundlesForABundleGroup,
@@ -76,7 +75,6 @@ export const ModalUpdateBundleGroup = ({
         }
         let bg = {
           ...bundleGroupObj,
-          children: childrenFromDb
         }
         const selectStatusValues = getProfiledUpdateSelectStatusInfo(
           getHigherRole(),
@@ -91,7 +89,6 @@ export const ModalUpdateBundleGroup = ({
         let newObject = {
           bundleGroupId: bg.bundleGroupId,
           name: bg.name,
-          children: bg.children,
           categories: bg.categories,
           organisationId: bg.organisationId,
           isEditable: bg.isEditable,
@@ -102,7 +99,8 @@ export const ModalUpdateBundleGroup = ({
             documentationUrl: bg.documentationUrl,
             bundleGroupUrl: bg.bundleGroupUrl,
             version: bg.version,
-            status: bg.status
+            status: bg.status,
+            bundles: childrenFromDb
           }
         }
         setBundleGroup(newObject);
@@ -120,17 +118,9 @@ export const ModalUpdateBundleGroup = ({
 
   //TODO BE QUERY REFACTORING
   const updateBundleGroup = async (bundleGroup) => {
-    let newChildren = []
-    if (bundleGroup.children && bundleGroup.children.length) {
-      //call addNewBundle rest api, saving every bundle
-      //WARNING a new bundle is created even if already exists
-      //the call is async in respArray there will be the new bundles id
-      let respArray = await Promise.all(bundleGroup.children.map(addNewBundle))
-      newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
-    }
+    
     const toSend = {
       ...bundleGroup,
-      children: newChildren,
     }
     
     if (bundleGroup.isEditable) {
@@ -139,7 +129,6 @@ export const ModalUpdateBundleGroup = ({
       // Update payload for version update only
       toSend.versionDetails = {
         ...toSend.versionDetails,
-        children: toSend.children,
         categories: toSend.categories,
         name: toSend.name
       }
@@ -156,13 +145,13 @@ export const ModalUpdateBundleGroup = ({
         validationError = fillErrors(err)
       })
       if ((bundleGroup && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.DELETE_REQ)) &&
-          validationError && validationError.children && validationError.children.length === 1 &&
+          validationError && validationError['versionDetails.bundles'] && validationError['versionDetails.bundles'].length === 1 &&
           Object.keys(validationError).length === 1) {
           validationError = undefined;
       }
-      if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
+      if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
         (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError.children[0]);
+        setMinOneBundleError(validationError['versionDetails.bundles'][0]);
       }
       if (validationError) {
         setValidationResult(validationError)

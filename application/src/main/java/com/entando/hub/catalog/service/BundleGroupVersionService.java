@@ -54,25 +54,34 @@ public class BundleGroupVersionService {
     final private BundleGroupRepository bundleGroupRepository;
     final private BundleRepository bundleRepository;
     final private CategoryRepository categoryRepository;
+    private final BundleService bundleService;
 
     @Autowired
     private Environment environment;
 
-    public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository,BundleRepository bundleRepository,CategoryRepository categoryRepository) {
+    public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository,BundleRepository bundleRepository,CategoryRepository categoryRepository, BundleService bundleService) {
     	this.bundleGroupVersionRepository = bundleGroupVersionRepository;
     	this.bundleGroupRepository = bundleGroupRepository;
     	this.bundleRepository = bundleRepository;
     	this.categoryRepository = categoryRepository;
+    	this.bundleService = bundleService;
     }
 
     public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionId) {
     	logger.debug("{}: getBundleGroupVersion: Get a bundle group version by id: {}", CLASS_NAME, bundleGroupVersionId);
         return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
     }
-    
+
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
     	logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME, bundleGroupVersionView);
+
+    	List<Bundle> savedBundles = bundleService.createBundleEntitiesAndSave(bundleGroupVersionView.getBundles());
+    	if(Objects.nonNull(savedBundles)) {
+    		List<Long> savedBundleIds = savedBundles.stream().map(c -> c.getId()).collect(Collectors.toList());
+    		bundleGroupVersionView.setChildren(savedBundleIds);
+    	}
+
     	if (bundleGroupVersionView.getStatus().equals(BundleGroupVersion.Status.PUBLISHED)) {
     		BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersionEntity.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED);
 			if (publishedVersion != null) {
@@ -80,31 +89,47 @@ public class BundleGroupVersionService {
 				publishedVersion.setStatus(BundleGroupVersion.Status.ARCHIVE);
 				bundleGroupVersionRepository.save(publishedVersion);
 			}
-    		
     	}
-    	
+
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
-    	
-		if (bundleGroupVersionView.getChildren() != null) {
-			// TODO native query to improve performance
-			bundleRepository.findByBundleGroupVersionsIs(entity).stream().forEach(bundle -> {
-				bundle.getBundleGroupVersions().remove(entity);
-				bundleRepository.save(bundle);
-			});
-			Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
-				com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository
-						.findById(Long.valueOf(bundleChildId)).get();
-				bundle.getBundleGroupVersions().add(entity);
-				bundleRepository.save(bundle);
-				return bundle;
-			}).collect(Collectors.toSet());
-			entity.setBundles(bundleSet);
-			logger.debug("{}: createBundleGroupVersion: Bundles: {}", CLASS_NAME, bundleSet);
+
+		try {
+			if (bundleGroupVersionView.getChildren() != null) {
+				List<Bundle> mappedBundles = bundleRepository.findByBundleGroupVersionsIs(entity);
+				List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
+				mappedBundles.stream().forEach(bundle -> {
+					bundle.getBundleGroupVersions().remove(entity);
+					bundleRepository.save(bundle);
+				});
+
+				Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
+					com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(Long.valueOf(bundleChildId)).get();
+					bundle.getBundleGroupVersions().add(entity);
+					bundleRepository.save(bundle);
+					return bundle;
+				}).collect(Collectors.toSet());
+				entity.setBundles(bundleSet);
+
+//			Remove orphan bundles from database
+				mappedBundleIds.forEach((bundleId) -> {
+					Optional<Bundle> optBundle = bundleRepository.findById(bundleId);
+					optBundle.ifPresent((bundle) -> {
+						Set<BundleGroupVersion> bundleGroups = bundle.getBundleGroupVersions();
+						if (CollectionUtils.isEmpty(bundleGroups)) {
+							bundleRepository.deleteById(bundleId);
+							logger.debug("{}: Removed bundle {} from db", CLASS_NAME, bundleId);
+						}
+					});
+				});
+				logger.debug("{}: createBundleGroupVersion: Bundles: {}", CLASS_NAME, bundleSet);
+			}
+		} catch (Exception e) {
+			logger.error("{}: createBundleGroupVersion: Error: {}", CLASS_NAME, e.getStackTrace());
 		}
     	return entity;
     }
-    
+
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
     	logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         Pageable paging;
@@ -137,7 +162,7 @@ public class BundleGroupVersionService {
         logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
         return pagedContent;
     }
-    
+
     /**
      * Set bundle group url
      * @param bundleGroupVersionId
@@ -174,13 +199,37 @@ public class BundleGroupVersionService {
 	@Transactional
 	public void deleteBundleGroupVersion(Optional<BundleGroupVersion> bundleGroupVersionOptional) {
 		logger.debug("{}: deleteBundleGroupVersion: Delete a bundle group version: {}", CLASS_NAME, bundleGroupVersionOptional);
-		bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
-			deleteFromBundles(bundleGroupVersion);
-			bundleGroupVersionRepository.delete(bundleGroupVersion);
-		});
+		try {
+			bundleGroupVersionOptional.ifPresent(bundleGroupVersion -> {
+				BundleGroup parentBundleGroup = bundleGroupVersion.getBundleGroup();
+				/**
+				 * First remove this bundle group version from bundles if mapped, and also delete the orphan bundles.
+				 */
+				removeBundleGroupVersionFromBundles(bundleGroupVersion);
+
+				/**
+				 * Now remove this bundle group version from the parent bundle group and delete it.
+				 */
+				parentBundleGroup.getVersion().remove(bundleGroupVersion);
+				bundleGroupVersionRepository.delete(bundleGroupVersion);
+
+				/**
+				 * Delete the parent bundle group if it does not have any other version.
+				 */
+				if(parentBundleGroup.getVersion().size() == 0) {
+					/**
+					 * First remove the bundle group from categories.
+					 */
+					removeBundleGroupFromCategories(parentBundleGroup);
+					bundleGroupRepository.delete(parentBundleGroup);
+				}
+			});
+		} catch (Exception e) {
+			logger.debug("{}: deleteBundleGroupVersion: Error: {}", CLASS_NAME, e.getStackTrace());
+		}
 	}
 
-	private void deleteFromCategories(BundleGroup bundleGroup) {
+	private void removeBundleGroupFromCategories(BundleGroup bundleGroup) {
 		logger.debug("{}: deleteFromCategories: Delete bundle group version from categories", CLASS_NAME);
 		bundleGroup.getCategories().forEach((category) -> {
 			category.getBundleGroups().remove(bundleGroup);
@@ -188,11 +237,19 @@ public class BundleGroupVersionService {
 		});
 	}
 
-	private void deleteFromBundles(BundleGroupVersion bundleGroupVersion) {
+	private void removeBundleGroupVersionFromBundles(BundleGroupVersion bundleGroupVersion) {
 		logger.debug("{}: deleteFromBundles: Delete bundle group version from bundles", CLASS_NAME);
-		bundleGroupVersion.getBundles().forEach((bundle) -> {
+
+		Set<Bundle> mappedBundles = bundleGroupVersion.getBundles();
+		mappedBundles.forEach((bundle) -> {
 			bundle.getBundleGroupVersions().remove(bundleGroupVersion);
 			bundleRepository.save(bundle);
+
+			Set<BundleGroupVersion> bundleGroupVersions = bundle.getBundleGroupVersions();
+			if (CollectionUtils.isEmpty(bundleGroupVersions)) {
+				bundleRepository.delete(bundle);
+				logger.debug("{}: Removed bundle {} from db", CLASS_NAME, bundle);
+			}
 		});
 	}
 
@@ -292,8 +349,7 @@ public class BundleGroupVersionService {
 		if (pageSize == 0) {
 			paging = Pageable.unpaged();
 		} else {
-			Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
-			paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
+			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")));
 		}
 		Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
 			Category category = new Category();
@@ -336,9 +392,7 @@ public class BundleGroupVersionService {
 		}
 
 		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
-		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
-				.sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
-				.collect(Collectors.toList()), page);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page), page);
 		logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
 		return pagedContent;
 	}

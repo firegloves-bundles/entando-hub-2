@@ -225,7 +225,7 @@ const BundleGroupVersionForm = ({
      * @param {*} e
      */
     const keyPressHandler = (e) => {
-        if (e.target.value.trim().length >= MAX_CHAR_LENGTH_FOR_DESC) {
+        if (e.target.value.length >= MAX_CHAR_LENGTH_FOR_DESC) {
             validationResult[DESCRIPTION_FIELD_ID] = [i18n.t('formValidationMsg.maxDescription')];
             setShowDescriptionCharLimitErrMsg(true);
             setTimeout(disappearCharLimitErrMsg, CHAR_LIMIT_MSG_SHOW_TIME);

@@ -57,11 +57,11 @@ const NewOrganisation = ({ onDataChange, validationResult }) => {
    * @param {*} e
    */
    const keyPressHandler = (e) => {
-    if (e.target.id === NAME_FIELD_ID && e.target.value.trim().length >= MAX_CHAR_LENGTH) {
+    if (e.target.id === NAME_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH) {
       validationResult[NAME_FIELD_ID] = [i18n.t('formValidationMsg.max25Char')];
       setShowNameCharLimitErrMsg(true);
       timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
-    } else if (e.target.id === DESCRIPTION_FIELD_ID && e.target.value.trim().length >= MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM) {
+    } else if (e.target.id === DESCRIPTION_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH_FOR_DESC_CATEGORY_AND_ORG_FORM) {
       validationResult[DESCRIPTION_FIELD_ID] = [i18n.t('formValidationMsg.description')];
       setShowDescriptionCharLimitErrMsg(true);
       timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);

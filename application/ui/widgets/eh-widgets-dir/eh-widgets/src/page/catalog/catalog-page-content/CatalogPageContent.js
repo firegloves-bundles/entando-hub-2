@@ -41,7 +41,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList }) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -50,7 +50,6 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
     const [filteredBundleGroups, setFilteredBundleGroups] = useState([])
     const [categories, setCategories] = useState([])
     const [localStatusFilterValue, setLocalStatusFilerValue] = useState(null)
-
     //if the statusFilter change value we need to set the page to 1
     //and query the BE
     if(localStatusFilterValue!==statusFilterValue){
@@ -65,8 +64,8 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
         /**
          *Get all the bundle groups having categoryIds and statuses
          */
-        const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses) => {
-            const data = await getAllBundleGroupsFilteredPaged(page, pageSize, organisationId, categoryIds, statuses)
+        const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses, searchTerm) => {
+            const data = await getAllBundleGroupsFilteredPaged(page, pageSize, organisationId, categoryIds, statuses, searchTerm)
             if (data.isError) {
                 setLoading(false)
             }
@@ -86,11 +85,11 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
             //get the selected categories if -1 no filtering at all on them
             const categoryIds = (selectedCategoryIds && selectedCategoryIds.length > 0 && selectedCategoryIds[0] !== "-1") ? selectedCategoryIds : undefined
 
-            const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses)
+            const filtered = await getBundleGroupsAndFilterThem(organisationId, categoryIds, statuses, searchTerm)
             setFilteredBundleGroups(filtered)
         }
         return Promise.all([initBGs(organisationId, statuses)])
-    }, [currentUserOrg])
+    }, [currentUserOrg, searchTerm])
 
     useEffect(() => {
         if (isError) {
@@ -135,7 +134,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
         <>
             <div className="bx--col-lg-4">
                 {categories && categories.length > 0 &&
-                <CatalogFilterTile categories={categories} onFilterChange={onFilterChange}/>}
+                <CatalogFilterTile categories={categories} onFilterChange={onFilterChange} />}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList}/>

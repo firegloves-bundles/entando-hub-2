@@ -34,7 +34,7 @@ public class AppBuilderBundleGroupsController {
 			statuses = new String[1];
 			statuses[0] = BundleGroupVersion.Status.PUBLISHED.toString();
 		}
-        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses);
+        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses, null);
     }
 
 }

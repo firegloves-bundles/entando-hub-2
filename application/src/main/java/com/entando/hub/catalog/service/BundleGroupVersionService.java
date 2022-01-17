@@ -8,8 +8,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -17,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -123,7 +130,7 @@ public class BundleGroupVersionService {
     	return entity;
     }
 
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
     	logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         Pageable paging;
         if (pageSize == 0) {
@@ -323,5 +330,70 @@ public class BundleGroupVersionService {
 			list.add(viewObj);
 		});
 		return list;
+	}
+
+	/**
+	 * This will search the Bundle groups based on bundle name and organization name and apply the filters.
+	 *
+	 * @param pageNum
+	 * @param pageSize
+	 * @param organisationId
+	 * @param categoryIds
+	 * @param statuses
+	 * @param searchText
+	 * @return
+	 */
+	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
+		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
+		Pageable paging;
+		if (pageSize == 0) {
+			paging = Pageable.unpaged();
+		} else {
+			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")));
+		}
+		Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
+			Category category = new Category();
+			category.setId(Long.valueOf(cid));
+			return category;
+		}).collect(Collectors.toSet());
+
+		Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
+		List<BundleGroup> bunleGroups = new ArrayList<>();
+
+		if(null != searchText && !searchText.isEmpty()){
+
+			bunleGroups = bundleGroupRepository.findAll();
+			bunleGroups = bunleGroups.stream().filter(bundleGroup -> {
+				String bg = bundleGroup.getName().toLowerCase(), st = searchText.toLowerCase(), o = bundleGroup.getOrganisation().getName().toLowerCase();
+				return bg.startsWith(st) || bg.endsWith(st) || bg.contains(st) || o.startsWith(st) || o.endsWith(st) || o.contains(st);
+		}).collect(Collectors.toList());
+		}
+
+		if(!bunleGroups.isEmpty()){
+			if (organisationId.isPresent()) {
+				Organisation organisation = new Organisation();
+				organisation.setId(Long.valueOf(organisationId.get()));
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation.getId())).collect(Collectors.toList());
+			} else {
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> categories.containsAll(bundleGroup.getCategories())).collect(Collectors.toList());
+			}
+		} else {
+			if (organisationId.isPresent()) {
+				Organisation organisation = new Organisation();
+				organisation.setId(Long.valueOf(organisationId.get()));
+				bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(organisation, categories);
+			} else {
+				bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
+			}
+			if(null != searchText && !searchText.isEmpty())
+				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getName().toLowerCase().startsWith(searchText) ||
+						bundleGroup.getName().toLowerCase().endsWith(searchText) ||
+						bundleGroup.getName().toLowerCase().contains(searchText)).collect(Collectors.toList());
+		}
+
+		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page), page);
+		logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
+		return pagedContent;
 	}
 }

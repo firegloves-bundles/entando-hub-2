@@ -104,7 +104,8 @@ public class BundleGroupVersionService {
 		}
     	return entity;
     }
-    
+
+	@Deprecated
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
     	logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         Pageable paging;
@@ -292,8 +293,7 @@ public class BundleGroupVersionService {
 		if (pageSize == 0) {
 			paging = Pageable.unpaged();
 		} else {
-			Sort.Order order = new Sort.Order(Sort.Direction.DESC, "lastUpdated");
-			paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
+			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")));
 		}
 		Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
 			Category category = new Category();

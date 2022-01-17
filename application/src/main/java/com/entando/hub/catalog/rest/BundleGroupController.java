@@ -4,7 +4,6 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,10 +14,8 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +29,6 @@ import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,13 +45,11 @@ public class BundleGroupController {
     private final Logger logger = LoggerFactory.getLogger(BundleGroupController.class);
 
     private final BundleGroupService bundleGroupService;
-    private final CategoryService categoryService;
     private final SecurityHelperService securityHelperService;
     private final BundleGroupVersionService bundleGroupVersionService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService) {
         this.bundleGroupService = bundleGroupService;
-        this.categoryService = categoryService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupVersionService = bundleGroupVersionService;
     }
@@ -66,29 +60,6 @@ public class BundleGroupController {
     public List<BundleGroup> getBundleGroupsByOrgnisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
-    }
-
-    //PUBLIC
-    @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @GetMapping("/filtered")
-    public PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
-    	logger.debug("REST request to get BundleGroups by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
-
-        String[] categoryIdFilterValues = categoryIds;
-        if (categoryIdFilterValues == null) {
-            categoryIdFilterValues = categoryService.getCategories().stream().map(c -> c.getId().toString()).toArray(String[]::new);
-        }
-
-        String[] statusFilterValues = statuses;
-        if (statusFilterValues == null) {
-            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
-        }
-
-        logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        Page<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupsPage = bundleGroupService.getBundleGroups(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses);
-        PagedContent<BundleGroup, com.entando.hub.catalog.persistence.entity.BundleGroup> pagedContent = new PagedContent<>(bundleGroupsPage.getContent().stream().map(BundleGroup::new).collect(Collectors.toList()), bundleGroupsPage);
-        return pagedContent;
     }
 
     //PUBLIC
@@ -149,7 +120,9 @@ public class BundleGroupController {
         }
     }
 
-
+    //This API is currently not in use. After data model changes for Bundle Group Version we do not allow users to directly delete Bundle Group from UI.
+    //Although it can be accessed from Swagger or Postman
+    //Should we keep this api or should delete ?
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
     @DeleteMapping("/{bundleGroupId}")
@@ -190,8 +163,6 @@ public class BundleGroupController {
     @Data
     public static class BundleGroupNoId {
         protected final String name;
-        //the following must be merged with the entity using mappedBy
-        protected List<String> children;
         protected String organisationId;
         protected String organisationName;
         protected List<String> categories;

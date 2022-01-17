@@ -221,7 +221,7 @@ const BundleGroupForm = ({
     }
 
     const onAddOrRemoveBundleFromList = (newBundleList) => {
-        changeBundleGroup("children", newBundleList)
+        createVersionDetailsObj("bundles", newBundleList)
     }
 
     const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
@@ -320,7 +320,7 @@ const BundleGroupForm = ({
                         <Column sm={16} md={16} lg={16}>
                             <BundlesOfBundleGroup
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                initialBundleList={bundleGroup.children}
+                                initialBundleList={bundleGroup.versionDetails.bundles}
                                 disabled={disabled}
                                 minOneBundleError={minOneBundleError}
                                 bundleStatus={bundleStatus}

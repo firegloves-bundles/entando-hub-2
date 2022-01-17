@@ -65,7 +65,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
          *Get all the bundle groups having categoryIds and statuses
          */
         const getBundleGroupsAndFilterThem = async (organisationId, categoryIds, statuses, searchTerm) => {
-            const data = await getAllBundleGroupsFilteredPaged(searchTerm ? 1 : page, searchTerm ? 12 : pageSize, organisationId, categoryIds, statuses, searchTerm)
+            const data = await getAllBundleGroupsFilteredPaged(page, pageSize, organisationId, categoryIds, statuses, searchTerm)
             if (data.isError) {
                 setLoading(false)
             }

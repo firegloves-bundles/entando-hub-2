@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,16 +11,13 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
 
 @Service
@@ -33,7 +29,9 @@ public class BundleGroupService {
     private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, BundleGroupVersionService bundleGroupVersionService) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 
+    		BundleGroupVersionService bundleGroupVersionService,
+    		BundleService bundleService) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
@@ -45,36 +43,6 @@ public class BundleGroupService {
             return bundleGroupRepository.findByOrganisationId(Long.parseLong(organisationId.get()));
         }
         return bundleGroupRepository.findAll();
-    }
-
-    public Page<BundleGroup> getBundleGroups(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
-    	logger.debug("{}: getBundleGroups: Get bundle groups paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
-        Pageable paging;
-        if (pageSize == 0) {
-            paging = Pageable.unpaged();
-        } else {
-            Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name");
-            paging = PageRequest.of(pageNum, pageSize, Sort.by(order));
-        }
-        Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
-            Category category = new Category();
-            category.setId(Long.valueOf(cid));
-            return category;
-        }).collect(Collectors.toSet());
-
-        if (organisationId.isPresent()) {
-            Organisation organisation = new Organisation();
-            organisation.setId(Long.valueOf(organisationId.get()));
-            Page<BundleGroup> page = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(
-                    organisation,
-                    categories,
-                    paging);
-            return page;
-        }
-
-        Page<BundleGroup> page = bundleGroupRepository.findDistinctByCategoriesIn(categories, paging);
-        logger.debug("{}: getBundleGroups: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
-        return page;
     }
 
     public Page<BundleGroup> findByOrganisationId(String organisationId, Pageable pageable) {
@@ -103,7 +71,6 @@ public class BundleGroupService {
         return entity;
     }
 
-
     public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
@@ -123,9 +90,6 @@ public class BundleGroupService {
             }).collect(Collectors.toSet());
             toUpdate.setCategories(categorySet);
         }
-	    if (bundleGroup.getChildren() != null && Objects.nonNull(bundleGroup.getVersionDetails())) {
-	    	bundleGroup.getVersionDetails().setChildren(bundleGroup.getChildren());
-	    }
 
         if (bundleGroup.getVersionDetails() != null) {
         	 Optional<String> optBundleGroupVersionId =  Objects.nonNull(bundleGroup.getVersionDetails().getBundleGroupVersionId()) 
@@ -136,14 +100,14 @@ public class BundleGroupService {
         }
     }
 
+    //This method is called from deleteBundleGroup() from BundleGroupController. In case if we remove Delete Bundle Group api this method also can be removed.
     @Transactional
     public void deleteBundleGroup(String bundleGroupId) {
     	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
         Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id); //No need to fetch here from db, can be passed from controller
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
-//            TODO: Delete the bundle group from Bundle Group Versions
             bundleGroupRepository.delete(bundleGroup);
         });
     }
@@ -154,5 +118,10 @@ public class BundleGroupService {
             category.getBundleGroups().remove(bundleGroup);
             categoryRepository.save(category);
         });
+    }
+
+    public void deleteFromOrganisations(BundleGroup bundleGroup) {
+    	logger.debug("{}: deleteFromOrganisations: Delete a bundle group from organisation", CLASS_NAME);
+        bundleGroup.getOrganisation().getBundleGroups().remove(bundleGroup);
     }
 }

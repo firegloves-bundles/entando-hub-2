@@ -1,7 +1,9 @@
 package com.entando.hub.catalog.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
@@ -19,6 +22,7 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 
 @Service
 public class BundleService {
@@ -93,4 +97,37 @@ public class BundleService {
     public void deleteFromBundleGroupVersion(Bundle bundle) {
        
     }
+
+    /**
+     * Save list of bundles
+     * @param bundles
+     * @return list of saved bundles
+     */
+	public List<Bundle> createBundles(List<Bundle> bundles) {
+		logger.debug("{}: createBundles: Create bundles: {}", CLASS_NAME, bundles);
+		return bundleRepository.saveAll(bundles);
+	}
+
+	/**
+	 * Convert list of bundle request into list of Bundle entity.
+	 * @param bundleRequest
+	 * @return list of saved bundles or empty list
+	 */
+	public List<Bundle> createBundleEntitiesAndSave(List<BundleNoId> bundleRequest) {
+		logger.debug("{}: createBundleEntitiesAndSave: Create bundles: {}", CLASS_NAME, bundleRequest);
+		try {
+			List<Bundle> bundles = new ArrayList<Bundle>();
+			if (!CollectionUtils.isEmpty(bundleRequest)) {
+				bundleRequest.forEach((element) -> {
+					Optional<String> opt = Objects.nonNull(element.getBundleId()) ? Optional.of(element.getBundleId())
+							: Optional.empty();
+					bundles.add(element.createEntity(opt));
+				});
+				return createBundles(bundles);
+			}
+		} catch (Exception e) {
+			logger.debug("{}: createBundleEntitiesAndSave: Error {}", CLASS_NAME, e.getStackTrace());
+		}
+		return Collections.emptyList();
+	}
 }

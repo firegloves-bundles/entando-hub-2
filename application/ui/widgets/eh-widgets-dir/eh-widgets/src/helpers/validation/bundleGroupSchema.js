@@ -47,18 +47,18 @@ export const newBundleGroupSchema = Yup.object().shape({
               "docFormat"
           ).required("docRequired"),
       version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
-      status: Yup.string().required("statusRequired")
+      status: Yup.string().required("statusRequired"),
+      bundles: Yup.array().of(
+          Yup.object().shape({
+              bundleGroups: Yup.array().of(Yup.string()),
+              // bundleId: Yup.number().positive().integer(),
+              dependencies: Yup.array().of(Yup.string()),
+              description: Yup.string(),
+              gitRepoAddress: Yup.string(),
+              name: Yup.string().required(),
+          })
+      ).min(1, "atleastOneUrl"),
   }).required(),
-  children: Yup.array().of(
-      Yup.object().shape({
-          bundleGroups: Yup.array().of(Yup.string()),
-          // bundleId: Yup.number().positive().integer(),
-          dependencies: Yup.array().of(Yup.string()),
-          description: Yup.string(),
-          gitRepoAddress: Yup.string(),
-          name: Yup.string().required(),
-      })
-  ).min(1, "atleastOneUrl"),
   categories: Yup.array()
       .of(Yup.string())
       .required("categoryRequired"),

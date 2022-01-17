@@ -13,7 +13,7 @@ export const newVersionBundleGroupSchema = Yup.object().shape({
         .required("docRequired"),
     status: Yup.string().required("statusRequired"),
     version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
-    children: Yup.array().of(
+    bundles: Yup.array().of(
         Yup.object().shape({
             bundleGroups: Yup.array().of(Yup.string()),
             dependencies: Yup.array().of(Yup.string()),

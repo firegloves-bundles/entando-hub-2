@@ -49,7 +49,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             if (categories) {
                 let filtered = categories && categories.filter(cat => cat.name === DEFAULT_CATEGORY)
                 if (!filtered.length) {
-                    filtered = categoryList && categoryList.filter(cat => cat.name === catList[0].name)
+                    filtered = categories && categories.filter(cat => cat.name === catList[0].name)
                 }
                 if (filtered) {
                     defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]

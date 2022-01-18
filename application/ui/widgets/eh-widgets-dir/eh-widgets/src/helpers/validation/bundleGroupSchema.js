@@ -69,9 +69,7 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
   gitRepo: Yup.string()
       .required("bundleUrlRequired")
       .matches(
-          /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-z-A-Z-0-9/]+)(?:\.git)$/gm,
+        /(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)(\.git)(\/?|[-\d\w._]+?)$/,
           "bundleUrlFormat"
       )
 })
-
-

@@ -56,6 +56,7 @@ const BundleGroupPage = () => {
     children: []
   })
 
+  const categoryId = pageModel.bundleGroup && pageModel.bundleGroup.categories && pageModel.bundleGroup.categories.length ? pageModel.bundleGroup.categories[0] : null;
   const { id: bundleGroupVersionId } = useParams()
   const { pathname: url } = useLocation();
 
@@ -97,7 +98,7 @@ const BundleGroupPage = () => {
                   // Breadcrumb when navigated from Version page
                   ? <EhBreadcrumb pathElements={[{
                     path: `${i18n.t('breadCrumb.version')}`,
-                    href: `${SLASH_VERSIONS}/` + pageModel.bundleGroup.bundleGroupId
+                    href: `${SLASH_VERSIONS}/` + pageModel.bundleGroup.bundleGroupId + `/${categoryId}`
                   }, {
                     path: pageModel.bundleGroup.name,
                     href: ""

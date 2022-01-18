@@ -1,7 +1,6 @@
 import { Loading, Modal } from "carbon-components-react"
 import { useCallback, useEffect, useState } from "react"
 import {
-  addNewBundle,
   addNewBundleGroupVersion,
   getAllBundlesForABundleGroup,
   getAllCategories,
@@ -75,7 +74,7 @@ export const ModalAddNewBundleGroupVersion = ({
           }
           let bg = {
             ...theBundleGroup,
-            children: childrenFromDb,
+            bundles: childrenFromDb,
             status: BUNDLE_STATUS.NOT_PUBLISHED
           }
           const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
@@ -93,20 +92,11 @@ export const ModalAddNewBundleGroupVersion = ({
     }
   }, [theBundleGroup])
 
-// ------------ Newly added method -----------------
   //Add Bundle Group Version api call
   const addBundleGroupVersion = async(bundleGroupVersion) => {
-    let newChildren = []
-    if (bundleGroupVersion.children && bundleGroupVersion.children.length) {
-      //call addNewBundle rest api, saving every bundle
-      //WARNING a new bundle is created even if already exists
-      //the call is async in respArray there will be the new bundles id
-      let respArray = await Promise.all(bundleGroupVersion.children.map(addNewBundle))
-      newChildren = respArray.map((res) => res && res.newBundle && res.newBundle.data && res.newBundle.data.bundleId)
-    }
+    
     const toSend = {
       ...bundleGroup,
-      children: newChildren,
     }
     await addNewBundleGroupVersion(toSend);
   }
@@ -127,13 +117,14 @@ export const ModalAddNewBundleGroupVersion = ({
         validationError.version = versionValidationError
       }
       if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
-        validationError && validationError.children && validationError.children.length === 1 &&
+        validationError && validationError.bundles && validationError.bundles.length === 1 &&
         Object.keys(validationError).length === 1) {
         validationError = undefined;
       }
-      if (bundleGroup && bundleGroup.children && bundleGroup.children.length === 0 &&
+      
+      if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
         (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError.children[0]);
+        setMinOneBundleError(validationError.bundles[0]);
       }
       if (validationError) {
         setValidationResult(validationError)

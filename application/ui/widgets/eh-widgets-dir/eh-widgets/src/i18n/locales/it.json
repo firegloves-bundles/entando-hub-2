@@ -52,7 +52,8 @@
       "organisation": "Organizzazione",
       "status": "Stato",
       "addUrlBundle": "Aggiungi l'URL del bundle",
-      "description": "Descrizione"
+      "description": "Descrizione",
+      "searchByOrgNBundleName": "Cerca per nome Org/bundle"
     },
     "button": {
       "add": "Aggiungi",

@@ -1,4 +1,4 @@
-import { Content } from "carbon-components-react";
+import { Content, Search } from "carbon-components-react";
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
@@ -15,7 +15,7 @@ import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/consta
 /*
 This is the HUB landing page
 */
-const CatalogPage = () => {
+const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   const hubUser = isHubUser()
 
   const [categories, setCategories] = useState([])
@@ -27,10 +27,14 @@ const CatalogPage = () => {
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
   const [loaded, setLoaded] = useState(false)
+  // worker is a state that handle state of search input when terms comes from versionPage.
+  // it helps to handle Api hit on every change Event.
+  const [worker, setWorker] = useState(versionSearchTerm ? versionSearchTerm : '')
 
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
 
+  const [searchTerm, setSearchTerm] = useState(versionSearchTerm ? versionSearchTerm : '')
   //filter the BG query by status (only published by default)
   //LOADING means ho use the filter value has to wait
   const [statusFilterValue, setStatusFilterValue] = useState("LOADING")
@@ -89,6 +93,48 @@ const CatalogPage = () => {
     }
   }, [])
 
+  /**
+   * @param {*} e Event object.
+   * @param {*} field Name of the field
+   * @description This will invoke on onKeyDown Event.
+   */
+  const searchTermHandler = async (e) => {
+    if (e.keyCode === 13 && e.nativeEvent.srcElement) {
+      setSearchTerm(e.nativeEvent.srcElement.value);
+    }
+  }
+
+  /**
+   * @param {*} e Event object.
+   * @param {*} field Name of the field
+   * @description This will invoke on onChange Event.
+   */
+  const onClearHandler = (e) => {
+    // clear term on cross click
+    if (e.type === 'click') {
+      setSearchTerm('')
+      setVersionSearchTerm('')
+      return
+    }
+    // if searchTerm come's from version page and we click cross on home page in that case below logic works
+    if (e.type === undefined && versionSearchTerm) {
+      setSearchTerm('')
+      setVersionSearchTerm('')
+      return
+    }
+    if (e.nativeEvent && e.nativeEvent.srcElement) {
+      // if searchTerm come's from version page then we assign that term to catalog-page search term.
+      if (versionSearchTerm || worker) {
+        setWorker(e.nativeEvent.srcElement.value)
+      }
+      // on clear through backspace refetch to all data.
+      if (!e.nativeEvent.srcElement.value) {
+        setSearchTerm(e.nativeEvent.srcElement.value)
+        return
+      }
+    }
+  }
+
   return (
     <>
       {window.entando
@@ -128,7 +174,9 @@ const CatalogPage = () => {
                   {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  {i18n.t('component.button.search')}
+                  {/*{i18n.t('component.button.search')}*/}
+                  {versionSearchTerm && <Search value={worker} placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)
@@ -150,7 +198,7 @@ const CatalogPage = () => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
               </div>
             </div>
           </div>

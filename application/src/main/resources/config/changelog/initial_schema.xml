@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<!-- EHUB core tables. The initial schema -->
-	<!-- Enable this section in case of new hub setup only -->
-	<changeSet id="1" author="admin">
-		<createSequence dataType="int" incrementBy="1" sequenceName="SEQ_CATEGORY_ID" startValue="1" />
-		<createSequence dataType="int" incrementBy="1" sequenceName="SEQ_ORGANISATION_ID" startValue="1" />
-		<createTable tableName="CATEGORY">
-			<column name="ID" type="INT">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="NAME" type="varchar(255)" />
-			<column name="DESCRIPTION" type="varchar(255)" />
-		</createTable>
+    <!-- EHUB core tables. The initial schema -->
+    <!-- Enable this section in case of new hub setup only -->
+    <changeSet id="1" author="admin">
+        <createSequence dataType="int" incrementBy="1" sequenceName="SEQ_CATEGORY_ID" startValue="1"/>
+        <createSequence dataType="int" incrementBy="1" sequenceName="SEQ_ORGANISATION_ID" startValue="1"/>
+        <createTable tableName="CATEGORY">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(255)"/>
+            <column name="DESCRIPTION" type="varchar(255)"/>
+        </createTable>
 
-		<createTable tableName="ORGANISATION">
-			<column name="ID" type="INT">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="NAME" type="varchar(255)" />
-			<column name="DESCRIPTION" type="varchar(255)" />
-		</createTable>
-	</changeSet>
+        <createTable tableName="ORGANISATION">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(255)"/>
+            <column name="DESCRIPTION" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
 
-	<!-- pre-populating category and organization data -->
-	<!-- Enable this section in case of new hub setup only -->
-	<changeSet id="2" author="admin">
-		<insert tableName="CATEGORY">
-			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
-			<column name="NAME" value="Component Collection" />
-			<column name="DESCRIPTION" value="Component Collection" />
-		</insert>
-		<insert tableName="CATEGORY">
-			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
-			<column name="NAME" value="PBC" />
-			<column name="DESCRIPTION" value="PBC" />
-		</insert>
-		<insert tableName="CATEGORY">
-			<column name="ID" valueSequenceNext="SEQ_CATEGORY_ID" />
-			<column name="NAME" value="Solution Template" />
-			<column name="DESCRIPTION" value="Solution Template" />
-		</insert>
-		
-		<insert tableName="ORGANISATION">
-			<column name="ID"  valueSequenceNext="SEQ_ORGANISATION_ID" />
-			<column name="NAME" value="Entando" />
-			<column name="DESCRIPTION" value="Entando" />
-		</insert>
-		<insert tableName="ORGANISATION">
-			<column name="ID" valueSequenceNext="SEQ_ORGANISATION_ID" />
-			<column name="NAME" value="Partner 1" />
-			<column name="DESCRIPTION" value="Partner 1" />
-		</insert>
-	</changeSet>
+    <!-- pre-populating category and organization data -->
+    <!-- Enable this section in case of new hub setup only -->
+    <changeSet id="2" author="admin">
+        <insert tableName="CATEGORY">
+            <column name="ID" valueSequenceNext="SEQ_CATEGORY_ID"/>
+            <column name="NAME" value="Component Collection"/>
+            <column name="DESCRIPTION" value="Component Collection"/>
+        </insert>
+        <insert tableName="CATEGORY">
+            <column name="ID" valueSequenceNext="SEQ_CATEGORY_ID"/>
+            <column name="NAME" value="PBC"/>
+            <column name="DESCRIPTION" value="PBC"/>
+        </insert>
+        <insert tableName="CATEGORY">
+            <column name="ID" valueSequenceNext="SEQ_CATEGORY_ID"/>
+            <column name="NAME" value="Solution Template"/>
+            <column name="DESCRIPTION" value="Solution Template"/>
+        </insert>
+
+        <insert tableName="ORGANISATION">
+            <column name="ID" valueSequenceNext="SEQ_ORGANISATION_ID"/>
+            <column name="NAME" value="Entando"/>
+            <column name="DESCRIPTION" value="Entando"/>
+        </insert>
+        <insert tableName="ORGANISATION">
+            <column name="ID" valueSequenceNext="SEQ_ORGANISATION_ID"/>
+            <column name="NAME" value="Partner 1"/>
+            <column name="DESCRIPTION" value="Partner 1"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

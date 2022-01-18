@@ -13,7 +13,7 @@ import java.util.Set;
 @SequenceGenerator(name = "organisation_id", sequenceName = "SEQ_ORGANISATION_ID", allocationSize = 1)
 public class Organisation {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "organisation_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "organisation_id")
     private Long id;
 
     @Column(unique = true)

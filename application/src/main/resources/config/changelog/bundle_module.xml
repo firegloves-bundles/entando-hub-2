@@ -1,94 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<!-- EHUB core tables. The initial schema -->
-	<!-- Enable this section in case of new hub setup only -->
-	<changeSet id="3" author="admin">
-		<!-- Added the entity BUNDLE -->
-		<createTable tableName="bundle">
-			<column name="id" type="bigint">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="name" type="varchar(255)" />
-			<column name="description" type="varchar(255)" />
-			<column name="git_repo_address" type="varchar(255)" />
-			<column name="dependencies" type="varchar(255)" />
-		</createTable>
+    <!-- EHUB core tables. The initial schema -->
+    <!-- Enable this section in case of new hub setup only -->
+    <changeSet id="3" author="admin">
+        <!-- Added the entity BUNDLE -->
+        <createTable tableName="bundle">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="git_repo_address" type="varchar(255)"/>
+            <column name="dependencies" type="varchar(255)"/>
+        </createTable>
 
-		<!-- Added the entity BUNDLE_GROUP -->
-		<createTable tableName="bundle_group">
-			<column name="id" type="bigint">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="name" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="organisation_id" type="bigint" />
-		</createTable>
+        <!-- Added the entity BUNDLE_GROUP -->
+        <createTable tableName="bundle_group">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="bigint"/>
+        </createTable>
 
-		<!-- Added the entity BUNDLE_GROUP_VERSION -->
-		<createTable tableName="bundle_group_version">
-			<column name="id" type="bigint">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="documentation_url" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="version" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="description_image" type="blob">
-				<constraints nullable="false" />
-			</column>
-			<column name="bundle_group_id" type="bigint">
-				<constraints nullable="false" />
-			</column>
-			<column name="status" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="last_updated" type="timestamp" />
-			<column name="description" type="varchar(600)">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-		
-		<!-- Added the entity BUNDLE_VERSIONS which is the mapping table between BUNDLE_GROUP_VERSIONS and BUNDLE-->
-		<createTable tableName="bundle_versions">
-			<column name="bundle_id" type="bigint">
-				<constraints nullable="false" />
-			</column>
-			<column name="bundle_group_version_id" type="bigint">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-		
-		<addPrimaryKey columnNames="bundle_id, bundle_group_version_id" tableName="bundle_versions" />
+        <!-- Added the entity BUNDLE_GROUP_VERSION -->
+        <createTable tableName="bundle_group_version">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="documentation_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description_image" type="blob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bundle_group_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="timestamp"/>
+            <column name="description" type="varchar(600)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
 
-	<!-- Added the entity CATEGORY_BUNDLE_GROUP which is the mapping table between BUNDLE_GROUP and CATRGORY-->
-		<createTable tableName="category_bundle_group">
-			<column name="bundle_group_id" type="bigint">
-				<constraints nullable="false" />
-			</column>
-			<column name="category_id" type="bigint">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-		<addPrimaryKey columnNames="category_id, bundle_group_id" tableName="category_bundle_group" />
+        <!-- Added the entity BUNDLE_VERSIONS which is the mapping table between BUNDLE_GROUP_VERSIONS and BUNDLE-->
+        <createTable tableName="bundle_versions">
+            <column name="bundle_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bundle_group_version_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
 
-		<addForeignKeyConstraint
-			baseColumnNames="bundle_group_id"
-			baseTableName="bundle_group_version"
-			constraintName="fk_bundle_group_id" referencedColumnNames="id"
-			referencedTableName="bundle_group" />
+        <addPrimaryKey columnNames="bundle_id, bundle_group_version_id" tableName="bundle_versions"/>
 
-		<addForeignKeyConstraint
-			baseColumnNames="organisation_id" baseTableName="bundle_group"
-			constraintName="fk_organisation_id" referencedColumnNames="id"
-			referencedTableName="organisation" />
-	</changeSet>
+        <!-- Added the entity CATEGORY_BUNDLE_GROUP which is the mapping table between BUNDLE_GROUP and CATRGORY-->
+        <createTable tableName="category_bundle_group">
+            <column name="bundle_group_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="category_id, bundle_group_id" tableName="category_bundle_group"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="bundle_group_id"
+                baseTableName="bundle_group_version"
+                constraintName="fk_bundle_group_id" referencedColumnNames="id"
+                referencedTableName="bundle_group"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="organisation_id" baseTableName="bundle_group"
+                constraintName="fk_organisation_id" referencedColumnNames="id"
+                referencedTableName="organisation"/>
+    </changeSet>
 </databaseChangeLog>

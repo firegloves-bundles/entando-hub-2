@@ -14,7 +14,7 @@ import java.util.Set;
 @SequenceGenerator(name = "category_id", sequenceName = "SEQ_CATEGORY_ID", allocationSize = 1)
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "category_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_id")
     private Long id;
 
     @Column(unique = true)

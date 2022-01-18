@@ -41,8 +41,8 @@ public class BundleGroup {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "category_bundle_group",
-    joinColumns = @JoinColumn(name = "bundle_group_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "bundle_group_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
     private Set<Category> categories = new HashSet<>();
     
     @OneToMany(mappedBy = "bundleGroup", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})

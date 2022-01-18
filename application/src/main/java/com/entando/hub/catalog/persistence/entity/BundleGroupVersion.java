@@ -59,10 +59,10 @@ public class BundleGroupVersion {
 	@ManyToOne
 	private BundleGroup bundleGroup;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	@JoinTable(name = "bundle_versions",
-    joinColumns = @JoinColumn(name = "bundle_group_version_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "bundle_id", referencedColumnName = "id"))
+			joinColumns = @JoinColumn(name = "bundle_group_version_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "bundle_id", referencedColumnName = "id"))
 	private Set<Bundle> bundles = new HashSet<>();
 
 	@UpdateTimestamp

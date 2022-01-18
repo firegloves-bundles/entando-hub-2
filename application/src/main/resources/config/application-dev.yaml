@@ -14,12 +14,12 @@ logging:
         security: DEBUG
 
 spring:
-# Enable this section for h2
-#  h2:
-#    console:
-#      settings:
-#        web-allow-others: true
-#      enabled: true
+  # Enable this section for h2
+  #  h2:
+  #    console:
+  #      settings:
+  #        web-allow-others: true
+  #      enabled: true
   datasource:
     continue-on-error: true
     initialization-mode: always
@@ -27,12 +27,12 @@ spring:
     hikari:
       poolName: Hikari
       auto-commit: false
-# Enable this section for h2
-#    url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-#    driverClassName: org.h2.Driver
-#    username: sa
-#    password: password
-# Enable this section for postgresql
+    # Enable this section for h2
+    #    url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+    #    driverClassName: org.h2.Driver
+    #    username: sa
+    #    password: password
+    # Enable this section for postgresql
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
     username: hubApp
@@ -57,10 +57,10 @@ keycloak:
   auth-url: http://localhost:9080/auth
   client-id: internal
   client-secret: internal
-#Enable these settings to use an external keycloak
-#  auth-url: http://hubdev.okd-entando.org/auth
-#  client-id: entandopsdh-entando-hub-catalog-server
-#  client-secret: ADD HERE BUT DO NOT COMMIT
+  #Enable these settings to use an external keycloak
+  #  auth-url: http://hubdev.okd-entando.org/auth
+  #  client-id: entandopsdh-entando-hub-catalog-server
+  #  client-secret: ADD HERE BUT DO NOT COMMIT
   ssl-required: none
   auth-server-url: ${keycloak.auth-url}
   bearer-only: true

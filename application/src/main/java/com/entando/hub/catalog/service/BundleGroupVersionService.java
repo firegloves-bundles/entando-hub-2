@@ -3,6 +3,7 @@ package com.entando.hub.catalog.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +76,7 @@ public class BundleGroupVersionService {
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity, BundleGroupVersionView bundleGroupVersionView) {
     	logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME, bundleGroupVersionView);
-
+    	List<Bundle> mappedBundles = Collections.emptyList();
     	List<Bundle> savedBundles = bundleService.createBundleEntitiesAndSave(bundleGroupVersionView.getBundles());
     	if(Objects.nonNull(savedBundles)) {
     		List<Long> savedBundleIds = savedBundles.stream().map(c -> c.getId()).collect(Collectors.toList());
@@ -90,13 +91,14 @@ public class BundleGroupVersionService {
 				bundleGroupVersionRepository.save(publishedVersion);
 			}
     	}
-
+    	if(Objects.nonNull(bundleGroupVersionEntity) && Objects.nonNull(bundleGroupVersionEntity.getId())) {
+    		mappedBundles = bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersionEntity);
+    	}
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);
 
 		try {
 			if (bundleGroupVersionView.getChildren() != null) {
-				List<Bundle> mappedBundles = bundleRepository.findByBundleGroupVersionsIs(entity);
 				List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
 				mappedBundles.stream().forEach(bundle -> {
 					bundle.getBundleGroupVersions().remove(entity);
@@ -349,7 +351,7 @@ public class BundleGroupVersionService {
 		if (pageSize == 0) {
 			paging = Pageable.unpaged();
 		} else {
-			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")));
+			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")).and(Sort.by("lastUpdated").descending()));
 		}
 		Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
 			Category category = new Category();

@@ -46,12 +46,12 @@
 			<column name="NAME" value="Solution Template" />
 			<column name="DESCRIPTION" value="Solution Template" />
 		</insert>
+		
 		<insert tableName="ORGANISATION">
 			<column name="ID"  valueSequenceNext="SEQ_ORGANISATION_ID" />
 			<column name="NAME" value="Entando" />
 			<column name="DESCRIPTION" value="Entando" />
 		</insert>
-
 		<insert tableName="ORGANISATION">
 			<column name="ID" valueSequenceNext="SEQ_ORGANISATION_ID" />
 			<column name="NAME" value="Partner 1" />

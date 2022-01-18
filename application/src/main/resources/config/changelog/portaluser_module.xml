@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<!-- EHUB core tables. The initial schema -->
+	<!-- Enable this section in case of new hub setup only -->
+	<changeSet id="4" author="admin">
+		<!-- Added the entity PORTAL_USER -->
+		<createTable tableName="PORTAL_USER">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="email" type="varchar(255)" />
+			<column name="username" type="varchar(255)" />
+		</createTable>
+		
+		<!-- Added the entity PORTAL_USER_ORGANISATION which is the mapping table between PORTAL_USER and ORGANISATION-->
+		<createTable tableName="portal_user_organisation">
+			<column name="portal_user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="organisation_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey columnNames="portal_user_id, organisation_id" tableName="portal_user_organisation" />
+	</changeSet>
+</databaseChangeLog>

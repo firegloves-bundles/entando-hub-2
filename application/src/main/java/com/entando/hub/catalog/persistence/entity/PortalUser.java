@@ -22,6 +22,9 @@ public class PortalUser {
     private String email;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "portal_user_organisation",
+    joinColumns = @JoinColumn(name = "portal_user_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "organisation_id", referencedColumnName = "id"))
     private Set<Organisation> organisations = new HashSet<>();
 
 }

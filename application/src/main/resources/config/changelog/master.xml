@@ -14,4 +14,6 @@
     <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
 
     <include file="config/changelog/initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/bundle_module.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/portaluser_module.xml" relativeToChangelogFile="false"/> 
 </databaseChangeLog>

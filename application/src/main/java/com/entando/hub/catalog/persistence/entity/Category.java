@@ -22,7 +22,7 @@ public class Category {
 
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     private Set<BundleGroup> bundleGroups = new HashSet<>();
 
 

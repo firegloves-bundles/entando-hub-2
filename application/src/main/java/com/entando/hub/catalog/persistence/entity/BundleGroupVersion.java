@@ -13,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -57,7 +59,10 @@ public class BundleGroupVersion {
 	@ManyToOne
 	private BundleGroup bundleGroup;
 
-	@ManyToMany(mappedBy = "bundleGroupVersions", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@JoinTable(name = "bundle_versions",
+    joinColumns = @JoinColumn(name = "bundle_group_version_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "bundle_id", referencedColumnName = "id"))
 	private Set<Bundle> bundles = new HashSet<>();
 
 	@UpdateTimestamp

@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255 } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
@@ -181,6 +181,7 @@ const BundlesOfBundleGroup = ({
                     <TextInput value={gitRepo}
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
+                               maxLength={CHAR_LENGTH_255}
                                invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
                                invalidText={bundleUrlErrorResult}
                                autoComplete={"false"}

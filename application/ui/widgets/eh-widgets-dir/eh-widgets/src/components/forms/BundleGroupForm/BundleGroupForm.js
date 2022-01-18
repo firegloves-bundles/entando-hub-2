@@ -8,9 +8,9 @@ import {
     TextArea,
     TextInput
 } from "carbon-components-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, CHAR_LENGTH, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, NAME_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import i18n from "../../../i18n";
 import './bundle-group-form.scss';
@@ -37,6 +37,13 @@ const BundleGroupForm = ({
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
+
+    const [showNameCharLimitErrMsg, setShowNameCharLimitErrMsg] = useState(false);
+    const [showDescriptionCharLimitErrMsg, setShowDescriptionCharLimitErrMsg] = useState(false);
+
+    const [mounted, setMounted] = useState(false);
+    const timerRef = useRef(null);
+
     const orgsList = orgList && orgList.length ? orgList : [];
 
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
@@ -220,6 +227,43 @@ const BundleGroupForm = ({
         }
     }
 
+    /**
+     * Handle keyPress event for input fields and show/hide character limit error message
+     * @param {*} e
+     */
+    const keyPressHandler = (e) => {
+        if (e.target.id === NAME_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH) {
+            validationResult[NAME_FIELD_ID] = [i18n.t('formValidationMsg.max25Char')]
+            setShowNameCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        } else if (e.target.id === DESCRIPTION_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH_FOR_DESC) {
+            validationResult["versionDetails.description"] = [i18n.t('formValidationMsg.maxDescription')]
+            setShowDescriptionCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        }
+    }
+
+    const disappearCharLimitErrMsg = (fieldId) => {
+        if (mounted) {
+            if (fieldId === NAME_FIELD_ID) {
+                validationResult[NAME_FIELD_ID] = undefined;
+                setShowNameCharLimitErrMsg(false);
+            } else if (fieldId === DESCRIPTION_FIELD_ID) {
+                validationResult["versionDetails.description"] = undefined;
+                setShowDescriptionCharLimitErrMsg(false);
+            }
+        }
+    }
+
+    useEffect(() => {
+        setMounted(true);
+        // Clear the interval when the component unmounts
+        return () => {
+            setMounted(false);
+            clearTimeout(timerRef.current);
+        };
+    }, []);
+
     const onAddOrRemoveBundleFromList = (newBundleList) => {
         createVersionDetailsObj("bundles", newBundleList)
     }
@@ -242,16 +286,18 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={(bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) && !!validationResult["name"]}
+                                invalid={(bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH || showNameCharLimitErrMsg) && !!validationResult["name"]}
                                 invalidText={
-                                    (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH) ? (validationResult["name"] &&
+                                    (bundleNameLength < CHAR_LENGTH || bundleNameLength > MAX_CHAR_LENGTH || showNameCharLimitErrMsg) ? (validationResult["name"] &&
                                     validationResult["name"].join("; ")) : null
                                 }
                                 disabled={shouldDisable}
                                 value={bundleGroup.name}
                                 onChange={nameChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "name")}
-                                id={"name"}
+                                onKeyPress={keyPressHandler}
+                                id={NAME_FIELD_ID}
                                 labelText={`${i18n.t('component.bundleModalFields.name')} ${bundleGroupSchema.fields.name.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>
@@ -330,19 +376,21 @@ const BundleGroupForm = ({
                         <Column className="bg-form-textarea" sm={16} md={16} lg={16}>
                             <TextArea
                                 invalid={
-                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
+                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC || showDescriptionCharLimitErrMsg) &&
                                     !!validationResult["versionDetails.description"]
                                 }
                                 invalidText={
-                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC) &&
+                                    (bundleDescriptionLength < CHAR_LENGTH || bundleDescriptionLength > MAX_CHAR_LENGTH_FOR_DESC || showDescriptionCharLimitErrMsg) &&
                                     (validationResult["versionDetails.description"] &&
                                         validationResult["versionDetails.description"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description}
                                 onChange={descriptionChangeHandler}
+                                maxLength={MAX_CHAR_LENGTH_FOR_DESC}
+                                onKeyPress={keyPressHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "description")}
-                                id={"description"}
+                                id={DESCRIPTION_FIELD_ID}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
                             <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description && bundleGroup.versionDetails.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>

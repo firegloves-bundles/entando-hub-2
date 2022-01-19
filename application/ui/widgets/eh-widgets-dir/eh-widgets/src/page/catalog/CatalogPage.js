@@ -145,7 +145,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
         && !isHubAdmin()
         && (portalUserPresent === false || orgLength === 0)
         ?
-        loaded && <p className="notify-user-absense">{i18n.t('page.catlogPanel.AuthMessage.notifyGuestPortalUserMsg')}</p>
+        loaded && <p className="notify-user-absense">{i18n.t('page.catalogPanel.AuthMessage.notifyGuestPortalUserMsg')}</p>
         :
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
@@ -161,10 +161,10 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
               </div>
               <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
-                  {i18n.t('page.catlogPanel.catlogHomePage.categories')}
+                  {i18n.t('page.catalogPanel.catalogHomePage.categories')}
                 </div>
                 <div className="bx--col-lg-5 CatalogPage-section">
-                  {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
+                  {i18n.t('page.catalogPanel.catalogHomePage.catalog')}
                 </div>
                 <div className="bx--col-lg-3 CatalogPage-section">
                   {/*
@@ -175,8 +175,8 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
-                  {versionSearchTerm && <Search value={worker} placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
-                  {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {versionSearchTerm && <Search value={worker} placeholder={i18n.t('component.bundleModalFields.search')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
+                  {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.search')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                 </div>
               </div>
               {/*  If the user is an HUB authenticated one (has HUB roles)

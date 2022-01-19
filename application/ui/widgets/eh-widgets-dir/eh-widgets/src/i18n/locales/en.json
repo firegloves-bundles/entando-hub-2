@@ -4,8 +4,8 @@
       "logout": "Logout",
       "login": "Login"
     },
-    "catlogPanel": {
-      "catlogHomePage": {
+    "catalogPanel": {
+      "catalogHomePage": {
         "home": "Home",
         "categories": "Categories",
         "catalog": "Catalog",
@@ -53,7 +53,7 @@
       "status": "Status",
       "addUrlBundle": "Add Url Bundle",
       "description": "Description",
-      "searchByOrgNBundleName": "Search by Org/Bundle Name"
+      "search": "Search"
     },
     "button": {
       "add": "Add",

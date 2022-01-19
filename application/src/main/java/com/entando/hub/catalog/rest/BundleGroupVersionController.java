@@ -85,7 +85,7 @@ public class BundleGroupVersionController {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
         } else {
-        	logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionView.getBundleGroupId().toString());
+        	logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId().toString());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -119,7 +119,7 @@ public class BundleGroupVersionController {
         logger.debug("REST request to update BundleGroupVersion with id {}, request object: {}", bundleGroupVersionId, bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
         if (!bundleGroupVersionOptional.isPresent()) {
-            logger.warn("BundleGroupVersion '{}' does not exists", bundleGroupVersionId);
+            logger.warn("BundleGroupVersion '{}' does not exist", bundleGroupVersionId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             //if the user is not ADMIN
@@ -154,7 +154,7 @@ public class BundleGroupVersionController {
         	pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
             return pagedContent;
         } else {
-            logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
+            logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return pagedContent;
         }
     }
@@ -169,7 +169,7 @@ public class BundleGroupVersionController {
         if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
             bundleGroupVersionOptional.ifPresentOrElse(
                     bundleGroupVersion -> logger.warn("Requested BundleGroupVersion '{}' is not in DELETE_REQ status: {}", bundleGroupVersionId, bundleGroupVersion.getStatus()),
-                    () -> logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionId)
+                    () -> logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionId)
             );
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
@@ -188,7 +188,7 @@ public class BundleGroupVersionController {
 			BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersionOptional.get());
 			return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
 		} else {
-			logger.warn("Requested bundleGroupVersion '{}' does not exists", bundleGroupVersionOptional);
+			logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionOptional);
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 	}

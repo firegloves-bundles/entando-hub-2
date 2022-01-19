@@ -49,7 +49,7 @@ export const SLASH_VERSIONS = '/versions';
 export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
 export const VERSON_REGEX = /^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm
 //eslint-disable-next-line
-export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\/]+)(?:\.git)$/gm
+export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\.\/]+)(?:\.git)$/gm
 
 // Input char length
 export const CHAR_LENGTH = 3;

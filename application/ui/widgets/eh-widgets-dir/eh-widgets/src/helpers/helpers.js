@@ -1,4 +1,4 @@
-import {ADMIN, AUTHOR, GIT_DOMAIN, MANAGER, MATCHER} from './constants'
+import {ADMIN, AUTHOR, GIT_DOMAIN, MANAGER, MATCHER, USER_ROLES} from './constants'
 
 export const getKeycloakToken = () => {
     if (window && window.entando && window.entando.keycloak && window.entando.keycloak.authenticated) {
@@ -82,4 +82,16 @@ export const clickableSSHGitURL= (gitRepoUrl) => {
         return `${GIT_DOMAIN}${gitRepoUrl.split(':')[1]}`;
     }
     return gitRepoUrl;
+}
+
+export const isCurrentUserAuthenticated = () => {
+   return window.entando && window.entando.keycloak && window.entando.keycloak.authenticated;
+}
+
+export const isCurrentUserAssignedAValidRole = () => {
+    return USER_ROLES.includes(getHigherRole());
+}
+
+export const isCurrentUserAssignedAPreferredName = () => {
+    return window.entando.keycloak.tokenParsed && window.entando.keycloak.tokenParsed.preferred_username;
 }

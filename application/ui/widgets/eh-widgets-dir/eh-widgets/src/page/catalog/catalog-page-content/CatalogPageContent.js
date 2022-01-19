@@ -41,7 +41,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm }) => {
+const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm, showFullPage }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -101,7 +101,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
     useEffect(() => {
         const hubUser = isHubUser();
         let statuses = [] //filter values for the status
-        if (!hubUser) { //GUEST user no status filter, only categories one
+        if (!hubUser || !showFullPage) { //GUEST user no status filter, only categories one
             statuses = ["PUBLISHED"]
         } else { //authenticated user
             if (localStatusFilterValue === "-1") { //all the statuses
@@ -117,7 +117,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
             setLoading(false)
 
         })()
-    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData])
+    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage])
 
 
     const onFilterChange = (newSelectedCategoryIds) => {
@@ -137,7 +137,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange} />}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList} showFullPage={showFullPage}/>
                 <Pagination
                     itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                     itemRangeText={

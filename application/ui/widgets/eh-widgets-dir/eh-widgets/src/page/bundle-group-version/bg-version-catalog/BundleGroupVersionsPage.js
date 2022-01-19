@@ -159,7 +159,7 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
                   ? 
                   <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories}
                   orgList={orgList}
-                  reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} />
+                  reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} showFullPage={true} />
                   : 
                   <div> {i18n.t('page.catlogPanel.noVersionsFound')} </div>}
                 <Pagination

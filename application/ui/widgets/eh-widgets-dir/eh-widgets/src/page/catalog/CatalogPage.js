@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import i18n from '../../i18n';
 import './catalogPage.scss'
 import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
-import { getUserName, isHubAdmin, isHubUser } from "../../helpers/helpers";
+import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
 import './catalogPage.scss';
@@ -17,16 +17,17 @@ This is the HUB landing page
 */
 const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
   const hubUser = isHubUser()
-
+  const hasValidRole = isCurrentUserAssignedAValidRole();
+  const isAuthenticated = isCurrentUserAuthenticated();
+  const hasPreferredName = isCurrentUserAssignedAPreferredName();
   const [categories, setCategories] = useState([])
   const [orgList, setOrgList] = useState([])
   const [loading, setLoading] = useState(true)
   const [isError, setIsError] = useState(null)
   const [currentUserOrg, setCurrentUserOrg] = useState(null);
-
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
-  const [loaded, setLoaded] = useState(false)
+
   // worker is a state that handle state of search input when terms comes from versionPage.
   // it helps to handle Api hit on every change Event.
   const [worker, setWorker] = useState(versionSearchTerm ? versionSearchTerm : '')
@@ -45,7 +46,6 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
     */
   const changeStatusFilterValue = useCallback((newValue) => {
     newValue !== BUNDLE_STATUS.ARCHIVED ? setStatusFilterValue(newValue) : setStatusFilterValue([])
-    // setStatusFilterValue(newValue)
   }, [])
 
   /*
@@ -84,12 +84,10 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
           setOrgLength(0);
           setPortalUserPresent(false);
         }
-        portalUserResp && isMounted && setLoaded(true);
       }
     })()
     return () => {
       isMounted = false;
-      setLoaded(true);
     }
   }, [])
 
@@ -135,18 +133,20 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
     }
   }
 
+  /**
+   * Check to show full page or only public discovery view after login.
+   * Show only public discovery view if user is authenticated but does not have an assigned Hub role(eh-admin,eh-manager,eh-author)
+   * or user does not have an assigned organisation. An admin user can see full page even doen not have an assigned organisation.
+   * @returns boolean
+   */
+  const shouldShowFullPageAfterLogin = () => {
+    return isAuthenticated && hasPreferredName && hubUser && hasValidRole && (isHubAdmin() || portalUserPresent || orgLength > 0);
+  }
+
+  const showFullPage = shouldShowFullPageAfterLogin();
+
   return (
     <>
-      {window.entando
-        && window.entando.keycloak
-        && window.entando.keycloak.authenticated
-        && window.entando.keycloak.tokenParsed
-        && window.entando.keycloak.tokenParsed.preferred_username
-        && !isHubAdmin()
-        && (portalUserPresent === false || orgLength === 0)
-        ?
-        loaded && <p className="notify-user-absense">{i18n.t('page.catlogPanel.AuthMessage.notifyGuestPortalUserMsg')}</p>
-        :
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
             <div className="bx--grid bx--grid--full-width catalog-page">
@@ -171,7 +171,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
@@ -183,13 +183,13 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                         can see the status filter
                 */}
 
-              {hubUser &&
+              {showFullPage && hubUser &&
                 <div className="bx--row">
                   <div className="bx--col-lg-4 CatalogPage-section">
                     {/*Empty col4 over checkbox filters */}
                   </div>
                   <div className="bx--col-lg-12 CatalogPage-section">
-                    <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue} />
+                    <BundleGroupStatusFilter onFilterValueChange={changeStatusFilterValue}/>
                   </div>
                 </div>
               }
@@ -198,12 +198,12 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || (hubUser && statusFilterValue !== "LOADING")) && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} />}
+                {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING"))
+                  && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} />}
               </div>
             </div>
           </div>
         </Content>
-      }
     </>
   );
 };

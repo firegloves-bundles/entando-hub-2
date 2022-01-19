@@ -21,7 +21,8 @@ const CatalogTile = ({
   version,
   bundleGroup,
   isVersionsPage,
-  orgList
+  orgList,
+  showFullPage
 }) => {
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
@@ -67,7 +68,7 @@ const CatalogTile = ({
   return (
     <>
       <div className="CatalogTile">
-        {isHubUser() && bundleStatus !== BUNDLE_STATUS.ARCHIVED && (
+        {isHubUser() && showFullPage && bundleStatus !== BUNDLE_STATUS.ARCHIVED && (
           <div className="CatalogTile-dropmenu">
             <CatalogTileOverflowMenu
               bundleGroupId={bundleGroupId}
@@ -93,7 +94,7 @@ const CatalogTile = ({
           </div>
           <div className="CatalogTile-card-title">{name}</div>
           <div className="CatalogTile-card-status">{organisationName}</div>
-          {isHubUser() && (
+          {isHubUser() && showFullPage && (
             <div className="CatalogTile-card-status">
               {i18n.t(textFromStatus(status))}
             </div>

@@ -71,7 +71,7 @@ public class BundleGroupController {
         if (bundleGroupOptional.isPresent()) {
             return new ResponseEntity<>(bundleGroupOptional.map(BundleGroup::new).get(), HttpStatus.OK);
         } else {
-            logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId);
+            logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -98,7 +98,7 @@ public class BundleGroupController {
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
 
 		if (!bundleGroupOptional.isPresent()) {
-			logger.warn("BundleGroup '{}' does not exists", bundleGroupId);
+			logger.warn("BundleGroup '{}' does not exist", bundleGroupId);
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		} else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
 			logger.warn("BundleGroup '{}' is not editable", bundleGroupId);
@@ -133,7 +133,7 @@ public class BundleGroupController {
         if (!bundleGroupOptional.isPresent()) {
             bundleGroupOptional.ifPresentOrElse(
                     bundleGroup -> logger.warn("Requested bundleGroup '{}' is not present", bundleGroupId),
-                    () -> logger.warn("Requested bundleGroup '{}' does not exists", bundleGroupId)
+                    () -> logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId)
             );
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {

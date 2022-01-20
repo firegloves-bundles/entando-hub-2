@@ -45,7 +45,7 @@ public class CategoryController {
         if (categoryOptional.isPresent()) {
             return new ResponseEntity<>(categoryOptional.map(Category::new).get(), HttpStatus.OK);
         } else {
-            logger.warn("Requested category '{}' does not exists", categoryId);
+            logger.warn("Requested category '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -66,7 +66,7 @@ public class CategoryController {
         logger.debug("REST request to update Category {}: {}", categoryId, category);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (!categoryOptional.isPresent()) {
-            logger.warn("Category '{}' does not exists", categoryId);
+            logger.warn("Category '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             com.entando.hub.catalog.persistence.entity.Category savedEntity = categoryService.createCategory(category.createEntity(Optional.of(categoryId)));
@@ -81,7 +81,7 @@ public class CategoryController {
         logger.debug("REST request to delete gategory {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (!categoryOptional.isPresent()) {
-            logger.warn("Requested category '{}' does not exists", categoryId);
+            logger.warn("Requested category '{}' does not exist", categoryId);
             return new ResponseEntity<>(ApplicationConstants.CATEGORY_NOT_EXIST_MSG , HttpStatus.NOT_FOUND);
         } else {
             if (!categoryOptional.get().getBundleGroups().isEmpty()) {

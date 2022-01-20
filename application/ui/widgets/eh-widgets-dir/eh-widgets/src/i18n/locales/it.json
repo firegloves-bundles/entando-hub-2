@@ -4,8 +4,8 @@
       "logout": "Disconnetti",
       "login": "Login"
     },
-    "catlogPanel": {
-      "catlogHomePage": {
+    "catalogPanel": {
+      "catalogHomePage": {
         "home": "Home",
         "categories": "Categorie",
         "catalog": "Catalogo",
@@ -53,7 +53,7 @@
       "status": "Stato",
       "addUrlBundle": "Aggiungi l'URL del bundle",
       "description": "Descrizione",
-      "searchByOrgNBundleName": "Cerca per nome Org/bundle"
+      "search": "Ricerca"
     },
     "button": {
       "add": "Aggiungi",

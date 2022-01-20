@@ -29,7 +29,7 @@ const EhBreadcrumb = ({pathElements = []}) => {
   return (
     <Breadcrumb aria-label="Page navigation">
       <BreadcrumbItem>
-        <Link to="/">{i18n.t("page.catlogPanel.catlogHomePage.home")}</Link>
+        <Link to="/">{i18n.t("page.catalogPanel.catalogHomePage.home")}</Link>
       </BreadcrumbItem>
       {elementList}
       {showNavBar && (

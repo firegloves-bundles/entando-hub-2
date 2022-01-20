@@ -44,7 +44,7 @@ public class OrganisationController {
         if (organisationOptional.isPresent()) {
             return new ResponseEntity<>(organisationOptional.map(Organisation::new).get(), HttpStatus.OK);
         } else {
-            logger.warn("Requested organisation '{}' does not exists", organisationId);
+            logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -66,7 +66,7 @@ public class OrganisationController {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
-            logger.warn("Requested organisation '{}' does not exists", organisationId);
+            logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             //com.entando.hub.catalog.persistence.entity.Organisation storedEntity = organisationOptional.get();
@@ -82,7 +82,7 @@ public class OrganisationController {
         logger.debug("REST request to delete organisation {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
-            logger.warn("Requested organisation '{}' does not exists", organisationId);
+            logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             organisationService.deleteOrganisation(organisationId);

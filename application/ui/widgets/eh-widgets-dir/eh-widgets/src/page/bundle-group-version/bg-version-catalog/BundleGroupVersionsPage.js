@@ -128,16 +128,16 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
 
             <div className="bx--row">
                 <div className="bx--col-lg-4 CatalogPage-section">
-                    {i18n.t('page.catlogPanel.catlogHomePage.categories')}
+                    {i18n.t('page.catalogPanel.catalogHomePage.categories')}
                 </div>
               <div className="bx--col-lg-5 CatalogPage-section">
-              {i18n.t('page.catlogPanel.catlogHomePage.catalog')}
+              {i18n.t('page.catalogPanel.catalogHomePage.catalog')}
               </div>
               <div className="bx--col-lg-3 CatalogPage-section">
                 <Button renderIcon={Add16} disabled={true}>{i18n.t('component.button.add')}</Button>
               </div>
               <div className="bx--col-lg-4 CatalogPage-section">
-                <Search placeholder={i18n.t('component.bundleModalFields.searchByOrgNBundleName')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
+                <Search placeholder={i18n.t('component.bundleModalFields.search')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />
               </div>
             </div>
 
@@ -161,7 +161,7 @@ const BundleGroupVersionsPage = ({setVersionSearchTerm}) => {
                   orgList={orgList}
                   reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} showFullPage={true} />
                   : 
-                  <div> {i18n.t('page.catlogPanel.noVersionsFound')} </div>}
+                  <div> {i18n.t('page.catalogPanel.noVersionsFound')} </div>}
                 <Pagination
                   itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                   itemRangeText={

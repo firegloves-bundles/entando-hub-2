@@ -230,8 +230,7 @@ const BundleGroupVersionForm = ({
         if (e.target.id === DESCRIPTION_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH_FOR_DESC) {
             validationResult[DESCRIPTION_FIELD_ID] = [i18n.t('formValidationMsg.maxDescription')];
             setShowDescriptionCharLimitErrMsg(true);
-            setTimeout(disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
-            timerRef.current = setTimeout(disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
         } else if (e.target.id === DOCUMENTATION_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
             validationResult["documentationUrl"] = [i18n.t('formValidationMsg.max255Char')]
             setShowDocUrlCharLimitErrMsg(true);

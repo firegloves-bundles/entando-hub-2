@@ -45,7 +45,7 @@ public class PortalUserService {
             Long orgIdLong = Long.valueOf(orgId);
             Optional<Organisation> org = this.organisationRepository.findById(orgIdLong);
             if (!org.isPresent()) {
-                logger.warn("Organisation '{}' does not exists", orgIdLong);
+                logger.warn("Organisation '{}' does not exist", orgIdLong);
                 return null;
             }
             users = org.get().getPortalUsers();
@@ -72,12 +72,12 @@ public class PortalUserService {
         Long orgIdLong = Long.valueOf(orgId);
         Optional<Organisation> org = this.organisationRepository.findById(orgIdLong);
         if (!org.isPresent()) {
-            logger.warn("Organisation '" + orgId + "' does not exists");
+            logger.warn("Organisation '" + orgId + "' does not exist");
             return false;
         }
         UserRepresentation user = keycloakService.getUser(username);
         if (null == user) {
-            logger.warn("User '" + username + "' does not exists");
+            logger.warn("User '" + username + "' does not exist");
             return false;
         }
         PortalUser portalUser = this.portalUserRepository.findByUsername(username);
@@ -100,12 +100,12 @@ public class PortalUserService {
         Long orgIdLong = Long.valueOf(orgId);
         Optional<Organisation> org = this.organisationRepository.findById(orgIdLong);
         if (!org.isPresent()) {
-            logger.warn("Organisation '" + orgIdLong + "' does not exists");
+            logger.warn("Organisation '" + orgIdLong + "' does not exist");
             return false;
         }
         UserRepresentation user = keycloakService.getUser(username);
         if (null == user) {
-            logger.warn("User '" + username + "' does not exists");
+            logger.warn("User '" + username + "' does not exist");
             return false;
         }
         PortalUser portalUser = this.portalUserRepository.findByUsername(username);
@@ -140,7 +140,7 @@ public class PortalUserService {
 		if (username != null) {
 			portalUser = this.portalUserRepository.findByUsername(username);
 			if (Objects.isNull(portalUser)) {
-				logger.warn("user '{}' does not exists", username);
+				logger.warn("user '{}' does not exist", username);
 				return null;
 			}
 			portalUserResponseView = PortalUserToPortalUserResponseView(portalUser);

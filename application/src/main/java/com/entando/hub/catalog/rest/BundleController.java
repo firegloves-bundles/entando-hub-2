@@ -66,7 +66,7 @@ public class BundleController {
         if (bundleOptional.isPresent()) {
             return new ResponseEntity<>(bundleOptional.map(Bundle::new).get(), HttpStatus.OK);
         } else {
-            logger.warn("Requested bundle '{}' does not exists", bundleId);
+            logger.warn("Requested bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -92,7 +92,7 @@ public class BundleController {
         logger.debug("REST request to update a Bundle with id {}: {}", bundleId, bundle);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
-        	logger.warn("Bundle '{}' does not exists", bundleId);
+        	logger.warn("Bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(Optional.of(bundleId)));
@@ -108,7 +108,7 @@ public class BundleController {
         logger.debug("REST request to delete bundle {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
-        	logger.warn("Bundle '{}' does not exists", bundleId);
+        	logger.warn("Bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } else {
         	bundleService.deleteBundle(bundleOptional.get());

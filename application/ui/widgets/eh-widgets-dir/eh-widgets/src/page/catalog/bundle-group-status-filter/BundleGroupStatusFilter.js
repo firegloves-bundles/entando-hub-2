@@ -35,7 +35,7 @@ const BundleGroupStatusFilter = ({onFilterValueChange}) => {
         const itemList = statusArray.map((s, index) => <SelectItem key={index} value={s.value} text={i18n.t(s.text)}/>)
         return (
             <div className="BundleGroupStatusFilter-select">
-              <Select labelText={i18n.t('page.catlogPanel.catlogHomePage.select')} value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
+              <Select labelText={i18n.t('page.catalogPanel.catalogHomePage.select')} value={selectedStatus} id={"category"} onChange={statusChangeHandler}>
                 {itemList}
             </Select>
             </div>

@@ -1,4 +1,5 @@
 import * as Yup from "yup"
+import { DOCUMENTATION_ADDRESS_URL_REGEX } from "../constants"
 
 export const newVersionBundleGroupSchema = Yup.object().shape({
     description: Yup.string()
@@ -7,9 +8,10 @@ export const newVersionBundleGroupSchema = Yup.object().shape({
         .required("descriptionRequired"),
     documentationUrl: Yup.string()
         .matches(
-            /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,
+            DOCUMENTATION_ADDRESS_URL_REGEX,
             "docFormat"
         )
+        .max(255, "max255Char")
         .required("docRequired"),
     status: Yup.string().required("statusRequired"),
     version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),

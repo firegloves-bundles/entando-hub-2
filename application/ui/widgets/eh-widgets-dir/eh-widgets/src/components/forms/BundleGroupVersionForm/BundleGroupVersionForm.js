@@ -10,7 +10,7 @@ import {
     TextInput,
 } from "carbon-components-react";
 import './BundleGroupVersionForm.scss';
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSON_REGEX } from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
 import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -310,6 +310,7 @@ const BundleGroupVersionForm = ({
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
                                 id={"documentation"}
+                                maxLength={CHAR_LENGTH_255}
                                 labelText={`${i18n.t('component.bundleModalFields.documentAddress')} ${bundleGroupSchema.fields.documentationUrl.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>

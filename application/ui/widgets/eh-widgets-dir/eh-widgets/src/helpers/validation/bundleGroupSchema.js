@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import { DOCUMENTATION_ADDRESS_URL_REGEX } from "../constants"
+import { BUNDLE_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX } from "../constants"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -73,9 +73,7 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
   gitRepo: Yup.string()
       .required("bundleUrlRequired")
       .matches(
-          /^(https|git)(:\/\/|@)([^/:]+)[/:]([^/:]+)\/([a-z-A-Z-0-9/]+)(?:\.git)$/gm,
+        BUNDLE_URL_REGEX,
           "bundleUrlFormat"
       )
 })
-
-

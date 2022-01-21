@@ -49,11 +49,11 @@ const CatalogTile = ({
   }
 
   let tagColor
-  switch (categoryName) {
-    case "Component Collection":
+  switch (categoryName.toLowerCase()) {
+    case "component collection":
       tagColor = "red"
       break
-    case "Solution Template":
+    case "solution template":
       tagColor = "green"
       break
     case "PBC":

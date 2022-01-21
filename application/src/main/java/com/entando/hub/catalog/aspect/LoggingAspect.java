@@ -51,19 +51,6 @@ public class LoggingAspect {
 		// Method is empty as this is just a Pointcut, the implementations are in the advices.
 	}
 
-	@After("execution(* com.entando.hub.catalog.rest.*.get*(..))")
-	public void logAfterget(JoinPoint joinPoint) {
-		if (log.isDebugEnabled()) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-			log.debug("Audit_Logging: For " + request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-					joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
-		}
-
-
-	}
-
 	@After("execution(* com.entando.hub.catalog.rest.*.*(..))")
 	public void logAfterallOtherMethods(JoinPoint joinPoint) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

@@ -1,10 +1,11 @@
-code: entando-hub-content-bundle
-description: This is the Entando Hub content bundle
+code: entando-hub
+description: The Entando Hub content components
 components:
   pageModels:
     - pageModels/eh-page-descriptor.yaml
     - pageModels/eh-silent-check-sso-page-descriptor.yaml
   fragments:
+    - fragments/eh-header-inclusion.yaml
     - fragments/eh-keycloak-auth.yaml
   pages:
     - pages/eh-descriptor.yaml

@@ -1,8 +1,8 @@
 code: eh_keycloak_silent_check_sso
-parentCode: homepage
+parentCode: entando_hub
 titles:
-  en: HUB Keycloak Silent Check SSO
-  it: HUB Keycloak Silent Check SSO
+  en: Entando Hub Keycloak Silent Check SSO
+  it: Entando Hub Keycloak Silent Check SSO
 pageModel: eh-silent-check-sso
 ownerGroup: free
 joinGroups: [ ]

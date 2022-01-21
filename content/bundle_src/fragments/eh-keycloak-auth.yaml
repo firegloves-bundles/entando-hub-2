@@ -1,3 +1,2 @@
 code: eh_keycloak_auth
-
-guiCodePath: eh_keycloak_auth.ftl
+guiCodePath: eh-keycloak-auth.ftl

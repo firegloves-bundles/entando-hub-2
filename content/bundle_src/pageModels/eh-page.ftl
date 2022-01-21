@@ -7,7 +7,7 @@
        <@wp.currentPage param="title" />
     </title>
     <meta name="viewport" content="width=device-width,  user-scalable=no"/>
-    <@wp.fragment code="header_inclusion" escapeXml=false />
+    <@wp.fragment code="eh_header_inclusion" escapeXml=false />
     <@wp.fragment code="eh_keycloak_auth" escapeXml=false />
  </head>
  <body>

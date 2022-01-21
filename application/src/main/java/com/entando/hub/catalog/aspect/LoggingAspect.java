@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -58,9 +60,7 @@ public class LoggingAspect {
 		String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
 		if (env.acceptsProfiles(Profiles.of(ApplicationConstants.SPRING_PROFILE_PROD))) {
 			if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
-				if (log.isInfoEnabled()) {
-					logUserDetails(joinPoint, request, auth, timeStamp);
-				}
+				logUserDetails(joinPoint, request, auth, timeStamp);
 			}
 		} else {
 			logUserDetails(joinPoint, request, auth, timeStamp);
@@ -76,17 +76,28 @@ public class LoggingAspect {
 	 * @param timeStamp
 	 */
 	private void logUserDetails(JoinPoint joinPoint, HttpServletRequest request, Authentication auth, String timeStamp) {
+
+		// this will set the user id as userName
+		String userName = auth.getName();
+
+		if (auth.getPrincipal() instanceof KeycloakPrincipal) {
+			KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>)  auth.getPrincipal();
+
+			// this is how to get the real userName (or rather the login name)
+			userName = kp.getKeycloakSecurityContext().getIdToken().getPreferredUsername();
+		}
+
 		if (log.isInfoEnabled()) {
 			log.info(request.getMethod() + " method {}.{}() by user: "
-							+ auth.getName() + " at time:"
+							+ userName + " at time:"
 							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-					joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
+					joinPoint.getSignature().getName(), userName, auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
 		}
 		if (log.isDebugEnabled()) {
 			log.debug(request.getMethod() + " method {}.{}() by user: "
-							+ auth.getName() + " at time:"
+							+ userName + " at time:"
 							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-					joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
+					joinPoint.getSignature().getName(), userName, auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
 		}
 	}
 

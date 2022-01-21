@@ -1,5 +1,5 @@
 # Overview
-This is the content bundle for the Entandp Hub. It contains the "non-code" parts of the Entando Hub including a basic page setup.
+This is the content bundle for the Entando Hub. It contains the "non-code" parts of the Entando Hub including a basic page setup.
 
 # Deployment and installation
 

@@ -128,7 +128,7 @@
     "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve essere fornita tramite un URL",
     "max255Char": "L'URL della documentazione non deve superare i 255 caratteri",
-    "maxBundleUrl255Char": "L'indirizzo del pacchetto non deve superare i 255 caratteri",
+    "maxBundleUrl255Char": "L'URL del pacchetto non deve superare i 255 caratteri",
     "maxVersion255Char": "La versione non deve superare i 255 caratteri",
     "versionRequired": "La versione è un campo obbligatorio",
     "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",

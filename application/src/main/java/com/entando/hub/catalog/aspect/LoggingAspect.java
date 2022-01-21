@@ -84,7 +84,8 @@ public class LoggingAspect {
 			KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>)  auth.getPrincipal();
 
 			// this is how to get the real userName (or rather the login name)
-			userName = kp.getKeycloakSecurityContext().getIdToken().getPreferredUsername();
+			if(null != kp.getKeycloakSecurityContext().getIdToken())
+				userName = kp.getKeycloakSecurityContext().getIdToken().getPreferredUsername();
 		}
 
 		if (log.isInfoEnabled()) {

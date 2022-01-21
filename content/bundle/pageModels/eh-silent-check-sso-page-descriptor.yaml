@@ -1,5 +1,5 @@
 code: eh-silent-check-sso
-description: HUB Silent Check SSO
+description: Hub Silent Check SSO
 configuration:
   frames:
     - pos: 0

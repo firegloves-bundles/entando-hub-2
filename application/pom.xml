@@ -19,6 +19,7 @@
         <jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
         <keycloak-adapter-bom.version>12.0.4</keycloak-adapter-bom.version>
         <log4j.version>2.17.1</log4j.version>
+        <liquibase.version>3.7.0</liquibase.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -96,6 +97,10 @@
             <artifactId>log4j-api</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+	<dependency>
+		<groupId>org.liquibase</groupId>
+		<artifactId>liquibase-core</artifactId>
+	</dependency>
     </dependencies>
 
     <build>
@@ -133,6 +138,11 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
             </plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase.version}</version>
+			</plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -133,3 +133,5 @@ export const CHAR_LIMIT_MSG_SHOW_TIME = 2000; //Time in milli seconds
 export const NAME_FIELD_ID = 'name';
 export const DESCRIPTION_FIELD_ID = 'description';
 export const DOCUMENTATION_FIELD_ID = 'documentation';
+
+export const DEFAULT_CATEGORY = 'Solution Template';

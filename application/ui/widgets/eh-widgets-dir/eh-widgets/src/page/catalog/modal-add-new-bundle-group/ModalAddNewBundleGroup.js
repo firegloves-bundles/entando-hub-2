@@ -10,7 +10,7 @@ import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS } from "../../../helpers/constants";
+import { BUNDLE_STATUS, DEFAULT_CATEGORY } from "../../../helpers/constants";
 import i18n from "../../../i18n"
 
 /*
@@ -47,7 +47,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             // Reset Form
             let defaultCategoryId = null;
             if (categories) {
-                const filtered = categories && categories.filter(cat => cat.name === "Solution Template")
+                let filtered = categories && categories.filter(cat => cat.name === DEFAULT_CATEGORY)
+                if (!filtered.length) {
+                    filtered = categories && categories.filter(cat => cat.name === catList[0].name)
+                }
                 if (filtered) {
                     defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]
                 }
@@ -101,7 +104,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     //default values
                     let defaultCategoryId = null;
                     if (categoryList) {
-                        const filtered = categoryList && categoryList.filter(cat => cat.name === "Solution Template")
+                        let filtered = categoryList && categoryList.filter(cat => cat.name === DEFAULT_CATEGORY)
+                        if (!filtered.length) {
+                            filtered = categoryList && categoryList.filter(cat => cat.name === catList[0].name)
+                        }
                         if (filtered) {
                             defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
                         }

@@ -23,7 +23,7 @@ public class Bundle {
     private String gitRepoAddress;
     private String dependencies;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "bundles",fetch = FetchType.EAGER)
 	private Set<BundleGroupVersion> bundleGroupVersions;
 
     @Override

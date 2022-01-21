@@ -128,6 +128,8 @@
     "docRequired": "Documentation is a required field",
     "docFormat": "Documentation must match URL format",
     "max255Char": "The documentaion url must not exceed 255 characters",
+    "maxBundleUrl255Char": "The bundle address must not exceed 255 characters",
+    "maxVersion255Char": "The version must not exceed 255 characters",
     "versionRequired": "Version is a required field",
     "duplicateVersion": "This version number already exists, please enter a new version number",
     "statusRequired": "Status is a required field",

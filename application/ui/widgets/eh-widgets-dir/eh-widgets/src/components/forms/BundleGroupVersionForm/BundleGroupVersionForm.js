@@ -10,7 +10,7 @@ import {
     TextInput,
 } from "carbon-components-react";
 import './BundleGroupVersionForm.scss';
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSION_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
 import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -38,6 +38,7 @@ const BundleGroupVersionForm = ({
 
     const [showDescriptionCharLimitErrMsg, setShowDescriptionCharLimitErrMsg] = useState(false);
     const [showDocUrlCharLimitErrMsg, setShowDocUrlCharLimitErrMsg] = useState(false);
+    const [showVersionCharLimitErrMsg, setShowVersionCharLimitErrMsg] = useState(false);
 
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
@@ -226,7 +227,6 @@ const BundleGroupVersionForm = ({
      * @param {*} e
      */
     const keyPressHandler = (e) => {
-        console.log('e.target.id', e.target.id);
         if (e.target.id === DESCRIPTION_FIELD_ID && e.target.value.length >= MAX_CHAR_LENGTH_FOR_DESC) {
             validationResult[DESCRIPTION_FIELD_ID] = [i18n.t('formValidationMsg.maxDescription')];
             setShowDescriptionCharLimitErrMsg(true);
@@ -234,6 +234,10 @@ const BundleGroupVersionForm = ({
         } else if (e.target.id === DOCUMENTATION_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
             validationResult["documentationUrl"] = [i18n.t('formValidationMsg.max255Char')]
             setShowDocUrlCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        } else if (e.target.id === VERSION_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
+            validationResult[VERSION_FIELD_ID] = [i18n.t('formValidationMsg.maxVersion255Char')]
+            setShowVersionCharLimitErrMsg(true);
             timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
         }
     }
@@ -246,6 +250,9 @@ const BundleGroupVersionForm = ({
             } else if (fieldId === DOCUMENTATION_FIELD_ID) {
                 validationResult["documentationUrl"] = undefined;
                 setShowDocUrlCharLimitErrMsg(false);
+            } else if (fieldId === VERSION_FIELD_ID) {
+                validationResult[VERSION_FIELD_ID] = undefined;
+                setShowVersionCharLimitErrMsg(false);
             }
         }
     }
@@ -328,15 +335,17 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isBundleVersionValid && !!validationResult["version"]}
+                                invalid={(!isBundleVersionValid || showVersionCharLimitErrMsg) && !!validationResult["version"]}
                                 invalidText={
-                                    !isBundleVersionValid && (validationResult["version"] &&
+                                    (!isBundleVersionValid || showVersionCharLimitErrMsg) && (validationResult["version"] &&
                                         validationResult["version"].join("; "))
                                 }
                                 disabled={disableCondition}
                                 value={bundleGroup && bundleGroup.version}
                                 onChange={versionChangeHandler}
-                                id={"version"}
+                                id={VERSION_FIELD_ID}
+                                maxLength={CHAR_LENGTH_255}
+                                onKeyPress={keyPressHandler}
                                 labelText={`${i18n.t('component.bundleModalFields.version')} ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>

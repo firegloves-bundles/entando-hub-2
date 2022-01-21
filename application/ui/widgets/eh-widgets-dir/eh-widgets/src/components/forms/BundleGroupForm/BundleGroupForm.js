@@ -10,7 +10,7 @@ import {
 } from "carbon-components-react";
 import { useEffect, useRef, useState } from "react";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, NAME_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, NAME_FIELD_ID, VERSION_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import i18n from "../../../i18n";
 import './bundle-group-form.scss';
@@ -41,6 +41,7 @@ const BundleGroupForm = ({
     const [showNameCharLimitErrMsg, setShowNameCharLimitErrMsg] = useState(false);
     const [showDescriptionCharLimitErrMsg, setShowDescriptionCharLimitErrMsg] = useState(false);
     const [showDocUrlCharLimitErrMsg, setShowDocUrlCharLimitErrMsg] = useState(false);
+    const [showVersionCharLimitErrMsg, setShowVersionCharLimitErrMsg] = useState(false);
 
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
@@ -245,6 +246,10 @@ const BundleGroupForm = ({
             validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.max255Char')]
             setShowDocUrlCharLimitErrMsg(true);
             timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        } else if (e.target.id === VERSION_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
+            validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.maxVersion255Char')]
+            setShowVersionCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
         }
     }
 
@@ -259,6 +264,9 @@ const BundleGroupForm = ({
             } else if (fieldId === DOCUMENTATION_FIELD_ID) {
                 validationResult["versionDetails.documentationUrl"] = undefined;
                 setShowDocUrlCharLimitErrMsg(false);
+            } else if (fieldId === VERSION_FIELD_ID) {
+                validationResult["versionDetails.version"] = undefined;
+                setShowVersionCharLimitErrMsg(false);
             }
         }
     }
@@ -342,15 +350,17 @@ const BundleGroupForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={!isBundleVersionValid && !!validationResult["versionDetails.version"]}
+                                invalid={(!isBundleVersionValid || showVersionCharLimitErrMsg) && !!validationResult["versionDetails.version"]}
                                 invalidText={
-                                    !isBundleVersionValid && (validationResult["versionDetails.version"] &&
+                                    (!isBundleVersionValid || showVersionCharLimitErrMsg) && (validationResult["versionDetails.version"] &&
                                         validationResult["versionDetails.version"].join("; "))
                                 }
                                 disabled={disabled}
                                 value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.version}
                                 onChange={versionChangeHandler}
-                                id={"version"}
+                                id={VERSION_FIELD_ID}
+                                maxLength={CHAR_LENGTH_255}
+                                onKeyPress={keyPressHandler}
                                 labelText={`${i18n.t('component.bundleModalFields.version')} ${bundleGroupSchema.fields.version.exclusiveTests.required ? " *" : ""}`}
                             />
                         </Column>

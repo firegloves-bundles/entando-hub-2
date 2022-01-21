@@ -76,4 +76,5 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
         BUNDLE_URL_REGEX,
           "bundleUrlFormat"
       )
+      .max(255, "max255Char")
 })

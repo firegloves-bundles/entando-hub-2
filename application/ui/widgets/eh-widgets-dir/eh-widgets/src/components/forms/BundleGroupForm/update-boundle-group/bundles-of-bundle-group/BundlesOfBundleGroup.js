@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {Button, Tag, TextInput, Row, Column} from "carbon-components-react"
 import {Add16} from '@carbon/icons-react'
 
@@ -7,7 +7,7 @@ import {
     bundleOfBundleGroupSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255 } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
@@ -79,6 +79,9 @@ const BundlesOfBundleGroup = ({
     const [validationResult, setValidationResult] = useState({})
     const [isUrlReqValid, setIsUrlReqValid] = useState(false)
     const [isUrlBundleRexValid, setIsUrlBundleRexValid] = useState(false)
+    const [showBundleUrlCharLimitErrMsg, setShowBundleUrlCharLimitErrMsg] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const timerRef = useRef(null);
     disabled = bundleGroupIsEditable && operation !== OPERATION.ADD_NEW_VERSION ? false : operation === OPERATION.ADD_NEW_VERSION ? false : disabled
 
     useEffect(() => {
@@ -174,6 +177,38 @@ const BundlesOfBundleGroup = ({
             bundleUrlErrorResult = null;
         }
     }
+    if(showBundleUrlCharLimitErrMsg) {
+        bundleUrlErrorResult = i18n.t('formValidationMsg.maxBundleUrl255Char');
+    }
+
+    /**
+     * Handle keyPress event for input field and show/hide character limit error message
+     * @param {*} e
+     */
+     const keyPressHandler = (e) => {
+        if (e.target.value.length >= CHAR_LENGTH_255) {
+            bundleUrlErrorResult = i18n.t('formValidationMsg.maxBundleUrl255Char')
+            setShowBundleUrlCharLimitErrMsg(true);
+            timerRef.current = setTimeout(disappearCharLimitErrMsg, CHAR_LIMIT_MSG_SHOW_TIME);
+        }
+    }
+
+    const disappearCharLimitErrMsg = () => {
+        if (mounted) {
+            bundleUrlErrorResult = "";
+            setShowBundleUrlCharLimitErrMsg(false);
+        }
+    }
+
+    useEffect(() => {
+        setMounted(true);
+        // Clear the interval when the component unmounts
+        return () => {
+            setMounted(false);
+            clearTimeout(timerRef.current);
+        };
+    }, []);
+
     return (
         <>
             <Row>
@@ -182,9 +217,10 @@ const BundlesOfBundleGroup = ({
                                disabled={disabled}
                                onChange={onChangeHandler} {...textInputProps}
                                maxLength={CHAR_LENGTH_255}
-                               invalid={!isUrlReqValid ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : null)}
+                               invalid={(!isUrlReqValid) ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg)}
                                invalidText={bundleUrlErrorResult}
                                autoComplete={"false"}
+                               onKeyPress={keyPressHandler}
                     />
                 </Column>
                 <Column sm={16} md={8} lg={8}>

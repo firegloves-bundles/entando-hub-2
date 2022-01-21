@@ -54,24 +54,21 @@ public class LoggingAspect {
 	@After("execution(* com.entando.hub.catalog.rest.*.*(..))")
 	public void logAfterallOtherMethods(JoinPoint joinPoint) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
 		if (env.acceptsProfiles(Profiles.of(ApplicationConstants.SPRING_PROFILE_DEVELOPMENT))) {
 			if (log.isInfoEnabled()) {
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
+
 				log.info(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
 						joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
 			}
 			if (log.isDebugEnabled()) {
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
 				log.debug(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
 						joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
 			}
 		} else {
 			if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
 				if (log.isInfoEnabled()) {
-					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-					String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
 					log.info(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp,
 							joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
 							auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));

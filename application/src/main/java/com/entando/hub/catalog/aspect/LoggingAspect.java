@@ -56,24 +56,37 @@ public class LoggingAspect {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String timeStamp = new SimpleDateFormat(DATE_FORMAT_NOW).format(Calendar.getInstance().getTime());
-		if (env.acceptsProfiles(Profiles.of(ApplicationConstants.SPRING_PROFILE_DEVELOPMENT))) {
-			if (log.isInfoEnabled()) {
-
-				log.info(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-						joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
-			}
-			if (log.isDebugEnabled()) {
-				log.debug(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-						joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
-			}
-		} else {
+		if (env.acceptsProfiles(Profiles.of(ApplicationConstants.SPRING_PROFILE_PROD))) {
 			if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
 				if (log.isInfoEnabled()) {
-					log.info(request.getMethod() + " method {}.{}() by user: " + auth.getName() + " at time:" + timeStamp,
-							joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
-							auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
+					logUserDetails(joinPoint, request, auth, timeStamp);
 				}
 			}
+		} else {
+			logUserDetails(joinPoint, request, auth, timeStamp);
+		}
+	}
+
+	/**
+	 * Common method for user details logging along with timestamp.
+	 *
+	 * @param joinPoint
+	 * @param request
+	 * @param auth
+	 * @param timeStamp
+	 */
+	private void logUserDetails(JoinPoint joinPoint, HttpServletRequest request, Authentication auth, String timeStamp) {
+		if (log.isInfoEnabled()) {
+			log.info(request.getMethod() + " method {}.{}() by user: "
+							+ auth.getName() + " at time:"
+							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
+					joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(request.getMethod() + " method {}.{}() by user: "
+							+ auth.getName() + " at time:"
+							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
+					joinPoint.getSignature().getName(), auth.getName(), auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
 		}
 	}
 

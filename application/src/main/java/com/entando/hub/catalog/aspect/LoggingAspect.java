@@ -89,16 +89,9 @@ public class LoggingAspect {
 		}
 
 		if (log.isInfoEnabled()) {
-			log.info(request.getMethod() + " method {}.{}() by user: "
-							+ userName + " at time:"
-							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-					joinPoint.getSignature().getName(), userName, auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
-		}
-		if (log.isDebugEnabled()) {
-			log.debug(request.getMethod() + " method {}.{}() by user: "
-							+ userName + " at time:"
-							+ timeStamp, joinPoint.getSignature().getDeclaringTypeName(),
-					joinPoint.getSignature().getName(), userName, auth.getPrincipal(), timeStamp, Arrays.toString(joinPoint.getArgs()));
+			log.info("{} method {}.{}() by user {} at time {} with args [{}]",
+					request.getMethod(), joinPoint.getSignature().getDeclaringTypeName(),
+					joinPoint.getSignature().getName(), userName, timeStamp, Arrays.toString(joinPoint.getArgs()));
 		}
 	}
 
@@ -111,10 +104,12 @@ public class LoggingAspect {
 	@AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
 	public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
 		if (env.acceptsProfiles(Profiles.of(ApplicationConstants.SPRING_PROFILE_DEVELOPMENT))) {
-			log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+			log.error("Exception in {}.{}() with cause = {} and exception = {}",
+					joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
 					e.getCause() != null ? e.getCause() : "NULL", e.getMessage(), e);
 		} else {
-			log.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL");
+			log.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
+					joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL");
 		}
 	}
 

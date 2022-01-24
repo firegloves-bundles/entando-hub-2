@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import { BUNDLE_URL_REGEX } from "../constants"
+import { BUNDLE_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX } from "../constants"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -12,9 +12,10 @@ export const bundleGroupSchema = Yup.object().shape({
     .required("descriptionRequired"),
   documentationUrl: Yup.string()
     .matches(
-      /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,
+      DOCUMENTATION_ADDRESS_URL_REGEX,
       "docFormat"
     )
+    .max(255, "max255Char")
     .required("docRequired"),
   status: Yup.string().required("statusRequired"),
   version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
@@ -44,9 +45,11 @@ export const newBundleGroupSchema = Yup.object().shape({
       description: Yup.string().min(3, "minDescription").max(600, "maxDescription").required("descriptionRequired"),
       documentationUrl: Yup.string()
           .matches(
-              /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,
+              DOCUMENTATION_ADDRESS_URL_REGEX,
               "docFormat"
-          ).required("docRequired"),
+          )
+          .max(255, "max255Char")
+          .required("docRequired"),
       version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
       status: Yup.string().required("statusRequired"),
       bundles: Yup.array().of(
@@ -73,4 +76,5 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
         BUNDLE_URL_REGEX,
           "bundleUrlFormat"
       )
+      .max(255, "max255Char")
 })

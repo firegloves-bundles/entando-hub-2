@@ -84,6 +84,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
           setOrgLength(0);
           setPortalUserPresent(false);
         }
+        setLoading(false);
       }
     })()
     return () => {
@@ -198,7 +199,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
                 If I'm not an hub user no statusFilter rendered
                 If I'm an hub user I'll wait for status filter loading
                         */}
-                {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING"))
+                {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING" && !loading))
                   && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} />}
               </div>
             </div>

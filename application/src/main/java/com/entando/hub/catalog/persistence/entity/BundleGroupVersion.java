@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import lombok.ToString;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
@@ -50,6 +51,7 @@ public class BundleGroupVersion {
 	private String version;
 
 	@Lob
+	@ToString.Exclude
 	private String descriptionImage;
 
 	@Column(nullable = false)

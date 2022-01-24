@@ -6,4 +6,4 @@ build/
 ####
 /bundle/
 
-/.ent/ent-state
+.ent/ent-state

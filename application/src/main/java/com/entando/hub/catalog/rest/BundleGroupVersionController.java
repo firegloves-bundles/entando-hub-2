@@ -211,7 +211,10 @@ public class BundleGroupVersionController {
     public static class BundleGroupVersionView {
 	    protected String bundleGroupId;
 	    protected String description;
+
+	    @ToString.Exclude
 	    protected String descriptionImage;
+
 	    protected String documentationUrl;
 	    protected String version;
 	    protected com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status status;

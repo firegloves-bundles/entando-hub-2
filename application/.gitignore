@@ -1,9 +1,9 @@
 /src/main/docker/keycloak-db/
 /src/main/docker/postgresql-db/
 
+build/
+
 ####
-bundle/
+/bundle/
 
-########
 .ent/ent-state
-

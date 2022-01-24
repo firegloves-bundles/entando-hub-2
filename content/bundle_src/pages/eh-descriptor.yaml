@@ -1,0 +1,20 @@
+code: entando_hub
+parentCode: homepage
+titles:
+  en: Entando Hub
+  it: Entando Hub
+pageModel: hub-template
+ownerGroup: free
+joinGroups: []
+displayedInMenu: true
+seo: false
+charset: utf8
+status: published
+widgets:
+  - code: eh-login
+    config: null
+    pos: 1
+  - code: eh-app
+    config: null
+    pos: 3
+

@@ -7,7 +7,7 @@
         function dispatchKeycloakEvent(eventType) {
             console.info(consolePrefix, 'Dispatching', eventType, 'custom event');
             return window.dispatchEvent(new CustomEvent('keycloak', { detail: { eventType } }));
-        };
+        }
         function initKeycloak() {
             const keycloak = new Keycloak(keycloakConfig);
             keycloak.onReady = function() {
@@ -38,23 +38,31 @@
                 } else {
                     console.info(consolePrefix, 'Keycloak initialized, user not authenticated');
                 }
-            };
+            }
             window.entando = {
                 ...(window.entando || {}),
                 keycloak,
             };
+            const silentRedirectUri = window.location.origin + '/entando-de-app/en/eh_keycloak_silent_check_sso.page';
+            const initOptions = {
+                onLoad: 'check-sso',
+                silentCheckSsoRedirectUri: silentRedirectUri,
+                enableLogging: true
+            };
             window.entando.keycloak
-                .init({ onLoad: 'check-sso', promiseType: 'native', enableLogging: true })
+                .init(initOptions)
                 .then(onKeycloakInitialized)
                 .catch(function (e) {
                     console.error(e);
                     console.error(consolePrefix, 'Failed to initialize Keycloak');
                 });
-        };
+        }
+
         function onKeycloakScriptError(e) {
             console.error(e);
             console.error(consolePrefix, 'Failed to load keycloak.js script');
-        };
+        }
+
         function addKeycloakScript(keycloakConfig) {
             const script = document.createElement('script');
             script.src = keycloakConfig['auth-server-url'] + '/js/keycloak.js';
@@ -62,7 +70,8 @@
             script.addEventListener('load', initKeycloak);
             script.addEventListener('error', onKeycloakScriptError);
             document.body.appendChild(script);
-        };
+        }
+
         fetch(keycloakConfigEndpoint)
             .then(function (response) {
                 return response.json();

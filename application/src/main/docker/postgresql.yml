@@ -6,6 +6,6 @@ services:
       - ./postgresql-db:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=hubApp
-      - POSTGRES_PASSWORD=
+      - POSTGRES_PASSWORD=password
     ports:
       - 5432:5432

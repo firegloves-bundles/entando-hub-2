@@ -1,0 +1,60 @@
+code: hub-template
+description: Hub template
+configuration:
+  frames:
+    - pos: 0
+      description: Logo
+      mainFrame: true
+      defaultWidget: null
+      sketch:
+        x1: 0
+        y1: 0
+        x2: 2
+        y2: 0
+    - pos: 1
+      description: Login
+      mainFrame: false
+      defaultWidget:
+        code: eh-login
+        properties: null
+      sketch:
+        x1: 9
+        y1: 0
+        x2: 11
+        y2: 0
+    - pos: 2
+      description: Main content Frame 3
+      mainFrame: false
+      defaultWidget: null
+      sketch:
+        x1: 0
+        y1: 1
+        x2: 11
+        y2: 2
+    - pos: 3
+      description: Main content Frame 4
+      mainFrame: false
+      sketch:
+        x1: 2
+        y1: 3
+        x2: 9
+        y2: 3
+    - pos: 4
+      description: Frame 5
+      mainFrame: false
+      sketch:
+        x1: 2
+        y1: 4
+        x2: 9
+        y2: 4
+    - pos: 5
+      description: Footer copyright Frame 5
+      mainFrame: false
+      defaultWidget: null
+      sketch:
+        x1: 0
+        y1: 5
+        x2: 11
+        y2: 5
+templatePath: eh-page.ftl
+

@@ -89,7 +89,8 @@ public class PortalUserController {
 	 * @param username
 	 * @return a response view with portal user details.
 	 */
-	@Operation(summary = "Get a user by username", description = "Public api")
+    @Operation(summary = "Get a user by username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
+    @RolesAllowed({ ADMIN, AUTHOR, MANAGER })
 	@GetMapping("/{username}")
 	public ResponseEntity<PortalUserResponseView> getPortalUserByUsername(@PathVariable("username") String username) {
 		logger.debug("REST request to get a user by username: {}", username);

@@ -49,21 +49,19 @@ const CatalogTile = ({
     }
   }
 
-  let tagColor = "blue"
-  if (categoryName) {
-    switch (categoryName.toLowerCase()) {
-      case "component collection":
-        tagColor = "red"
-        break
-      case "solution template":
-        tagColor = "green"
-        break
-      case "PBC":
-        tagColor = "blue"
-        break
-      default:
-        tagColor = "blue"
-    }
+  let tagColor
+  switch (categoryName && categoryName.toLowerCase()) {
+    case "component collection":
+      tagColor = "red"
+      break
+    case "solution template":
+      tagColor = "green"
+      break
+    case "PBC":
+      tagColor = "blue"
+      break
+    default:
+      tagColor = "blue"
   }
 
   //TODO refactor into an utility function

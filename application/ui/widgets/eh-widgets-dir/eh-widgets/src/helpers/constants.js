@@ -48,7 +48,7 @@ export const SLASH_VERSIONS = '/versions';
 
 
 // REGEX
-export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
+export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,255}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi
 export const VERSON_REGEX = /^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm
 //eslint-disable-next-line
 export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\.\/]+)(?:\.git)$/gm
@@ -134,5 +134,7 @@ export const OPERATION = {
 export const CHAR_LIMIT_MSG_SHOW_TIME = 2000; //Time in milli seconds
 export const NAME_FIELD_ID = 'name';
 export const DESCRIPTION_FIELD_ID = 'description';
+export const DOCUMENTATION_FIELD_ID = 'documentation';
+export const VERSION_FIELD_ID = 'version';
 
 export const DEFAULT_CATEGORY = 'Solution Template';

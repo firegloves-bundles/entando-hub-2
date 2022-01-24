@@ -44,7 +44,10 @@
             eventType: 'onAuthRefreshError'
           });
           keycloak.onAuthLogout = createKcDispatcher({ eventType: 'onAuthLogout' });
-          keycloak.onTokenExpired = createKcDispatcher({ eventType: 'onTokenExpired' });
+          keycloak.onTokenExpired = function() {
+            createKcDispatcher({ eventType: 'onTokenExpired' });
+            keycloak.updateToken();
+          };
           const onInit = createKcDispatcher({ eventType: 'onInit' });
 
           window.entando = {

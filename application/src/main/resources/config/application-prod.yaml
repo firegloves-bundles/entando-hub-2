@@ -8,20 +8,6 @@ spring:
     hikari:
       poolName: Hikari
       auto-commit: false
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    database: POSTGRESQL
-    show-sql: false
-    properties:
-      hibernate.id.new_generator_mappings: true
-      hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_query_cache: false
-      hibernate.generate_statistics: false
-
-# CORS Configyrations
-ALLOWED_ORIGIN:
 
 # Hub UI url for bundle groups
 #HUB_GROUP_DETAIL_BASE_URL:

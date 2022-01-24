@@ -1,4 +1,4 @@
-ode: entando-hub-application
+code: entando-hub-application
 description: The Entando Hub application components
 components:
   plugins:

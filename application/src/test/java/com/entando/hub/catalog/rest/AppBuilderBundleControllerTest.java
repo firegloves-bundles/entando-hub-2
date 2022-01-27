@@ -79,24 +79,13 @@ public class AppBuilderBundleControllerTest {
 	public void getBundlesTest() throws Exception {
 		Integer page = 0;
 		Integer pageSize = 89;
-		BundleGroup bundleGroup = new BundleGroup();
-		bundleGroup.setId(BUNDLE_GROUP_ID);
-		bundleGroup.setName(BUNDLE_GROUP_NAME);
+		BundleGroup bundleGroup = getBundleGroupObj();
 		String bundleGroupId = bundleGroup.getId().toString();
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
-		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+
+		BundleGroupVersion bundleGroupVersion = getBundleGroupVersionObj();
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		List<Bundle> bundlesList = new ArrayList<>();
-		Bundle bundle = new Bundle();
-		bundle.setId(BUNDLE_ID);
-		bundle.setName(BUNDLE_NAME);
-		bundle.setDescription(BUNDLE_DESCRIPTION);
-		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
-		bundle.setDependencies(BUNDLE_DEPENDENCIES);
-		bundle.setBundleGroupVersions(new HashSet<>());
+		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
 		BundleController.Bundle bundleC = new BundleController.Bundle(bundle);
@@ -153,4 +142,30 @@ public class AppBuilderBundleControllerTest {
 				.andExpect(status().isOk());
 	}
 
+    private Bundle getBundleObj() {
+    	Bundle bundle = new Bundle();
+		bundle.setId(BUNDLE_ID);
+		bundle.setName(BUNDLE_NAME);
+		bundle.setDescription(BUNDLE_DESCRIPTION);
+		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
+		bundle.setDependencies(BUNDLE_DEPENDENCIES);
+		bundle.setBundleGroupVersions(new HashSet<>());
+		return bundle;
+	}
+
+    private BundleGroup getBundleGroupObj() {
+    	BundleGroup bundleGroup = new BundleGroup();
+    	bundleGroup.setId(BUNDLE_GROUP_ID);
+    	bundleGroup.setName(BUNDLE_GROUP_NAME);
+    	return bundleGroup;
+    }
+
+    private BundleGroupVersion getBundleGroupVersionObj() {
+    	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
+		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
+		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
+		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+		return bundleGroupVersion;
+	}
 }

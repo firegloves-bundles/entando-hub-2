@@ -9,16 +9,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    @Value("${ALLOWED_ORIGIN}")
-    private String allowedOrigin;
+    @Value("${ALLOWED_API_ORIGIN}")
+    private String allowedApiOrigin;
+
+    @Value("${ALLOWED_APPBUILDER_ORIGIN}")
+    private String allowedAppBuilderOrigin;
 
     @Bean
     public WebMvcConfigurer getCorsConfigurer(){
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins(allowedOrigin)
+                registry.addMapping("/appbuilder/**")
+                        .allowedOrigins(allowedAppBuilderOrigin)
+                        .allowedMethods("*")
+                        .allowedHeaders("*");
+                registry.addMapping("/api/**")
+                        .allowedOrigins(allowedApiOrigin)
                         .allowedMethods("*")
                         .allowedHeaders("*");
             }

@@ -47,9 +47,12 @@ spring:
       hibernate.generate_statistics: false
   liquibase.enabled: true
   liquibase.change-log: classpath:config/changelog/master.xml
-
-# CORS Configyrations
-ALLOWED_ORIGIN:
+###
+# CORS Configurations
+#  Use these properties to control which origins can access the external AppBuilder-facing API and the BFF-style API for the Hub MFEs
+##
+ALLOWED_APPBUILDER_ORIGIN: "*"
+ALLOWED_API_ORIGIN:
 
 # Hub UI url for bundle groups
 #HUB_GROUP_DETAIL_BASE_URL:

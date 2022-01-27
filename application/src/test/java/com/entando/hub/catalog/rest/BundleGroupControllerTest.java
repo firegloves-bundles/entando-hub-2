@@ -1,5 +1,7 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,16 +59,12 @@ public class BundleGroupControllerTest {
 	SecurityHelperService securityHelperService;
 
     private static final String URI = "/api/bundlegroups/";
-    private static final String ROLE_ADMIN = "eh-admin";
-    private static final String ROLE_AUTHOR = "eh-author";
 
     private static final Long BUNDLE_GROUP_ID = 1000L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
-
     private static final Long ORG_ID = 2000L;
     private static final String ORG_NAME = "Test Org Name";
     private static final String ORG_DESCRIOPTION = "Test Org Decription";
-
     private static final Long CATEGORY_ID = 3000L;
     private static final String CATEGORY_NAME = "Test Category Name";
     private static final String CATEGORY_DESCRIPTION = "Test Category Description";
@@ -135,7 +133,7 @@ public class BundleGroupControllerTest {
 				.andExpect(status().isNotFound());
 	}
 
-	@WithMockUser(roles = { ROLE_ADMIN })
+	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testCreateBundleGroup() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();
@@ -158,7 +156,7 @@ public class BundleGroupControllerTest {
 			.andExpect(jsonPath("$.name").value(bundleGroup.getName()));
 	}
 
-	@WithMockUser(roles = { ROLE_AUTHOR })
+	@WithMockUser(roles = { AUTHOR })
 	@Test
 	public void testCreateBundleGroupFails() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();
@@ -176,7 +174,7 @@ public class BundleGroupControllerTest {
 			.andExpect(status().isForbidden());
 	}
 
-	@WithMockUser(roles = { ROLE_ADMIN })
+	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testUpdateBundleGroup() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();
@@ -186,7 +184,7 @@ public class BundleGroupControllerTest {
 		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
 
 		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroup)).thenReturn(true);
-		Mockito.when(securityHelperService.hasRoles(Set.of(ROLE_ADMIN))).thenReturn(true);
+		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(true);
 		Mockito.when(securityHelperService.userIsInTheOrganisation(bundleGroup.getOrganisation().getId())).thenReturn(true);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
@@ -202,7 +200,7 @@ public class BundleGroupControllerTest {
            .andExpect(jsonPath("$.name").value(bundleGroup.getName()));
 	}
 
-	@WithMockUser(roles = { ROLE_ADMIN })
+	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testUpdateBundleGroupFails() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();
@@ -229,7 +227,7 @@ public class BundleGroupControllerTest {
            .andExpect(status().isConflict());
 
 		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroup)).thenReturn(true);
-		Mockito.when(securityHelperService.hasRoles(Set.of(ROLE_ADMIN))).thenReturn(false);
+		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(false);
 		Mockito.when(securityHelperService.userIsInTheOrganisation(bundleGroup.getOrganisation().getId())).thenReturn(false);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 
@@ -240,7 +238,7 @@ public class BundleGroupControllerTest {
            .andExpect(status().isForbidden());
 
 		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroup)).thenReturn(true);
-		Mockito.when(securityHelperService.hasRoles(Set.of(ROLE_ADMIN))).thenReturn(false);
+		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(false);
 		Mockito.when(securityHelperService.userIsInTheOrganisation(bundleGroup.getOrganisation().getId())).thenReturn(false);
 		bundleGroup.setOrganisation(null);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
@@ -252,7 +250,7 @@ public class BundleGroupControllerTest {
            .andExpect(status().isForbidden());
 	}
 
-	@WithMockUser(roles = { ROLE_ADMIN })
+	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testDeleteBundleGroup() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();
@@ -266,7 +264,7 @@ public class BundleGroupControllerTest {
 		.andExpect(status().isNoContent());
 	}
 
-	@WithMockUser(roles = { ROLE_ADMIN })
+	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testDeleteBundleGroupFails() throws Exception {
 		BundleGroup bundleGroup = getBundleGroupObj();

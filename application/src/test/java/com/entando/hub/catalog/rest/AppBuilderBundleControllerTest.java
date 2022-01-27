@@ -1,25 +1,31 @@
 package com.entando.hub.catalog.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -27,41 +33,69 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
 
-
-
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebMvcTest(AppBuilderBundleController.class)
 public class AppBuilderBundleControllerTest {
-	
+
+	@Autowired
+	WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private MockMvc mockMvc;
+
 	@InjectMocks
 	AppBuilderBundleController appBuilderBundleController;
-	@Mock
+
+	@MockBean
 	BundleService bundleService;
-	@Mock
+
+	@MockBean
 	BundleGroupVersionService bundleGroupVersionService;
-	
-	@Test
-	public void getBundlesTest() {
+
+    private static final String URI = "/appbuilder/api/bundles/";
+
+    private static final String PAGE_PARAM = "page";
+    private static final String PAGE_SIZE_PARAM = "pageSize";
+    
+    private static final Long BUNDLE_GROUP_ID = 1000L;
+    private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
+    
+    private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
+    private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";
+    private static final String BUNDLE_GROUP_VERSION_VERSION = "v1.0.0";
+    
+    private static final Long BUNDLE_ID = 1001L;
+    private static final String BUNDLE_NAME = "Test Bundle Name";
+    private static final String BUNDLE_DESCRIPTION = "Test Bundle Decription";
+    private static final String BUNDLE_GIT_REPO_ADDRESS = "https://github.com/entando/TEST-portal.git";
+    private static final String BUNDLE_DEPENDENCIES = "Test Dependencies";
+
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+	public void getBundlesTest() throws Exception {
 		Integer page = 0;
 		Integer pageSize = 89;
 		BundleGroup bundleGroup = new BundleGroup();
-		bundleGroup.setId(1001L);
-		bundleGroup.setName("New Bundle Group");
+		bundleGroup.setId(BUNDLE_GROUP_ID);
+		bundleGroup.setName(BUNDLE_GROUP_NAME);
 		String bundleGroupId = bundleGroup.getId().toString();
 		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(1002L);
-		bundleGroupVersion.setDescription("Test Description");
+		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
+		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
 		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		bundleGroupVersion.setVersion("v1.0.0");
+		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = new Bundle();
-		bundle.setId(1001L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
+		bundle.setId(BUNDLE_ID);
+		bundle.setName(BUNDLE_NAME);
+		bundle.setDescription(BUNDLE_DESCRIPTION);
+		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
+		bundle.setDependencies(BUNDLE_DEPENDENCIES);
 		bundle.setBundleGroupVersions(new HashSet<>());
 		bundlesList.add(bundle);
 	
@@ -73,32 +107,50 @@ public class AppBuilderBundleControllerTest {
 		
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
 		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null))).thenReturn(response);
-		PagedContent<BundleController.Bundle, Bundle> result = appBuilderBundleController.getBundles(page, pageSize, null);
-		assertNotNull(result);
-		assertEquals(bundle.getName(), result.getPayload().get(0).getName());
+
+		mockMvc.perform(MockMvcRequestBuilders.get(URI)
+				.param(PAGE_PARAM, page.toString())
+		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(jsonPath("$.payload").exists())
+				.andExpect(jsonPath("$.metadata").exists())
+				.andExpect(status().isOk());
 		
 		//Case 2: bundle has a version
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
 		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null))).thenReturn(response);
-		PagedContent<BundleController.Bundle, Bundle> result2 = appBuilderBundleController.getBundles(page, pageSize, null);
-		assertNotNull(result2);
-		assertEquals(bundle.getName(), result2.getPayload().get(0).getName());
 		
-		//Case 3: optionalBundleGroup is empty
+		mockMvc.perform(MockMvcRequestBuilders.get(URI)
+				.param(PAGE_PARAM, page.toString())
+		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(jsonPath("$.payload").exists())
+				.andExpect(jsonPath("$.metadata").exists())
+				.andExpect(status().isOk());
+
+//		//Case 3: optionalBundleGroup is empty
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.empty());
-		PagedContent<BundleController.Bundle, Bundle> result3 = appBuilderBundleController.getBundles(page, pageSize, null);
-		assertNotNull(result3);
-		assertEquals(bundle.getName(), result3.getPayload().get(0).getName());
-		
-		//Case 4: bundleGroupId provided, page >= 1
+		mockMvc.perform(MockMvcRequestBuilders.get(URI)
+				.param(PAGE_PARAM, page.toString())
+		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(jsonPath("$.payload").exists())
+				.andExpect(jsonPath("$.metadata").exists())
+				.andExpect(status().isOk());
+
+//		//Case 4: bundleGroupId provided, page >= 1
 		page = 1;
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Mockito.when(bundleService.getBundles(sanitizedPageNum, pageSize, Optional.of(bundleGroupId))).thenReturn(response);
-		PagedContent<BundleController.Bundle, Bundle> result4 = appBuilderBundleController.getBundles(page, pageSize, bundleGroupId);
-		assertNotNull(result4);
-		assertEquals(bundle.getName(), result4.getPayload().get(0).getName());
-			
+
+		mockMvc.perform(MockMvcRequestBuilders.get(URI)
+				.param(PAGE_PARAM, page.toString())
+		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(jsonPath("$.payload").hasJsonPath())
+				.andExpect(jsonPath("$.metadata").hasJsonPath())
+				.andExpect(status().isOk());
 	}
 
 }

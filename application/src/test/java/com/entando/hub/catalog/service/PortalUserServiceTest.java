@@ -43,26 +43,31 @@ public class PortalUserServiceTest {
 	@Mock
 	PortalUserRepository portalUserRepository;
 	
+	private static final String USER_ID = "1001";
+    private static final String USER_NAME = "Test User Admin";
+    private static final Long CREATED_TIMESTAMP = 90019L;
+    private static final boolean IS_OTP = true;
+    private static final boolean IS_ENALBED= true;
+    private static final String EMAIL_VERIFIED = "test@mail.com";
+    private static final String FIRST_NAME = "ENTANDO";
+    private static final String LAST_NAME = "HUB";
+    private static final String USER_EMAIL = "usertest@mail.com";
+    
+    private static final Long PORTAL_USER_ID = 1001l;
+    private static final String PORTAL_USER_NAME = "Portal User Admin";
+    
+    private static final Long ORG_ID = 2000L;
+    private static final String ORG_NAME = "Test Org Name";
+    private static final String ORG_DESCRIOPTION = "Test Org Decription";
+
 	@Test
 	public void getUsersByOrganisationTest() {
 		List<UserRepresentation> userRepresentationList = new ArrayList<>();
-		UserRepresentation user = new UserRepresentation();
-		user.setId("1001");
-		user.setCreatedTimestamp(90019);
-	    user.setUsername("admin");
-	    user.setEnabled(true);
-	    user.setTotp(true);
-	    user.setEmailVerified("xyz.mail.com");
-	    user.setFirstName("entando");
-	    user.setLastName("hub");
-	    user.setEmail("xyz.mail.com");
+		UserRepresentation user = createUserRepresentation();
 	    List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(1001L);
-		portalUser.setUsername("admin");
+		PortalUser portalUser = createPortalUser();
 		portalUserList.add(portalUser);
-	    Organisation organisation = new Organisation();
-	    organisation.setId(2001L);
+	    Organisation organisation = createOrganisation();
 		organisation.setPortalUsers(Set.of(portalUser));
 		user.setOrganisationIds(Set.of());
 	    Long organisationId = organisation.getId();
@@ -105,23 +110,11 @@ public class PortalUserServiceTest {
 	
 	@Test
 	public void addUserToOrganizationTest() {
-		UserRepresentation user = new UserRepresentation();
-		user.setId("1001");
-		user.setCreatedTimestamp(90019);
-	    user.setUsername("admin");
-	    user.setEnabled(true);
-	    user.setTotp(true);
-	    user.setEmailVerified("xyz.mail.com");
-	    user.setFirstName("entando");
-	    user.setLastName("hub");
-	    user.setEmail("xyz.mail.com");
+		UserRepresentation user = createUserRepresentation();
 	    List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(1001L);
-		portalUser.setUsername("admin");
+		PortalUser portalUser = createPortalUser();
 		portalUserList.add(portalUser);
-	    Organisation organisation = new Organisation();
-	    organisation.setId(2001L);
+	    Organisation organisation = createOrganisation();
 		organisation.setPortalUsers(Set.of(portalUser));
 		user.setOrganisationIds(Set.of());
 	    Long organisationId = organisation.getId();
@@ -167,24 +160,12 @@ public class PortalUserServiceTest {
 	
 	@Test
 	public void removeUserFromOrganizationTest() {
-		UserRepresentation user = new UserRepresentation();
-		user.setId("1001");
-		user.setCreatedTimestamp(90019);
-	    user.setUsername("admin");
-	    user.setEnabled(true);
-	    user.setTotp(true);
-	    user.setEmailVerified("xyz.mail.com");
-	    user.setFirstName("entando");
-	    user.setLastName("hub");
-	    user.setEmail("xyz.mail.com");
+		UserRepresentation user = createUserRepresentation();
 	    List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(1001L);
-		portalUser.setUsername("admin");
+		PortalUser portalUser = createPortalUser();
 		portalUserList.add(portalUser);
 		Set<Organisation> orgsSet = new HashSet<>();
-	    Organisation organisation = new Organisation();
-	    organisation.setId(2001L);
+	    Organisation organisation = createOrganisation();
 		organisation.setPortalUsers(Set.of(portalUser));
 		orgsSet.add(organisation);
 		user.setOrganisationIds(Set.of());
@@ -223,9 +204,7 @@ public class PortalUserServiceTest {
 	
 	@Test
 	public void removeUserTest() {
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(1001L);
-		portalUser.setUsername("admin");
+		PortalUser portalUser = createPortalUser();
 		String username = portalUser.getUsername();
 		
 		//Case 1: portal user exists
@@ -243,15 +222,9 @@ public class PortalUserServiceTest {
 	
 	@Test
 	public void getUserByUsernameTest() {
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(1001L);
-        portalUser.setEmail("test@test.com");
-		portalUser.setUsername("admin");
+		PortalUser portalUser = createPortalUser();
 		Set<Organisation> orgsSet = new HashSet<>();
-	    Organisation organisation = new Organisation();
-	    organisation.setId(2001L);
-	    organisation.setName("Technical");
-		organisation.setDescription("New Organisation");
+	    Organisation organisation = createOrganisation();
 		organisation.setPortalUsers(Set.of(portalUser));
 		orgsSet.add(organisation);
 		portalUser.setOrganisations(orgsSet);
@@ -281,4 +254,33 @@ public class PortalUserServiceTest {
 		PortalUserResponseView result2 = portalUserService.getUserByUsername(username);
 		assertNull(result2);
 	}
+	
+	private UserRepresentation createUserRepresentation() {
+		UserRepresentation user = new UserRepresentation();
+		user.setId(USER_ID);
+		user.setCreatedTimestamp(CREATED_TIMESTAMP);
+	    user.setUsername(USER_NAME);
+	    user.setEnabled(IS_ENALBED);
+	    user.setTotp(IS_OTP);
+	    user.setEmailVerified(EMAIL_VERIFIED);
+	    user.setFirstName(FIRST_NAME);
+	    user.setLastName(LAST_NAME);
+	    user.setEmail(USER_EMAIL);
+	    return user;
+	}
+	
+	private PortalUser createPortalUser() {
+		PortalUser portalUser = new PortalUser();
+        portalUser.setId(PORTAL_USER_ID);
+		portalUser.setUsername(PORTAL_USER_NAME);
+	    return portalUser;
+	}
+	
+	private Organisation createOrganisation() {
+    	Organisation organisation = new Organisation();
+		organisation.setId(ORG_ID);
+		organisation.setName(ORG_NAME);
+		organisation.setDescription(ORG_DESCRIOPTION);
+		return organisation;
+    }
 }

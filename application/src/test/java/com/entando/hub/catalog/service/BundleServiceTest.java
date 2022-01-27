@@ -3,7 +3,6 @@ package com.entando.hub.catalog.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,13 +28,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
+import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,25 +50,30 @@ public class BundleServiceTest {
 	BundleGroupVersionRepository bundleGroupVersionRepository;
 	
 	private final Logger logger = LoggerFactory.getLogger(BundleServiceTest.class);
+	
+	private static final Long BUNDLE_ID = 1001L; 
+	private static final String BUNDLE_NAME = "Test Bundle Name";
+	private static final String BUNDLE_DESCRIPTION = "Test Bundle Decription";
+	private static final String BUNDLE_GIT_REPO_ADDRESS = "https://github.com/entando/TEST-portal.git";
+	private static final String BUNDLE_DEPENDENCIES = "Test Dependencies";
+
+	private static final Long BUNDLE_GROUP_ID = 1000L;
+    private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
+    
+    private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
+    private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";
+    private static final String BUNDLE_GROUP_VERSION_VERSION = "v1.0.0";
 
 	@Test
 	public void getBundlesPageTest() {
-		 Integer pageNum = 78;
-		 Integer pageSize = 89;
+		 Integer pageNum = 1;
+		 Integer pageSize = 12;
 		 Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
 		 List<Bundle> bundleList = new ArrayList<>();
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
-		 BundleGroup bundleGroup = new BundleGroup();
-		 bundleGroup.setId(101L);
+		 Bundle bundle = createBundle();
+		 BundleGroup bundleGroup = createBundleGroup();
 		 List<BundleGroupVersion> bundleGroupVersionList = new ArrayList<>();
-		 BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		 bundleGroupVersion.setId(2001L);
-		 bundleGroupVersion.setBundleGroup(bundleGroup);		 
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 bundleList.add(bundle);
 		 bundleGroupVersionList.add(bundleGroupVersion);
@@ -107,14 +110,8 @@ public class BundleServiceTest {
 	@Test
 	public void getBundlesTest() {
 		 List<Bundle> bundleList = new ArrayList<>();
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
-		 BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		 bundleGroupVersion.setId(2001L);
+		 Bundle bundle = createBundle();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 bundleList.add(bundle);
 		 
@@ -128,16 +125,8 @@ public class BundleServiceTest {
 	@Test
 	public void getBundlesTestFails() {
 		 List<Bundle> bundleList = new ArrayList<>();
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
+		 Bundle bundle = createBundle();
 		 bundleList.add(bundle);
-		 BundleGroup bundleGroupEntity = new BundleGroup();
-		 bundleGroupEntity.setId(101L);
-		 Optional <String> bundleGroupId = Optional.empty(); ;
 		 Mockito.when(bundleRepository.findAll()).thenReturn(bundleList);
 		 List<Bundle> bundleResult = bundleService.getBundles(Optional.empty());
 		 assertNotNull(bundleResult);
@@ -146,12 +135,7 @@ public class BundleServiceTest {
 	
 	@Test
 	public void getBundleTest() {
-		Bundle bundle = new Bundle(); 
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
+		Bundle bundle = createBundle(); 
 		 Optional<Bundle> bundleList = Optional.of(bundle);
 		 String bundleId = Long.toString(bundle.getId());
 		 Mockito.when(bundleRepository.findById(bundle.getId())).thenReturn(bundleList);
@@ -162,12 +146,7 @@ public class BundleServiceTest {
 	
 	  @Test
 	  public void createBundleTest() {
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
+		 Bundle bundle = createBundle();
 		 Mockito.when(bundleRepository.save(bundle)).thenReturn(bundle);
 		 Bundle bundleResult = bundleService.createBundle(bundle);
 		 assertNotNull(bundleResult);
@@ -176,12 +155,7 @@ public class BundleServiceTest {
 	  
 	  @Test
 	  public void createBundlesTest() {
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
+		 Bundle bundle = createBundle();
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
 		 Mockito.when(bundleRepository.saveAll(bundlesList)).thenReturn(bundlesList);
@@ -193,14 +167,8 @@ public class BundleServiceTest {
 	  
 	  @Test
 	  public void createBundleEntitiesAndSaveTest() {
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
-		 BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		 bundleGroupVersion.setId(2001L);
+		 Bundle bundle = createBundle();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
@@ -223,22 +191,42 @@ public class BundleServiceTest {
 	  
 	  @Test
 	  public void deleteBundleTest() {
-		 Bundle bundle = new Bundle();
-		 bundle.setId(1001L);
-		 bundle.setName("bytes");
-		 bundle.setDescription("tree");
-		 bundle.setGitRepoAddress("new");
-		 bundle.setDependencies("xyz");
+		 Bundle bundle = createBundle();
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
 		 
-		 BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		 bundleGroupVersion.setId(2001L);
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		 bundleGroupVersion.setBundles(new HashSet<>(bundlesList));
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));	
 		 
 		 bundleService.deleteBundle(bundle);
 //		 assertEquals(0, bundleGroupVersion.getBundles().size());
-	  }  
+	}
+
+	private Bundle createBundle() {
+		Bundle bundle = new Bundle();
+		bundle.setId(BUNDLE_ID);
+		bundle.setName(BUNDLE_NAME);
+		bundle.setDescription(BUNDLE_DESCRIPTION);
+		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
+		bundle.setDependencies(BUNDLE_DEPENDENCIES);
+		return bundle;
+	}
+
+	private BundleGroup createBundleGroup() {
+		BundleGroup bundleGroup = new BundleGroup();
+		bundleGroup.setId(BUNDLE_GROUP_ID);
+		bundleGroup.setName(BUNDLE_GROUP_NAME);
+		return bundleGroup;
+	}
+
+	private BundleGroupVersion createBundleGroupVersion() {
+		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
+		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
+		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
+		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+		return bundleGroupVersion;
+	}
 }
 	

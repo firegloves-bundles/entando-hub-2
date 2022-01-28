@@ -1,250 +1,218 @@
 package com.entando.hub.catalog.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.service.BundleService;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-@RunWith(MockitoJUnitRunner.Silent.class)
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebMvcTest(BundleController.class)
+@WithMockUser(username="admin",roles={ADMIN})
 public class BundleControllerTest {
+	
+	@Autowired
+	WebApplicationContext webApplicationContext;
+	
+	@Autowired
+	private MockMvc mockMvc;
 	
 	@InjectMocks
 	BundleController bundleController;
-	@Mock
+	
+	@MockBean
 	BundleService bundleService;
 	
-	@Test
-	public void testGetBundles() {
-		List<Bundle> bundlesList = new ArrayList<>();
-		Bundle bundle = new Bundle();
-		bundle.setId(1001L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
-		bundlesList.add(bundle);
-		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		Mockito.when(bundleService.getBundles(Optional.ofNullable(null))).thenReturn(bundlesList);
-		Mockito.when(bundleService.getBundles(Optional.of(bundleGroupVersionId))).thenReturn(bundlesList);
-		
-		// Case 1: no bundle group version specified
-		List<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResultList = bundleController.getBundles(null);
-		assertNotNull(bundleResultList);
-		assertEquals(bundleResultList.get(0).getName(), bundlesList.get(0).getName());
-		
-		//Case 2: bundle group version specified
-		List<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResultList2 = bundleController.getBundles(bundleGroupVersionId);
-		assertNotNull(bundleResultList2);
-		assertEquals(bundleResultList2.get(0).getName(), bundlesList.get(0).getName());
+	private final Long BUNDLE_ID = 1001L;
+	private final String NAME = "Test";
+	private final String DESCRIPTION = "Test Description";
+	private final String GIT_REPO_ADDRESS = "Test Git Rep";
+	private final String DEPENDENCIES = "Test Dependencies";
+	private final Long VERSION_ID = 5001L;
+	private final BundleGroupVersion.Status STATUS = BundleGroupVersion.Status.PUBLISHED;
+
+	@Before
+	public void setUp() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 	
 	@Test
-	public void testGetBundle() {
+	public void testGetBundles() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
-		Bundle bundle = new Bundle();
-		bundle.setId(1002L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
+		Bundle bundle = populateBundle();
+		bundlesList.add(bundle);
+		String bundleGroupVersionId = bundle.getBundleGroupVersions().iterator().next().getId().toString();
+		Mockito.when(bundleService.getBundles(Optional.of(bundleGroupVersionId))).thenReturn(bundlesList);
+		Mockito.when(bundleService.getBundles(Optional.ofNullable(null))).thenReturn(bundlesList);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundles/").accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk())
+	            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+	            .andExpect(jsonPath("$.[*].bundleId").value(bundle.getId().toString()))
+	            .andExpect(jsonPath("$.[*].name").value(bundle.getName()))
+	            .andExpect(jsonPath("$.[*].description").value(bundle.getDescription()));
+		
+	}
+	
+	@Test
+	public void testGetBundle() throws Exception {
+		List<Bundle> bundlesList = new ArrayList<>();
+		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResultList = bundleController.getBundle(bundleId);
-		assertNotNull(bundleResultList);
-		assertEquals(HttpStatus.OK, bundleResultList.getStatusCode());
-	}
-
-	@Test
-	public void testGetBundleFails() {
-		List<Bundle> bundlesList = new ArrayList<>();
-		Bundle bundle = new Bundle();
-		bundle.setId(1003L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		bundlesList.add(bundle);
-		String bundleId = bundle.getId().toString();
-		Mockito.when(bundleService.getBundle(null)).thenReturn(Optional.empty());
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResultList = bundleController.getBundle(bundleId);
-		assertNotNull(bundleResultList);
-		assertEquals(HttpStatus.NOT_FOUND, bundleResultList.getStatusCode());
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundles/{bundleId}", bundleId)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void testCreateBundle() {
-		Bundle bundle = new Bundle();
-		bundle.setId(1004L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
+	public void testGetBundleFails() throws Exception {
+		List<Bundle> bundlesList = new ArrayList<>();
+		Bundle bundle = populateBundle();
+		bundlesList.add(bundle);
 		String bundleId = bundle.getId().toString();
-		BundleNoId bundleNoId = new BundleNoId(bundle);
-		
+		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.empty());
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundles/{bundleId}", bundleId)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
+	}
+	
+	@Test
+	public void testCreateBundle() throws Exception {
+		Bundle bundle = populateBundle();
+		String bundleId = bundle.getId().toString();
 		//Case 1: bundleId is not null
+		BundleNoId bundleNoId = new BundleNoId(bundle);
 		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult = bundleController.createBundle(bundleNoId);
-		assertNotNull(bundleResult);
-		assertEquals(HttpStatus.CREATED, bundleResult.getStatusCode());
+		String inputJson = mapToJson(bundleNoId);
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(inputJson))
+				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
 		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), new ArrayList<>(), new ArrayList<>());
 		Mockito.when(bundleService.createBundle(bundleNoId2.createEntity(Optional.empty()))).thenReturn(bundle);
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult2 = bundleController.createBundle(bundleNoId2);
-		assertNotNull(bundleResult2);
-		assertEquals(HttpStatus.CREATED, bundleResult2.getStatusCode());
+		inputJson = mapToJson(bundleNoId2);
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(inputJson))
+				.andExpect(status().is(HttpStatus.CREATED.value()));
 	}
 	
 	@Test
-	public void testUpdateBundle() {
-		Bundle bundle = new Bundle();
-		bundle.setId(1005L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
+	public void testUpdateBundle() throws Exception {
+		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleNoId bundleNoId = new BundleNoId(bundle);
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
 		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult = bundleController.updateBundle(bundleId, bundleNoId);
-		assertNotNull(bundleResult);
-		assertEquals(HttpStatus.OK, bundleResult.getStatusCode());
+		String inputJson = mapToJson(bundleNoId);
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(inputJson))
+				.andExpect(status().isOk());
+		
 	}
 	
 	@Test
-	public void testUpdateBundleFails() {
-		Bundle bundle = new Bundle();
-		bundle.setId(1005L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
+	public void testUpdateBundleFails() throws Exception {
+		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleNoId bundleNoId = new BundleNoId(bundle);
 		Mockito.when(bundleService.getBundle(null)).thenReturn(Optional.of(bundle));
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult = bundleController.updateBundle(bundleId, bundleNoId);
-		assertNotNull(bundleResult);
-		assertEquals(HttpStatus.NOT_FOUND, bundleResult.getStatusCode());
+		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleNoId);
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(inputJson))
+				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
+		
 	}
 	
 	@Test
-	public void testDeleteBundle() {
-		Bundle bundle = new Bundle();
-		bundle.setId(1005L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
-		Set<BundleGroupVersion> versions = new HashSet<>();
-		versions.add(bundleGroupVersion);
-		bundle.setBundleGroupVersions(versions);
+	public void testDeleteBundle() throws Exception {
+		Bundle bundle =populateBundle();
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
-		bundleService.deleteBundle(bundle);
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult = bundleController.deleteBundle(bundleId);
-		assertNotNull(bundleResult);
-		assertEquals(HttpStatus.OK, bundleResult.getStatusCode());
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/bundles/{bundleId}", bundleId)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void testDeleteBundleFails() {
+	public void testDeleteBundleFails() throws Exception {
+		Bundle bundle =populateBundle();
+		String bundleId = bundle.getId().toString();
+		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.empty());
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/bundles/{bundleId}", bundleId)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().is(HttpStatus.NO_CONTENT.value()));
+	}
+	
+	private String mapToJson(Object obj) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.writeValueAsString(obj);
+	}
+	
+	private Bundle populateBundle() {
 		Bundle bundle = new Bundle();
-		bundle.setId(1005L);
-		bundle.setName("Test");
-		bundle.setDescription("Test Description");
-		bundle.setGitRepoAddress("Test Git Rep");
-		bundle.setDependencies("Test Dependencies");
-		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(5001L);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
+		bundle.setId(BUNDLE_ID);
+		bundle.setName(NAME);
+		bundle.setDescription(DESCRIPTION);
+		bundle.setGitRepoAddress(GIT_REPO_ADDRESS);
+		bundle.setDependencies(DEPENDENCIES);
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		Set<Bundle> bundles = new HashSet<>();
-		bundles.add(bundle);
-		bundleGroupVersion.setBundles(bundles);
 		Set<BundleGroupVersion> versions = new HashSet<>();
 		versions.add(bundleGroupVersion);
 		bundle.setBundleGroupVersions(versions);
-		String bundleId = bundle.getId().toString();
-		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.empty());
-		bundleService.deleteBundle(bundle);
-		ResponseEntity<com.entando.hub.catalog.rest.BundleController.Bundle> bundleResult = bundleController.deleteBundle(bundleId);
-		assertNotNull(bundleResult);
-		assertEquals(HttpStatus.NO_CONTENT, bundleResult.getStatusCode());
+		bundles.add(bundle);
+		return bundle;
 	}
+	
+	private BundleGroupVersion createBundleGroupVersion() {
+		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+		bundleGroupVersion.setId(VERSION_ID);
+		bundleGroupVersion.setStatus(STATUS);
+		return bundleGroupVersion;
+	}
+
 }

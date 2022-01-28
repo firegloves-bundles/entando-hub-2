@@ -49,11 +49,15 @@ public class KeycloakUserControllerTest {
 	KeycloakUserController keyCloakUserController;
 	@MockBean
 	KeycloakService keyCloakService;
-	
+	private static final String URI = "/api/keycloak/users/";
 	private final String USERNAME = "Admin";
 	private final String EMAIL = "admin.123@test.co.in";
 	private final String FIRSTNAME = "Admin";
 	private final String LASTNAME = "admin";
+	private final String ID = "9001";
+    private final Long CREATEDTIMESTAMP = 90019L;
+    private final String EMAILVERIFIED = "admin.123@test.co.in";
+    private final String ORGID = "2001";
 
 	@Before
     public void setUp() {
@@ -63,14 +67,13 @@ public class KeycloakUserControllerTest {
 	@Test
 	public void testSearchUsers() throws Exception{
 		UserRepresentation user = populateUserRepresentation();
-	    RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
 		SearchKeycloackUserRequest request = populateSearchKeycloackUserRequest();
         List<UserRepresentation> userRepresentationList = new ArrayList<>();
         userRepresentationList.add(user);
         Map<String, String> map = new HashMap<>();
         String inputJson = mapToJson(request);
         Mockito.when(keyCloakService.searchUsers(map)).thenReturn(userRepresentationList);
-       mockMvc.perform(MockMvcRequestBuilders.get("/api/keycloak/users")
+       mockMvc.perform(MockMvcRequestBuilders.get(URI)
         		.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().isOk())
@@ -86,7 +89,7 @@ public class KeycloakUserControllerTest {
 	    String username=user.getUsername();
 		RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
 		Mockito.when(keyCloakService.getUser(restUserRepresentation.getUsername())).thenReturn(user);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/keycloak/users/").accept(MediaType.APPLICATION_JSON_VALUE).content(username))
+		mockMvc.perform(MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON_VALUE).content(username))
 	      .andExpect(status().is(HttpStatus.OK.value()))
 	      
 	      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -96,9 +99,8 @@ public class KeycloakUserControllerTest {
 	public void testGetUserFails() throws Exception{
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
-		RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
 		Mockito.when(keyCloakService.getUser(null)).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/keycloak//users/{username}",username)
+		mockMvc.perform(MockMvcRequestBuilders.get(URI + username)
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(username))
 				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
 		
@@ -112,15 +114,15 @@ public class KeycloakUserControllerTest {
 	private UserRepresentation populateUserRepresentation()
 	{
 		UserRepresentation user = new UserRepresentation();
-		user.setId("9001");
-		user.setCreatedTimestamp(90019);
-	    user.setUsername("admin");
+		user.setId(ID);
+		user.setCreatedTimestamp(CREATEDTIMESTAMP);
+	    user.setUsername(USERNAME);
 	    user.setEnabled(true);
 	    user.setTotp(true);
-	    user.setEmailVerified("xyz.mail.com");
-	    user.setFirstName("entando");
-	    user.setLastName("hub");
-	    user.setEmail("xyz.mail.com");
+	    user.setEmailVerified(EMAILVERIFIED);
+	    user.setFirstName(FIRSTNAME);
+	    user.setLastName(LASTNAME);
+	    user.setEmail(EMAIL);
 		
 		return user;
 	}
@@ -128,14 +130,14 @@ public class KeycloakUserControllerTest {
 	private RestUserRepresentation populateRestUserRepresentation() {
 	   
 		    Set<String> organisationIds = new HashSet<String>();
-	        organisationIds.add("1001");
-	        organisationIds.add("9001");
+	        organisationIds.add(ORGID);
+	        organisationIds.add(ORGID);
       		RestUserRepresentation restUserRepresentation = new RestUserRepresentation(populateUserRepresentation());
-		    restUserRepresentation.setId("1001");
-	        restUserRepresentation.setFirstName("entando");
-	        restUserRepresentation.setLastName("new");
-	        restUserRepresentation.setUsername("entandohub");
-	        restUserRepresentation.setEmail("entando.hub@entando.com");
+		    restUserRepresentation.setId(ID);
+	        restUserRepresentation.setFirstName(FIRSTNAME);
+	        restUserRepresentation.setLastName(LASTNAME);
+	        restUserRepresentation.setUsername(USERNAME);
+	        restUserRepresentation.setEmail(EMAIL);
 	        restUserRepresentation.setOrganisationIds(organisationIds);
 	        restUserRepresentation.setEnabled(true);
 		    return restUserRepresentation;

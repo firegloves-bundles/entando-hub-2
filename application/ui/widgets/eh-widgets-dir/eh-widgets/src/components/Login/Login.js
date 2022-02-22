@@ -82,7 +82,7 @@ class Login extends Component {
     const handleLogout = () => keycloak.logout({ redirectUri: loginUrl });
     if (!this.state.loading) {
       return (
-          <div className="entando-login">
+          <div className="entando-eh-login">
           {!isAuthenticated(this.props) ? (
               <div className="log-button">
                 <button className="log-in" onClick={handleLogin} title={"Login"}>

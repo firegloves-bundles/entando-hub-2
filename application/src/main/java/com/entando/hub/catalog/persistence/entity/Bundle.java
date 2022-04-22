@@ -21,6 +21,7 @@ public class Bundle {
     private String name;
     private String description;
     private String gitRepoAddress;
+    private String gitSrcRepoAddress;
     private String dependencies;
 
 	@ManyToMany(mappedBy = "bundles",fetch = FetchType.EAGER)

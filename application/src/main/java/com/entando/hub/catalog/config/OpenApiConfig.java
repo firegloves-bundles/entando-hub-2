@@ -54,10 +54,14 @@ public class OpenApiConfig {
         GroupedOpenApi appBuilderApis() {
                 return GroupedOpenApi.builder().group("appbuilder").pathsToMatch("/**/appbuilder/**").build();
         }
+        @Bean
+        GroupedOpenApi entApis() {
+                return GroupedOpenApi.builder().group("ent").pathsToMatch("/**/ent/**").build();
+        }
 
         @Bean
         GroupedOpenApi hubApis() { // group all APIs with `admin` in the path
-                return GroupedOpenApi.builder().group("hub").pathsToMatch("/**/api/**").build();
+                return GroupedOpenApi.builder().group("hub").pathsToExclude("/**/ent/**","/**/appbuilder/**").build();
         }
 
 }

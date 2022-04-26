@@ -34,5 +34,14 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	@Query(value = "SELECT * FROM BUNDLE_GROUP_version bgv where bgv.bundle_group_id = :bundleGroupId and (bgv.status in('NOT_PUBLISHED', 'PUBLISH_REQ','DELETE_REQ') or bgv.status = 'PUBLISHED');", nativeQuery = true)
 	List<BundleGroupVersion> getByBundleGroupAndStatuses(@Param("bundleGroupId") Long bundleGroupId);
 
+	@Query(value = "select distinct bgv.* " +
+			"from bundle_group_version bgv " +
+			"         join bundle_group bg on bgv.bundle_group_id = bg.id " +
+			"         join bundle_versions bv on bgv.id = bv.bundle_group_version_id " +
+			"         join bundle b on bv.bundle_id = b.id " +
+			"where bgv.status = 'NOT_PUBLISHED' " +
+			"  and b.git_src_repo_address is not null;", nativeQuery = true)
+	List<BundleGroupVersion> getByTemplateInIt();
+
 
 }

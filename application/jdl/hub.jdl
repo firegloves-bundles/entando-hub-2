@@ -1,5 +1,4 @@
 // Note: This is not a JHipster project so this JDL file is purely for visualization of the current Hub data model
-// Copy this content to the JDL-Studio https://start.jhipster.tech/jdl-studio/ for visualization
 
 entity BundleGroup {
     name String required,
@@ -45,3 +44,6 @@ relationship OneToMany {
     Organisation to PortalUser{organisation}
 }
 
+relationship ManyToOne {
+   BundleGroup{category} to Category
+}

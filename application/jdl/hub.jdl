@@ -1,0 +1,49 @@
+// Note: This is not a JHipster project so this JDL file is purely for visualization of the current Hub data model
+
+entity BundleGroup {
+    name String required,
+    category Category required
+}
+
+entity BundleGroupVersion {
+    name String required,
+    description String,
+    descriptionImage String,
+    documentationUrl String,
+    status Status required
+}
+
+entity Bundle {
+    name String required,
+    gitRepoAddress String required
+}
+
+entity Category {
+    name String required,
+    description String
+}
+
+entity Organisation {
+    name String required,
+    description String
+}
+
+entity PortalUser {
+    username String required //Keycloak username
+    email String //Keycloak email address
+}
+
+enum Status {
+    NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED, ARCHIVE
+}
+
+relationship OneToMany {
+    BundleGroup to BundleGroupVersion,
+    BundleGroupVersion to Bundle,
+    Organisation to BundleGroup{organisation},
+    Organisation to PortalUser{organisation}
+}
+
+relationship ManyToOne {
+   BundleGroup{category} to Category
+}

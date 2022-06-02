@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import { BUNDLE_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX } from "../constants"
+import {BUNDLE_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX} from "../constants"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -17,6 +17,12 @@ export const bundleGroupSchema = Yup.object().shape({
     )
     .max(255, "max255Char")
     .required("docRequired"),
+  contactUrl: Yup.string()
+    .matches(
+        CONTACT_URL_REGEX,
+        "contactUrlFormat"
+    )
+    .max(255, "max255Char"),
   status: Yup.string().required("statusRequired"),
   version: Yup.string().matches(/^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm, "versionFormat").required("versionRequired"),
   children: Yup.array().of(

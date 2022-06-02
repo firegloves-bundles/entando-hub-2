@@ -27,4 +27,6 @@ public class BundleGroupVersionFilteredResponseView {
 	private String bundleGroupUrl;
 	private Boolean isEditable = false;
 	private boolean canAddNewVersion = false;
+	private Boolean displayContactUrl;
+	private String contactUrl;
 }

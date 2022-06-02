@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+    Checkbox,
     Column,
     Content,
     Grid,
@@ -10,7 +11,7 @@ import {
     TextInput,
 } from "carbon-components-react";
 import './BundleGroupVersionForm.scss';
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSION_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
+import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSION_FIELD_ID, VERSION_REGEX } from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
 import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -154,7 +155,7 @@ const BundleGroupVersionForm = ({
             validationResult["version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
         }
-        else if (!(e.target.value.trim().length > 0 && new RegExp(VERSON_REGEX).test(e.target.value))) {
+        else if (!(e.target.value.trim().length > 0 && new RegExp(VERSION_REGEX).test(e.target.value))) {
             validationResult["version"] = [i18n.t('formValidationMsg.versionFormat')]
             setIsBundleVersionValid(false);
         }
@@ -173,7 +174,7 @@ const BundleGroupVersionForm = ({
         } else if (inputTypeName === 'version') {
             if (!(previousVersions.includes(val.trim()))) {
                 setIsBundleVersionValid(true)
-            } else if (val.trim().length > 0 && new RegExp(VERSON_REGEX).test(val)) {
+            } else if (val.trim().length > 0 && new RegExp(VERSION_REGEX).test(val)) {
                 setIsBundleVersionValid(true)
             } else {
                 setIsBundleVersionValid(false);
@@ -366,6 +367,31 @@ const BundleGroupVersionForm = ({
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
                                 {createSelectOptionsForRoleAndSetSelectStatus}
                             </Select>
+                        </Column>
+
+                        <Column sm={16} md={8} lg={8}>
+                            <Checkbox
+                                id={"displayContactUrl"}
+                                labelText={`${i18n.t('component.bundleModalFields.displayContactUrl')}`}
+                            />
+                            {/*<TextInput*/}
+                            {/*    invalid={(!isDocumentationAddressValid || showDocUrlCharLimitErrMsg) && !!validationResult["documentationUrl"]}*/}
+                            {/*    invalidText={*/}
+                            {/*        (!isDocumentationAddressValid || showDocUrlCharLimitErrMsg) && (validationResult["documentationUrl"] &&*/}
+                            {/*            validationResult["documentationUrl"].join("; "))*/}
+                            {/*    }*/}
+                            {/*    disabled={disableCondition}*/}
+                            {/*    value={bundleGroup && bundleGroup.documentationUrl}*/}
+                            {/*    onChange={documentationChangeHandler}*/}
+                            {/*    onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}*/}
+                            {/*    id={"documentation"}*/}
+                            {/*    maxLength={CHAR_LENGTH_255}*/}
+                            {/*    onKeyPress={keyPressHandler}*/}
+                            {/*/>*/}
+                        </Column>
+                        
+                        <Column sm={16} md={8} lg={8}>
+                        placeholder
                         </Column>
 
                         <Column sm={16} md={16} lg={16}>

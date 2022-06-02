@@ -305,7 +305,9 @@ public class BundleGroupVersionService {
 			viewObj.setVersion(entity.getVersion());
 			viewObj.setBundleGroupUrl(getBundleGroupUrl(entity.getId()));
 			viewObj.setLastUpdate(entity.getLastUpdated());
-			
+			viewObj.setDisplayContactUrl(entity.getDisplayContactUrl());
+			viewObj.setContactUrl(entity.getContactUrl());
+
 			if (!CollectionUtils.isEmpty(entity.getBundles())) {
 				viewObj.setChildren(entity.getBundles().stream()
 						.map(child -> child.getId().toString()).collect(Collectors.toList()));

@@ -97,6 +97,8 @@ export const ModalUpdateBundleGroup = ({
             description: bg.description,
             descriptionImage: bg.descriptionImage,
             documentationUrl: bg.documentationUrl,
+            displayContactUrl: bg.displayContactUrl,
+            contactUrl: bg.contactUrl,
             bundleGroupUrl: bg.bundleGroupUrl,
             version: bg.version,
             status: bg.status,

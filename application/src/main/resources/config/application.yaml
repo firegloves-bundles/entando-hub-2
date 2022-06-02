@@ -36,8 +36,8 @@ app:
 spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
+#    hibernate:
+#      ddl-auto: update
     database: POSTGRESQL
     show-sql: false
     properties:

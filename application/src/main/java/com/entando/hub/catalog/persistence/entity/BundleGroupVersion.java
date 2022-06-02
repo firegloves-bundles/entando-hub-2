@@ -58,6 +58,12 @@ public class BundleGroupVersion {
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.NOT_PUBLISHED;
 
+	@Column
+	private Boolean displayContactUrl;
+
+	@Column
+	private String contactUrl;
+
 	@ManyToOne
 	private BundleGroup bundleGroup;
 

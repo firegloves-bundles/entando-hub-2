@@ -400,6 +400,7 @@ const BundleGroupVersionForm = ({
                                 initialBundleList={bundleGroup.bundles}
                                 disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 minOneBundleError={minOneBundleError}
+                                displayContactUrl={bundleGroup.versionDetails.displayContactUrl}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
                                 operation={operation}

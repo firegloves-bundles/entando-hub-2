@@ -152,7 +152,8 @@ export const ModalUpdateBundleGroup = ({
           validationError = undefined;
       }
       if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
-        (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
+          (bundleGroup.versionDetails.displayContactUrl !== true) &&
+          (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
         setMinOneBundleError(validationError['versionDetails.bundles'][0]);
       }
       if (validationError) {

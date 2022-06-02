@@ -164,6 +164,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     validationError = undefined;
                 }
                 if (bundleGroup.versionDetails.bundles && bundleGroup.versionDetails.bundles.length === 0 &&
+                    (bundleGroup.versionDetails.displayContactUrl !== true) &&
                     bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
                     validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
                 }

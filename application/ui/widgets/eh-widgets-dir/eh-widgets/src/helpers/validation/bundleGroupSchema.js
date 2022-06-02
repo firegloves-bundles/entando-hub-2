@@ -49,6 +49,12 @@ export const newBundleGroupSchema = Yup.object().shape({
       .required("nameRequired"),
   versionDetails: Yup.object().shape({
       description: Yup.string().min(3, "minDescription").max(600, "maxDescription").required("descriptionRequired"),
+      contactUrl: Yup.string()
+          .matches(
+              CONTACT_URL_REGEX,
+              "contactUrlFormat"
+          )
+          .max(255, "max255Char"),
       documentationUrl: Yup.string()
           .matches(
               DOCUMENTATION_ADDRESS_URL_REGEX,
@@ -67,13 +73,13 @@ export const newBundleGroupSchema = Yup.object().shape({
               gitRepoAddress: Yup.string(),
               name: Yup.string().required(),
           })
-      ).min(1, "atleastOneUrl"),
+      ),
   }).required(),
   categories: Yup.array()
       .of(Yup.string())
       .required("categoryRequired"),
 })
-
+//TODO: Need to add the conditional check here on the number of bundles or rely on that check upstream? Could be some duplication here
 
 export const bundleOfBundleGroupSchema = Yup.object().shape({
   gitRepo: Yup.string()

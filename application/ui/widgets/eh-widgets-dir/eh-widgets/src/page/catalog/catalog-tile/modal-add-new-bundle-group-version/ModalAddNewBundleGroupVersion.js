@@ -123,6 +123,7 @@ export const ModalAddNewBundleGroupVersion = ({
       }
       
       if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
+          bundleGroup.displayContactUrl !== true &&
         (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
         setMinOneBundleError(validationError.bundles[0]);
       }

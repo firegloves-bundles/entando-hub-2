@@ -1,4 +1,4 @@
-import { Content, Tile, Row, Column } from "carbon-components-react"
+import {Content, Tile, Row, Column, Button} from "carbon-components-react"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { useLocation } from 'react-router-dom';
@@ -119,8 +119,22 @@ const BundleGroupPage = () => {
                           src={pageModel.bundleGroup && pageModel.bundleGroup.descriptionImage}
                           alt="BundleGroup Logo" />}
                     </div>
-                    <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
-                                                         children={pageModel.children}/>
+
+                    {(pageModel.bundleGroup.displayContactUrl) &&
+                      <>
+                        <div className="BundleGroupPage-contact-us">
+                          <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
+                          <Button href={pageModel.bundleGroup.contactUrl} target="_blank">{i18n.t('component.button.contactUs')}</Button>
+                        </div>
+                        <hr/>
+                      </>
+                    }
+
+                    {(pageModel.children && pageModel.children.length>0) &&
+                      <ModalInstallInformation bundleGroup={pageModel.bundleGroup}
+                                               children={pageModel.children}/>
+                    }
+
                     <div className="BundleGroupPage-last-update">
                       {i18n.t('page.bundleGroupInfo.lastUpdate')}
                       <p>{pageModel.bundleGroup && pageModel.bundleGroup.lastUpdate && formatLastUpdate(pageModel.bundleGroup.lastUpdate)}</p>
@@ -132,10 +146,14 @@ const BundleGroupPage = () => {
                                     && pageModel.bundleGroup.documentationUrl}
                                        target="_new">{i18n.t('page.bundleGroupInfo.documentation')}</a>
                     </div>
-                    <hr/>
-                    <div>
-                      {pageModel.children && <BundleList children={pageModel.children}/>}
-                    </div>
+                    {(pageModel.children && pageModel.children.length > 0) &&
+                      <>
+                        <hr/>
+                        <div>
+                          {pageModel.children && <BundleList children={pageModel.children}/>}
+                        </div>
+                      </>
+                    }
                   </Tile>
                 </Column>
               <Column lg={12}>

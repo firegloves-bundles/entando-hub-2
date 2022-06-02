@@ -17,6 +17,7 @@
       }
     },
     "bundleGroupInfo": {
+      "contactUsInfo": "Please contact the author for more information",
       "lastUpdate": "Ultimo aggiornamento",
       "linkToDocument": "Link alla documentazione",
       "listToBundles": "Elenco dei bundle",
@@ -59,6 +60,7 @@
     },
     "button": {
       "add": "Aggiungi",
+      "contactUs": "Contact Us",
       "create": "Crea",
       "save": "Salva",
       "edit": "Modifica",

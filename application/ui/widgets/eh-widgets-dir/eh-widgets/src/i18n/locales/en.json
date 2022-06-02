@@ -17,6 +17,7 @@
       }
     },
     "bundleGroupInfo": {
+      "contactUsInfo": "Please contact the author for more information",
       "lastUpdate": "Last Update",
       "linkToDocument": "Link to documentation",
       "listToBundles": "List of Bundles",
@@ -59,6 +60,7 @@
     },
     "button": {
       "add": "Add",
+      "contactUs": "Contact Us",
       "create": "Create",
       "save": "Save",
       "edit": "Edit",

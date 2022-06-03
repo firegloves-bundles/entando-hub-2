@@ -61,7 +61,6 @@ const BundleGroupForm = ({
     const [showVersionCharLimitErrMsg, setShowVersionCharLimitErrMsg] = useState(false);
     const [showContactUrlCharLimitErrMsg, setShowContactUrlCharLimitErrMsg] = useState(false);
 
-
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
 

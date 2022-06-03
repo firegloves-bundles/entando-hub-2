@@ -11,7 +11,24 @@ import {
     TextInput,
 } from "carbon-components-react";
 import './BundleGroupVersionForm.scss';
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, LEAST_CHAR_NAME_MSG, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, MAX_CHAR_NAME_MSG, NAME_REQ_MSG, OPERATION, VERSION_FIELD_ID, VERSION_REGEX } from "../../../helpers/constants";
+import {
+    BUNDLE_STATUS,
+    CHAR_LENGTH,
+    CHAR_LENGTH_255,
+    CHAR_LIMIT_MSG_SHOW_TIME, CONTACT_URL_FIELD_ID,
+    CONTACT_URL_REGEX,
+    DESCRIPTION_FIELD_ID,
+    DOCUMENTATION_ADDRESS_URL_REGEX,
+    DOCUMENTATION_FIELD_ID,
+    LEAST_CHAR_NAME_MSG,
+    MAX_CHAR_LENGTH,
+    MAX_CHAR_LENGTH_FOR_DESC,
+    MAX_CHAR_NAME_MSG,
+    NAME_REQ_MSG,
+    OPERATION,
+    VERSION_FIELD_ID,
+    VERSION_REGEX
+} from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
 import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
@@ -36,10 +53,12 @@ const BundleGroupVersionForm = ({
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
+    const [isContactUrlValid, setIsContactUrlValid] = useState(false);
 
     const [showDescriptionCharLimitErrMsg, setShowDescriptionCharLimitErrMsg] = useState(false);
     const [showDocUrlCharLimitErrMsg, setShowDocUrlCharLimitErrMsg] = useState(false);
     const [showVersionCharLimitErrMsg, setShowVersionCharLimitErrMsg] = useState(false);
+    const [showContactUrlCharLimitErrMsg, setShowContactUrlCharLimitErrMsg] = useState(false);
 
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
@@ -138,6 +157,18 @@ const BundleGroupVersionForm = ({
         changeBundleGroup("categories", [e.target.value])
     }
 
+    const contactUrlChangeHandler = (e) => {
+        changeBundleGroup("contactUrl", e.target.value);
+        setIsValid(e.target.value.trim(), 'contactUrl')
+        if (e.target.value.trim().length) {
+            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlFormat')]
+        }
+    }
+
+    const displayContactChangeHandler = (value, name, e) => {
+        changeBundleGroup("displayContactUrl", value);
+    }
+
     const documentationChangeHandler = (e) => {
         changeBundleGroup("documentationUrl", e.target.value)
 
@@ -179,6 +210,8 @@ const BundleGroupVersionForm = ({
             } else {
                 setIsBundleVersionValid(false);
             }
+        } else if (inputTypeName === 'contactUrl') {
+            val.trim().length > 0 && new RegExp(CONTACT_URL_REGEX).test(val) ? setIsContactUrlValid(true) : setIsContactUrlValid(false)
         }
     }
 
@@ -240,6 +273,10 @@ const BundleGroupVersionForm = ({
             validationResult[VERSION_FIELD_ID] = [i18n.t('formValidationMsg.maxVersion255Char')]
             setShowVersionCharLimitErrMsg(true);
             timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        } else if (e.target.id === CONTACT_URL_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
+            validationResult["contactUrl"] = [i18n.t('formValidationMsg.maxVersion255Char')]
+            setShowContactUrlCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
         }
     }
 
@@ -253,6 +290,9 @@ const BundleGroupVersionForm = ({
                 setShowDocUrlCharLimitErrMsg(false);
             } else if (fieldId === VERSION_FIELD_ID) {
                 validationResult[VERSION_FIELD_ID] = undefined;
+                setShowVersionCharLimitErrMsg(false);
+            } else if (fieldId === CONTACT_URL_FIELD_ID) {
+                validationResult[CONTACT_URL_FIELD_ID] = undefined;
                 setShowVersionCharLimitErrMsg(false);
             }
         }
@@ -369,29 +409,32 @@ const BundleGroupVersionForm = ({
                             </Select>
                         </Column>
 
-                        <Column sm={16} md={8} lg={8}>
+                        <Column sm={16} md={16} lg={16}>
                             <Checkbox
+                                disabled={disabled}
                                 id={"displayContactUrl"}
-                                labelText={`${i18n.t('component.bundleModalFields.displayContactUrl')}`}
+                                labelText={`${i18n.t('component.bundleModalFields.displayContactLink')}`}
+                                checked={bundleGroup.displayContactUrl}
+                                onChange={displayContactChangeHandler}
                             />
-                            {/*<TextInput*/}
-                            {/*    invalid={(!isDocumentationAddressValid || showDocUrlCharLimitErrMsg) && !!validationResult["documentationUrl"]}*/}
-                            {/*    invalidText={*/}
-                            {/*        (!isDocumentationAddressValid || showDocUrlCharLimitErrMsg) && (validationResult["documentationUrl"] &&*/}
-                            {/*            validationResult["documentationUrl"].join("; "))*/}
-                            {/*    }*/}
-                            {/*    disabled={disableCondition}*/}
-                            {/*    value={bundleGroup && bundleGroup.documentationUrl}*/}
-                            {/*    onChange={documentationChangeHandler}*/}
-                            {/*    onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}*/}
-                            {/*    id={"documentation"}*/}
-                            {/*    maxLength={CHAR_LENGTH_255}*/}
-                            {/*    onKeyPress={keyPressHandler}*/}
-                            {/*/>*/}
                         </Column>
-                        
+
                         <Column sm={16} md={8} lg={8}>
-                        placeholder
+                            <TextInput
+                                invalid={(!isContactUrlValid || showContactUrlCharLimitErrMsg) && !!validationResult["versionDetails.contactUrl"]}
+                                invalidText={
+                                    (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["versionDetails.contactUrl"] &&
+                                        validationResult["versionDetails.contactUrl"].join("; "))
+                                }
+                                disabled={disabled}
+                                value={bundleGroup.contactUrl}
+                                onChange={contactUrlChangeHandler}
+                                onBlur={(e) => trimBeforeFormSubmitsHandler(e, "contactUrl")}
+                                id={"contactUrl"}
+                                maxLength={CHAR_LENGTH_255}
+                                onKeyPress={keyPressHandler}
+                                labelText={`${i18n.t('component.bundleModalFields.contactUrl')} ${bundleGroup.displayContactUrl ? " *" : ""}`}
+                            />
                         </Column>
 
                         <Column sm={16} md={16} lg={16}>
@@ -400,7 +443,7 @@ const BundleGroupVersionForm = ({
                                 initialBundleList={bundleGroup.bundles}
                                 disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
                                 minOneBundleError={minOneBundleError}
-                                displayContactUrl={bundleGroup.versionDetails.displayContactUrl}
+                                displayContactUrl={bundleGroup.displayContactUrl}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
                                 operation={operation}

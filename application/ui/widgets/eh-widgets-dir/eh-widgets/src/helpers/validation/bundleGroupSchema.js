@@ -18,6 +18,7 @@ export const bundleGroupSchema = Yup.object().shape({
     .max(255, "max255Char")
     .required("docRequired"),
   contactUrl: Yup.string()
+    .nullable()
     .matches(
         CONTACT_URL_REGEX,
         "contactUrlFormat"
@@ -50,11 +51,18 @@ export const newBundleGroupSchema = Yup.object().shape({
   versionDetails: Yup.object().shape({
       description: Yup.string().min(3, "minDescription").max(600, "maxDescription").required("descriptionRequired"),
       contactUrl: Yup.string()
-          .matches(
-              CONTACT_URL_REGEX,
-              "contactUrlFormat"
-          )
-          .max(255, "max255Char"),
+          .nullable()
+          .when('displayContactUrl', {
+              is: true,
+              then: Yup.string()
+                  .required('contactUrlRequired')
+                  .matches(
+                      CONTACT_URL_REGEX,
+                      "contactUrlFormat"
+                  )
+                  .max(255, "max255Char")
+          }),
+      displayContactUrl: Yup.boolean(),
       documentationUrl: Yup.string()
           .matches(
               DOCUMENTATION_ADDRESS_URL_REGEX,
@@ -73,13 +81,16 @@ export const newBundleGroupSchema = Yup.object().shape({
               gitRepoAddress: Yup.string(),
               name: Yup.string().required(),
           })
-      ),
-  }).required(),
+      ).ensure().when('displayContactUrl', {
+              is: false,
+              then: Yup.array().required().min(1, "atleastOneUrl")},
+      )
+  }, [['status','displayContactUrl', 'contactUrl', 'bundles']]
+  ).required(),
   categories: Yup.array()
       .of(Yup.string())
       .required("categoryRequired"),
 })
-//TODO: Need to add the conditional check here on the number of bundles or rely on that check upstream? Could be some duplication here
 
 export const bundleOfBundleGroupSchema = Yup.object().shape({
   gitRepo: Yup.string()

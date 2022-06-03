@@ -130,6 +130,7 @@
     "min3Char": "Name must be at least 3 characters",
     "max25Char": "The name must not exceed 25 characters",
     "contactUrlFormat": "Please provide a valid contact URL",
+    "contactUrlRequired": "The contact URL is a required field",
     "docRequired": "Documentation is a required field",
     "docFormat": "Documentation must match URL format",
     "max255Char": "The documentaion url must not exceed 255 characters",

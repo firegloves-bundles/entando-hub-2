@@ -178,7 +178,10 @@ const BundleGroupForm = ({
     const contactUrlChangeHandler = (e) => {
         createVersionDetailsObj("contactUrl", e.target.value);
         setIsValid(e.target.value.trim(), 'contactUrl')
-        if (e.target.value.trim().length) {
+        if (!e.target.value.trim().length) {
+            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlRequired')]
+        }
+        else {
             validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlFormat')]
         }
     }
@@ -192,7 +195,7 @@ const BundleGroupForm = ({
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
             validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
-        } else if (e.target.value.trim().length) {
+        } else {
             validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
@@ -451,7 +454,7 @@ const BundleGroupForm = ({
                                     (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["versionDetails.contactUrl"] &&
                                         validationResult["versionDetails.contactUrl"].join("; "))
                                 }
-                                disabled={disabled}
+                                disabled={disabled || !versionDetails.displayContactUrl}
                                 value={versionDetails.contactUrl}
                                 onChange={contactUrlChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "contactUrl")}

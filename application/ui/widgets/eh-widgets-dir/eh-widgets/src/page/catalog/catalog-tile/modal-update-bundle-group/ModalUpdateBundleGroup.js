@@ -157,6 +157,7 @@ export const ModalUpdateBundleGroup = ({
         setMinOneBundleError(validationError['versionDetails.bundles'][0]);
       }
       if (validationError) {
+        console.info("Form validation error(s)", validationError)
         setValidationResult(validationError)
         return //don't send the form
       }

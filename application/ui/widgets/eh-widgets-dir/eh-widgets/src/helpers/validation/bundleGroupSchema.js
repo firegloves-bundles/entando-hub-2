@@ -62,7 +62,8 @@ export const newBundleGroupSchema = Yup.object().shape({
                   )
                   .max(255, "max255Char")
           }),
-      displayContactUrl: Yup.boolean(),
+      displayContactUrl: Yup.boolean()
+          .nullable(),
       documentationUrl: Yup.string()
           .matches(
               DOCUMENTATION_ADDRESS_URL_REGEX,

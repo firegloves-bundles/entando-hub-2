@@ -11,7 +11,6 @@ import { getProfiledUpdateSelectStatusInfo } from "../../../../helpers/profiling
 import { getHigherRole } from "../../../../helpers/helpers"
 import { newBundleGroupSchema } from "../../../../helpers/validation/bundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
-import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
 import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
@@ -39,7 +38,7 @@ export const ModalUpdateBundleGroup = ({
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
-  const [minOneBundleError, setMinOneBundleError] = useState("")
+  const [minOneBundleError] = useState("")
 
 
   const onDataChange = useCallback((bundleGroup) => {
@@ -146,16 +145,6 @@ export const ModalUpdateBundleGroup = ({
       .catch((err) => {
         validationError = fillErrors(err)
       })
-      if ((bundleGroup && (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.versionDetails.status === BUNDLE_STATUS.DELETE_REQ)) &&
-          validationError && validationError['versionDetails.bundles'] && validationError['versionDetails.bundles'].length === 1 &&
-          Object.keys(validationError).length === 1) {
-          validationError = undefined;
-      }
-      if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
-          (bundleGroup.versionDetails.displayContactUrl !== true) &&
-          (bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.versionDetails.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError['versionDetails.bundles'][0]);
-      }
       if (validationError) {
         console.info("Form validation error(s)", validationError)
         setValidationResult(validationError)

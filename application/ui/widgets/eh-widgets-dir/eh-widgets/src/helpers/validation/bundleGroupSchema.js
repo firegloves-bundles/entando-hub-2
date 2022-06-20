@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import {BUNDLE_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX} from "../constants"
+import {BUNDLE_STATUS, BUNDLE_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX} from "../constants"
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -53,15 +53,15 @@ export const newBundleGroupSchema = Yup.object().shape({
       contactUrl: Yup.string()
           .nullable()
           .when('displayContactUrl', {
-              is: true,
+              is: (displayContactUrl) => (displayContactUrl === true),
               then: Yup.string()
                   .required('contactUrlRequired')
                   .matches(
                       CONTACT_URL_REGEX,
                       "contactUrlFormat"
                   )
-                  .max(255, "max255Char")
-          }),
+          })
+          .max(255, "max255Char"),
       displayContactUrl: Yup.boolean()
           .nullable(),
       documentationUrl: Yup.string()
@@ -82,9 +82,11 @@ export const newBundleGroupSchema = Yup.object().shape({
               gitRepoAddress: Yup.string(),
               name: Yup.string().required(),
           })
-      ).ensure().when('displayContactUrl', {
-              is: false,
-              then: Yup.array().required().min(1, "atleastOneUrl")},
+      ).when(['displayContactUrl','status'], {
+              is: (displayContactUrl, status) => {
+                  return (displayContactUrl !== true) && ((status === BUNDLE_STATUS.PUBLISH_REQ) || (status === BUNDLE_STATUS.PUBLISHED))
+              },
+              then: Yup.array().min(1, "atleastOneUrl")},
       )
   }, [['status','displayContactUrl', 'contactUrl', 'bundles']]
   ).required(),

@@ -426,7 +426,7 @@ const BundleGroupVersionForm = ({
                                     (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["versionDetails.contactUrl"] &&
                                         validationResult["versionDetails.contactUrl"].join("; "))
                                 }
-                                disabled={disabled}
+                                disabled={disabled || !bundleGroup.displayContactUrl}
                                 value={bundleGroup.contactUrl}
                                 onChange={contactUrlChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "contactUrl")}

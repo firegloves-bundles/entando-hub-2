@@ -9,8 +9,8 @@ import {
 import { getProfiledNewSelectStatusInfo } from "../../../../helpers/profiling"
 import { getHigherRole } from "../../../../helpers/helpers"
 import {
-  newVersionBundleGroupSchema,
-} from "../../../../helpers/validation/newVersionBundleGroupSchema"
+  versionBundleGroupSchema,
+} from "../../../../helpers/validation/bundleGroupSchema"
 import { fillErrors } from "../../../../helpers/validation/fillErrors"
 import { BUNDLE_STATUS } from "../../../../helpers/constants"
 
@@ -37,7 +37,7 @@ export const ModalAddNewBundleGroupVersion = ({
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
-  const [minOneBundleError, setMinOneBundleError] = useState("")
+  const [minOneBundleError] = useState("")
 
 
   const onDataChange = useCallback((bundleGroup) => {
@@ -105,7 +105,7 @@ export const ModalAddNewBundleGroupVersion = ({
     
     ;(async () => {
       let validationError
-      await newVersionBundleGroupSchema.validate(bundleGroup, { abortEarly: false })
+      await versionBundleGroupSchema.validate(bundleGroup, { abortEarly: false })
         .catch((err) => {
           validationError = fillErrors(err)
         })
@@ -116,17 +116,7 @@ export const ModalAddNewBundleGroupVersion = ({
         }
         validationError.version = versionValidationError
       }
-      if ((bundleGroup && (bundleGroup.status === BUNDLE_STATUS.NOT_PUBLISHED || bundleGroup.status === BUNDLE_STATUS.DELETE_REQ)) &&
-        validationError && validationError.bundles && validationError.bundles.length === 1 &&
-        Object.keys(validationError).length === 1) {
-        validationError = undefined;
-      }
-      
-      if (bundleGroup && bundleGroup.bundles && bundleGroup.bundles.length === 0 &&
-          bundleGroup.displayContactUrl !== true &&
-        (bundleGroup.status === BUNDLE_STATUS.PUBLISH_REQ || bundleGroup.status === BUNDLE_STATUS.PUBLISHED)) {
-        setMinOneBundleError(validationError.bundles[0]);
-      }
+
       if (validationError) {
         setValidationResult(validationError)
         return

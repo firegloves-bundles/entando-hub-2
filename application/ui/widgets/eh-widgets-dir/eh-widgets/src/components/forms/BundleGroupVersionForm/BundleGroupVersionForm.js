@@ -161,7 +161,7 @@ const BundleGroupVersionForm = ({
         changeBundleGroup("contactUrl", e.target.value);
         setIsValid(e.target.value.trim(), 'contactUrl')
         if (e.target.value.trim().length) {
-            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlFormat')]
+            validationResult["contactUrl"] = [i18n.t('formValidationMsg.contactUrlFormat')]
         }
     }
 
@@ -410,6 +410,20 @@ const BundleGroupVersionForm = ({
                         </Column>
 
                         <Column sm={16} md={16} lg={16}>
+                            <BundlesOfBundleGroup
+                                onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
+                                initialBundleList={bundleGroup.bundles}
+                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
+                                minOneBundleError={minOneBundleError}
+                                displayContactUrl={bundleGroup.displayContactUrl}
+                                bundleStatus={bundleStatus}
+                                mode={mode}
+                                operation={operation}
+                                bundleGroupIsEditable={bundleGroup.isEditable}
+                            />
+                        </Column>
+
+                        <Column sm={16} md={16} lg={16}>
                             <Checkbox
                                 disabled={disabled}
                                 id={"displayContactUrl"}
@@ -421,10 +435,10 @@ const BundleGroupVersionForm = ({
 
                         <Column sm={16} md={8} lg={8}>
                             <TextInput
-                                invalid={(!isContactUrlValid || showContactUrlCharLimitErrMsg) && !!validationResult["versionDetails.contactUrl"]}
+                                invalid={(!isContactUrlValid || showContactUrlCharLimitErrMsg) && !!validationResult["contactUrl"]}
                                 invalidText={
-                                    (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["versionDetails.contactUrl"] &&
-                                        validationResult["versionDetails.contactUrl"].join("; "))
+                                    (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["contactUrl"] &&
+                                        validationResult["contactUrl"].join("; "))
                                 }
                                 disabled={disabled || !bundleGroup.displayContactUrl}
                                 value={bundleGroup.contactUrl}
@@ -434,20 +448,6 @@ const BundleGroupVersionForm = ({
                                 maxLength={CHAR_LENGTH_255}
                                 onKeyPress={keyPressHandler}
                                 labelText={`${i18n.t('component.bundleModalFields.contactUrl')} ${bundleGroup.displayContactUrl ? " *" : ""}`}
-                            />
-                        </Column>
-
-                        <Column sm={16} md={16} lg={16}>
-                            <BundlesOfBundleGroup
-                                onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                initialBundleList={bundleGroup.bundles}
-                                disabled={operation === OPERATION.ADD_NEW_VERSION ? false : disabled}
-                                minOneBundleError={minOneBundleError}
-                                displayContactUrl={bundleGroup.displayContactUrl}
-                                bundleStatus={bundleStatus}
-                                mode={mode}
-                                operation={operation}
-                                bundleGroupIsEditable={bundleGroup.isEditable}
                             />
                         </Column>
 

@@ -118,6 +118,7 @@ export const ModalAddNewBundleGroupVersion = ({
       }
 
       if (validationError) {
+        console.info("Form validation error(s)", validationError)
         setValidationResult(validationError)
         return
       }

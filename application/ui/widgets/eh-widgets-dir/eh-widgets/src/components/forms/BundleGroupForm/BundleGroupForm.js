@@ -442,7 +442,7 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 id={"displayContactUrl"}
                                 labelText={`${i18n.t('component.bundleModalFields.displayContactLink')}`}
-                                checked={versionDetails.displayContactUrl}
+                                checked={versionDetails.displayContactUrl || false}
                                 onChange={displayContactChangeHandler}
                             />
                         </Column>

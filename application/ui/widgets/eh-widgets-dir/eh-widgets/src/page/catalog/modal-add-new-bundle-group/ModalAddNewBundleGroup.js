@@ -66,6 +66,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
+                        displayContactUrl: false,
+                        contactUrl: "",
                         version: "",
                         status: "NOT_PUBLISHED",
                         bundles: []
@@ -123,6 +125,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             description: "",
                             descriptionImage: values.bundleGroupForm.standardIcon,
                             documentationUrl: "",
+                            displayContactUrl: false,
+                            contactUrl: "",
                             version: "",
                             status: "NOT_PUBLISHED",
                             bundles: []
@@ -154,8 +158,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 let validationError
-                await newBundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
-                    validationError = fillErrors(error)
+                await newBundleGroupSchema
+                    .validate(bundleGroup, { abortEarly: false })
+                    .catch(error => {
+                        validationError = fillErrors(error)
                 })
                 if (validationError) {
                     setValidationResult(validationError)

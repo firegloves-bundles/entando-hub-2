@@ -21,7 +21,7 @@ export const bundleGroupSchema = Yup.object().shape({
     .required("docRequired"),
   displayContactUrl: Yup.boolean()
     .nullable(),
-   contactUrl: Yup.string()
+  contactUrl: Yup.string()
     .nullable()
     .when('displayContactUrl', {
         is: (displayContactUrl) => (displayContactUrl === true),

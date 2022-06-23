@@ -10,7 +10,9 @@ entity BundleGroupVersion {
     description String,
     descriptionImage String,
     documentationUrl String,
-    status Status required
+    status Status required,
+    displayContactUrl Boolean,
+    contactUrl String
 }
 
 entity Bundle {

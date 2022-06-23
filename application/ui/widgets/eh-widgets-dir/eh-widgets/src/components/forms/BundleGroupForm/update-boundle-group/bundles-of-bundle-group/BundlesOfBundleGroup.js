@@ -67,7 +67,8 @@ const BundlesOfBundleGroup = ({
     bundleStatus,
     mode,
     operation,
-    bundleGroupIsEditable
+    bundleGroupIsEditable,
+    displayContactUrl
 }) => {
 
     useEffect(() => {
@@ -154,20 +155,30 @@ const BundlesOfBundleGroup = ({
 
     const textInputProps = {
         id: "bundle",
-        labelText: bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED ? `${i18n.t('component.bundleModalFields.addUrlBundle')} *` : `${i18n.t('component.bundleModalFields.addUrlBundle')}`
+        labelText: (bundleStatus === BUNDLE_STATUS.PUBLISH_REQ || bundleStatus === BUNDLE_STATUS.PUBLISHED) && !displayContactUrl ?
+            `${i18n.t('component.bundleModalFields.addUrlBundle')} *` : `${i18n.t('component.bundleModalFields.addUrlBundle')}`
     }
 
     let bundleUrlErrorResult = "";
     let minOneBundle = `${i18n.t('formValidationMsg.atleastOneUrl')}`
-    if (!initialBundleList.length && mode === 'Edit' && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
+    if (
+        !displayContactUrl &&
+        !initialBundleList.length &&
+        mode === 'Edit' &&
+        (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)
+    ) {
         /**
          * Show BUNDLE_URL_REGEX_FAIL Msg when Mode is Edit and BUNDLE_STATUS is
          * PUBLISHED OR BUNDLE_STATUS.PUBLISH_REQ, Otherwise show minOneBundle
          */
         bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? `${i18n.t('formValidationMsg.bundleUrlFormat')}` : minOneBundle
-    } else if (minOneBundleError === minOneBundle &&
+    } else if (
+        !displayContactUrl &&
+        minOneBundleError === minOneBundle &&
         Object.keys(validationResult).length === 0 &&
-        initialBundleList.length < 1 && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)) {
+        initialBundleList.length < 1
+        && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)
+    ) {
             bundleUrlErrorResult = minOneBundle;
     } else {
         if (!isUrlBundleRexValid) {

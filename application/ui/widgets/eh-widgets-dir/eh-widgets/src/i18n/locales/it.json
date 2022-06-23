@@ -17,6 +17,7 @@
       }
     },
     "bundleGroupInfo": {
+      "contactUsInfo": "Si prega di contattare l'autore per ulteriori informazioni",
       "lastUpdate": "Ultimo aggiornamento",
       "linkToDocument": "Link alla documentazione",
       "listToBundles": "Elenco dei bundle",
@@ -48,6 +49,8 @@
       "name": "Nome",
       "category": "Categoria",
       "documentAddress": "Indirizzo della documentazione",
+      "displayContactLink": "Visualizza il pulsante Contattaci",
+      "contactUrl": "URL di contatto",
       "version": "Versione",
       "organisation": "Organizzazione",
       "status": "Stato",
@@ -57,6 +60,7 @@
     },
     "button": {
       "add": "Aggiungi",
+      "contactUs": "Contattaci",
       "create": "Crea",
       "save": "Salva",
       "edit": "Modifica",
@@ -125,6 +129,8 @@
     "nameReq": "Il nome è un campo obbligatorio",
     "min3Char": "Il nome deve contenere almeno 3 caratteri",
     "max25Char": "Il nome non deve superare i 25 caratteri",
+    "contactUrlFormat": "Fornisci un URL di contatto valido",
+    "contactUrlRequired": "L'URL di contatto è un campo obbligatorio",
     "docRequired": "La documentazione è un campo obbligatorio",
     "docFormat": "La documentazione deve essere fornita tramite un URL",
     "max255Char": "L'URL della documentazione non deve superare i 255 caratteri",

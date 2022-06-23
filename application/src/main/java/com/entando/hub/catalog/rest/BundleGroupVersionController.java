@@ -226,7 +226,9 @@ public class BundleGroupVersionController {
         protected List<Long> children;
         protected String bundleGroupVersionId;
         protected List<BundleNoId> bundles;
-	    
+        protected Boolean displayContactUrl;
+        protected String contactUrl;
+
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
             this.description = description;
@@ -255,18 +257,22 @@ public class BundleGroupVersionController {
             if (entity.getBundles() != null) {
             	this.children = entity.getBundles().stream().map((children) -> children.getId()).collect(Collectors.toList());
             }
+            this.displayContactUrl = entity.getDisplayContactUrl();
+            this.contactUrl = entity.getContactUrl();
        }
 
         public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
-            com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleBroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();
-            bundleBroupVersion.setDescription(this.getDescription());
-            bundleBroupVersion.setDescriptionImage(this.getDescriptionImage());
-            bundleBroupVersion.setDocumentationUrl(this.getDocumentationUrl());
-            bundleBroupVersion.setStatus(this.getStatus());
-            bundleBroupVersion.setVersion(this.getVersion());
-            bundleBroupVersion.setBundleGroup(bundleGroup);
-            id.map(Long::valueOf).ifPresent(bundleBroupVersion::setId);
-            return bundleBroupVersion;
+            com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleGroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();
+            bundleGroupVersion.setDescription(this.getDescription());
+            bundleGroupVersion.setDescriptionImage(this.getDescriptionImage());
+            bundleGroupVersion.setDocumentationUrl(this.getDocumentationUrl());
+            bundleGroupVersion.setStatus(this.getStatus());
+            bundleGroupVersion.setVersion(this.getVersion());
+            bundleGroupVersion.setBundleGroup(bundleGroup);
+            bundleGroupVersion.setDisplayContactUrl(this.getDisplayContactUrl());
+            bundleGroupVersion.setContactUrl(this.getContactUrl());
+            id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
+            return bundleGroupVersion;
         }
     }
 

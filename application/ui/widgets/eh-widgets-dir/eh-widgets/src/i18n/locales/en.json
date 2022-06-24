@@ -49,14 +49,15 @@
       "name": "Name",
       "category": "Category",
       "documentAddress": "Documentation Address",
-      "displayContactLink": "Display Contact Us button?",
+      "displayContactLink": "Display Contact Us button",
       "contactUrl": "Contact URL",
       "version": "Version",
       "organisation": "Organisation",
       "status": "Status",
-      "addUrlBundle": "Add URL Bundle",
+      "addUrlBundle": "Add Bundle URL",
       "description": "Description",
-      "search": "Search"
+      "search": "Search",
+      "source": "Source"
     },
     "button": {
       "add": "Add",

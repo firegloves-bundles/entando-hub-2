@@ -21,25 +21,24 @@ bundleGroups	[...]
 bundleId	string
 } */
 
-const parseGitRepoAddr = (gitRepoAddress) => {
-    return gitRepoAddress ? {
-        name: gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1,
-            gitRepoAddress.lastIndexOf(".")),
-        gitRepoAddress
-    } : {
-        name: "",
-        gitRepoAddress: ""
-    }
+const parseGitRepoAddr = (bundle) => {
+    const gitRepoAddress = bundle.gitRepoAddress;
+    const name = gitRepoAddress ?
+        gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1, gitRepoAddress.lastIndexOf(".")) :
+        "";
+    return {...bundle, name: name}
 }
 
 const BundleList = ({children = [], onDeleteBundle, disabled}) => {
-    const elemList = children.map(bundle => bundle.gitRepoAddress).map(
-        parseGitRepoAddr).map((childrenInfo, index) =>
+    const elemList = children.map(parseGitRepoAddr).map((childrenInfo, index) =>
             <li key={index.toString()}>
                 <Tag disabled={disabled}>
                     {disabled && childrenInfo.name}
                     {!disabled && <a href={clickableSSHGitURL(childrenInfo.gitRepoAddress)}
                         target={"_new"}>{childrenInfo.name}</a>}
+                    {childrenInfo.gitSrcRepoAddress && <span>
+                        <a href={childrenInfo.gitSrcRepoAddress} target="_blank">{i18n.t('component.bundleModalFields.source')}</a>
+                    </span>}
                     {!disabled && <span
                         className="button-delete"
                         onClick={() => onDeleteBundle(childrenInfo.gitRepoAddress)}>
@@ -133,7 +132,7 @@ const BundlesOfBundleGroup = ({
                 return
             }
             let newBundleList = [...bundleList, {
-                name: parseGitRepoAddr(gitRepo).name,
+                name: parseGitRepoAddr({gitRepoAddress: gitRepo}).name,
                 description: gitRepo,
                 gitRepoAddress: gitRepo,
                 dependencies: [],

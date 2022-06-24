@@ -56,7 +56,8 @@
       "status": "Stato",
       "addUrlBundle": "Aggiungi l'URL del bundle",
       "description": "Descrizione",
-      "search": "Ricerca"
+      "search": "Ricerca",
+      "source": "Fonte"
     },
     "button": {
       "add": "Aggiungi",

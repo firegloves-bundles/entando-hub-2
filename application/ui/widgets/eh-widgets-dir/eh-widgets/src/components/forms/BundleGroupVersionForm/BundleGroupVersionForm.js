@@ -30,9 +30,9 @@ import {
     VERSION_REGEX
 } from "../../../helpers/constants";
 import values from "../../../config/common-configuration";
-import IconUploader from "../BundleGroupForm/update-boundle-group/icon-uploader/IconUploader";
+import IconUploader from "../BundleGroupForm/update-bundle-group/icon-uploader/IconUploader";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
-import BundlesOfBundleGroup from "../BundleGroupForm/update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
+import BundlesOfBundleGroup from "../BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
 import i18n from "../../../i18n";
 import { isVersionDuplicate } from "../../../helpers/validation/isVersionDuplicateValidate";
 

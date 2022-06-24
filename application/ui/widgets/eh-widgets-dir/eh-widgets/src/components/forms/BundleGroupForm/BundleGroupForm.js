@@ -30,9 +30,9 @@ import {
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import i18n from "../../../i18n";
 import './bundle-group-form.scss';
-import BundlesOfBundleGroup from "./update-boundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
-import IconUploader from "./update-boundle-group/icon-uploader/IconUploader";
-import "./update-boundle-group/update-bundle-group.scss";
+import BundlesOfBundleGroup from "./update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup";
+import IconUploader from "./update-bundle-group/icon-uploader/IconUploader";
+import "./update-bundle-group/update-bundle-group.scss";
 import { isHubAdmin } from "../../../helpers/helpers";
 
 const BundleGroupForm = ({

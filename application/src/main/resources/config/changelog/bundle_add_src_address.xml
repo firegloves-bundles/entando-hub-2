@@ -8,7 +8,7 @@
 
     <changeSet id="20220624-add-bundle-src" author="admin">
         <addColumn tableName="bundle">
-            <column name="gitSrcRepoAddress" type="varchar(255)"/>
+            <column name="git_src_repo_address" type="varchar(255)"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

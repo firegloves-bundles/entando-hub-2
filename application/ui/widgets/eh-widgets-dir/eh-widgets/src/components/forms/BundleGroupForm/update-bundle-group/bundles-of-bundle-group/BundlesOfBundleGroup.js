@@ -37,7 +37,7 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
                     {!disabled && <a href={clickableSSHGitURL(childrenInfo.gitRepoAddress)}
                         target={"_new"}>{childrenInfo.name}</a>}
                     {childrenInfo.gitSrcRepoAddress && <span>
-                        <a href={childrenInfo.gitSrcRepoAddress} target="_blank">{i18n.t('component.bundleModalFields.source')}</a>
+                        <a href={childrenInfo.gitSrcRepoAddress} target={"_blank"} rel="noopener noreferrer">{i18n.t('component.bundleModalFields.source')}</a>
                     </span>}
                     {!disabled && <span
                         className="button-delete"

@@ -35,7 +35,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [minOneBundleError] = useState("")
+        const [minOneBundleError, setMinOneBundleError] = useState("")
         const [reqOnWay, setReqOnWay] = useState(false)
 
         const onDataChange = useCallback((bundleGroup) => {
@@ -143,7 +143,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             }
         }, [])
 
-        //TODO BE QUERY REFACTORING
         const createNewBundleGroup = async (bundleGroup) => {
             const toSend = {
                 ...bundleGroup,
@@ -164,6 +163,10 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         validationError = fillErrors(error)
                 })
                 if (validationError) {
+                    console.info("Form validation error(s)", validationError)
+                    if (validationError['versionDetails.bundles']) {
+                        setMinOneBundleError(validationError['versionDetails.bundles'][0]);
+                    }
                     setValidationResult(validationError)
                     return //don't send the form
                 }

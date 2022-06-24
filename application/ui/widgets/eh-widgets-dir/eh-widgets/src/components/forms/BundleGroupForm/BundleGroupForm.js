@@ -67,7 +67,7 @@ const BundleGroupForm = ({
     const orgsList = orgList && orgList.length ? orgList : [];
 
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
-        if(!currOrganisationId) return; //TODO TEMPORARY FIX FOR USERS WITH NO ORGANISATION
+        if(!currOrganisationId) return;
 
         const currOrganisation = organisations.find(o => Number(o.organisationId) === Number(currOrganisationId))
         const enableOrg = isHubAdmin() && bundleGroup.isEditable &&

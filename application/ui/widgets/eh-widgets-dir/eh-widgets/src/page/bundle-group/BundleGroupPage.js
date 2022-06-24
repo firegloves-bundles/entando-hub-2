@@ -196,7 +196,7 @@ const BundleList = ({ children }) => {
   const elemList = children.map((bundle, index) =>
     <li key={index.toString()}>
       <a href={clickableSSHGitURL(bundle.gitRepoAddress)} target={"_new"}>{bundle.name}</a>
-      {bundle.gitSrcRepoAddress && <span><a href={bundle.gitSrcRepoAddress} target={"_blank"}>{i18n.t('component.bundleModalFields.source')}</a></span>}
+      {bundle.gitSrcRepoAddress && <span><a href={bundle.gitSrcRepoAddress} target={"_blank"} rel="noopener noreferrer">{i18n.t('component.bundleModalFields.source')}</a></span>}
     </li>)
 
   return (

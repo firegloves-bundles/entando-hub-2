@@ -17,7 +17,9 @@ entity BundleGroupVersion {
 
 entity Bundle {
     name String required,
+    description String,
     gitRepoAddress String required
+    gitSrcRepoAddress String
 }
 
 entity Category {

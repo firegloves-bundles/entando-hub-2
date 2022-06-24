@@ -58,6 +58,7 @@ public class BundleControllerTest {
 	private final String NAME = "Test";
 	private final String DESCRIPTION = "Test Description";
 	private final String GIT_REPO_ADDRESS = "Test Git Rep";
+	private final String GIT_SRC_REPO_ADDRESS = "Test Src Git Rep";
 	private final String DEPENDENCIES = "Test Dependencies";
 	private final Long VERSION_ID = 5001L;
 	private final BundleGroupVersion.Status STATUS = BundleGroupVersion.Status.PUBLISHED;
@@ -124,7 +125,7 @@ public class BundleControllerTest {
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
-		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), new ArrayList<>(), new ArrayList<>());
+		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>());
 		Mockito.when(bundleService.createBundle(bundleNoId2.createEntity(Optional.empty()))).thenReturn(bundle);
 		inputJson = mapToJson(bundleNoId2);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
@@ -198,6 +199,7 @@ public class BundleControllerTest {
 		bundle.setName(NAME);
 		bundle.setDescription(DESCRIPTION);
 		bundle.setGitRepoAddress(GIT_REPO_ADDRESS);
+		bundle.setGitSrcRepoAddress(GIT_SRC_REPO_ADDRESS);
 		bundle.setDependencies(DEPENDENCIES);
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		Set<Bundle> bundles = new HashSet<>();

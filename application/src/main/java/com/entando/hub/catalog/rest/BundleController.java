@@ -122,8 +122,8 @@ public class BundleController {
     @EqualsAndHashCode(callSuper = true)
     public static class Bundle extends BundleNoId {
         private final String bundleId;
-        public Bundle(String bundleId, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroups) {
-            super(bundleId, name, description, gitRepoAddress, dependencies, bundleGroups);
+        public Bundle(String bundleId, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroups) {
+            super(bundleId, name, description, gitRepoAddress, gitSrcRepoAddress, dependencies, bundleGroups);
             this.bundleId = bundleId;
         }
 
@@ -143,14 +143,16 @@ public class BundleController {
         protected String descriptionImage;
 
         protected final String gitRepoAddress;
+        private final String gitSrcRepoAddress;
         protected final List<String> dependencies;
         protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 
-        public BundleNoId(String id, String name, String description, String gitRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
+        public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
         	this.bundleId = id;
             this.name = name;
             this.description = description;
             this.gitRepoAddress = gitRepoAddress;
+            this.gitSrcRepoAddress = gitSrcRepoAddress;
             this.dependencies = dependencies;
             this.bundleGroups = bundleGroupVersions;
         }
@@ -160,6 +162,7 @@ public class BundleController {
             this.name = entity.getName();
             this.description = entity.getDescription();
             this.gitRepoAddress = entity.getGitRepoAddress();
+            this.gitSrcRepoAddress = entity.getGitSrcRepoAddress();
             this.dependencies = Arrays.asList(entity.getDependencies().split(","));
             this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
         }
@@ -169,8 +172,10 @@ public class BundleController {
             ret.setDescription(this.getDescription());
             ret.setName(this.getName());
             ret.setGitRepoAddress(this.getGitRepoAddress());
+            ret.setGitSrcRepoAddress(this.getGitSrcRepoAddress());
             ret.setDependencies(String.join(",", this.getDependencies()));
 
+            //TODO bundlegroups contains bundle group version id! fix it!
             Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
             	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
             	bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));

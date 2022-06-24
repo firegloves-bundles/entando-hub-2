@@ -126,7 +126,7 @@ public class BundleService {
 				return createBundles(bundles);
 			}
 		} catch (Exception e) {
-			logger.debug("{}: createBundleEntitiesAndSave: Error {}", CLASS_NAME, e.getStackTrace());
+			logger.debug("{}: createBundleEntitiesAndSave: Error {} {}", CLASS_NAME, e.getMessage(), e.getStackTrace());
 		}
 		return Collections.emptyList();
 	}

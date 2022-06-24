@@ -175,7 +175,7 @@ public class BundleController {
             ret.setGitSrcRepoAddress(this.getGitSrcRepoAddress());
             ret.setDependencies(String.join(",", this.getDependencies()));
 
-            //todo bundlegroups contains bundle group version id! fix it!
+            //TODO bundlegroups contains bundle group version id! fix it!
             Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
             	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
             	bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));

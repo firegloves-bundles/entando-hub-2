@@ -16,4 +16,5 @@
     <include file="config/changelog/initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/changelog/bundle_module.xml" relativeToChangelogFile="false"/>
     <include file="config/changelog/portaluser_module.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/bundlegroupversion_contact_module.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

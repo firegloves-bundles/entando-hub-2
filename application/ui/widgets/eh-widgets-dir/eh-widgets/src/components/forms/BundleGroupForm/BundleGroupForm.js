@@ -1,4 +1,5 @@
 import {
+    Checkbox,
     Column,
     Content,
     Grid,
@@ -10,7 +11,22 @@ import {
 } from "carbon-components-react";
 import { useEffect, useRef, useState } from "react";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, CHAR_LENGTH, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME, DESCRIPTION_FIELD_ID, DOCUMENTATION_ADDRESS_URL_REGEX, DOCUMENTATION_FIELD_ID, MAX_CHAR_LENGTH, MAX_CHAR_LENGTH_FOR_DESC, NAME_FIELD_ID, VERSION_FIELD_ID, VERSON_REGEX } from "../../../helpers/constants";
+import {
+    BUNDLE_STATUS,
+    CHAR_LENGTH,
+    CHAR_LENGTH_255,
+    CHAR_LIMIT_MSG_SHOW_TIME,
+    DESCRIPTION_FIELD_ID,
+    DOCUMENTATION_ADDRESS_URL_REGEX,
+    DOCUMENTATION_FIELD_ID,
+    MAX_CHAR_LENGTH,
+    MAX_CHAR_LENGTH_FOR_DESC,
+    NAME_FIELD_ID,
+    VERSION_FIELD_ID,
+    VERSION_REGEX,
+    CONTACT_URL_REGEX,
+    CONTACT_URL_FIELD_ID
+} from "../../../helpers/constants";
 import { bundleGroupSchema } from "../../../helpers/validation/bundleGroupSchema";
 import i18n from "../../../i18n";
 import './bundle-group-form.scss';
@@ -37,11 +53,13 @@ const BundleGroupForm = ({
     const [bundleDescriptionLength, setBundleDescriptionLength] = useState(0);
     const [isDocumentationAddressValid, setIsDocumentationAddressValid] = useState(false);
     const [isBundleVersionValid, setIsBundleVersionValid] = useState(false);
+    const [isContactUrlValid, setIsContactUrlValid] = useState(false);
 
     const [showNameCharLimitErrMsg, setShowNameCharLimitErrMsg] = useState(false);
     const [showDescriptionCharLimitErrMsg, setShowDescriptionCharLimitErrMsg] = useState(false);
     const [showDocUrlCharLimitErrMsg, setShowDocUrlCharLimitErrMsg] = useState(false);
     const [showVersionCharLimitErrMsg, setShowVersionCharLimitErrMsg] = useState(false);
+    const [showContactUrlCharLimitErrMsg, setShowContactUrlCharLimitErrMsg] = useState(false);
 
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
@@ -157,12 +175,27 @@ const BundleGroupForm = ({
         changeBundleGroup("categories", [e.target.value])
     }
 
+    const contactUrlChangeHandler = (e) => {
+        createVersionDetailsObj("contactUrl", e.target.value);
+        setIsValid(e.target.value.trim(), 'contactUrl')
+        if (!e.target.value.trim().length) {
+            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlRequired')]
+        }
+        else {
+            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.contactUrlFormat')]
+        }
+    }
+
+    const displayContactChangeHandler = (value, name, e) => {
+        createVersionDetailsObj("displayContactUrl", value);
+    }
+
     const documentationChangeHandler = (e) => {
         createVersionDetailsObj("documentationUrl", e.target.value);
         setIsValid(e.target.value.trim(), 'documentationUrl')
         if (!e.target.value.trim().length) {
             validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docRequired')]
-        } else if (e.target.value.trim().length) {
+        } else {
             validationResult["versionDetails.documentationUrl"] = [i18n.t('formValidationMsg.docFormat')]
         }
     }
@@ -172,7 +205,7 @@ const BundleGroupForm = ({
         if (!e.target.value.trim().length) {
             validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionRequired')]
             setIsBundleVersionValid(false);
-        } else if (!(e.target.value.trim().length > 0 && new RegExp(VERSON_REGEX).test(e.target.value))) {
+        } else if (!(e.target.value.trim().length > 0 && new RegExp(VERSION_REGEX).test(e.target.value))) {
             validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.versionFormat')]
             setIsBundleVersionValid(false);
         } else {
@@ -184,7 +217,9 @@ const BundleGroupForm = ({
         if (inputTypeName === 'documentationUrl') {
             val.trim().length > 0 && new RegExp(DOCUMENTATION_ADDRESS_URL_REGEX).test(val) ? setIsDocumentationAddressValid(true) : setIsDocumentationAddressValid(false)
         } else if (inputTypeName === 'version') {
-            val.trim().length > 0 && new RegExp(VERSON_REGEX).test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
+            val.trim().length > 0 && new RegExp(VERSION_REGEX).test(val) ? setIsBundleVersionValid(true) : setIsBundleVersionValid(false);
+        } else if (inputTypeName === 'contactUrl') {
+            val.trim().length > 0 && new RegExp(CONTACT_URL_REGEX).test(val) ? setIsContactUrlValid(true) : setIsContactUrlValid(false)
         }
     }
 
@@ -250,6 +285,10 @@ const BundleGroupForm = ({
             validationResult["versionDetails.version"] = [i18n.t('formValidationMsg.maxVersion255Char')]
             setShowVersionCharLimitErrMsg(true);
             timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
+        } else if (e.target.id === CONTACT_URL_FIELD_ID && e.target.value.length >= CHAR_LENGTH_255) {
+            validationResult["versionDetails.contactUrl"] = [i18n.t('formValidationMsg.maxVersion255Char')]
+            setShowContactUrlCharLimitErrMsg(true);
+            timerRef.current = setTimeout(() => disappearCharLimitErrMsg(e.target.id), CHAR_LIMIT_MSG_SHOW_TIME);
         }
     }
 
@@ -266,6 +305,9 @@ const BundleGroupForm = ({
                 setShowDocUrlCharLimitErrMsg(false);
             } else if (fieldId === VERSION_FIELD_ID) {
                 validationResult["versionDetails.version"] = undefined;
+                setShowVersionCharLimitErrMsg(false);
+            } else if (fieldId === CONTACT_URL_FIELD_ID) {
+                validationResult["versionDetails.contactUrl"] = undefined;
                 setShowVersionCharLimitErrMsg(false);
             }
         }
@@ -285,6 +327,7 @@ const BundleGroupForm = ({
     }
 
     const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
+    const versionDetails = bundleGroup && bundleGroup.versionDetails ? bundleGroup.versionDetails : {}
     return (
         <>
             <Content className="Edit-bundle-group">
@@ -292,7 +335,7 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={8}>
                             <IconUploader
-                                descriptionImage={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.descriptionImage}
+                                descriptionImage={versionDetails.descriptionImage}
                                 disabled={disabled}
                                 onImageChange={imagesChangeHandler}
                                 onImageDelete={imagesDeleteHandler}
@@ -338,7 +381,7 @@ const BundleGroupForm = ({
                                         validationResult["versionDetails.documentationUrl"].join("; "))
                                 }
                                 disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.documentationUrl}
+                                value={versionDetails.documentationUrl}
                                 onChange={documentationChangeHandler}
                                 onBlur={(e) => trimBeforeFormSubmitsHandler(e, "documentationUrl")}
                                 id={"documentation"}
@@ -356,7 +399,7 @@ const BundleGroupForm = ({
                                         validationResult["versionDetails.version"].join("; "))
                                 }
                                 disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.version}
+                                value={versionDetails.version}
                                 onChange={versionChangeHandler}
                                 id={VERSION_FIELD_ID}
                                 maxLength={CHAR_LENGTH_255}
@@ -374,7 +417,7 @@ const BundleGroupForm = ({
                                     validationResult["versionDetails.status"].join("; ")
                                 }
                                 disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.status}
+                                value={versionDetails.status}
                                 onChange={statusChangeHandler}
                                 id={"status"}
                                 labelText={`${i18n.t('component.bundleModalFields.status')} ${bundleGroupSchema.fields.status.exclusiveTests.required ? " *" : ""}`}>
@@ -385,11 +428,40 @@ const BundleGroupForm = ({
                         <Column sm={16} md={16} lg={16}>
                             <BundlesOfBundleGroup
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
-                                initialBundleList={bundleGroup.versionDetails.bundles}
+                                initialBundleList={versionDetails.bundles}
                                 disabled={disabled}
                                 minOneBundleError={minOneBundleError}
+                                displayContactUrl={versionDetails.displayContactUrl}
                                 bundleStatus={bundleStatus}
                                 mode={mode}
+                            />
+                        </Column>
+
+                        <Column sm={16} md={16} lg={16}>
+                            <Checkbox
+                                disabled={disabled}
+                                id={"displayContactUrl"}
+                                labelText={`${i18n.t('component.bundleModalFields.displayContactLink')}`}
+                                checked={versionDetails.displayContactUrl || false}
+                                onChange={displayContactChangeHandler}
+                            />
+                        </Column>
+
+                        <Column sm={16} md={8} lg={8}>
+                            <TextInput
+                                invalid={(!isContactUrlValid || showContactUrlCharLimitErrMsg) && !!validationResult["versionDetails.contactUrl"]}
+                                invalidText={
+                                    (!isContactUrlValid || showContactUrlCharLimitErrMsg) && (validationResult["versionDetails.contactUrl"] &&
+                                        validationResult["versionDetails.contactUrl"].join("; "))
+                                }
+                                disabled={disabled || !versionDetails.displayContactUrl}
+                                value={versionDetails.contactUrl}
+                                onChange={contactUrlChangeHandler}
+                                onBlur={(e) => trimBeforeFormSubmitsHandler(e, "contactUrl")}
+                                id={"contactUrl"}
+                                maxLength={CHAR_LENGTH_255}
+                                onKeyPress={keyPressHandler}
+                                labelText={`${i18n.t('component.bundleModalFields.contactUrl')} ${versionDetails.displayContactUrl ? " *" : ""}`}
                             />
                         </Column>
 
@@ -405,7 +477,7 @@ const BundleGroupForm = ({
                                         validationResult["versionDetails.description"].join("; "))
                                 }
                                 disabled={disabled}
-                                value={bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description}
+                                value={versionDetails.description}
                                 onChange={descriptionChangeHandler}
                                 maxLength={MAX_CHAR_LENGTH_FOR_DESC}
                                 onKeyPress={keyPressHandler}
@@ -413,7 +485,7 @@ const BundleGroupForm = ({
                                 id={DESCRIPTION_FIELD_ID}
                                 labelText={`${i18n.t('component.bundleModalFields.description')} ${bundleGroupSchema.fields.description.exclusiveTests.required ? " *" : ""}`}
                             />
-                            <div className="bg-form-counter bx--label">{bundleGroup && bundleGroup.versionDetails && bundleGroup.versionDetails.description && bundleGroup.versionDetails.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
+                            <div className="bg-form-counter bx--label">{versionDetails.description && versionDetails.description.length}/{MAX_CHAR_LENGTH_FOR_DESC}</div>
                         </Column>
                     </Row>
                 </Grid>

@@ -10,7 +10,7 @@ import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
-import { BUNDLE_STATUS, DEFAULT_CATEGORY } from "../../../helpers/constants";
+import { DEFAULT_CATEGORY } from "../../../helpers/constants";
 import i18n from "../../../i18n"
 
 /*
@@ -35,7 +35,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [minOneBundleError, setMinOneBundleError] = useState("")
+        const [minOneBundleError] = useState("")
         const [reqOnWay, setReqOnWay] = useState(false)
 
         const onDataChange = useCallback((bundleGroup) => {
@@ -66,6 +66,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         description: "",
                         descriptionImage: values.bundleGroupForm.standardIcon,
                         documentationUrl: "",
+                        displayContactUrl: false,
+                        contactUrl: "",
                         version: "",
                         status: "NOT_PUBLISHED",
                         bundles: []
@@ -123,6 +125,8 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             description: "",
                             descriptionImage: values.bundleGroupForm.standardIcon,
                             documentationUrl: "",
+                            displayContactUrl: false,
+                            contactUrl: "",
                             version: "",
                             status: "NOT_PUBLISHED",
                             bundles: []
@@ -154,19 +158,11 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
             //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 let validationError
-                await newBundleGroupSchema.validate(bundleGroup, { abortEarly: false }).catch(error => {
-                    validationError = fillErrors(error)
+                await newBundleGroupSchema
+                    .validate(bundleGroup, { abortEarly: false })
+                    .catch(error => {
+                        validationError = fillErrors(error)
                 })
-                // bypass the validation for Draft(NOT_PUBLISHED) Status.
-                if (bundleGroup.versionDetails.status === BUNDLE_STATUS.NOT_PUBLISHED &&
-                    validationError && validationError['versionDetails.bundles'] && validationError['versionDetails.bundles'].length === 1 &&
-                    Object.keys(validationError).length === 1) {
-                    validationError = undefined;
-                }
-                if (bundleGroup.versionDetails.bundles && bundleGroup.versionDetails.bundles.length === 0 &&
-                    bundleGroup.versionDetails.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
-                    validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
-                }
                 if (validationError) {
                     setValidationResult(validationError)
                     return //don't send the form

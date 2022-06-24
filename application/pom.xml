@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.entando</groupId>
     <artifactId>entando-hub-catalog-ms</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.5.1-SNAPSHOT</version>
     <description>The BE microservice for Entando HUB</description>
     <properties>
         <problem-spring-web.version>0.25.0</problem-spring-web.version>
@@ -106,6 +106,18 @@
 		<artifactId>junit</artifactId>
 		<scope>test</scope>
 	</dependency>
+    <!--https://www.baeldung.com/spring-boot-testing#1-junit-4-->
+    <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 	<dependency>
 		<groupId>org.springframework.security</groupId>
 		<artifactId>spring-security-test</artifactId>

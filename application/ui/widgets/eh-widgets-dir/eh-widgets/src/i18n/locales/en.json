@@ -17,6 +17,7 @@
       }
     },
     "bundleGroupInfo": {
+      "contactUsInfo": "Please contact the author for more information",
       "lastUpdate": "Last Update",
       "linkToDocument": "Link to documentation",
       "listToBundles": "List of Bundles",
@@ -48,15 +49,18 @@
       "name": "Name",
       "category": "Category",
       "documentAddress": "Documentation Address",
+      "displayContactLink": "Display Contact Us button?",
+      "contactUrl": "Contact URL",
       "version": "Version",
       "organisation": "Organisation",
       "status": "Status",
-      "addUrlBundle": "Add Url Bundle",
+      "addUrlBundle": "Add URL Bundle",
       "description": "Description",
       "search": "Search"
     },
     "button": {
       "add": "Add",
+      "contactUs": "Contact Us",
       "create": "Create",
       "save": "Save",
       "edit": "Edit",
@@ -125,6 +129,8 @@
     "nameRequired": "Name is a required field",
     "min3Char": "Name must be at least 3 characters",
     "max25Char": "The name must not exceed 25 characters",
+    "contactUrlFormat": "Please provide a valid contact URL",
+    "contactUrlRequired": "The contact URL is a required field",
     "docRequired": "Documentation is a required field",
     "docFormat": "Documentation must match URL format",
     "max255Char": "The documentaion url must not exceed 255 characters",

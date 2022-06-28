@@ -61,8 +61,8 @@ public class BundleService {
 			}
 		} else {
 			logger.debug("{}: getBundles: bundle group id is not present: {}", CLASS_NAME, bundleGroupId);
-			List<BundleGroupVersion> budlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
-			response = bundleRepository.findByBundleGroupVersionsIn(budlegroupsVersion, paging);
+			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
+			response = bundleRepository.findByBundleGroupVersionsIn(bundlegroupsVersion, paging);
 		}
 		return response;
 	}

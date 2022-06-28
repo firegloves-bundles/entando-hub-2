@@ -15,6 +15,8 @@ import "./bundle-group-page.scss"
 import i18n from "../../i18n"
 import { clickableSSHGitURL } from "../../helpers/helpers"
 import { SLASH_VERSIONS } from "../../helpers/constants"
+import BundlesOfBundleGroup
+  from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
 
 /*
 BUNDLEGROUP:
@@ -146,14 +148,6 @@ const BundleGroupPage = () => {
                                     && pageModel.bundleGroup.documentationUrl}
                                        target="_new">{i18n.t('page.bundleGroupInfo.documentation')}</a>
                     </div>
-                    {(pageModel.children && pageModel.children.length > 0) &&
-                      <>
-                        <hr/>
-                        <div>
-                          {pageModel.children && <BundleList children={pageModel.children}/>}
-                        </div>
-                      </>
-                    }
                   </Tile>
                 </Column>
               <Column lg={12}>
@@ -182,6 +176,15 @@ const BundleGroupPage = () => {
                   <div className="BundleGroupPage-description">
                     {pageModel.bundleGroup && pageModel.bundleGroup.description}
                   </div>
+                  {(pageModel.children && pageModel.children.length > 0) &&
+                  <>
+                    <hr/>
+                    <BundlesOfBundleGroup
+                        initialBundleList={pageModel.children}
+                        disabled={true}
+                    />
+                  </>
+                  }
                 </Tile>
               </Column>
               </Row>

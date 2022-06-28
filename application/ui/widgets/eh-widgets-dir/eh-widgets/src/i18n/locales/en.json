@@ -54,7 +54,8 @@
       "version": "Version",
       "organisation": "Organisation",
       "status": "Status",
-      "addUrlBundle": "Add Bundle URL",
+      "addBundleUrl": "Add Bundle URL",
+      "addSourceUrl": "Add Source URL",
       "description": "Description",
       "search": "Search",
       "source": "Source"

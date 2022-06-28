@@ -55,6 +55,7 @@
       "organisation": "Organizzazione",
       "status": "Stato",
       "addUrlBundle": "Aggiungi l'URL del bundle",
+      "addSourceUrl": "Add Source URL",
       "description": "Descrizione",
       "search": "Ricerca",
       "source": "Fonte"

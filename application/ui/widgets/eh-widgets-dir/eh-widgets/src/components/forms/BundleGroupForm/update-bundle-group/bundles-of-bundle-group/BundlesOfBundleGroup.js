@@ -1,8 +1,8 @@
 import {useEffect, useRef, useState} from "react"
-import {Button, TextInput, Row, Column} from "carbon-components-react"
+import {Button, ButtonSet, TextInput, Row, Column} from "carbon-components-react"
 import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell,TableToolbar, TableToolbarContent} from 'carbon-components-react';
 
-import {Add16} from '@carbon/icons-react'
+import {Add16, Delete16, Edit16} from '@carbon/icons-react'
 
 import "./bundles-of-bundle-group.scss"
 import {
@@ -63,19 +63,35 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
                     {rows.map((row,index) => (
                         <TableRow key={'bundle'+index}>
                             <TableCell><a href={clickableSSHGitURL(row.gitRepoAddress)}
-                                          target={"_blank"}  rel="noopener noreferrer">{row.gitRepoAddress}</a></TableCell>
-                            <TableCell>{row.gitSrcRepoAddress &&
-                                        <a href={row.gitSrcRepoAddress}
-                                           target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
+                                   target={"_blank"}  rel="noopener noreferrer">{row.gitRepoAddress}</a>
+                            </TableCell>
+                            <TableCell>{(disabled && row.gitSrcRepoAddress) ? (
+                                <a href={row.gitSrcRepoAddress}
+                                   target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
+                            ) : !disabled &&
+                                <TextInput value={row.gitSrcRepoAddress}
+                                           disabled={disabled}
+                                           //TODO: onChange={onChangeHandler}
+                                           maxLength={CHAR_LENGTH_255}
+                                           // invalid={(!isUrlReqValid) ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg)}
+                                           // invalidText={bundleUrlErrorResult}
+                                           autoComplete={"false"}
+                                           // onKeyPress={keyPressHandler}/>
+                                />
                             }
                             </TableCell>
-                            {/*TODO: styles and i18n*/}
+                            {/*TODO: styles change color/background*/}
                             {!disabled &&
-                            <TableCell><span className="button-delete2"
-                                             onClick={() => onDeleteBundle(row.gitRepoAddress)}>
-                                Delete
-                                </span>
-                            </TableCell>
+                                <TableCell>
+                                    <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
+                                        <Button disabled={disabled}
+                                                // onClick={() => onEditBundle(index)}
+                                                hasIconOnly renderIcon={Edit16} kind="secondary"/>
+                                        <Button disabled={disabled}
+                                                onClick={() => onDeleteBundle(index)}
+                                                hasIconOnly renderIcon={Delete16} kind="secondary"/>
+                                    </ButtonSet>
+                                </TableCell>
                             }
                         </TableRow>
                     ))}
@@ -174,11 +190,12 @@ const BundlesOfBundleGroup = ({
         })()
     }
 
-    const onDeleteBundle = (gitRepoAddress) => {
-        const newBundleList = bundleList.filter(
-            bundle => bundle.gitRepoAddress !== gitRepoAddress)
-        setBundleList(newBundleList)
-        onAddOrRemoveBundleFromList(newBundleList)
+    const onDeleteBundle = (index) => {
+        if ((index > -1) && (index < bundleList.length)) {
+            bundleList.splice(index, 1)
+        }
+        setBundleList(bundleList)
+        onAddOrRemoveBundleFromList(bundleList)
     }
 
     const textInputProps = {
@@ -252,7 +269,7 @@ const BundlesOfBundleGroup = ({
         <>
             <Row>
                 {!disabled &&
-                <Column sm={16} md={8} lg={6}>
+                <Column sm={16} md={8} lg={8}>
                     <TextInput value={gitRepo}
                                disabled={disabled}
                                onChange={onChangeHandler}
@@ -266,20 +283,7 @@ const BundlesOfBundleGroup = ({
                 </Column>
                 }
                 {!disabled &&
-                <Column sm={16} md={8} lg={6}>
-                    <TextInput value={''}
-                               disabled={disabled}
-                               onChange={onChangeHandler}
-                               labelText={`${i18n.t('component.bundleModalFields.addSourceUrl')}`}
-                               maxLength={CHAR_LENGTH_255}
-                               invalid={(!isUrlReqValid) ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg)}
-                               invalidText={bundleUrlErrorResult}
-                               autoComplete={"false"}
-                               onKeyPress={keyPressHandler}/>
-                </Column>
-                }
-                {!disabled &&
-                <Column sm={16} md={4} lg={4}>
+                <Column sm={16} md={8} lg={8}>
                     <div className="BundlesOfBundleGroup-add-button">
                         <Button disabled={disabled} onClick={onAddBundle}
                                 renderIcon={Add16}>

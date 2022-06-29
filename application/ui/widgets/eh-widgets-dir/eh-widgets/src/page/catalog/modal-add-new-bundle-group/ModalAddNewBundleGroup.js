@@ -10,7 +10,7 @@ import { getProfiledNewSelectStatusInfo } from "../../../helpers/profiling";
 import { getHigherRole, isHubAdmin } from "../../../helpers/helpers";
 import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGroupForm";
 import values from "../../../config/common-configuration";
-import { DEFAULT_CATEGORY } from "../../../helpers/constants";
+import { DEFAULT_CATEGORY, BUNDLE_STATUS } from "../../../helpers/constants";
 import i18n from "../../../i18n"
 
 /*
@@ -154,7 +154,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
         //Manage the modal submit
         const onRequestSubmit = (e) => {
-            //when submitting the form, the data to save are in newBundleGroup object
             (async () => {
                 let validationError
                 await newBundleGroupSchema
@@ -162,17 +161,19 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     .catch(error => {
                         validationError = fillErrors(error)
                 })
+                const details = bundleGroup.versionDetails;
+                if (details.bundles && details.bundles.length === 0 &&
+                    (details.displayContactUrl !== true) &&
+                    details.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
+                    validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
+                }
                 if (validationError) {
                     console.info("Form validation error(s)", validationError)
-                    if (validationError['versionDetails.bundles']) {
-                        setMinOneBundleError(validationError['versionDetails.bundles'][0]);
-                    }
                     setValidationResult(validationError)
                     return //don't send the form
                 }
                 setReqOnWay(true);
                 const toSend = await createNewBundleGroup(bundleGroup)
-                //WARNING type changed: children (bundle) in new bundle group after the update contains only the id
                 setBundleGroup(toSend)
                 resetData()
                 onAfterSubmit()

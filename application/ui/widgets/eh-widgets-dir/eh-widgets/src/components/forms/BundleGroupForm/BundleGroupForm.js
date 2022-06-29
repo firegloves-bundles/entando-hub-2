@@ -35,6 +35,7 @@ import IconUploader from "./update-bundle-group/icon-uploader/IconUploader";
 import "./update-bundle-group/update-bundle-group.scss";
 import { isHubAdmin } from "../../../helpers/helpers";
 
+
 const BundleGroupForm = ({
                              bundleGroup,
                              categories,

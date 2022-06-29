@@ -1,15 +1,13 @@
 import {useEffect, useRef, useState} from "react"
 import {Button, ButtonSet, TextInput, TextArea, Row, Column} from "carbon-components-react"
-import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell,TableToolbar, TableToolbarContent} from 'carbon-components-react';
+import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell} from 'carbon-components-react';
 
 import {Add16, Delete32, Edit16} from '@carbon/icons-react'
 
 import "./bundles-of-bundle-group.scss"
-import {
-    bundleOfBundleGroupSchema, bundleOfBundleGroupSrcSchema,
-} from "../../../../../helpers/validation/bundleGroupSchema";
+import { bundleUrlSchema, bundleSrcUrlSchema} from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
@@ -33,7 +31,6 @@ const parseGitRepoAddr = (bundle) => {
 
 const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) => {
     const [bundleSrcInvalid, setBundleSrcInvalid] = useState({})
-    const [validationResult, setValidationResult] = useState({})
     const [editBundleIndex, setEditBundleIndex] = useState()
 
     const onEditBundle = (index) => {
@@ -53,15 +50,9 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
     const validateBundleSrcUrl = (value, index) => {
         ; (async () => {
             let validationError
-            //schema should accept empty value but regex overrides
-            if (value && value.length > 0) {
-                await bundleOfBundleGroupSrcSchema.validate({gitSrcRepo: value}, {abortEarly: false}).catch(error => {
-                    validationError = fillErrors(error)
-                })
-            }
-            if (validationError) {
-                setValidationResult(validationError)
-            }
+            await bundleSrcUrlSchema.validate({gitSrcRepo: value}, {abortEarly: false}).catch(error => {
+                validationError = fillErrors(error)
+            })
             const invalidSet = {...bundleSrcInvalid}
             invalidSet[index] = (typeof validationError !== 'undefined');
             setBundleSrcInvalid(invalidSet);
@@ -103,6 +94,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                             hasIconOnly renderIcon={Edit16} kind="secondary"/>
                                 ) : !disabled && (
                                     <div onClick={() => onEditBundle(index)}>
+                                        {/*TODO: i18n*/}
                                         <TextArea value={row.gitSrcRepoAddress || ""}
                                                    disabled={disabled || (index !== editBundleIndex)}
                                                    onChange={(e) => onSrcChange(e,index)}
@@ -111,12 +103,13 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                                    invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
                                                    invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
                                                    autoComplete={"false"}
+                                                   labelText={'some label'}
+                                                   hideLabel={true}
                                                    rows={1}
                                         />
                                     </div>
                                 )}
                             </TableCell>
-                            {/*TODO: styles change color/background*/}
                             {!disabled &&
                                 <TableCell>
                                     <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
@@ -189,7 +182,7 @@ const BundlesOfBundleGroup = ({
         value.trim().length > 0 && new RegExp(BUNDLE_URL_REGEX).test(value) ? setIsUrlBundleRexValid(true) : setIsUrlBundleRexValid(false)
             ; (async () => {
                 let validationError
-                await bundleOfBundleGroupSchema.validate({ gitRepo: value }, { abortEarly: false }).catch(error => {
+                await bundleUrlSchema.validate({ gitRepo: value }, { abortEarly: false }).catch(error => {
                     validationError = fillErrors(error)
                 })
                 if (validationError) {
@@ -207,7 +200,7 @@ const BundlesOfBundleGroup = ({
             //validation
 
             let validationError
-            await bundleOfBundleGroupSchema.validate({gitRepo}, {abortEarly: false}).catch(error => {
+            await bundleUrlSchema.validate({gitRepo}, {abortEarly: false}).catch(error => {
                 validationError = fillErrors(error)
             })
             if (validationError) {

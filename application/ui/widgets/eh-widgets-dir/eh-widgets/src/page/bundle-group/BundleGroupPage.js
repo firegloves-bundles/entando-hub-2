@@ -13,7 +13,6 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import { ModalInstallInformation } from "./modal-install-information/ModalInstallInformation"
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
-import { clickableSSHGitURL } from "../../helpers/helpers"
 import { SLASH_VERSIONS } from "../../helpers/constants"
 import BundlesOfBundleGroup
   from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
@@ -62,7 +61,7 @@ const BundleGroupPage = () => {
   const { id: bundleGroupVersionId } = useParams()
   const { pathname: url } = useLocation();
 
-  const isFromVersionPage = isNavigationFromVersonsPage(url);
+  const isFromVersionPage = isNavigationFromVersionsPage(url);
 
   // fetches the bundle group
   useEffect(() => {
@@ -195,29 +194,12 @@ const BundleGroupPage = () => {
   )
 }
 
-const BundleList = ({ children }) => {
-  const elemList = children.map((bundle, index) =>
-    <li key={index.toString()}>
-      <a href={clickableSSHGitURL(bundle.gitRepoAddress)} target={"_new"}>{bundle.name}</a>
-      {bundle.gitSrcRepoAddress && <span><a href={bundle.gitSrcRepoAddress} target={"_blank"} rel="noopener noreferrer">{i18n.t('component.bundleModalFields.source')}</a></span>}
-    </li>)
-
-  return (
-    <div className="BundleGroupPage-list-wrapper">
-      <div className="BundleGroupPage-list">
-        {i18n.t('page.bundleGroupInfo.listToBundles')}
-      </div>
-      <ul>{elemList}</ul>
-    </div>
-  )
-}
-
 /**
  * Check if the url contains '/versions'
  * @param {*} url 
  * @returns 
  */
-const isNavigationFromVersonsPage = (url) => {
+const isNavigationFromVersionsPage = (url) => {
   if (url && url.indexOf(SLASH_VERSIONS) > 0) {
     return true;
   }

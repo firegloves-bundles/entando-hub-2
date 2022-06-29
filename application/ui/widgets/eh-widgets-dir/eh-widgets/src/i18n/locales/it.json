@@ -54,7 +54,7 @@
       "version": "Versione",
       "organisation": "Organizzazione",
       "status": "Stato",
-      "addUrlBundle": "Aggiungi l'URL del bundle",
+      "addBundleUrl": "Aggiungi l'URL del bundle",
       "addSourceUrl": "Aggiungi l'URL di origine",
       "description": "Descrizione",
       "search": "Ricerca",

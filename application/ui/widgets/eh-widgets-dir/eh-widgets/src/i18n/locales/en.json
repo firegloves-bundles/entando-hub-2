@@ -58,7 +58,7 @@
       "addSourceUrl": "Add Source URL",
       "description": "Description",
       "search": "Search",
-      "source": "Source"
+      "source": "Source URL"
     },
     "button": {
       "add": "Add",
@@ -144,6 +144,7 @@
     "versionFormat": "Version must match semantic versioning format (e.g. vx.x.x or x.x.x)",
     "bundleUrlFormat": "Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)",
     "bundleUrlRequired": "The bundle address is a required field",
+    "bundleSrcUrlFormat": "Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)",
     "descriptionRequired": "Description is a required field",
     "minDescription": "The description must contain at least 3 characters",
     "maxDescription": "The description must not exceed 600 characters",

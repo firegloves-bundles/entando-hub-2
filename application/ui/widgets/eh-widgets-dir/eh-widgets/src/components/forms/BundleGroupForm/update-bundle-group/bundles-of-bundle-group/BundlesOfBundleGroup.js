@@ -2,14 +2,14 @@ import {useEffect, useRef, useState} from "react"
 import {Button, ButtonSet, TextInput, Row, Column} from "carbon-components-react"
 import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell,TableToolbar, TableToolbarContent} from 'carbon-components-react';
 
-import {Add16, Delete16, Edit16} from '@carbon/icons-react'
+import {Add16, Delete32, Edit16} from '@carbon/icons-react'
 
 import "./bundles-of-bundle-group.scss"
 import {
-    bundleOfBundleGroupSchema,
+    bundleOfBundleGroupSchema, bundleOfBundleGroupSrcSchema,
 } from "../../../../../helpers/validation/bundleGroupSchema";
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
-import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
+import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
 import { clickableSSHGitURL } from "../../../../../helpers/helpers";
 /*
@@ -31,24 +31,44 @@ const parseGitRepoAddr = (bundle) => {
     return {...bundle, name: name}
 }
 
-const BundleList = ({children = [], onDeleteBundle, disabled}) => {
+const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) => {
+    const [bundleSrcInvalid, setBundleSrcInvalid] = useState({})
+    const [validationResult, setValidationResult] = useState({})
+
+    const onSrcChangeHandler = (e, index) => {
+        const value = e.target.value.trim();
+        validateBundleSrcUrl(value, index);
+        setGitSrcRepo(value, index)
+    }
+
+    const validateBundleSrcUrl = (value, index) => {
+        ; (async () => {
+            let validationError
+            //schema should accept empty value but regex overrides
+            if (value && value.length > 0) {
+                await bundleOfBundleGroupSrcSchema.validate({gitSrcRepo: value}, {abortEarly: false}).catch(error => {
+                    validationError = fillErrors(error)
+                })
+            }
+            if (validationError) {
+                console.info('validationError', validationError)
+                setValidationResult(validationError)
+            }
+            const invalidSet = {...bundleSrcInvalid}
+            invalidSet[index] = (typeof validationError !== 'undefined');
+            setBundleSrcInvalid(invalidSet);
+        })()
+    }
+
     //TODO: i18n
-    let headers = ['Bundle URL', 'Project Source'];
+    let headers = ['Bundle URL', 'Source'];
     if (!disabled) {
-        headers = [...headers, 'Actions'];
+        headers = [...headers, ''];
     }
     const rows = children;
     if (rows && rows.length) {
     return (
         <div className="BundlesOfBundleGroup-Bundle-list">
-            {/*DataTable of Bundles*/}
-            {/*{!disabled && <TableToolbar aria-label="data table toolbar" size="sm">*/}
-            {/*    <TableToolbarContent>*/}
-            {/*        /!*TODO: enable Button.onClick={}*!/*/}
-            {/*        <Button>Add Bundle</Button>*/}
-            {/*    </TableToolbarContent>*/}
-            {/*</TableToolbar>*/}
-            {/*}*/}
             <Table {...rows}>
                 <TableHead>
                     <TableRow>
@@ -71,12 +91,11 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
                             ) : !disabled &&
                                 <TextInput value={row.gitSrcRepoAddress}
                                            disabled={disabled}
-                                           //TODO: onChange={onChangeHandler}
+                                           onChange={(e) => onSrcChangeHandler(e,index)}
                                            maxLength={CHAR_LENGTH_255}
-                                           // invalid={(!isUrlReqValid) ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg)}
-                                           // invalidText={bundleUrlErrorResult}
+                                           invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
+                                           invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
                                            autoComplete={"false"}
-                                           // onKeyPress={keyPressHandler}/>
                                 />
                             }
                             </TableCell>
@@ -85,11 +104,8 @@ const BundleList = ({children = [], onDeleteBundle, disabled}) => {
                                 <TableCell>
                                     <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
                                         <Button disabled={disabled}
-                                                // onClick={() => onEditBundle(index)}
-                                                hasIconOnly renderIcon={Edit16} kind="secondary"/>
-                                        <Button disabled={disabled}
                                                 onClick={() => onDeleteBundle(index)}
-                                                hasIconOnly renderIcon={Delete16} kind="secondary"/>
+                                                hasIconOnly renderIcon={Delete32} kind="secondary"/>
                                     </ButtonSet>
                                 </TableCell>
                             }
@@ -138,6 +154,15 @@ const BundlesOfBundleGroup = ({
         value.trim().length > 0 ? setIsUrlReqValid(true) : setIsUrlReqValid(false)
         setGitRepo(value)
         validateBundleUrl(e)
+    }
+
+    const setGitSrcRepo = (value, index) => {
+        const newBundleList = [...bundleList]
+        if (index > (newBundleList.length - 1)) {
+            console.warn("Illegal index", index)
+            return
+        }
+        newBundleList[index].gitSrcRepoAddress = value;
     }
 
     const validateBundleUrl = (e) => {
@@ -296,6 +321,7 @@ const BundlesOfBundleGroup = ({
                     <div>
                         <BundleList children={bundleList}
                             onDeleteBundle={onDeleteBundle}
+                            setGitSrcRepo={setGitSrcRepo}
                             disabled={disabled} />
                     </div>
                 </Column>

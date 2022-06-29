@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import {BUNDLE_STATUS, BUNDLE_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
+import {BUNDLE_STATUS, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
 
 export const versionString = Yup.string().matches(VERSION_REGEX, "versionFormat").required("versionRequired");
 
@@ -116,3 +116,14 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
       )
       .max(255, "max255Char")
 })
+
+export const bundleOfBundleGroupSrcSchema = Yup.object().shape({
+    gitSrcRepo: Yup.string()
+        .nullable()
+        .matches(
+            BUNDLE_SRC_URL_REGEX,
+            "bundleSrcUrlFormat"
+        )
+        .max(255, "max255Char")
+})
+

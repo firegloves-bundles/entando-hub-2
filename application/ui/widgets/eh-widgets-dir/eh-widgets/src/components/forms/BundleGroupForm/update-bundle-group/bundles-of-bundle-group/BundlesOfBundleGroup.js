@@ -176,6 +176,7 @@ const BundlesOfBundleGroup = ({
             return
         }
         newBundleList[index].gitSrcRepoAddress = value;
+        setBundleList(newBundleList);
     }
 
     const validateBundleUrl = (e) => {

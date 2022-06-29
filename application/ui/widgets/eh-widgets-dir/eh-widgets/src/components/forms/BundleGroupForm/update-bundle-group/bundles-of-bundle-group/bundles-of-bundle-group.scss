@@ -22,30 +22,36 @@
   position: relative;
 }
 
-.BundlesOfBundleGroup-button-set .bx--btn {
-  width: auto;
-}
-
-.BundlesOfBundleGroup-button-set .bx--btn--secondary {
-  color:black;
-  background-color: inherit;
-}
-
 .BundlesOfBundleGroup-add-button button {
-  position: absolute;
-  right: 0;
-  top: 40px;
-  width: 50%;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 50%;
+}
+
+.BundlesOfBundleGroup-button-set {
+  .bx--btn {
+    width: auto;
+  }
+
+  .bx--btn:not(:focus) {
+    box-shadow: none;
+  }
+
+  .bx--btn--secondary {
+    color: black;
+    background-color: inherit;
+  }
 }
 
 @media screen and (max-width: 1040px) {
   .BundlesOfBundleGroup-add-button button {
-    position: relative;
-    right: 0;
-    top: 0;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 2rem;
+      position: relative;
+      right: 0;
+      top: 0;
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 2rem;
   }
 
   .IconUploader-image img {
@@ -58,5 +64,4 @@
     width: 100%;
     max-width: 100%;
   }
-
 }

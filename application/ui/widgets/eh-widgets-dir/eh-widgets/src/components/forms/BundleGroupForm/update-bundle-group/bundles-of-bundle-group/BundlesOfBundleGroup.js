@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react"
 import {Button, ButtonSet, TextInput, TextArea, Row, Column} from "carbon-components-react"
 import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell} from 'carbon-components-react';
 
-import {Add16, Delete32, Edit16} from '@carbon/icons-react'
+import {Add16, Delete16, Edit16} from '@carbon/icons-react'
 
 import "./bundles-of-bundle-group.scss"
 import { bundleUrlSchema, bundleSrcUrlSchema} from "../../../../../helpers/validation/bundleGroupSchema";
@@ -68,7 +68,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
     if (rows && rows.length) {
     return (
         <div className="BundlesOfBundleGroup-Bundle-list">
-            <Table {...rows}>
+            <Table>
                 <TableHead>
                     <TableRow>
                         {headers.map((header) => (
@@ -116,7 +116,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                         {/*TODO: i18n*/}
                                         <Button disabled={disabled} iconDescription={'Delete'}
                                                 onClick={() => onDeleteBundle(index)}
-                                                hasIconOnly renderIcon={Delete32} kind="secondary"/>
+                                                hasIconOnly renderIcon={Delete16} kind="secondary"/>
                                     </ButtonSet>
                                 </TableCell>
                             }

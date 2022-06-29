@@ -2,7 +2,7 @@ import * as Yup from "yup"
 import {BUNDLE_STATUS, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
 
 export const versionString = Yup.string().matches(VERSION_REGEX, "versionFormat").required("versionRequired");
-export const gitSrcRepoAddressRule = Yup.string().trim().matches(BUNDLE_SRC_URL_REGEX, {excludeEmptyString:true, message:"bundleSrcUrlFormat"}).max(255, "max255Char");
+export const gitSrcRepoAddressRule = Yup.string().nullable().trim().matches(BUNDLE_SRC_URL_REGEX, {excludeEmptyString:true, message:"bundleSrcUrlFormat"}).max(255, "max255Char");
 export const bundleListSchema = Yup.array().of(
     Yup.object().shape({
         bundleGroups: Yup.array().of(Yup.string()),

@@ -34,8 +34,17 @@ const parseGitRepoAddr = (bundle) => {
 const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) => {
     const [bundleSrcInvalid, setBundleSrcInvalid] = useState({})
     const [validationResult, setValidationResult] = useState({})
+    const [editBundleIndex, setEditBundleIndex] = useState()
 
-    const onSrcChangeHandler = (e, index) => {
+    const onEditBundle = (index) => {
+        setEditBundleIndex(index);
+    }
+
+    const onSrcBlur = () => {
+        setEditBundleIndex(null);
+    }
+
+    const onSrcChange= (e, index) => {
         const value = e.target.value.trim();
         validateBundleSrcUrl(value, index);
         setGitSrcRepo(value, index)
@@ -51,7 +60,6 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                 })
             }
             if (validationError) {
-                console.info('validationError', validationError)
                 setValidationResult(validationError)
             }
             const invalidSet = {...bundleSrcInvalid}
@@ -90,8 +98,9 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                    target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
                             ) : !disabled &&
                                 <TextInput value={row.gitSrcRepoAddress}
-                                           disabled={disabled}
-                                           onChange={(e) => onSrcChangeHandler(e,index)}
+                                           disabled={disabled || (index !== editBundleIndex)}
+                                           onChange={(e) => onSrcChange(e,index)}
+                                           onBlur={onSrcBlur}
                                            maxLength={CHAR_LENGTH_255}
                                            invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
                                            invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
@@ -103,7 +112,11 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                             {!disabled &&
                                 <TableCell>
                                     <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
-                                        <Button disabled={disabled}
+                                        {/*TODO: i18n*/}
+                                        <Button disabled={disabled} iconDescription={'Edit Source URL'}
+                                                onClick={() => onEditBundle(index)}
+                                                hasIconOnly renderIcon={Edit16} kind="secondary"/>
+                                        <Button disabled={disabled} iconDescription={'Delete'}
                                                 onClick={() => onDeleteBundle(index)}
                                                 hasIconOnly renderIcon={Delete32} kind="secondary"/>
                                     </ButtonSet>

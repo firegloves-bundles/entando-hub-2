@@ -58,7 +58,8 @@
       "addSourceUrl": "Add Source URL",
       "description": "Description",
       "search": "Search",
-      "source": "Source URL"
+      "bundleUrl": "Bundle URL",
+      "sourceUrl": "Source URL"
     },
     "button": {
       "add": "Add",

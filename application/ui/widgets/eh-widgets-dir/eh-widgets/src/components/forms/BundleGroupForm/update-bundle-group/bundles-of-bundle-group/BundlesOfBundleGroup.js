@@ -59,8 +59,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
         })()
     }
 
-    //TODO: i18n
-    let headers = ['Bundle URL', 'Source'];
+    let headers = [`${i18n.t('component.bundleModalFields.bundleUrl')}`, `${i18n.t('component.bundleModalFields.sourceUrl')}`];
     if (!disabled) {
         headers = [...headers, ''];
     }
@@ -89,12 +88,11 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                     <a href={row.gitSrcRepoAddress}
                                        target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
                                 ) : (!disabled && !row.gitSrcRepoAddress && index !== editBundleIndex) ? (
-                                    <Button iconDescription={'Add Source URL'}
+                                    <Button iconDescription={`${i18n.t('component.bundleModalFields.addSourceUrl')}`}
                                             onClick={() => onEditBundle(index)}
                                             hasIconOnly renderIcon={Edit16} kind="secondary"/>
                                 ) : !disabled && (
                                     <div onClick={() => onEditBundle(index)}>
-                                        {/*TODO: i18n*/}
                                         <TextArea value={row.gitSrcRepoAddress || ""}
                                                    disabled={disabled || (index !== editBundleIndex)}
                                                    onChange={(e) => onSrcChange(e,index)}
@@ -103,7 +101,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                                                    invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
                                                    invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
                                                    autoComplete={"false"}
-                                                   labelText={'some label'}
+                                                   labelText={`${i18n.t('component.bundleModalFields.addSourceUrl')}`}
                                                    hideLabel={true}
                                                    rows={1}
                                         />
@@ -113,8 +111,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                             {!disabled &&
                                 <TableCell>
                                     <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
-                                        {/*TODO: i18n*/}
-                                        <Button disabled={disabled} iconDescription={'Delete'}
+                                        <Button disabled={disabled} iconDescription={`${i18n.t('component.button.delete')}`}
                                                 onClick={() => onDeleteBundle(index)}
                                                 hasIconOnly renderIcon={Delete16} kind="secondary"/>
                                     </ButtonSet>

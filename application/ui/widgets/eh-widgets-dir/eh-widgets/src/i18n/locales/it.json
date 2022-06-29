@@ -55,10 +55,11 @@
       "organisation": "Organizzazione",
       "status": "Stato",
       "addUrlBundle": "Aggiungi l'URL del bundle",
-      "addSourceUrl": "Add Source URL",
+      "addSourceUrl": "Aggiungi l'URL di origine",
       "description": "Descrizione",
       "search": "Ricerca",
-      "source": "Fonte URL"
+      "bundleUrl": "URL del bundle",
+      "sourceUrl": "URL di origine"
     },
     "button": {
       "add": "Aggiungi",

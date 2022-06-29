@@ -177,7 +177,6 @@ const BundleGroupPage = () => {
                   </div>
                   {(pageModel.children && pageModel.children.length > 0) &&
                   <>
-                    <hr/>
                     <BundlesOfBundleGroup
                         initialBundleList={pageModel.children}
                         disabled={true}

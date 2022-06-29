@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react"
-import {Button, ButtonSet, TextInput, Row, Column} from "carbon-components-react"
+import {Button, ButtonSet, TextInput, TextArea, Row, Column} from "carbon-components-react"
 import {Table, TableHead, TableRow, TableHeader, TableBody, TableCell,TableToolbar, TableToolbarContent} from 'carbon-components-react';
 
 import {Add16, Delete32, Edit16} from '@carbon/icons-react'
@@ -93,29 +93,34 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                             <TableCell><a href={clickableSSHGitURL(row.gitRepoAddress)}
                                    target={"_blank"}  rel="noopener noreferrer">{row.gitRepoAddress}</a>
                             </TableCell>
-                            <TableCell>{(disabled && row.gitSrcRepoAddress) ? (
-                                <a href={row.gitSrcRepoAddress}
-                                   target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
-                            ) : !disabled &&
-                                <TextInput value={row.gitSrcRepoAddress}
-                                           disabled={disabled || (index !== editBundleIndex)}
-                                           onChange={(e) => onSrcChange(e,index)}
-                                           onBlur={onSrcBlur}
-                                           maxLength={CHAR_LENGTH_255}
-                                           invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
-                                           invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
-                                           autoComplete={"false"}
-                                />
-                            }
+                            <TableCell>
+                                {(disabled && row.gitSrcRepoAddress) ? (
+                                    <a href={row.gitSrcRepoAddress}
+                                       target={"_blank"} rel="noopener noreferrer">{row.gitSrcRepoAddress}</a>
+                                ) : (!disabled && !row.gitSrcRepoAddress && index !== editBundleIndex) ? (
+                                    <Button iconDescription={'Add Source URL'}
+                                            onClick={() => onEditBundle(index)}
+                                            hasIconOnly renderIcon={Edit16} kind="secondary"/>
+                                ) : !disabled && (
+                                    <div onClick={() => onEditBundle(index)}>
+                                        <TextArea value={row.gitSrcRepoAddress || ""}
+                                                   disabled={disabled || (index !== editBundleIndex)}
+                                                   onChange={(e) => onSrcChange(e,index)}
+                                                   onBlur={onSrcBlur}
+                                                   maxLength={CHAR_LENGTH_255}
+                                                   invalid={bundleSrcInvalid && bundleSrcInvalid[index]}
+                                                   invalidText={`${i18n.t('formValidationMsg.bundleSrcUrlFormat')}`}
+                                                   autoComplete={"false"}
+                                                   rows={1}
+                                        />
+                                    </div>
+                                )}
                             </TableCell>
                             {/*TODO: styles change color/background*/}
                             {!disabled &&
                                 <TableCell>
                                     <ButtonSet className={"BundlesOfBundleGroup-button-set"}>
                                         {/*TODO: i18n*/}
-                                        <Button disabled={disabled} iconDescription={'Edit Source URL'}
-                                                onClick={() => onEditBundle(index)}
-                                                hasIconOnly renderIcon={Edit16} kind="secondary"/>
                                         <Button disabled={disabled} iconDescription={'Delete'}
                                                 onClick={() => onDeleteBundle(index)}
                                                 hasIconOnly renderIcon={Delete32} kind="secondary"/>

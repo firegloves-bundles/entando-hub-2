@@ -116,7 +116,7 @@ public class BundleServiceTest {
 		 bundleList.add(bundle);
 		 
 		 String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		 Mockito.when(bundleRepository.findByBundleGroupVersionsIs(any(BundleGroupVersion.class))).thenReturn(bundleList);
+		 Mockito.when(bundleRepository.findByBundleGroupVersions(any(BundleGroupVersion.class), any(Sort.class))).thenReturn(bundleList);
 		 List<Bundle> bundleResult = bundleService.getBundles(Optional.of(bundleGroupVersionId));
 		 assertNotNull(bundleResult);
 		 assertEquals(bundleList.get(0).getId(), bundleResult.get(0).getId());

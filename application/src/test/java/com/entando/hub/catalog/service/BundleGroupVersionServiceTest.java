@@ -123,7 +123,7 @@ public class BundleGroupVersionServiceTest {
 		//Case 1: Creating a Published Version
 		Mockito.when(bundleService.createBundleEntitiesAndSave(bundleGroupVersionView1.getBundles())).thenReturn(bundlesList);	
 		Mockito.when(bundleGroupVersionRepository.save(bundleGroupVersion)).thenReturn(bundleGroupVersion);
-		Mockito.when(bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersion)).thenReturn(bundlesList);
+		Mockito.when(bundleRepository.findByBundleGroupVersions(bundleGroupVersion, null)).thenReturn(bundlesList);
 		Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupVersion.getBundleGroup(), BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
 		BundleGroupVersion bundleGroupVersionResult = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersion, bundleGroupVersionView1);
 		assertNotNull(bundleGroupVersionResult);
@@ -132,7 +132,7 @@ public class BundleGroupVersionServiceTest {
 		//Case 2: Creating a non-published version (any other status)
 		Mockito.when(bundleService.createBundleEntitiesAndSave(bundleGroupVersionView2.getBundles())).thenReturn(bundlesList);	
 		Mockito.when(bundleGroupVersionRepository.save(bundleGroupVersion2)).thenReturn(bundleGroupVersion2);
-		Mockito.when(bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersion2)).thenReturn(bundlesList);
+		Mockito.when(bundleRepository.findByBundleGroupVersions(bundleGroupVersion2, null)).thenReturn(bundlesList);
 		Mockito.when(bundleGroupVersionRepository.save(bundleGroupVersion2)).thenReturn(bundleGroupVersion2);
 		BundleGroupVersion bundleGroupVersionResult2 = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersion2, bundleGroupVersionView2);
 		assertNotNull(bundleGroupVersionResult2);

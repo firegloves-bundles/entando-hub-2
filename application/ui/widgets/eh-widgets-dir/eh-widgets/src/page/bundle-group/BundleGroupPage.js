@@ -13,8 +13,9 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import { ModalInstallInformation } from "./modal-install-information/ModalInstallInformation"
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
-import { clickableSSHGitURL } from "../../helpers/helpers"
 import { SLASH_VERSIONS } from "../../helpers/constants"
+import BundlesOfBundleGroup
+  from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
 
 /*
 BUNDLEGROUP:
@@ -60,7 +61,7 @@ const BundleGroupPage = () => {
   const { id: bundleGroupVersionId } = useParams()
   const { pathname: url } = useLocation();
 
-  const isFromVersionPage = isNavigationFromVersonsPage(url);
+  const isFromVersionPage = isNavigationFromVersionsPage(url);
 
   // fetches the bundle group
   useEffect(() => {
@@ -146,14 +147,6 @@ const BundleGroupPage = () => {
                                     && pageModel.bundleGroup.documentationUrl}
                                        target="_new">{i18n.t('page.bundleGroupInfo.documentation')}</a>
                     </div>
-                    {(pageModel.children && pageModel.children.length > 0) &&
-                      <>
-                        <hr/>
-                        <div>
-                          {pageModel.children && <BundleList children={pageModel.children}/>}
-                        </div>
-                      </>
-                    }
                   </Tile>
                 </Column>
               <Column lg={12}>
@@ -182,6 +175,14 @@ const BundleGroupPage = () => {
                   <div className="BundleGroupPage-description">
                     {pageModel.bundleGroup && pageModel.bundleGroup.description}
                   </div>
+                  {(pageModel.children && pageModel.children.length > 0) &&
+                  <>
+                    <BundlesOfBundleGroup
+                        initialBundleList={pageModel.children}
+                        disabled={true}
+                    />
+                  </>
+                  }
                 </Tile>
               </Column>
               </Row>
@@ -192,27 +193,12 @@ const BundleGroupPage = () => {
   )
 }
 
-const BundleList = ({ children }) => {
-  const elemList = children.map((bundle, index) =>
-    <li key={index.toString()}><a href={clickableSSHGitURL(bundle.gitRepoAddress)}
-      target={"_new"}>{bundle.name}</a></li>)
-
-  return (
-    <div className="BundleGroupPage-list-wrapper">
-      <div className="BundleGroupPage-list">
-        {i18n.t('page.bundleGroupInfo.listToBundles')}
-      </div>
-      <ul>{elemList}</ul>
-    </div>
-  )
-}
-
 /**
  * Check if the url contains '/versions'
  * @param {*} url 
  * @returns 
  */
-const isNavigationFromVersonsPage = (url) => {
+const isNavigationFromVersionsPage = (url) => {
   if (url && url.indexOf(SLASH_VERSIONS) > 0) {
     return true;
   }

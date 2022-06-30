@@ -54,9 +54,12 @@
       "version": "Versione",
       "organisation": "Organizzazione",
       "status": "Stato",
-      "addUrlBundle": "Aggiungi l'URL del bundle",
+      "addBundleUrl": "Aggiungi l'URL del bundle",
+      "addSourceUrl": "Aggiungi l'URL di origine",
       "description": "Descrizione",
-      "search": "Ricerca"
+      "search": "Ricerca",
+      "bundleUrl": "URL del bundle",
+      "sourceUrl": "URL di origine"
     },
     "button": {
       "add": "Aggiungi",
@@ -142,6 +145,7 @@
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
     "bundleUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
+    "bundleSrcUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 600 caratteri",

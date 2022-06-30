@@ -1,7 +1,18 @@
 import * as Yup from "yup"
-import {BUNDLE_STATUS, BUNDLE_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
+import {BUNDLE_STATUS, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
 
 export const versionString = Yup.string().matches(VERSION_REGEX, "versionFormat").required("versionRequired");
+export const gitSrcRepoAddressRule = Yup.string().nullable().trim().matches(BUNDLE_SRC_URL_REGEX, {excludeEmptyString:true, message:"bundleSrcUrlFormat"}).max(255, "max255Char");
+export const bundleListSchema = Yup.array().of(
+    Yup.object().shape({
+        bundleGroups: Yup.array().of(Yup.string()),
+        dependencies: Yup.array().of(Yup.string()),
+        description: Yup.string(),
+        gitRepoAddress: Yup.string().trim(),
+        gitSrcRepoAddress: gitSrcRepoAddressRule,
+        name: Yup.string().required()
+    })
+);
 
 export const bundleGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -35,16 +46,8 @@ export const bundleGroupSchema = Yup.object().shape({
     .max(255, "max255Char"),
   status: Yup.string().required("statusRequired"),
   version: versionString,
-  children: Yup.array().of(
-    Yup.object().shape({
-      bundleGroups: Yup.array().of(Yup.string()),
-      // bundleId: Yup.number().positive().integer(),
-      dependencies: Yup.array().of(Yup.string()),
-      description: Yup.string(),
-      gitRepoAddress: Yup.string(),
-      name: Yup.string().required(),
-    })
-  ).min(1, "atleastOneUrl"),
+  children: bundleListSchema
+    .min(1, "atleastOneUrl"),
   categories: Yup.array()
     .of(Yup.string())
     .required("categoryRequired"),
@@ -78,19 +81,11 @@ export const versionBundleGroupSchema = Yup.object().shape({
         .required("docRequired"),
     version: versionString,
     status: Yup.string().required("statusRequired"),
-    bundles: Yup.array().of(
-        Yup.object().shape({
-            bundleGroups: Yup.array().of(Yup.string()),
-            // bundleId: Yup.number().positive().integer(),
-            dependencies: Yup.array().of(Yup.string()),
-            description: Yup.string(),
-            gitRepoAddress: Yup.string(),
-            name: Yup.string().required(),
-        })
-    ).when(['displayContactUrl','status'], {
-        is: (displayContactUrl, status) => {
-            return (displayContactUrl !== true) && ((status === BUNDLE_STATUS.PUBLISH_REQ) || (status === BUNDLE_STATUS.PUBLISHED))
-        },
+    bundles: bundleListSchema
+        .when(['displayContactUrl','status'], {
+            is: (displayContactUrl, status) => {
+                return (displayContactUrl !== true) && ((status === BUNDLE_STATUS.PUBLISH_REQ) || (status === BUNDLE_STATUS.PUBLISHED))
+            },
         then: Yup.array().min(1, "atleastOneUrl")},
     )
 }, [['status','displayContactUrl', 'contactUrl', 'bundles']]
@@ -107,8 +102,9 @@ export const newBundleGroupSchema = Yup.object().shape({
       .required("categoryRequired"),
 })
 
-export const bundleOfBundleGroupSchema = Yup.object().shape({
+export const bundleUrlSchema = Yup.object().shape({
   gitRepo: Yup.string()
+      .trim()
       .required("bundleUrlRequired")
       .matches(
         BUNDLE_URL_REGEX,
@@ -116,3 +112,8 @@ export const bundleOfBundleGroupSchema = Yup.object().shape({
       )
       .max(255, "max255Char")
 })
+
+export const bundleSrcUrlSchema = Yup.object().shape({
+    gitSrcRepo: gitSrcRepoAddressRule
+})
+

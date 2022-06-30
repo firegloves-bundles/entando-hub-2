@@ -12,13 +12,6 @@ import java.util.Set;
 
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -92,7 +85,7 @@ public class BundleGroupVersionService {
 			}
     	}
     	if(Objects.nonNull(bundleGroupVersionEntity) && Objects.nonNull(bundleGroupVersionEntity.getId())) {
-    		mappedBundles = bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersionEntity);
+    		mappedBundles = bundleRepository.findByBundleGroupVersions(bundleGroupVersionEntity, null);
     	}
     	bundleGroupVersionEntity.setLastUpdated(LocalDateTime.now());
     	BundleGroupVersion entity = bundleGroupVersionRepository.save(bundleGroupVersionEntity);

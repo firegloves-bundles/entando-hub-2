@@ -48,7 +48,7 @@ public class BundleService {
 		} else {
 			paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
 		}
-		Page<Bundle> response = new PageImpl<>(new ArrayList<Bundle>());
+		Page<Bundle> response = new PageImpl<>(new ArrayList<>());
 		if (bundleGroupId.isPresent()) {
 			Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
 			Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
@@ -61,8 +61,8 @@ public class BundleService {
 			}
 		} else {
 			logger.debug("{}: getBundles: bundle group id is not present: {}", CLASS_NAME, bundleGroupId);
-			List<BundleGroupVersion> budlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
-			response = bundleRepository.findByBundleGroupVersionsIn(budlegroupsVersion, paging);
+			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
+			response = bundleRepository.findByBundleGroupVersionsIn(bundlegroupsVersion, paging);
 		}
 		return response;
 	}
@@ -70,10 +70,10 @@ public class BundleService {
     public List<Bundle> getBundles(Optional<String> bundleGroupVersionId) {
     	logger.debug("{}: getBundles: Get Bundles by bundle group version id: {}", CLASS_NAME, bundleGroupVersionId);
         if (bundleGroupVersionId.isPresent()) {
-            Long bundleGroupVersioEntityId = Long.parseLong(bundleGroupVersionId.get());
+            Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
             BundleGroupVersion bundleGroupVersionEntity = new BundleGroupVersion();
-            bundleGroupVersionEntity.setId(bundleGroupVersioEntityId);
-            return bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersionEntity);
+            bundleGroupVersionEntity.setId(bundleGroupVersionEntityId);
+            return bundleRepository.findByBundleGroupVersions(bundleGroupVersionEntity, Sort.by("id"));
         }
         return bundleRepository.findAll();
     }
@@ -95,7 +95,7 @@ public class BundleService {
     }
     
     public void deleteFromBundleGroupVersion(Bundle bundle) {
-       
+
     }
 
     /**

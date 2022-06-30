@@ -117,7 +117,6 @@ export const ModalUpdateBundleGroup = ({
     }
   }, [bundleGroupId, bundleGroupObj])
 
-  //TODO BE QUERY REFACTORING
   const updateBundleGroup = async (bundleGroup) => {
     
     const toSend = {

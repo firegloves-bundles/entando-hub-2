@@ -53,6 +53,7 @@ export const CONTACT_URL_REGEX = DOCUMENTATION_ADDRESS_URL_REGEX
 export const VERSION_REGEX = /^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm
 //eslint-disable-next-line
 export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\.\/]+)(?:\.git)$/gm
+export const BUNDLE_SRC_URL_REGEX = BUNDLE_URL_REGEX;
 
 // Input char length
 export const CHAR_LENGTH = 3;

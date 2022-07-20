@@ -52,7 +52,7 @@ export const DOCUMENTATION_ADDRESS_URL_REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,255}
 export const CONTACT_URL_REGEX = DOCUMENTATION_ADDRESS_URL_REGEX
 export const VERSION_REGEX = /^[v]?([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/gm
 //eslint-disable-next-line
-export const BUNDLE_URL_REGEX = /^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\.\/]+)(?:\.git)$/gm
+export const BUNDLE_URL_REGEX = /^((https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/([a-z-A-Z-0-9-\_\.\/]+)(?:\.git)$)|(docker(:\/\/)([a-z-A-Z-0-9-\_\.]+)\/([a-zA-Z0-9-\_]+)\/([a-zA-Z0-9-\_]+)$)/gm
 export const BUNDLE_SRC_URL_REGEX = BUNDLE_URL_REGEX;
 
 // Input char length
@@ -119,8 +119,10 @@ export const SHOW_NAVBAR_ON_MOUNTED_PAGE = {
 }
 
 // Git Repo Address
-export const MATCHER = 'git@github.com'
+export const GIT_URI_MATCHER = 'git@github.com'
 export const GIT_DOMAIN = 'https://github.com/'
+export const DOCKER_URI_MATCHER = 'docker://'
+export const DOCKER_DOMAIN = 'https://registry.hub.docker.com/r/'
 export const MENU_OPTIONS = {
     ADD_BUNDLE_GROUP_VERSION: 'Add Version',
     VIEW_BUNDLE_GROUP_VERSIONS: 'View Versions'

@@ -1,4 +1,13 @@
-import {ADMIN, AUTHOR, GIT_DOMAIN, MANAGER, MATCHER, USER_ROLES} from './constants'
+import {
+    ADMIN,
+    AUTHOR,
+    GIT_DOMAIN,
+    MANAGER,
+    GIT_URI_MATCHER,
+    DOCKER_URI_MATCHER,
+    USER_ROLES,
+    DOCKER_DOMAIN
+} from './constants'
 
 export const getKeycloakToken = () => {
     if (window && window.entando && window.entando.keycloak && window.entando.keycloak.authenticated) {
@@ -77,11 +86,17 @@ export const getDefaultOptions = () => {
     }
 }
 
-export const clickableSSHGitURL= (gitRepoUrl) => {
-    if (gitRepoUrl.startsWith(MATCHER)) {
-        return `${GIT_DOMAIN}${gitRepoUrl.split(':')[1]}`;
+export const clickableUrlFromUri= (uri) => {
+    if (uri.startsWith(GIT_URI_MATCHER)) {
+        return `${GIT_DOMAIN}${uri.split(':')[1]}`;
+    } else if (uri.startsWith(DOCKER_URI_MATCHER)) {
+        const sub = `${uri.substring(DOCKER_URI_MATCHER.length+1)}`;
+        const index = sub.indexOf('/');
+        if (index > 0) {
+            return `${DOCKER_DOMAIN}${sub.substring(index+1)}`;
+        }
     }
-    return gitRepoUrl;
+    return uri;
 }
 
 export const isCurrentUserAuthenticated = () => {

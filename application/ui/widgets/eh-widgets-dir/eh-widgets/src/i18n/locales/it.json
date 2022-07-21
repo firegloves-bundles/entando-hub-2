@@ -143,7 +143,7 @@
     "duplicateVersion": "Questo numero di versione esiste già, inserisci un nuovo numero di versione",
     "statusRequired": "Lo stato è un campo obbligatorio",
     "versionFormat": "La versione deve corrispondere al formato di versionamento semantico (ad es. vx.x.x o x.x.x)",
-    "bundleUrlFormat": "Deve essere un URI del docker (ad esempio docker://registry.hub.docker.com/account/reponame) per Entando 7.1+ o un URI del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git) per Entando 6.3.2+",
+    "bundleUrlFormat": "Deve essere un URI di docker (ad esempio docker://registry.hub.docker.com/account/reponame) per Entando 7.1+ o un URI del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git) per Entando 6.3.2+",
     "bundleUrlRequired": "L'indirizzo del pacchetto è un campo obbligatorio",
     "bundleSrcUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "descriptionRequired": "La descrizione è un campo obbligatorio",

@@ -21,6 +21,8 @@ function processWidget() {
        THIS=$BASHPID
        echo "Installing micro-frontend dependencies"
        npm install || return $?
+       echo "Running micro-frontend tests"
+       npm test || return $?
        echo "Building micro-frontend code"
        npm run build --production | while read i
         do
@@ -91,8 +93,9 @@ else
     # Check for errors and in case exit
     ERROR_COUNT=$(find "$ERROR_OUTPUT" -type f | wc -l)
     if [ "$ERROR_COUNT" -ge 1 ]; then
-        echo ""
-        echo "ERROR: Some of the micro-frontend didnt built correctly; Check the logs in $BASE_LOG_OUTPUT"
+        echo "!!!!!!!"
+        echo "ERROR: Some of the micro-frontend didn't build correctly; Check the logs in $BASE_LOG_OUTPUT"
+        echo "!!!!!!!"
         ERRORS=$(find "$ERROR_OUTPUT" -type f)
         for ERR in $ERRORS; do
             echo "> $ERR"

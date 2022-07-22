@@ -9,7 +9,7 @@ import { bundleUrlSchema, bundleSrcUrlSchema} from "../../../../../helpers/valid
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
-import { clickableSSHGitURL } from "../../../../../helpers/helpers";
+import {clickableUrlFromUri} from "../../../../../helpers/helpers";
 /*
 BUNDLE:
 {
@@ -80,7 +80,7 @@ const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) =>
                 <TableBody>
                     {rows.map((row,index) => (
                         <TableRow key={'bundle'+index}>
-                            <TableCell><a href={clickableSSHGitURL(row.gitRepoAddress)}
+                            <TableCell><a href={clickableUrlFromUri(row.gitRepoAddress)}
                                    target={"_blank"}  rel="noopener noreferrer">{row.gitRepoAddress}</a>
                             </TableCell>
                             <TableCell>

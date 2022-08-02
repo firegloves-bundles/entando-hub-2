@@ -24,6 +24,10 @@ public class Bundle {
     private String gitSrcRepoAddress;
     private String dependencies;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DescriptorVersion descriptorVersion = DescriptorVersion.V1;
+
 	@ManyToMany(mappedBy = "bundles",fetch = FetchType.EAGER)
 	private Set<BundleGroupVersion> bundleGroupVersions;
 
@@ -50,4 +54,9 @@ public class Bundle {
                 ", dependencies='" + dependencies + '\'' +
                 '}';
     }
+
+    public enum DescriptorVersion {
+        V1, V5
+    }
+
 }

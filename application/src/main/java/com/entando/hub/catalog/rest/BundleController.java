@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.persistence.entity.Bundle.DescriptorVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -122,8 +122,8 @@ public class BundleController {
     @EqualsAndHashCode(callSuper = true)
     public static class Bundle extends BundleNoId {
         private final String bundleId;
-        public Bundle(String bundleId, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroups) {
-            super(bundleId, name, description, gitRepoAddress, gitSrcRepoAddress, dependencies, bundleGroups);
+        public Bundle(String bundleId, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroups, String descriptorVersion) {
+            super(bundleId, name, description, gitRepoAddress, gitSrcRepoAddress, dependencies, bundleGroups, descriptorVersion);
             this.bundleId = bundleId;
         }
 
@@ -138,6 +138,7 @@ public class BundleController {
         protected final String bundleId;
         protected final String name;
         protected final String description;
+        protected final String descriptorVersion;
 
         @Setter(AccessLevel.PUBLIC)
         protected String descriptionImage;
@@ -147,7 +148,7 @@ public class BundleController {
         protected final List<String> dependencies;
         protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 
-        public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions) {
+        public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
         	this.bundleId = id;
             this.name = name;
             this.description = description;
@@ -155,6 +156,7 @@ public class BundleController {
             this.gitSrcRepoAddress = gitSrcRepoAddress;
             this.dependencies = dependencies;
             this.bundleGroups = bundleGroupVersions;
+            this.descriptorVersion = descriptorVersion;
         }
 
         public BundleNoId(com.entando.hub.catalog.persistence.entity.Bundle entity) {
@@ -165,6 +167,7 @@ public class BundleController {
             this.gitSrcRepoAddress = entity.getGitSrcRepoAddress();
             this.dependencies = Arrays.asList(entity.getDependencies().split(","));
             this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
+            this.descriptorVersion = entity.getDescriptorVersion().toString();
         }
 
         public com.entando.hub.catalog.persistence.entity.Bundle createEntity(Optional<String> id) {
@@ -174,6 +177,10 @@ public class BundleController {
             ret.setGitRepoAddress(this.getGitRepoAddress());
             ret.setGitSrcRepoAddress(this.getGitSrcRepoAddress());
             ret.setDependencies(String.join(",", this.getDependencies()));
+
+            //for now, if the repo address does not start with docker, we assume it's a V1 bundle.
+            boolean isDocker = (this.getGitRepoAddress() != null) && (this.getGitRepoAddress().startsWith("docker:"));
+            ret.setDescriptorVersion(isDocker ? DescriptorVersion.V5 : DescriptorVersion.V1);
 
             //TODO bundlegroups contains bundle group version id! fix it!
             Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {

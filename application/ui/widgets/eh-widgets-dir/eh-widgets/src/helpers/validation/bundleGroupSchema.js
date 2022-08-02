@@ -1,5 +1,5 @@
 import * as Yup from "yup"
-import {BUNDLE_STATUS, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, VERSION_REGEX} from "../constants"
+import {BUNDLE_STATUS, BUNDLE_URL_REGEX, BUNDLE_SRC_URL_REGEX, CONTACT_URL_REGEX, DOCUMENTATION_ADDRESS_URL_REGEX, MAX_CHAR_LENGTH_FOR_DESC, VERSION_REGEX} from "../constants"
 
 export const versionString = Yup.string().matches(VERSION_REGEX, "versionFormat").required("versionRequired");
 export const gitSrcRepoAddressRule = Yup.string().nullable().trim().matches(BUNDLE_SRC_URL_REGEX, {excludeEmptyString:true, message:"bundleSrcUrlFormat"}).max(255, "max255Char");
@@ -21,7 +21,7 @@ export const bundleGroupSchema = Yup.object().shape({
     .required("nameRequired"),
   description: Yup.string()
     .min(3, "minDescription")
-    .max(600, "maxDescription")
+    .max(MAX_CHAR_LENGTH_FOR_DESC, "maxDescription")
     .required("descriptionRequired"),
   documentationUrl: Yup.string()
     .matches(
@@ -56,7 +56,7 @@ export const bundleGroupSchema = Yup.object().shape({
 export const versionBundleGroupSchema = Yup.object().shape({
     description: Yup.string()
         .min(3, "minDescription")
-        .max(600, "maxDescription")
+        .max(MAX_CHAR_LENGTH_FOR_DESC, "maxDescription")
         .required("descriptionRequired"),
     displayContactUrl: Yup.boolean()
       .nullable(),

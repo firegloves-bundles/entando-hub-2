@@ -21,4 +21,5 @@
     <include file="config/changelog/bundlegroupversion_contact_module.xml" relativeToChangelogFile="false"/>
     <!-- Hub 2.1 -->
     <include file="config/changelog/bundle_add_src_address.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/v211_bundle_descriptor_group_description.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

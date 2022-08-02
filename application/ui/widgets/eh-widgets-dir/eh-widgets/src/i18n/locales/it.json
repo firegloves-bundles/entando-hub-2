@@ -148,7 +148,7 @@
     "bundleSrcUrlFormat": "Deve essere un URL del repository git (ad esempio https://github.com/account/reponame.git o git@github.com:account/reponame.git)",
     "descriptionRequired": "La descrizione è un campo obbligatorio",
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
-    "maxDescription": "La descrizione non deve superare i 600 caratteri",
+    "maxDescription": "La descrizione non deve superare i 4000 caratteri",
     "categoryRequired": "La categoria è un campo obbligatorio",
     "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group.",
     "description": "La descrizione non deve superare i 100 caratteri"

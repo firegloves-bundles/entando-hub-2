@@ -41,7 +41,7 @@ public class BundleGroupVersion {
 	@Column(nullable = false)
 	private Long id;
 
-	@Column(nullable = false, length = 600)
+	@Column(nullable = false, length = 4000)
 	private String description;
 
 	@Column(nullable = false)

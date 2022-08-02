@@ -19,7 +19,8 @@ entity Bundle {
     name String required,
     description String,
     gitRepoAddress String required
-    gitSrcRepoAddress String
+    gitSrcRepoAddress String,
+    descriptorVersion DescriptorVersion required
 }
 
 entity Category {
@@ -35,6 +36,10 @@ entity Organisation {
 entity PortalUser {
     username String required //Keycloak username
     email String //Keycloak email address
+}
+
+enum DescriptorVersion {
+    V1,V5
 }
 
 enum Status {

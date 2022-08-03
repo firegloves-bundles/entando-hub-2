@@ -137,12 +137,11 @@ public class BundleController {
     public static class BundleNoId {
         protected final String bundleId;
         protected final String name;
-        protected final String description;
-        protected final String descriptorVersion;
-
+        @Setter(AccessLevel.PUBLIC)
+        protected String description;
         @Setter(AccessLevel.PUBLIC)
         protected String descriptionImage;
-
+        protected final String descriptorVersion;
         protected final String gitRepoAddress;
         private final String gitSrcRepoAddress;
         protected final List<String> dependencies;

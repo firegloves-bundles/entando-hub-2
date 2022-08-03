@@ -56,7 +56,8 @@ public class AppBuilderBundleControllerTest {
 
     private static final String PAGE_PARAM = "page";
     private static final String PAGE_SIZE_PARAM = "pageSize";
-    
+    private static final String DESCRIPTOR_VERSIONS = "descriptorVersions";
+
     private static final Long BUNDLE_GROUP_ID = 1000L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
     
@@ -93,9 +94,12 @@ public class AppBuilderBundleControllerTest {
 		bundlesCList.add(bundleC);
 		
 		Page<Bundle> response = new PageImpl<>(bundlesList);
-		
+
+		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
+		versions.add(Bundle.DescriptorVersion.V1);
+
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
-		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null))).thenReturn(response);
+		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
 
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
@@ -108,7 +112,7 @@ public class AppBuilderBundleControllerTest {
 		//Case 2: bundle has a version
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
-		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null))).thenReturn(response);
+		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
@@ -131,7 +135,7 @@ public class AppBuilderBundleControllerTest {
 //		//Case 4: bundleGroupId provided, page >= 1
 		page = 1;
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
-		Mockito.when(bundleService.getBundles(sanitizedPageNum, pageSize, Optional.of(bundleGroupId))).thenReturn(response);
+		Mockito.when(bundleService.getBundles(sanitizedPageNum, pageSize, Optional.of(bundleGroupId), versions)).thenReturn(response);
 
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
@@ -139,6 +143,25 @@ public class AppBuilderBundleControllerTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.payload").hasJsonPath())
 				.andExpect(jsonPath("$.metadata").hasJsonPath())
+				.andExpect(status().isOk());
+
+		//Case 5: provide one more good descriptorVersion as well as a bad one (which should be excluded.
+		versions.add(Bundle.DescriptorVersion.V5);
+		page = 1;
+
+		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
+		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
+		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
+
+		mockMvc.perform(MockMvcRequestBuilders.get(URI)
+				.param(PAGE_PARAM, page.toString())
+				.param(PAGE_SIZE_PARAM, pageSize.toString())
+				.param(DESCRIPTOR_VERSIONS, "v1")
+				.param(DESCRIPTOR_VERSIONS, "v5")
+				.param(DESCRIPTOR_VERSIONS, "vInvalid"))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(jsonPath("$.payload").exists())
+				.andExpect(jsonPath("$.metadata").exists())
 				.andExpect(status().isOk());
 	}
 

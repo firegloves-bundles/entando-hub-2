@@ -1,11 +1,8 @@
 package com.entando.hub.catalog.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -40,8 +37,8 @@ public class BundleService {
         this.bundleGroupRepository =  bundleGroupRepository;
     }
 
-    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId) {
-		logger.debug("{}: getBundles: Get bundles paginated by bundle group  id: {}", CLASS_NAME, bundleGroupId);
+    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+		logger.debug("{}: getBundles: Get bundles paginated by bundle group  id: {}, descriptorVersions: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
 		Pageable paging;
 		if (pageSize == 0) {
 			paging = Pageable.unpaged();
@@ -60,8 +57,13 @@ public class BundleService {
 				logger.warn("{}: getBundles: bundle group does not exist: {}", CLASS_NAME, bundleGroupEntityId);
 			}
 		} else {
-			logger.debug("{}: getBundles: bundle group id is not present: {}", CLASS_NAME, bundleGroupId);
-			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED);
+			logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
+			//Controllers can override but default to all versions otherwise.
+			if (descriptorVersions == null) {
+				descriptorVersions = new HashSet<>();
+				Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
+			}
+			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
 			response = bundleRepository.findByBundleGroupVersionsIn(bundlegroupsVersion, paging);
 		}
 		return response;

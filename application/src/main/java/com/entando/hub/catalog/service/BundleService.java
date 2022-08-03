@@ -64,7 +64,7 @@ public class BundleService {
 				Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
 			}
 			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
-			response = bundleRepository.findByBundleGroupVersionsIn(bundlegroupsVersion, paging);
+			response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundlegroupsVersion, descriptorVersions, paging);
 		}
 		return response;
 	}

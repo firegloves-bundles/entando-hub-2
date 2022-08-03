@@ -84,7 +84,7 @@ public class BundleServiceTest {
 	     Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
 	     Mockito.when(bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersion, paging)).thenReturn(response);
 	     Mockito.when(bundleGroupVersionRepository.getPublishedBundleGroups(versions)).thenReturn(bundleGroupVersionList);
-	     Mockito.when(bundleRepository.findByBundleGroupVersionsIn(bundleGroupVersionList, paging)).thenReturn(response);
+	     Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
 
 	     //Case 1: bundle group id is present, pageSize > 0
 	     Page<Bundle> bundleResult = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
@@ -94,7 +94,7 @@ public class BundleServiceTest {
 		 //Case 2: bundle group id is not present, pageSize = 0
 		 pageSize = 0;
 		 paging = Pageable.unpaged();
-		 Mockito.when(bundleRepository.findByBundleGroupVersionsIn(bundleGroupVersionList, paging)).thenReturn(response);
+		Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
 		 Page<Bundle> bundleResult2 = bundleService.getBundles(pageNum, pageSize, Optional.empty(), versions);
 		 assertNotNull(bundleResult2);
 		 assertEquals(response.getSize(), bundleResult2.getSize());

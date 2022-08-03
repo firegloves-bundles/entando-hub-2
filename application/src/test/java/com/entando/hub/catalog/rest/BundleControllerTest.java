@@ -125,7 +125,7 @@ public class BundleControllerTest {
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
-		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>());
+		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
 		Mockito.when(bundleService.createBundle(bundleNoId2.createEntity(Optional.empty()))).thenReturn(bundle);
 		inputJson = mapToJson(bundleNoId2);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")

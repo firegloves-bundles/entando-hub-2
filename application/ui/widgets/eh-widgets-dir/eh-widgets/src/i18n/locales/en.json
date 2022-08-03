@@ -148,7 +148,7 @@
     "bundleSrcUrlFormat": "Must be a git repo URL (e.g. https://github.com/account/reponame.git or git@github.com:account/reponame.git)",
     "descriptionRequired": "Description is a required field",
     "minDescription": "The description must contain at least 3 characters",
-    "maxDescription": "The description must not exceed 600 characters",
+    "maxDescription": "The description must not exceed 4000 characters",
     "categoryRequired": "Category is a required field",
     "atleastOneUrl": "Please add at least one bundle before publishing this bundle group.",
     "description": "Description must not exceed 100 characters"

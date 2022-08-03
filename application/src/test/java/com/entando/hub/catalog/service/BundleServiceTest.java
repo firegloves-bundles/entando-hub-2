@@ -4,11 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,29 +76,32 @@ public class BundleServiceTest {
 		 Long bundleGroupId = bundleGroup.getId();
 		 
 	     Page<Bundle> response = new PageImpl<>(bundleList);
-	     
-	     Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
+
+		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
+		versions.add(Bundle.DescriptorVersion.V1);
+
+		Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 	     Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
 	     Mockito.when(bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersion, paging)).thenReturn(response);
-	     Mockito.when(bundleGroupVersionRepository.findDistinctByStatus(BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersionList);
-	     Mockito.when(bundleRepository.findByBundleGroupVersionsIn(bundleGroupVersionList, paging)).thenReturn(response);
-	     
+	     Mockito.when(bundleGroupVersionRepository.getPublishedBundleGroups(versions)).thenReturn(bundleGroupVersionList);
+	     Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
+
 	     //Case 1: bundle group id is present, pageSize > 0
-	     Page<Bundle> bundleResult = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()));
+	     Page<Bundle> bundleResult = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
 		 assertNotNull(bundleResult);
 		 assertEquals(response.getSize(), bundleResult.getSize());
 		 
 		 //Case 2: bundle group id is not present, pageSize = 0
 		 pageSize = 0;
 		 paging = Pageable.unpaged();
-		 Mockito.when(bundleRepository.findByBundleGroupVersionsIn(bundleGroupVersionList, paging)).thenReturn(response);
-		 Page<Bundle> bundleResult2 = bundleService.getBundles(pageNum, pageSize, Optional.empty());
+		Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
+		 Page<Bundle> bundleResult2 = bundleService.getBundles(pageNum, pageSize, Optional.empty(), versions);
 		 assertNotNull(bundleResult2);
 		 assertEquals(response.getSize(), bundleResult2.getSize());
 		 
 		//Case 3: bundle group entity is empty
 		 Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.empty());
-		 Page<Bundle> bundleResult3 = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()));
+		 Page<Bundle> bundleResult3 = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
 		 assertNotNull(bundleResult3);
 		 assertEquals(0, bundleResult3.getSize());
 	}

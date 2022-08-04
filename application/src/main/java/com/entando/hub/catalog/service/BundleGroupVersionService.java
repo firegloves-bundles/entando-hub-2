@@ -44,6 +44,8 @@ public class BundleGroupVersionService {
     private final Logger logger = LoggerFactory.getLogger(BundleGroupVersionService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
+    private final int MAX_PAGE_SIZE = 50;
+
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
     final private BundleGroupRepository bundleGroupRepository;
     final private BundleRepository bundleRepository;
@@ -343,11 +345,12 @@ public class BundleGroupVersionService {
 	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
 		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
 		Pageable paging;
-		if (pageSize == 0) {
-			paging = Pageable.unpaged();
-		} else {
-			paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")).and(Sort.by("lastUpdated").descending()));
+		if (pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
+			logger.warn("An unexpected pageSize {} was provided. Setting maximum to {}.", pageSize, MAX_PAGE_SIZE);
+			pageSize = MAX_PAGE_SIZE;
 		}
+		paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name")).and(Sort.by("lastUpdated").descending()));
+
 		Set<Category> categories = Arrays.stream(categoryIds).map(cid -> {
 			Category category = new Category();
 			category.setId(Long.valueOf(cid));
@@ -355,42 +358,42 @@ public class BundleGroupVersionService {
 		}).collect(Collectors.toSet());
 
 		Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
-		List<BundleGroup> bunleGroups = new ArrayList<>();
+		List<BundleGroup> bundleGroups = new ArrayList<>();
 
 		if(null != searchText && !searchText.isEmpty()){
 
-			bunleGroups = bundleGroupRepository.findAll();
-			bunleGroups = bunleGroups.stream().filter(bundleGroup -> {
+			bundleGroups = bundleGroupRepository.findAll();
+			bundleGroups = bundleGroups.stream().filter(bundleGroup -> {
 				String bg = bundleGroup.getName().toLowerCase(), st = searchText.toLowerCase(), o = bundleGroup.getOrganisation().getName().toLowerCase();
 				return bg.startsWith(st) || bg.endsWith(st) || bg.contains(st) || o.startsWith(st) || o.endsWith(st) || o.contains(st);
 		}).collect(Collectors.toList());
 		}
 
-		if(!bunleGroups.isEmpty()){
+		if(!bundleGroups.isEmpty()){
 			if (organisationId.isPresent()) {
 				Organisation organisation = new Organisation();
 				organisation.setId(Long.valueOf(organisationId.get()));
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation.getId())).collect(Collectors.toList());
+				bundleGroups = bundleGroups.stream().filter(bundleGroup -> bundleGroup.getOrganisation().getId().equals(organisation.getId())).collect(Collectors.toList());
 			} else {
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> categories.containsAll(bundleGroup.getCategories())).collect(Collectors.toList());
+				bundleGroups = bundleGroups.stream().filter(bundleGroup -> categories.containsAll(bundleGroup.getCategories())).collect(Collectors.toList());
 			}
 		} else {
 			if (organisationId.isPresent()) {
 				Organisation organisation = new Organisation();
 				organisation.setId(Long.valueOf(organisationId.get()));
-				bunleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(organisation, categories);
+				bundleGroups = bundleGroupRepository.findDistinctByOrganisationAndCategoriesIn(organisation, categories);
 			} else {
-				bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
+				bundleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
 			}
 			if(null != searchText && !searchText.isEmpty())
-				bunleGroups = bunleGroups.stream().filter(bundleGroup -> bundleGroup.getName().toLowerCase().startsWith(searchText) ||
+				bundleGroups = bundleGroups.stream().filter(bundleGroup -> bundleGroup.getName().toLowerCase().startsWith(searchText) ||
 						bundleGroup.getName().toLowerCase().endsWith(searchText) ||
 						bundleGroup.getName().toLowerCase().contains(searchText)).collect(Collectors.toList());
 		}
 
-		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
+		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups, statusSet, paging);
 		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page), page);
-		logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
+		logger.debug("{}: getBundleGroupVersions: organisationId {}, number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
 		return pagedContent;
 	}
 }

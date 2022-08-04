@@ -26,7 +26,7 @@ public class AppBuilderBundleGroupsController {
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required.")
     @GetMapping("/")
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
-    	logger.debug("REST request to get bundle group versions and filter them by organisation Id: {}, descriptorVersions {}", descriptorVersions);
+    	logger.debug("REST request to get bundle group versions and filter them by descriptorVersions {}", descriptorVersions);
 
         String[] statuses = {BundleGroupVersion.Status.PUBLISHED.toString()};
 

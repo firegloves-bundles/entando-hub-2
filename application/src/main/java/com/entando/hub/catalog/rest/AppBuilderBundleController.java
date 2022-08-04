@@ -26,7 +26,7 @@ public class AppBuilderBundleController {
 
 	private final BundleService bundleService;
 	private final BundleGroupVersionService bundleGroupVersionService;
-	private final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
 	public AppBuilderBundleController(BundleService bundleService,BundleGroupVersionService bundleGroupVersionService) {
@@ -34,14 +34,10 @@ public class AppBuilderBundleController {
 		this.bundleGroupVersionService = bundleGroupVersionService;
 	}
 
-	@Operation(summary = "Get all the bundles in the hub", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles. The descriptorVersions parameter is required in order to return docker-based bundles with Entando 7.1 and up.")
-	@GetMapping("/")
-	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
-		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
-		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
+	static Set<Bundle.DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
 		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
 
-		//For the AppBuilder default to V1 for best compatibility
+		//Default to V1 for best compatibility
 		if (ArrayUtils.isEmpty(descriptorVersions)) {
 			versions.add(Bundle.DescriptorVersion.V1);
 		}
@@ -55,7 +51,15 @@ public class AppBuilderBundleController {
 				}
 			}
 		}
+		return versions;
+	}
 
+	@Operation(summary = "Get all the bundles in the hub", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles. The descriptorVersions parameter is required in order to return docker-based bundles with Entando 7.1 and up.")
+	@GetMapping("/")
+	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
+		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
+		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
+		Set<Bundle.DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 
 		PagedContent<BundleController.Bundle, Bundle> pagedContent = new PagedContent<>(

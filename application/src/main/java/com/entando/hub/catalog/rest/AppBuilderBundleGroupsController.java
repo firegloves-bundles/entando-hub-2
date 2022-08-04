@@ -1,8 +1,6 @@
 package com.entando.hub.catalog.rest;
 
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +23,17 @@ public class AppBuilderBundleGroupsController {
         this.bundleGroupVersionController = bundleGroupVersionController;
     }
 
-
-    @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required.")
     @GetMapping("/")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses) {
-    	logger.debug("REST request to get bundle group versions and filter them by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-    	if (Objects.isNull(statuses)) {
-			statuses = new String[1];
-			statuses[0] = BundleGroupVersion.Status.PUBLISHED.toString();
-		}
-        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses, null);
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
+    	logger.debug("REST request to get bundle group versions and filter them by organisation Id: {}, descriptorVersions {}", descriptorVersions);
+
+        String[] statuses = {BundleGroupVersion.Status.PUBLISHED.toString()};
+
+        //No-op currently but descriptorVersions are available if we need to refine functionality
+        // Set<Bundle.DescriptorVersion> versions = AppBuilderBundleController.descriptorVersionsToSet(descriptorVersions);
+
+        return bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, null, null, statuses, null);
     }
 
 }

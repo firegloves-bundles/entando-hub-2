@@ -82,7 +82,7 @@ public class BundleServiceTest {
 
 		Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 	     Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
-	     Mockito.when(bundleRepository.findByBundleGroupVersionsIs(bundleGroupVersion, paging)).thenReturn(response);
+	     Mockito.when(bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(bundleGroupVersion, versions, paging)).thenReturn(response);
 	     Mockito.when(bundleGroupVersionRepository.getPublishedBundleGroups(versions)).thenReturn(bundleGroupVersionList);
 	     Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
 

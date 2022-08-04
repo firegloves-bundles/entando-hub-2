@@ -2,7 +2,6 @@ package com.entando.hub.catalog.service;
 
 import java.util.*;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -45,6 +44,13 @@ public class BundleService {
 		} else {
 			paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
 		}
+
+		//Controllers can override but default to all versions otherwise.
+		if (descriptorVersions == null) {
+			descriptorVersions = new HashSet<>();
+			Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
+		}
+
 		Page<Bundle> response = new PageImpl<>(new ArrayList<>());
 		if (bundleGroupId.isPresent()) {
 			Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
@@ -52,17 +58,13 @@ public class BundleService {
 			if (bundleGroupEntity.isPresent()) {
 				BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
 				if (publishedVersion != null)
-					response = bundleRepository.findByBundleGroupVersionsIs(publishedVersion, paging);
+					response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
+							publishedVersion, descriptorVersions, paging);
 			} else {
 				logger.warn("{}: getBundles: bundle group does not exist: {}", CLASS_NAME, bundleGroupEntityId);
 			}
 		} else {
 			logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
-			//Controllers can override but default to all versions otherwise.
-			if (descriptorVersions == null) {
-				descriptorVersions = new HashSet<>();
-				Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
-			}
 			List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
 			response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundlegroupsVersion, descriptorVersions, paging);
 		}

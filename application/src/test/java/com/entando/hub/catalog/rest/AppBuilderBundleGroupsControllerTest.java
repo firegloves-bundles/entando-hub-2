@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -84,8 +83,8 @@ public class AppBuilderBundleGroupsControllerTest {
 		Integer page = 0;
 		Integer pageSize = 89;
 		
-		String[] statuses =  Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
-		
+		String[] statuses =  {Status.PUBLISHED.name()};
+
 		List<BundleGroupVersionFilteredResponseView> list = new ArrayList<>();
 		BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
 		viewObj.setBundleGroupVersionId(bundleGroupVersion.getId());
@@ -101,7 +100,7 @@ public class AppBuilderBundleGroupsControllerTest {
 		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(list, response);
 		
 		//Case 1: all optional parameters given
-		Mockito.when(bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, null, null, statuses, null)).thenReturn(pagedContent);
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
@@ -115,8 +114,7 @@ public class AppBuilderBundleGroupsControllerTest {
 		
 		//Case 2: when statuses list is null
 		String[] defaultStatuses = new String[1];
-		defaultStatuses[0] = BundleGroupVersion.Status.PUBLISHED.toString();
-		Mockito.when(bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, organisationId, categoryIds, defaultStatuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, null, null, statuses, null)).thenReturn(pagedContent);
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)

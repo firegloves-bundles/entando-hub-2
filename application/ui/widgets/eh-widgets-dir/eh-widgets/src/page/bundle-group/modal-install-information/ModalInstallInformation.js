@@ -7,15 +7,19 @@ import i18n from "../../../i18n"
 const InstallationInfo = ({bundleGroup, children}) => {
     const elemList = children.map((bundle, index)=>(
         <CodeSnippet key={index.toString()} type="multi" feedback="Copied to clipboard">
-            {`ent bundler from-git -r ${bundle.gitRepoAddress} -d | ent kubectl apply -n entando -f -`}
+            {`ent ecr deploy --repo=${bundle.gitRepoAddress}`}
         </CodeSnippet>
     ))
 
   return (
       <div className="Modal-install-code">
-        Instruction for {bundleGroup.name}
         <div className="Modal-install-code">
           {elemList}
+        </div>
+        <div>
+            Notes: See the <a href="https://developer.entando.com/cli.html" target="_blank" rel="noopener noreferrer">CLI documentation</a> for
+            additional information about the Entando CLI. See the <a href="https://developer.entando.com/hub.html" target="_blank" rel="noopener noreferrer">
+            Hub documentation</a> to connect an Entando App Builder to the Hub and install bundles without the CLI.
         </div>
       </div>
   )

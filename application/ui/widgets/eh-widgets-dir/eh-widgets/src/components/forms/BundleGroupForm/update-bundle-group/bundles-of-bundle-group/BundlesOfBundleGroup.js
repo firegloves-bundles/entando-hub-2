@@ -9,7 +9,7 @@ import { bundleUrlSchema, bundleSrcUrlSchema} from "../../../../../helpers/valid
 import { fillErrors } from "../../../../../helpers/validation/fillErrors";
 import { BUNDLE_STATUS, GIT_REPO, BUNDLE_URL_REGEX, OPERATION, CHAR_LENGTH_255, CHAR_LIMIT_MSG_SHOW_TIME } from "../../../../../helpers/constants";
 import i18n from "../../../../../i18n";
-import {clickableUrlFromUri} from "../../../../../helpers/helpers";
+import {clickableUrlFromUri, setBundleNameFromRepoAddress} from "../../../../../helpers/helpers";
 /*
 BUNDLE:
 {
@@ -20,14 +20,6 @@ dependencies	[...]
 bundleGroups	[...]
 bundleId	string
 } */
-
-const parseGitRepoAddr = (bundle) => {
-    const gitRepoAddress = bundle.gitRepoAddress;
-    const name = gitRepoAddress ?
-        gitRepoAddress.substring(gitRepoAddress.lastIndexOf("/") + 1, gitRepoAddress.lastIndexOf(".")) :
-        "";
-    return {...bundle, name: name}
-}
 
 const BundleList = ({children = [], setGitSrcRepo, onDeleteBundle, disabled}) => {
     const [bundleSrcInvalid, setBundleSrcInvalid] = useState({})
@@ -211,7 +203,7 @@ const BundlesOfBundleGroup = ({
                 return
             }
             let newBundleList = [...bundleList, {
-                name: parseGitRepoAddr({gitRepoAddress: gitRepo}).name,
+                name: setBundleNameFromRepoAddress({gitRepoAddress: gitRepo}).name,
                 description: gitRepo,
                 gitRepoAddress: gitRepo,
                 dependencies: [],

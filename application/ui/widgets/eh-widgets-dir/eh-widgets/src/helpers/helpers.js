@@ -110,3 +110,23 @@ export const isCurrentUserAssignedAValidRole = () => {
 export const isCurrentUserAssignedAPreferredName = () => {
     return window.entando.keycloak.tokenParsed && window.entando.keycloak.tokenParsed.preferred_username;
 }
+
+/*
+BUNDLE:
+{
+name	string
+gitRepoAddress	string
+} */
+export const setBundleNameFromRepoAddress = (bundle) => {
+    const repoAddress = bundle.gitRepoAddress;
+    let name =  "";
+    //docker urls, e.g. docker://registry.hub.docker.com/account/dockerreponame
+    if (repoAddress && repoAddress.startsWith("docker://")) {
+        name = repoAddress.substring(repoAddress.lastIndexOf("/") + 1);
+    }
+    //git-style https://github.com/account/reponame.git or git@github.com:account/gitreponame.git
+    else if (repoAddress) {
+        name = repoAddress.substring(repoAddress.lastIndexOf("/") + 1, repoAddress.lastIndexOf("."));
+    }
+    return {...bundle, name: name}
+}

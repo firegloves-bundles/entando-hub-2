@@ -184,8 +184,14 @@ public class BundleGroupVersionController {
 		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
 		if (bundleGroupVersionOptional.isPresent()) {
-			BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersionOptional.get());
-			return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
+		    com.entando.hub.catalog.persistence.entity.BundleGroupVersion version = bundleGroupVersionOptional.get();
+		    //Prevent this view unless the user is authenticated or the version is published
+		    if (securityHelperService.isUserAuthenticated() || version.getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED)) {
+                BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(version);
+                return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
+            }
+            logger.warn("Requested bundleGroupVersion '{}' exists but is protected", bundleGroupVersionOptional);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		} else {
 			logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionOptional);
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

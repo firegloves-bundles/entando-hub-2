@@ -1,6 +1,6 @@
 {
   "name": "entando-hub",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "private": true,
   "dependencies": {
     "@carbon/grid": "^10.33.0",

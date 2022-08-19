@@ -1,5 +1,5 @@
 # Deployment and installation
-This project is ent-enabled so you can use the ent cli (https://dev.entando.org/next/docs/reference/entando-cli.html) to perform the full build and deployment sequence.
+This project is ent-enabled so you can use the Entando CLI (ent) to perform the full build and deployment sequence.
 
 ### Setup the project directory.
 1. Prepare the bundle directory: `cp -r bundle_src bundle`
@@ -18,7 +18,7 @@ This project is ent-enabled so you can use the ent cli (https://dev.entando.org/
 * Three roles are currently created for the Hub project - eh-author, eh-manager, eh-admin
 
 ## Local Frontend only
-This style of development is for a developer who only wants to run the frontend code locally. See the README under `ui/widgets/cp-widgets-dir/cp-widgets/README.md` for the settings required to do this.
+This style of development is for a developer who only wants to run the frontend code locally. See the README under `ui/widgets/eh-widgets-dir/eh-widgets/README.md` for the settings required to do this.
 
 ## Local Full Stack
 This style of development is for a developer who wants to run keycloak, frontend, and backend all locally. Docker is required for this setup.

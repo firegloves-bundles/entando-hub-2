@@ -3,6 +3,8 @@ package com.entando.hub.catalog.service.security;
 import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import org.keycloak.KeycloakPrincipal;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,11 @@ public class SecurityHelperService {
 
     public SecurityHelperService(PortalUserRepository portalUserRepository) {
         this.portalUserRepository = portalUserRepository;
+    }
+
+    public Boolean isUserAuthenticated() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken));
     }
 
     public Boolean userIsInTheOrganisation(Long organisationId) {

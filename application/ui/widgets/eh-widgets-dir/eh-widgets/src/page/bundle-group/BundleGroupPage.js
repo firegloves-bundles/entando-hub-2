@@ -11,6 +11,7 @@ import {
 } from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import { ModalInstallInformation } from "./modal-install-information/ModalInstallInformation"
+import {ModalContactUsInformation} from "./modal-contact-us-information/ModalContactUsInformation"
 import "./bundle-group-page.scss"
 import i18n from "../../i18n"
 import { SLASH_VERSIONS } from "../../helpers/constants"
@@ -88,6 +89,16 @@ const BundleGroupPage = () => {
     })()
   }, [bundleGroupVersionId])
 
+  // checks the contact-us url for discover
+  const checkContactUsUrl = (string) => {
+    const subString = "discover.entando.com";
+    if (string.indexOf(subString) !== -1) {
+      return true;
+    } else {
+        return false;
+    }
+  }
+
   return (
       <>
         <Content className="BundleGroupPage">
@@ -121,14 +132,28 @@ const BundleGroupPage = () => {
                           alt="BundleGroup Logo" />}
                     </div>
 
-                    {(pageModel.bundleGroup.displayContactUrl) &&
-                      <>
-                        <div className="BundleGroupPage-contact-us">
-                          <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
-                          <Button href={pageModel.bundleGroup.contactUrl} target="_blank">{i18n.t('component.button.contactUs')}</Button>
-                        </div>
-                        <hr/>
-                      </>
+                    {(pageModel.bundleGroup.displayContactUrl) && (pageModel.bundleGroup.contactUrl)
+                        && checkContactUsUrl(pageModel.bundleGroup.contactUrl) == false
+                        ?
+                        <>
+                          <div className="BundleGroupPage-contact-us">
+                            <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
+                            <Button href={pageModel.bundleGroup.contactUrl} target="_blank">
+                              {i18n.t('component.button.contactUs')}
+                            </Button>
+                          </div>
+                          <hr/>
+                        </>
+                        :
+                        <>
+                          <div className="BundleGroupPage-contact-us">
+                            <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
+                            <ModalContactUsInformation bundleGroup={pageModel.bundleGroup}
+                                                       children={pageModel.children}
+                                                       contactUrl={pageModel.bundleGroup.contactUrl}/>
+                          </div>
+                          <hr/>
+                        </>
                     }
 
                     {(pageModel.children && pageModel.children.length>0) &&

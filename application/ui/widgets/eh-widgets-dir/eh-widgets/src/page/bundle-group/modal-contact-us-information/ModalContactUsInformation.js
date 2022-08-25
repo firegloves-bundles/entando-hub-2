@@ -8,7 +8,7 @@ const ContactUsInfo = ({bundleGroup, children}) => {
   return (
       <div className="Modal-contact-us-code">
 
-          <iframe src={bundleGroup.contactUrl} style={{width:'100%',height:'400px'}}/>
+          <iframe title="Contact Us Form Modal" src={bundleGroup.contactUrl} style={{width:'100%',height:'400px'}}/>
 
       </div>
   )

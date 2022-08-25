@@ -90,13 +90,8 @@ const BundleGroupPage = () => {
   }, [bundleGroupVersionId])
 
   // checks the contact-us url for discover
-  const checkContactUsUrl = (string) => {
-    const subString = "discover.entando.com";
-    if (string.indexOf(subString) !== -1) {
-      return true;
-    } else {
-        return false;
-    }
+  const checkContactUsModal = (url) => {
+    return url && url.includes("discover.entando.com")
   }
 
   return (
@@ -133,7 +128,7 @@ const BundleGroupPage = () => {
                     </div>
 
                     {(pageModel.bundleGroup.displayContactUrl) && (pageModel.bundleGroup.contactUrl)
-                        && checkContactUsUrl(pageModel.bundleGroup.contactUrl) == false
+                        && checkContactUsModal(pageModel.bundleGroup.contactUrl) === false
                         ?
                         <>
                           <div className="BundleGroupPage-contact-us">

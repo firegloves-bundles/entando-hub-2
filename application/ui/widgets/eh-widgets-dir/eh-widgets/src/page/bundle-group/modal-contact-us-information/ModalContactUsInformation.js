@@ -1,7 +1,7 @@
 import {Button, Modal} from "carbon-components-react"
 import ReactDOM from "react-dom"
 import {useState} from "react"
-import "./modal-contact-us-information.scss"
+import "../modal-information.scss"
 import i18n from "../../../i18n"
 
 const ContactUsInfo = ({bundleGroup, children}) => {

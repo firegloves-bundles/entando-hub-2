@@ -1,0 +1,68 @@
+.Modal-install-information .bx--modal-header__label,
+.Modal-contact-us-information .bx--modal-header__label{
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #161616;
+}
+
+.Modal-install-information .Modal-install-code,
+.Modal-contact-us-information .Modal-contact-us-code{
+  width: 100%;
+  font-size: 17px;
+  margin: 12px 0px;
+}
+
+.Modal-install-information .bx--snippet--multi,
+.Modal-contact-us-information .bx--snippet--multi{
+  font-family: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
+  font-size: 1rem;
+  line-height: 1.33333;
+  letter-spacing: 0.32px;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  background-color: var(--clr-transparent);
+  display: flex;
+  padding: 1rem;
+}
+
+.Modal-install-information .bx--modal-content,
+.Modal-contact-us-information .bx--modal-content{
+  padding: 1rem;
+}
+
+.Modal-install-information .bx--snippet--multi .bx--snippet-container pre,
+.Modal-contact-us-information .bx--snippet--multi .bx--snippet-container pre{
+  padding-right: 2.5rem;
+  padding-bottom: 1.5rem;
+  overflow-x: auto;
+  background: var(--clr-grey);
+}
+
+.Modal-install-information .bx--snippet-container,
+.Modal-contact-us-information .bx--snippet-container{
+  width: 100%;
+}
+
+.Modal-install-information .bx--modal.is-visible .bx--modal-container,
+.Modal-contact-us-information .bx--modal.is-visible .bx--modal-container{
+  transform: translate3d(0, 0, 0);
+  transition: transform 240ms cubic-bezier(0, 0, 0.3, 1);
+  background: var(--clr-white);
+}
+
+.Modal-install-information .bx--snippet--multi .bx--copy-btn,
+.Modal-contact-us-information .bx--snippet--multi .bx--copy-btn{
+  z-index: 10;
+  top: 29px;
+  right: 22px;
+  width: 2rem;
+  height: 2rem;
+  background: var(--clr-transparent);
+}
+
+.Modal-install-information.bx--modal.is-visible .bx--modal-container,
+.Modal-contact-us-information.bx--modal.is-visible .bx--modal-container{
+  background-color: var(--clr-white);
+}

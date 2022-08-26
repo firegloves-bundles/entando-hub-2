@@ -1,7 +1,7 @@
 import {Button, CodeSnippet, Modal} from "carbon-components-react"
 import ReactDOM from "react-dom"
 import {useState} from "react"
-import "./modal-install-information.scss"
+import "../modal-information.scss"
 import i18n from "../../../i18n"
 
 const InstallationInfo = ({bundleGroup, children}) => {

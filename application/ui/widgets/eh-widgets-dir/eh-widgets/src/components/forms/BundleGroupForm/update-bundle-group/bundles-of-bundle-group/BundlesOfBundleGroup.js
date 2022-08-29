@@ -150,8 +150,8 @@ const BundlesOfBundleGroup = ({
     }, [bundleList])
 
     const onChangeHandler = (e) => {
-        const value = e.target.value
-        value.trim().length > 0 ? setIsUrlReqValid(true) : setIsUrlReqValid(false)
+        const value = e.target.value.trim()
+        value.length > 0 ? setIsUrlReqValid(true) : setIsUrlReqValid(false)
         setGitRepo(value)
         validateBundleUrl(e)
     }

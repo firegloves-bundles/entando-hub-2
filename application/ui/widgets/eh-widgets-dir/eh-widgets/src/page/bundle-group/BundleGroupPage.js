@@ -94,6 +94,7 @@ const BundleGroupPage = () => {
     return url && url.includes("discover.entando.com")
   }
 
+
   return (
       <>
         <Content className="BundleGroupPage">
@@ -127,7 +128,8 @@ const BundleGroupPage = () => {
                           alt="BundleGroup Logo" />}
                     </div>
 
-                    {(pageModel.bundleGroup.displayContactUrl) && (pageModel.bundleGroup.contactUrl)
+                    {(pageModel.bundleGroup.displayContactUrl)
+                    && (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
                         && checkContactUsModal(pageModel.bundleGroup.contactUrl) === false
                         ?
                         <>
@@ -140,15 +142,17 @@ const BundleGroupPage = () => {
                           <hr/>
                         </>
                         :
+                        (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
+                        ?
                         <>
                           <div className="BundleGroupPage-contact-us">
                             <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
                             <ModalContactUsInformation bundleGroup={pageModel.bundleGroup}
-                                                       children={pageModel.children}
-                                                       contactUrl={pageModel.bundleGroup.contactUrl}/>
+                                                       children={pageModel.children}/>
                           </div>
                           <hr/>
                         </>
+                            : []
                     }
 
                     {(pageModel.children && pageModel.children.length>0) &&

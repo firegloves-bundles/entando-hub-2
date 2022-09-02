@@ -54,7 +54,6 @@ export const ModalContactUsInformation = (props) => {
         {({open, onRequestClose, bundleGroup, children}) => (
             <Modal
                 className="Modal-contact-us-information"
-                // modalLabel={"How to CONTACT US "}
                 passiveModal
                 open={open}
                 onRequestClose={onRequestClose}>

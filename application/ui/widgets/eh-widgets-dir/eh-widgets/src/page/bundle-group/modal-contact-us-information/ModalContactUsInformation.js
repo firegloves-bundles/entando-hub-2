@@ -1,32 +1,21 @@
-import {Button, CodeSnippet, Modal} from "carbon-components-react"
+import {Button, Modal} from "carbon-components-react"
 import ReactDOM from "react-dom"
 import {useState} from "react"
 import "../modal-information.scss"
 import i18n from "../../../i18n"
 
-const InstallationInfo = ({bundleGroup, children}) => {
-    const elemList = children.map((bundle, index)=>(
-        <CodeSnippet key={index.toString()} type="multi" feedback="Copied to clipboard">
-            {`ent ecr deploy --repo=${bundle.gitRepoAddress}`}
-        </CodeSnippet>
-    ))
-
+const ContactUsInfo = ({bundleGroup, children}) => {
   return (
-      <div className="Modal-install-code">
-        <div className="Modal-install-code">
-          {elemList}
-        </div>
-        <div>
-            Notes: See the <a href="https://developer.entando.com/cli.html" target="_blank" rel="noopener noreferrer">CLI documentation</a> for
-            additional information about the Entando CLI. See the <a href="https://developer.entando.com/hub.html" target="_blank" rel="noopener noreferrer">
-            Hub documentation</a> to connect an Entando App Builder to the Hub and install bundles without the CLI.
-        </div>
+      <div className="Modal-contact-us-code">
+
+          <iframe title="Contact Us Form Modal" src={bundleGroup.contactUrl} style={{width:'100%',height:'400px'}}/>
+
       </div>
   )
 }
 
 
-export const ModalInstallInformation = (props) => {
+export const ModalContactUsInformation = (props) => {
     const ModalStateManager = ({
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,
@@ -60,16 +49,15 @@ export const ModalInstallInformation = (props) => {
     return (
       <ModalStateManager
           renderLauncher={({onRequestOpen}) => (
-              <Button onClick={onRequestOpen}>{i18n.t('component.button.install')}</Button>
+              <Button onClick={onRequestOpen}>{i18n.t('component.button.contactUs')}</Button>
           )}>
         {({open, onRequestClose, bundleGroup, children}) => (
             <Modal
-                className="Modal-install-information"
-                modalLabel={"How to install " + bundleGroup.name}
+                className="Modal-contact-us-information"
                 passiveModal
                 open={open}
                 onRequestClose={onRequestClose}>
-              <InstallationInfo bundleGroup={bundleGroup} children={children}/>
+              <ContactUsInfo bundleGroup={bundleGroup} children={children}/>
             </Modal>
         )}
       </ModalStateManager>

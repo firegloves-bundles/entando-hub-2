@@ -149,7 +149,7 @@ const CatalogPageContent = ({reloadToken, statusFilterValue, catList, isError, o
                     backwardText={i18n.t("component.pagination.previousPage")}
                     forwardText={i18n.t("component.pagination.nextPage")}
                     pageRangeText={
-                        (total) => `${i18n.t("component.pagination.of")} ${ total }
+                        (_current, total) => `${i18n.t("component.pagination.of")} ${ total }
                         ${ total === 1 ? `${i18n.t("component.pagination.page")}` : `${i18n.t("component.pagination.pages")}` }`
                     }
                 />

@@ -11,6 +11,7 @@ import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupSta
 import { getPortalUserByUsername } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
+import ScrollToTop from "../../helpers/scrollToTop";
 
 /*
 This is the HUB landing page
@@ -148,6 +149,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
 
   return (
     <>
+      <ScrollToTop>
         <Content className="CatalogPage">
           <div className="CatalogPage-wrapper">
             <div className="bx--grid bx--grid--full-width catalog-page">
@@ -205,6 +207,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm}) => {
             </div>
           </div>
         </Content>
+      </ScrollToTop>
     </>
   );
 };

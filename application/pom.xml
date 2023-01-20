@@ -13,13 +13,14 @@
     <version>2.1.6-SNAPSHOT</version>
     <description>The BE microservice for the Entando Hub</description>
     <properties>
-        <problem-spring-web.version>0.25.0</problem-spring-web.version>
+        <problem-spring-web.version>0.27.0</problem-spring-web.version>
         <java.version>11</java.version>
-        <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
+        <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
         <jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
         <keycloak-adapter-bom.version>12.0.4</keycloak-adapter-bom.version>
-        <log4j.version>2.17.1</log4j.version>
+        <log4j.version>2.19.0</log4j.version>
         <liquibase.version>3.7.0</liquibase.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -84,7 +85,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
+            <version>${commons-beanutils.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>

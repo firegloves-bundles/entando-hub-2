@@ -2,6 +2,9 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.service.OrganisationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +33,17 @@ public class OrganisationController {
     }
 
     @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = "application/json")
     public List<Organisation> getOrganisations() {
         logger.debug("REST request to get organisations");
         return organisationService.getOrganisations().stream().map(Organisation::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
-    @GetMapping("/{organisationId}")
+    @GetMapping(value = "/{organisationId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Organisation> getOrganisation(@PathVariable String organisationId) {
         logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
@@ -51,7 +57,10 @@ public class OrganisationController {
 
     @Operation(summary = "Create a new organisation", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
-    @PostMapping("/")
+    @PostMapping(value = "/", produces = "application/json")
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
         com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
@@ -61,7 +70,11 @@ public class OrganisationController {
 
     @Operation(summary = "Update an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @PostMapping("/{organisationId}")
+    @PostMapping(value = "/{organisationId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
@@ -77,7 +90,11 @@ public class OrganisationController {
 
     @Operation(summary = "Delete an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @DeleteMapping("/{organisationId}")
+    @DeleteMapping(value = "/{organisationId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {
         logger.debug("REST request to delete organisation {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
@@ -112,8 +129,12 @@ public class OrganisationController {
 
     @Data
     public static class OrganisationNoId {
+        @Schema(example = "Entando")
         protected final String name;
+
+        @Schema(example = "Application Composition Platform for Kubernetes")
         protected final String description;
+
         protected List<String> bundleGroups;
 
         public OrganisationNoId(String name, String description) {

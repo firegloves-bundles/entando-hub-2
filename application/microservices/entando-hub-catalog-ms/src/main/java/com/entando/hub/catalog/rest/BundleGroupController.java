@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,15 +59,17 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
-    @GetMapping("/")
-    public List<BundleGroup> getBundleGroupsByOrgnisationId(@RequestParam(required = false) String organisationId) {
+    @GetMapping(value = "/", produces = {"application/json"})
+    public List<BundleGroup> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
     }
 
     //PUBLIC
     @Operation(summary = "Get the bundleGroup details", description = "Public api, no authentication required. You have to provide the bundleGroupId")
-    @GetMapping("/{bundleGroupId}")
+    @GetMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
@@ -78,7 +83,10 @@ public class BundleGroupController {
 
     @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/")
+    @PostMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         //if not admin the organisationid of the bundle must be the same of the user
@@ -92,7 +100,11 @@ public class BundleGroupController {
 
     @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/{bundleGroupId}")
+    @PostMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
@@ -125,7 +137,11 @@ public class BundleGroupController {
     //Should we keep this api or should delete ?
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
-    @DeleteMapping("/{bundleGroupId}")
+    @DeleteMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
     public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
@@ -162,8 +178,12 @@ public class BundleGroupController {
 
     @Data
     public static class BundleGroupNoId {
+
+        @Schema(example = "bundle group name")
         protected final String name;
         protected String organisationId;
+
+        @Schema(example = "Entando")
         protected String organisationName;
         protected List<String> categories;
         protected BundleGroupVersionView versionDetails;

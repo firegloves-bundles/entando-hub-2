@@ -1,6 +1,8 @@
 package com.entando.hub.catalog.rest;
 
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,9 @@ public class AppBuilderBundleGroupsController {
     }
 
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required.")
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
     	logger.debug("REST request to get bundle group versions and filter them by descriptorVersions {}", descriptorVersions);
 

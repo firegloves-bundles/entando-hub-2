@@ -6,6 +6,8 @@ import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,10 @@ public class PortalUserController {
 
     @Operation(summary = "Get all the portal users", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the organisationId to filter the results")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<RestUserRepresentation>> getUsers(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get users by organisation id: {}", organisationId);
         List<UserRepresentation> users;
@@ -44,10 +49,12 @@ public class PortalUserController {
         }
         return new ResponseEntity<>(users.stream().map(RestUserRepresentation::new).collect(Collectors.toList()), HttpStatus.OK);
     }
-
     @Operation(summary = "Add a Keycloak user to an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId")
     @RolesAllowed({ADMIN})
-    @PostMapping("/{organisationId}")
+    @PostMapping(value = "/{organisationId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Map<String, Boolean>> addUserToOrganisation(@PathVariable String organisationId, @RequestBody UserOrganisationRequest request) {
         logger.debug("REST request to add user to organisation id: {}", organisationId);
 
@@ -64,7 +71,10 @@ public class PortalUserController {
 
     @Operation(summary = "Remove a Keycloak user from an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId and the username")
     @RolesAllowed({ADMIN})
-    @DeleteMapping("/{organisationId}/user/{username}")
+    @DeleteMapping(value = "/{organisationId}/user/{username}", produces = "application/json")
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Map<String, Boolean>> deleteUserFromOrganisation(@PathVariable String organisationId, @PathVariable String username) {
         logger.debug("REST request to delete user from organisation id: {}", organisationId);
         boolean result = this.portalUserService.removeUserFromOrganization(username, organisationId);
@@ -75,7 +85,10 @@ public class PortalUserController {
 
     @Operation(summary = "Delete a Portal User", description = "Protected api, only eh-admin can access it. You have to provide the username")
     @RolesAllowed({ADMIN})
-    @DeleteMapping("/{username}")
+    @DeleteMapping(value = "/{username}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable String username) {
         logger.debug("REST request to delete user: {}", username);
         boolean result = this.portalUserService.removeUser(username);
@@ -91,7 +104,10 @@ public class PortalUserController {
 	 */
     @Operation(summary = "Get a user by username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ ADMIN, AUTHOR, MANAGER })
-	@GetMapping("/{username}")
+	@GetMapping(value = "/{username}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
 	public ResponseEntity<PortalUserResponseView> getPortalUserByUsername(@PathVariable("username") String username) {
 		logger.debug("REST request to get a user by username: {}", username);
 		PortalUserResponseView portalUser;

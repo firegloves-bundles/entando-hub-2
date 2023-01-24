@@ -3,6 +3,8 @@ package com.entando.hub.catalog.rest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundles/")
-
 public class AppBuilderBundleController {
 
 	private final BundleService bundleService;
@@ -55,7 +56,9 @@ public class AppBuilderBundleController {
 	}
 
 	@Operation(summary = "Get all the bundles in the hub", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles. The descriptorVersions parameter is required in order to return docker-based bundles with Entando 7.1 and up.")
-	@GetMapping("/")
+	@GetMapping(value = "/", produces = {"application/json"})
+	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+	@ApiResponse(responseCode = "200", description = "OK")
 	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
@@ -65,9 +68,9 @@ public class AppBuilderBundleController {
 		PagedContent<BundleController.Bundle, Bundle> pagedContent = new PagedContent<>(
 				bundlesPage.getContent().stream().map(BundleController.Bundle::new).peek(bundle -> {
 					// add the bundle group image as bundle image
-					List<String> bundleGroupVersons = bundle.getBundleGroups();
-					if (bundleGroupVersons != null && bundleGroupVersons.size() > 0) {
-						Optional<BundleGroupVersion> optionalBundleGroup = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersons.get(0));
+					List<String> bundleGroupVersions = bundle.getBundleGroups();
+					if (bundleGroupVersions != null && bundleGroupVersions.size() > 0) {
+						Optional<BundleGroupVersion> optionalBundleGroup = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersions.get(0));
 						optionalBundleGroup.ifPresent(group -> {
 							bundle.setDescriptionImage(group.getDescriptionImage());
 							bundle.setDescription(group.getDescription());

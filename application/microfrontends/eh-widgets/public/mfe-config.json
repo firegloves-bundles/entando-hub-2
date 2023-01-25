@@ -1,0 +1,9 @@
+{
+    "systemParams": {
+        "api": {
+            "entando-hub-catalog-ms-api": {
+                "url": "http://localhost:8081"
+            }
+        }
+    }
+}

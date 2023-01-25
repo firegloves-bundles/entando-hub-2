@@ -1,0 +1,47 @@
+{
+    "microservices": [
+        {
+            "name": "entando-hub-catalog-ms",
+            "stack": "spring-boot",
+            "healthCheckPath": "/actuator/health",
+            "dbms": "postgresql",
+            "commands": {
+                "run": "mvn spring-boot:run -Dspring-boot.run.profiles=dev"
+            },
+            "roles": [
+                "eh-author",
+                "eh-manager",
+                "eh-admin"
+            ]
+        }
+    ],
+    "microfrontends": [
+        {
+            "name": "eh-widgets",
+            "customElement": "eh-widgets",
+            "stack": "react",
+            "type": "widget",
+            "group": "free",
+            "publicFolder": "public",
+            "titles": {
+                "en": "eh-widgets",
+                "it": "eh-widgets"
+            },
+            "apiClaims": [
+                {
+                    "name": "entando-hub-catalog-ms-api",
+                    "type": "internal",
+                    "serviceName": "entando-hub-catalog-ms"
+                }
+            ]
+        }
+    ],
+    "svc": [
+        "postgresql",
+        "keycloak"
+    ],
+    "name": "entando-hub-application",
+    "version": "3.0.0",
+    "description": "The Entando Hub application components",
+    "type": "bundle"
+}

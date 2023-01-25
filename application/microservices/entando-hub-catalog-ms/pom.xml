@@ -124,9 +124,9 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
+        <finalName>entando-hub-catalog-ms</finalName>
         <plugins>
             <plugin>
                 <groupId>org.liquibase</groupId>
@@ -194,5 +194,6 @@
             </dependencies>
         </profile>
     </profiles>
+
 
 </project>

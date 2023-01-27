@@ -40,18 +40,14 @@ const NewUser = ({onDataChange,apiUrl}) => {
     }
 
     //TODO BE QUERY REFACTORING
-    const getAvailableKcUsers = async () => {
-        const kcUsers = (await getAllKCUsers(apiUrl)).kcUsers
-        const portalUsers = (await getAllUsers(apiUrl)).userList
-        const portalUserUsernames = portalUsers && portalUsers.map(u=>u.username)
-        return kcUsers && kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
-    }
-
     useEffect(() => {
         let isMounted = true;
         (async () => {
             const organisations = (await getAllOrganisations(apiUrl)).organisationList
-            const availableUsers = (await getAvailableKcUsers(apiUrl))
+            const kcUsers = (await getAllKCUsers(apiUrl)).kcUsers
+            const portalUsers = (await getAllUsers(apiUrl)).userList
+            const portalUserUsernames = portalUsers && portalUsers.map(u=>u.username)
+            const availableUsers =  kcUsers && kcUsers.filter(kcUser=>!portalUserUsernames.includes(kcUser.username))
             if (isMounted) {
                 setOrganisations(organisations)
                 setAvailableUsers(availableUsers)

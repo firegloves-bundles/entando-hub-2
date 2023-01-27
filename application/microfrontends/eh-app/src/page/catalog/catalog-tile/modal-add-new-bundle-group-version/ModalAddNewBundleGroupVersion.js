@@ -91,7 +91,7 @@ export const ModalAddNewBundleGroupVersion = ({
     return () => {
       isMounted = false
     }
-  }, [theBundleGroup])
+  }, [apiUrl, theBundleGroup])
 
   //Add Bundle Group Version api call
   const addBundleGroupVersion = async(bundleGroupVersion) => {

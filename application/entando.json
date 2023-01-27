@@ -17,19 +17,44 @@
     ],
     "microfrontends": [
         {
-            "name": "eh-widgets",
-            "customElement": "eh-widgets",
+            "name": "eh-app",
+            "customElement": "x-eh-app",
             "stack": "react",
             "type": "widget",
             "group": "free",
             "publicFolder": "public",
             "titles": {
-                "en": "eh-widgets",
-                "it": "eh-widgets"
+                "en": "eh-app",
+                "it": "eh-app"
+            },
+            "commands": {
+                "run": "npm install && PORT=3000 npm start"
             },
             "apiClaims": [
                 {
-                    "name": "entando-hub-catalog-ms-api",
+                    "name": "entando-hub-api",
+                    "type": "internal",
+                    "serviceName": "entando-hub-catalog-ms"
+                }
+            ]
+        },
+        {
+            "name": "eh-login",
+            "customElement": "x-eh-login",
+            "stack": "react",
+            "type": "widget",
+            "group": "free",
+            "publicFolder": "public",
+            "titles": {
+                "en": "eh-login",
+                "it": "eh-login"
+            },
+            "commands": {
+                "run": "npm install && PORT=3001 npm start"
+            },
+            "apiClaims": [
+                {
+                    "name": "entando-hub-api",
                     "type": "internal",
                     "serviceName": "entando-hub-catalog-ms"
                 }

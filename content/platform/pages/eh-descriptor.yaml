@@ -11,10 +11,9 @@ seo: false
 charset: utf8
 status: published
 widgets:
-  - code: eh-login
+  - code: eh-login-e9233984
     config: null
     pos: 1
-  - code: eh-app
+  - code: eh-app-e9233984
     config: null
     pos: 3
-

@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+.UserManagementPage {
+  background: var(--clr-transparent);
+}
+
+.UserManagementPage-wrapper {
+  padding: 0 15.8% 4rem;
+}
+
+.UserManagementPage-breadcrumb {
+  margin: 2rem 1rem;
+}
+
+.UserManagementPage-section {
+  margin: 0;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 44px;
+  color: var(--clr-black);
+  margin-bottom: 20px;
+  background: var(--clr-white);
+}
+
+.UserManagementPage .UserManagementPage-section .bx--data-table-content {
+  padding: 1rem;
+}
+
+.UserManagementPage-section .bx--data-table-container, .UserManagementPage-section .bx--data-table-header, .UserManagementPage-section .bx--table-toolbar {
+  background: var(--clr-white);
+}
+
+.UserManagementPage-section .bx--table-toolbar {
+  padding: 0 1rem;
+}
+
+.UserManagementPage-section .bx--data-table tbody tr td, .UserManagementPage-section .bx--data-table tbody tr th {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  background: var(--clr-white);
+  color: #161616;
+}
+
+.UserManagementPage-section .bx--data-table tbody tr:hover td, .UserManagementPage-section .bx--data-table tbody tr:hover th {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  background: #e5e5e5;
+  color: #161616;
+}
+
+
+@media screen and (max-width: 1040px) {
+  .UserManagementPage-wrapper {
+    padding: 0 3.8% 4rem;
+  }
+  .bx--toolbar-content .bx--btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+}

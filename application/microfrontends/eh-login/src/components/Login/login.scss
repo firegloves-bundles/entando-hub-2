@@ -1,0 +1,38 @@
+.entando-eh-login {
+  display: flex;
+  height: 50px;
+  align-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.entando-eh-login a {
+  color: #fff;
+}
+
+.entando-eh-login button {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 300;
+  color: #fff;
+  border: none;
+  background: transparent;
+}
+.entando-eh-login button i, .admin-page i {
+  margin-left: 5px;
+}
+
+.log-button {
+  text-align: end;
+}
+
+.log-out {
+  margin-left: 20px;
+}
+
+.spacer {
+  margin: 5px
+}

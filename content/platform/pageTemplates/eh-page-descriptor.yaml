@@ -15,7 +15,7 @@ configuration:
       description: Login
       mainFrame: false
       defaultWidget:
-        code: eh-login-e9233984
+        code: eh-login-++BUNDLE_ID++
         properties: null
       sketch:
         x1: 9

@@ -14,12 +14,13 @@
     <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
 
     <!-- Hub 1.0 -->
-    <include file="config/changelog/initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="config/changelog/bundle_module.xml" relativeToChangelogFile="false"/>
-    <include file="config/changelog/portaluser_module.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220118000001_category_organisation.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220118000002_bundle_bundleversion_bundlegroup_bundlegroupversion_categorybundlegroup.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220118000003_portaluser_module.xml" relativeToChangelogFile="false"/>
     <!-- Hub 2.0 -->
-    <include file="config/changelog/bundlegroupversion_contact_module.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220602000000_bundlegroupversion_contact_module.xml" relativeToChangelogFile="false"/>
     <!-- Hub 2.1 -->
-    <include file="config/changelog/bundle_add_src_address.xml" relativeToChangelogFile="false"/>
-    <include file="config/changelog/v211_bundle_descriptor_group_description.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220624000000_bundle_add_src_address.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20220802000000_v211_bundle_descriptor_group_description.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20230130000000_bundlegroupversion_uniquekey.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

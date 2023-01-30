@@ -6,11 +6,13 @@
 #    - ent cli installed https://developer.entando.com/next/docs/getting-started/entando-cli.html#command-list
 #
 # Overview:
-# you must provide the bundle url from which derive the new hash to use, by using the -u option
+# you must provide the docker org to use to derive the new bundle ids to use, by using the -o option.
+# this script overrides the occurrences of 2 placeholders (__APPLICATION_BUNDLE_ID__ and __CONTENT_BUNDLE_ID__) with the corresponding bundle ids
 # by default it searches only in the platform folder, but you can provide a custom location using the -f option
-# by default it searches for ++BUNDLE_ID++ as value to override, but you can provide a custom value using the -t option
-# minimum example usage ./set-bundle-id.sh -u docker://registry.hub.docker.com/alepintus/Dentando-hub-application"
-# full example usage ./set-bundle-id.sh -u docker://registry.hub.docker.com/alepintus/entando-hub-application -f microfrontends -t 1111cccc
+# by default it searches for __APPLICATION_BUNDLE_ID__ as value to override, but you can provide a custom value using the -a option
+# by default it searches for __CONTENT_BUNDLE_ID__ as value to override, but you can provide a custom value using the -c option
+# minimum example usage ./set-bundle-id.sh -o mydockerorg
+# full example usage ./set-bundle-id.sh -o mydockerorg -f microfrontends -a MY_CUSTOM_PLACEHOLDER -c MY_CUSTOM_PLACEHOLDER_2
 
 while [ "$#" -gt 0 ]; do
   case "$1" in

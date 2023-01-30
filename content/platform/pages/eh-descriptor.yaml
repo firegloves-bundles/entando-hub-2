@@ -11,9 +11,9 @@ seo: false
 charset: utf8
 status: published
 widgets:
-  - code: eh-login-++BUNDLE_ID++
+  - code: eh-login-__APPLICATION_BUNDLE_ID__
     config: null
     pos: 1
-  - code: eh-app-++BUNDLE_ID++
+  - code: eh-app-__APPLICATION_BUNDLE_ID__
     config: null
     pos: 3

@@ -16,7 +16,7 @@ let page_ = INIT_PAGE
 let pageSizes = ITEMS_PER_PAGE
 let currentPage = INIT_PAGE
 
-const BundleGroupVersionsPage = ({setVersionSearchTerm, apiUrl}) => {
+const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])

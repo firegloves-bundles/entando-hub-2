@@ -5,14 +5,14 @@ import { deleteBundleGroupVersion } from "../../../../integration/Integration"
 import "./modal-delete-bundle-group.scss"
 import i18n from "../../../../i18n";
 
-export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleGroupVersionId, onAfterSubmit}) => {
+export const ModalDeleteBundleGroup = ({ apiUrl, open, onCloseModal, bundleGroupVersionId, onAfterSubmit}) => {
 
     const onRequestClose = (e) => {
         onCloseModal()
     }
 
     const onRequestDelete = async (e) => {
-        await deleteBundleGroupVersion(bundleGroupVersionId);
+        await deleteBundleGroupVersion(apiUrl, bundleGroupVersionId);
         onCloseModal()
         onAfterSubmit()
     }

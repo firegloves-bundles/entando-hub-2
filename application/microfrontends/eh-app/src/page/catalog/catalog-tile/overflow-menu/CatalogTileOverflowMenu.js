@@ -42,14 +42,14 @@ const CatalogTileOverflowMenu = ({apiUrl, bundleGroupId, bundleStatus, bundleNam
 
             </OverflowMenu>
 
-            {openModal && <ModalUpdateBundleGroup bundleGroupObj={bundleGroup} open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus} orgList={orgList}
+            {openModal && <ModalUpdateBundleGroup apiUrl={apiUrl} bundleGroupObj={bundleGroup} open={openModal} bundleGroupId={bundleGroupId} bundleStatus={bundleStatus} orgList={orgList}
                 onCloseModal={() => setOpenModal(false)} onAfterSubmit={onAfterSubmit} />}
 
-            {deleteModal && <ModalDeleteBundleGroup open={deleteModal} bundleGroupVersionId={bundleGroup && bundleGroup.bundleGroupVersionId} bundleName={bundleName}
+            {deleteModal && <ModalDeleteBundleGroup apiUrl={apiUrl} open={deleteModal} bundleGroupVersionId={bundleGroup && bundleGroup.bundleGroupVersionId} bundleName={bundleName}
                 onCloseModal={() => setDeleteModal(false)} onAfterSubmit={onAfterSubmit} />}
 
             {/* Add bundle group version modal */}
-            {addBundleGroupVersionModal && <ModalAddNewBundleGroupVersion theBundleGroup={bundleGroup} open={addBundleGroupVersionModal } apiUrl={apiUrl}
+            {addBundleGroupVersionModal && <ModalAddNewBundleGroupVersion apiUrl={apiUrl} theBundleGroup={bundleGroup} open={addBundleGroupVersionModal }
                 onCloseModal={() => setAddBundleGroupVersionModal(false)} onAfterSubmit={onAfterSubmit} operation={OPERATION.ADD_NEW_VERSION} />}
 
         </>

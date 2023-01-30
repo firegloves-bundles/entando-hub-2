@@ -56,7 +56,7 @@ export const ModalUpdateBundleGroup = ({
     setLoading(true)
 
     const initCG = async () => {
-      const res = await getAllCategories()
+      const res = await getAllCategories(apiUrl)
       if (isMounted) {
         setCategories(res.categoryList)
       }
@@ -64,10 +64,10 @@ export const ModalUpdateBundleGroup = ({
     const initBG = async () => {
       const childrenFromDb =
         bundleGroupObj && bundleGroupObj.children && bundleGroupObj.children.length > 0
-          ? (await getAllBundlesForABundleGroup(bundleGroupObj.bundleGroupVersionId)).bundleList
+          ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupObj.bundleGroupVersionId)).bundleList
           : []
 
-      const bundleGroupOrganisation = (await getSingleOrganisation(bundleGroupObj && bundleGroupObj.organisationId)).organisation
+      const bundleGroupOrganisation = (await getSingleOrganisation(apiUrl, bundleGroupObj && bundleGroupObj.organisationId)).organisation
 
       if (isMounted) {
         if (bundleGroupOrganisation) {

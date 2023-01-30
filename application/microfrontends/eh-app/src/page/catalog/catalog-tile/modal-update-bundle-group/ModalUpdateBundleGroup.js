@@ -116,7 +116,7 @@ export const ModalUpdateBundleGroup = ({
     return () => {
       isMounted = false
     }
-  }, [bundleGroupId, bundleGroupObj])
+  }, [apiUrl, bundleGroupId, bundleGroupObj])
 
   const updateBundleGroup = async (bundleGroup) => {
 

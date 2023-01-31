@@ -14,7 +14,14 @@ const getKeycloakInstance = () =>
     initialized: false,
   }
 
+const ATTRIBUTES = {
+  config: 'config'
+};
+
 class LoginElement extends HTMLElement {
+  static get observedAttributes() {
+    return Object.values(ATTRIBUTES);
+  }
   container
 
   mountPoint
@@ -22,6 +29,16 @@ class LoginElement extends HTMLElement {
   unsubscribeFromKeycloakEvent
 
   keycloak = getKeycloakInstance()
+
+
+  attributeChangedCallback(attribute, oldValue, newValue) {
+    if (!LoginElement.observedAttributes.includes(attribute)) {
+      throw new Error(`Untracked changed attributes: ${attribute}`)
+    }
+    if (this.mountPoint && newValue !== oldValue) {
+      this.render();
+    }
+  }
 
   connectedCallback() {
     this.mountPoint = document.createElement('span')
@@ -36,10 +53,14 @@ class LoginElement extends HTMLElement {
     this.appendChild(this.mountPoint)
   }
 
+
   render() {
     const locale = this.getAttribute('locale') || '';
     const engBtn = document.getElementById('engLang');
     const itaBtn = document.getElementById('itaLang');
+    const attributeConfig = this.getAttribute(ATTRIBUTES.config);
+    const config = attributeConfig && JSON.parse(attributeConfig);
+
     if (engBtn && locale === 'en') {
       engBtn.click()
     }
@@ -49,7 +70,7 @@ class LoginElement extends HTMLElement {
     Locale.setLocale(locale);
     ReactDOM.render(
       <KeycloakContext.Provider value={this.keycloak}>
-        <Login />
+        <Login config={config}/>
         <div className="locale-button">
           <span onClick={() => { this.setAttribute('locale', 'en'); this.render(); }}>
             ENG
@@ -65,4 +86,4 @@ class LoginElement extends HTMLElement {
   }
 }
 
-customElements.get('x-eh-login') || customElements.define('x-eh-login', LoginElement)
+customElements.define("x-eh-login", LoginElement)

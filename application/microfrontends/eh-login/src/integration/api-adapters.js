@@ -2,8 +2,8 @@ import { getPortalUserByUsername } from "./Integration";
 import { getUserName, isHubUser } from "../helpers/helpers";
 
 //portal user
-export const getPortalUserDetails = async (username) => {
-    const user = (await getPortalUserByUsername(username)).portalUser;
+export const getPortalUserDetails = async (apiUrl, username) => {
+    const user = (await getPortalUserByUsername(apiUrl, username)).portalUser;
     if (user) {
         return {
             ...user

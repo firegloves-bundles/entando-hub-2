@@ -5,6 +5,7 @@ import refType from '../components/__types__/ref'
 
 
 export default function withKeycloak(WrappedComponent) {
+
   class WithKeycloakComponent extends Component {
     renderWrappedComponent = value => {
       const { forwardedRef, ...rest } = this.props

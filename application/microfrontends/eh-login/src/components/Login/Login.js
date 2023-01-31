@@ -17,14 +17,15 @@ const KEYCLOAK_EVENT_ID = 'keycloak'
 
 class Login extends Component {
 
-  constructor(props) {
+constructor(props) {
+
     super(props)
     this.state = {
       loading: true,
       currentUserName: ""
     }
     this.keycloakEventHandler = this.keycloakEventHandler.bind(this)
-  }
+ }
 
   keycloakEventHandler(event) {
     const keycloakEvent = event.detail.eventType
@@ -49,6 +50,12 @@ class Login extends Component {
   }
 
   componentDidUpdate(prevProps) {
+
+    const { config } = this.props
+    const { systemParams } = config || {};
+    const { api } = systemParams || {};
+    const apiUrl = api && api['entando-hub-api'].url;
+
     if (authenticationChanged(this.props, prevProps)) {
       this.setState({
         loading: false,
@@ -58,7 +65,7 @@ class Login extends Component {
           currentUserName: username,
         })
 
-        getPortalUserDetails(username).then(portalUser => {
+          getPortalUserDetails(apiUrl, username).then(portalUser => {
           this.setState({
             currentUserOrgName: portalUser
               && portalUser.organisations
@@ -71,6 +78,8 @@ class Login extends Component {
     }
   }
 
+
+
   componentWillUnmount() {
     window.removeEventListener(KEYCLOAK_EVENT_ID, this.keycloakEventHandler)
   }
@@ -80,6 +89,7 @@ class Login extends Component {
     const loginUrl = window.location.origin + window.location.pathname;
     const handleLogin = () => keycloak.login({ redirectUri: loginUrl });
     const handleLogout = () => keycloak.logout({ redirectUri: loginUrl });
+
     if (!this.state.loading) {
       return (
           <div className="entando-eh-login">

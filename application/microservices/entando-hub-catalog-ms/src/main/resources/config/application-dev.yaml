@@ -1,0 +1,62 @@
+logging:
+  level:
+    ROOT: INFO
+    com:
+      entando: DEBUG
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+        SQL: DEBUG
+      springframework:
+        security: DEBUG
+
+spring:
+  # Enable this section for h2
+  #  h2:
+  #    console:
+  #      settings:
+  #        web-allow-others: true
+  #      enabled: true
+  datasource:
+    continue-on-error: true
+    initialization-mode: always
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+    # Enable this section for h2
+    #    url: jdbc:h2:./entando-data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+    #    driverClassName: org.h2.Driver
+    #    username: sa
+    #    password: password
+    # Enable this section for postgresql
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/entando-hub-application
+    username: hubApp
+    password: password
+
+keycloak:
+  auth-url: http://localhost:9080/auth
+  client-id: internal
+  client-secret: internal
+  #Enable these settings to use an external keycloak
+  #  auth-url: http://hubdev.okd-entando.org/auth
+  #  client-id: entandopsdh-entando-hub-catalog-server
+  #  client-secret: ADD HERE BUT DO NOT COMMIT
+  ssl-required: none
+  auth-server-url: ${keycloak.auth-url}
+  bearer-only: true
+  credentials:
+    secret: ${keycloak.client-secret}
+  realm: entando
+  resource: ${keycloak.client-id}
+  use-resource-role-mappings: true
+
+# CORS Configurations
+ALLOWED_API_ORIGIN: http://localhost:3000
+
+# Hub UI url for bundle groups
+HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/

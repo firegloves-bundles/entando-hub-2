@@ -1,4 +1,48 @@
 ######################
+# Bundle v5
+######################
+
+######################
+# Entando
+######################
+
+.entando
+
+######################
+# Build folders
+######################
+
+**/node_modules
+**/target
+**/build
+
+######################
+# IntelliJ IDEA
+######################
+
+.idea
+*.iws
+*.iml
+*.ipr
+
+######################
+# Keycloak DB files
+######################
+
+application/svc/keycloak/keycloak-db/*
+
+######################
+# Files to keep
+######################
+
+!.gitkeep
+
+
+######################
+# Bundle v1
+######################
+
+######################
 # Project Specific
 ######################
 /target/classes/static/**
@@ -54,18 +98,6 @@ local.properties
 /.sts4-cache/*
 
 ######################
-# IntelliJ
-######################
-.idea/
-*.iml
-*.iws
-*.ipr
-*.ids
-*.orig
-classes/
-out/
-
-######################
 # Visual Studio Code
 ######################
 .vscode/
@@ -75,12 +107,6 @@ out/
 ######################
 /log/
 **/target/
-
-######################
-# Gradle
-######################
-.gradle/
-/build/
 
 ######################
 # Package Files
@@ -130,16 +156,6 @@ Desktop.ini
 *.*~
 *~
 .merge_file*
-
-######################
-# Gradle Wrapper
-######################
-!gradle/wrapper/gradle-wrapper.jar
-
-######################
-# Maven Wrapper
-######################
-!.mvn/wrapper/maven-wrapper.jar
 
 ######################
 # ESLint

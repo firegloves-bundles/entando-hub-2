@@ -1,8 +1,0 @@
-code: entando-hub-application
-description: The Entando Hub application components
-components:
-  plugins:
-    - plugins/entando-hub-catalog-plugin.yaml
-  widgets:
-    - ui/widgets/eh-widgets-dir/eh-widgets/eh-app-widget-descriptor.yaml
-    - ui/widgets/eh-widgets-dir/eh-widgets/eh-login-widget-descriptor.yaml

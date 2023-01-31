@@ -1,0 +1,72 @@
+{
+    "microservices": [
+        {
+            "name": "entando-hub-catalog-ms",
+            "stack": "spring-boot",
+            "healthCheckPath": "/actuator/health",
+            "dbms": "postgresql",
+            "commands": {
+                "run": "mvn spring-boot:run -Dspring-boot.run.profiles=dev"
+            },
+            "roles": [
+                "eh-author",
+                "eh-manager",
+                "eh-admin"
+            ]
+        }
+    ],
+    "microfrontends": [
+        {
+            "name": "eh-app",
+            "customElement": "x-eh-app",
+            "stack": "react",
+            "type": "widget",
+            "group": "free",
+            "publicFolder": "public",
+            "titles": {
+                "en": "eh-app",
+                "it": "eh-app"
+            },
+            "commands": {
+                "run": "npm install && PORT=3000 npm start"
+            },
+            "apiClaims": [
+                {
+                    "name": "entando-hub-api",
+                    "type": "internal",
+                    "serviceName": "entando-hub-catalog-ms"
+                }
+            ]
+        },
+        {
+            "name": "eh-login",
+            "customElement": "x-eh-login",
+            "stack": "react",
+            "type": "widget",
+            "group": "free",
+            "publicFolder": "public",
+            "titles": {
+                "en": "eh-login",
+                "it": "eh-login"
+            },
+            "commands": {
+                "run": "npm install && PORT=3001 npm start"
+            },
+            "apiClaims": [
+                {
+                    "name": "entando-hub-api",
+                    "type": "internal",
+                    "serviceName": "entando-hub-catalog-ms"
+                }
+            ]
+        }
+    ],
+    "svc": [
+        "postgresql",
+        "keycloak"
+    ],
+    "name": "entando-hub-application",
+    "version": "3.0.0",
+    "description": "The Entando Hub application components",
+    "type": "bundle"
+}

@@ -1,0 +1,9 @@
+{
+    "microservices": [],
+    "microfrontends": [],
+    "svc": [],
+    "name": "entando-hub-content",
+    "version": "3.0.0",
+    "description": "The Entando Hub content components",
+    "type": "bundle"
+}

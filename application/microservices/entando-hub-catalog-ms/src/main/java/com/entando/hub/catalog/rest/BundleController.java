@@ -15,6 +15,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
 import com.entando.hub.catalog.persistence.entity.Bundle.DescriptorVersion;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -52,14 +55,16 @@ public class BundleController {
     }
 
     @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {"application/json"})
     public List<Bundle> getBundles(@RequestParam(required = false) String bundleGroupVersionId) {
         logger.debug("REST request to get Bundles by bundle group version id: {}", bundleGroupVersionId);
         return bundleService.getBundles(Optional.ofNullable(bundleGroupVersionId)).stream().map(Bundle::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the bundle details", description = "Public api, no authentication required. You have to provide the bundleId")
-    @GetMapping("/{bundleId}")
+    @GetMapping(value = "/{bundleId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Bundle> getBundle(@PathVariable() String bundleId) {
         logger.debug("REST request to get Bundle by id: {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
@@ -73,7 +78,10 @@ public class BundleController {
 
     @Operation(summary = "Create a new bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/")
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
+    @PostMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<Bundle> createBundle(@RequestBody BundleNoId bundle) {
         logger.debug("REST request to create new Bundle: {}", bundle);
         
@@ -87,7 +95,11 @@ public class BundleController {
 
     @Operation(summary = "Update a bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleId identifying the bundle")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/{bundleId}")
+    @PostMapping(value = "/{bundleId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleNoId bundle) {
         logger.debug("REST request to update a Bundle with id {}: {}", bundleId, bundle);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
@@ -102,7 +114,10 @@ public class BundleController {
 
     @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundlegId")
     @RolesAllowed({ADMIN})
-    @DeleteMapping("/{bundleId}")
+    @DeleteMapping(value = "/{bundleId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
     public ResponseEntity<Bundle> deleteBundle(@PathVariable String bundleId) {
         logger.debug("REST request to delete bundle {}", bundleId);
@@ -121,6 +136,7 @@ public class BundleController {
     @ToString
     @EqualsAndHashCode(callSuper = true)
     public static class Bundle extends BundleNoId {
+        @Schema(example = "bundle identifier")
         private final String bundleId;
         public Bundle(String bundleId, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroups, String descriptorVersion) {
             super(bundleId, name, description, gitRepoAddress, gitSrcRepoAddress, dependencies, bundleGroups, descriptorVersion);
@@ -135,15 +151,28 @@ public class BundleController {
 
     @Data
     public static class BundleNoId {
+        @Schema(example = "bundle identifier")
         protected final String bundleId;
+
+        @Schema(example = "bundle-sample")
         protected final String name;
+
+        @Schema(example = "This is a example bundle")
         @Setter(AccessLevel.PUBLIC)
         protected String description;
+
+        @Schema(example = "data:image/png;base64,base64code")
         @Setter(AccessLevel.PUBLIC)
         protected String descriptionImage;
+
+        @Schema(example = "V5")
         protected final String descriptorVersion;
+
+        @Schema(example = "docker://registry.hub.docker.com/organization/bundle-sample")
         protected final String gitRepoAddress;
+        @Schema(example = "https://github.com/organization/bundle-sample")
         private final String gitSrcRepoAddress;
+
         protected final List<String> dependencies;
         protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 

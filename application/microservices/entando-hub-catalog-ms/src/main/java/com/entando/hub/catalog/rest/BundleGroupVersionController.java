@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +72,12 @@ public class BundleGroupVersionController {
 
 	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/")
+    @PostMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
@@ -92,7 +100,9 @@ public class BundleGroupVersionController {
 	
 	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @GetMapping("/filtered")
+    @GetMapping(value = "/filtered", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
     	logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
@@ -113,7 +123,12 @@ public class BundleGroupVersionController {
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping("/{bundleGroupVersionId}")
+    @PostMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> updateBundleGroupVersion(@PathVariable String bundleGroupVersionId, @RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to update BundleGroupVersion with id {}, request object: {}", bundleGroupVersionId, bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
@@ -139,7 +154,9 @@ public class BundleGroupVersionController {
     
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub filtered by bundleGroupId and statuses", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @GetMapping("/versions/{bundleGroupId}")
+    @GetMapping(value = "/versions/{bundleGroupId}",produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get bundle group versions by bundleGroupId: {} and statuses {}", bundleGroupId, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
@@ -160,7 +177,12 @@ public class BundleGroupVersionController {
     
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
     @RolesAllowed({ADMIN, MANAGER})
-    @DeleteMapping("/{bundleGroupVersionId}")
+    @DeleteMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
     public ResponseEntity<BundleGroupVersionView> deleteBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
         logger.debug("REST request to delete BundleGroupVersion by id: {}", bundleGroupVersionId);
@@ -179,7 +201,9 @@ public class BundleGroupVersionController {
     
 	// PUBLIC
 	@Operation(summary = "Get the BundleGroupVersion details by id", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
-	@GetMapping("/{bundleGroupVersionId}")
+	@GetMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
 	public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
 		logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
@@ -215,16 +239,26 @@ public class BundleGroupVersionController {
 	@Data
     public static class BundleGroupVersionView {
 	    protected String bundleGroupId;
+
+        @Schema(example = "a brief description")
 	    protected String description;
 
+        @Schema(example = "data:image/png;base64,base64code")
 	    @ToString.Exclude
 	    protected String descriptionImage;
 
+        @Schema(example = "https://github.com/organization/sample-bundle#read-me")
 	    protected String documentationUrl;
+
+        @Schema(example = "1.0.0")
 	    protected String version;
 	    protected com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status status;
 	    protected Long organisationId;
+
+        @Schema(example = "Entando")
         protected String organisationName;
+
+        @Schema(example = "simple bundle name")
         protected String name;
         protected LocalDateTime lastUpdate;
         protected List<String> categories;
@@ -232,6 +266,8 @@ public class BundleGroupVersionController {
         protected String bundleGroupVersionId;
         protected List<BundleNoId> bundles;
         protected Boolean displayContactUrl;
+
+        @Schema(example = "https://yoursite.com/contact-us")
         protected String contactUrl;
 
 	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {

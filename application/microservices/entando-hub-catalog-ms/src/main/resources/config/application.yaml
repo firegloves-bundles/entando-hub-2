@@ -47,6 +47,10 @@ spring:
       hibernate.generate_statistics: false
   liquibase.enabled: true
   liquibase.change-log: classpath:config/changelog/master.xml
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
 ###
 # CORS Configurations
 #  Use these properties to control which origins can access the external AppBuilder-facing API and the BFF-style API for the Hub MFEs

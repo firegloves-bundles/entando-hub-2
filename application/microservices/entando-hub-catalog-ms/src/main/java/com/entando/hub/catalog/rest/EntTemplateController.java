@@ -6,6 +6,9 @@ import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the templates for the bundle that are in the hub", description = "Public api, no authentication required.")
-    @GetMapping("/bundles")
+    @GetMapping(value = "/bundles", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleTemplate> getBundleTemplates() {
         List<BundleGroupVersion> bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInIt();
 
@@ -42,7 +47,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the bundle groups having templates in them, they can be filtered by name part", description = "Public api, no authentication required.")
-    @GetMapping("/bundlegroups")
+    @GetMapping(value = "/bundlegroups", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleGroupTemplate> getBundleGroupsWithTemplates(@RequestParam(required = false) String name) {
         List<BundleGroupVersion> bundleGroupVersionList;
         if (name != null) {
@@ -58,7 +65,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get the templates for the bundle given the bundlegroup id", description = "Public api, no authentication required.")
-    @GetMapping("/bundlegroups/{id}")
+    @GetMapping(value = "/bundlegroups/{id}", produces = {"application/json"})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleTemplate> getBundleTemplateByBundleGroupId(@PathVariable Long id) {
         List<BundleGroupVersion> bundleGroupVersionList;
         bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInItAndId(id);
@@ -78,8 +87,13 @@ public class EntTemplateController {
 
     @Data
     public static class BundleTemplate {
+        @Schema(example = "Entando 7.1 Tutorials")
         private String bundleGroupName;
+
+        @Schema(example = "bundle-sample")
         private String bundleName;
+
+        @Schema(example = "https://github.com/entando/bundle-sample.git")
         private String gitSrcRepoAddress;
         private Long bundleGroupVersionId;
         private Long bundleGroupId;
@@ -97,6 +111,7 @@ public class EntTemplateController {
 
     @Data
     public static class BundleGroupTemplate { //this is a bundle group version containing templates
+        @Schema(example = "Entando 7.1 Tutorials")
         private String bundleGroupName;
         private Long bundleGroupVersionId;
 

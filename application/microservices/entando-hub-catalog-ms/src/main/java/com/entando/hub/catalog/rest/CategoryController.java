@@ -4,6 +4,9 @@ import com.entando.hub.catalog.config.ApplicationConstants;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +34,16 @@ public class CategoryController {
     }
 
     @Operation(summary = "Get all the categories", description = "Public api, no authentication required.")
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {"application/json"})
     public List<Category> getCategories() {
         logger.debug("REST request to get Categories");
         return categoryService.getCategories().stream().map(Category::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")
-    @GetMapping("/{categoryId}")
+    @GetMapping(value = "/{categoryId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
         logger.debug("REST request to get Category Id: {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
@@ -52,7 +57,10 @@ public class CategoryController {
 
     @Operation(summary = "Create a new category", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
-    @PostMapping("/")
+    @PostMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
         logger.debug("REST request to create Category: {}", category);
         com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
@@ -61,7 +69,11 @@ public class CategoryController {
 
     @Operation(summary = "Update a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
     @RolesAllowed({ADMIN})
-    @PostMapping("/{categoryId}")
+    @PostMapping(value = "/{categoryId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {
         logger.debug("REST request to update Category {}: {}", categoryId, category);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
@@ -76,7 +88,11 @@ public class CategoryController {
 
     @Operation(summary = "Delete a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
     @RolesAllowed({ADMIN})
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping(value = "/{categoryId}", produces = {"application/json"})
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<String> deleteCategory(@PathVariable String categoryId) {
         logger.debug("REST request to delete gategory {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
@@ -119,7 +135,11 @@ public class CategoryController {
 
     @Data
     public static class CategoryNoId {
+
+        @Schema(example = "Solution Template")
         protected final String name;
+
+        @Schema(example = "a brief description")
         protected final String description;
         protected List<String> bundleGroups;
 

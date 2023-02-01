@@ -6,6 +6,8 @@
 package com.entando.hub.catalog.rest.model;
 
 import javax.validation.constraints.NotEmpty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,5 +17,6 @@ import lombok.ToString;
 @ToString
 public class UserOrganisationRequest {
     @NotEmpty
+    @Schema(example = "admin")
     private String username;
 }

@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.config;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
 
     @Value("${ALLOWED_API_ORIGIN}")
-    private String allowedApiOrigin;
+    private List<String> allowedApiOrigin;
 
     @Value("${ALLOWED_APPBUILDER_ORIGIN}")
     private String allowedAppBuilderOrigin;
@@ -25,7 +26,7 @@ public class CorsConfig {
                         .allowedMethods("*")
                         .allowedHeaders("*");
                 registry.addMapping("/api/**")
-                        .allowedOrigins(allowedApiOrigin)
+                        .allowedOrigins(allowedApiOrigin.toArray(new String[allowedApiOrigin.size()]))
                         .allowedMethods("*")
                         .allowedHeaders("*");
             }

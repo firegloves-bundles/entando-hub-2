@@ -56,7 +56,7 @@ keycloak:
   use-resource-role-mappings: true
 
 # CORS Configurations
-ALLOWED_API_ORIGIN: http://localhost:3000
+ALLOWED_API_ORIGIN: http://localhost:3000,http://localhost:3001
 
 # Hub UI url for bundle groups
 HUB_GROUP_DETAIL_BASE_URL: http://localhost:3000/#/

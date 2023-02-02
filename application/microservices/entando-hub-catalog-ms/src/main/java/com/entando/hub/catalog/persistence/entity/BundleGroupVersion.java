@@ -34,7 +34,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "BUNDLE_GROUP_ID", "VERSION" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(name = "bundle_group_version_unique_key",columnNames = { "BUNDLE_GROUP_ID", "VERSION" }) })
 public class BundleGroupVersion {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

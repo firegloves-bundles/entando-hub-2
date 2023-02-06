@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20230206-private-catalog" author="admin">
+        <!-- Added the entity Catalog -->
+        <createTable tableName="catalog">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_organisation" type="bigint">
+                <constraints foreignKeyName="fk_id_organisation"  referencedTableName="organisation"  referencedColumnNames="id" />
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+
+        <addColumn tableName="bundle_group">
+            <column name="id_catalog" type="bigint">
+                <constraints foreignKeyName="fk_id_catalog" referencedTableName="catalog" referencedColumnNames="id"/>
+            </column>
+            <column name="is_public" type="boolean" defaultValue="true"/>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

@@ -39,10 +39,6 @@ http://localhost:8081/appbuilder/api
 http://{{YOUR-HOSTNAME}}/entando-hub-application-{{BUNDLE-CODE}}/entando-hub-catalog-ms/appbuilder/api
 ```
 
-You can use also Entando Hub from `entando.com`:
-```
-https://entando.com/entando-hub-api/appbuilder/api
-```
 
 ## Use Entando Hub as a bundle from AppBuilder
 
@@ -58,8 +54,10 @@ Install the bundle from AppBuilder GUI. <br><br>
 Set up permissions to configure the service:
 
 1. Login to your Keycloak instance as an admin.
-2. Give at least one user the ability to manage the Hub by granting the `eh-admin` role. Assign the `eh-admin` role for the `pn-cee95efc-77ff566e-entandopsdh-entando-hub-catalog-ms-server` client.
+2. Give at least one user the ability to manage the Hub by granting the `eh-admin` role. Assign the `eh-admin` role for the `pn-{{BUNDLE-ID}}-{{PLUGIN-ID}}-entandopsdh-entando-hub-catalog-ms-server` client.
 3. Give the generated plugin client permission to manage users:
-*  From the left sidebar, go to Clients and select client ID `pn-cee95efc-77ff566e-entandopsdh-entando-hub-catalog-ms-server`.
+*  From the left sidebar, go to Clients and select client ID `pn-{{BUNDLE-ID}}-{{PLUGIN-ID}}-entandopsdh-entando-hub-catalog-ms-server`.
 * Click the `Service Account` tab at the top of the page and select `realm-management` from the `Client Roles` field.
 * Choose `realm-admin` from `Available Roles`. Click `Add selected`. It should appear as an `Assigned Role`.
+
+Note: `BUNDLE-ID` and `PLUGIN-ID` are dynamic values that depend on the publishing url.

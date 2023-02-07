@@ -12,8 +12,8 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="id_organisation" type="bigint">
-                <constraints foreignKeyName="fk_id_organisation"  referencedTableName="organisation"  referencedColumnNames="id" />
+            <column name="organisation_id" type="bigint">
+                <constraints foreignKeyName="fk_organisation_id"  referencedTableName="organisation"  referencedColumnNames="id" />
             </column>
             <column name="name" type="varchar(255)"/>
         </createTable>

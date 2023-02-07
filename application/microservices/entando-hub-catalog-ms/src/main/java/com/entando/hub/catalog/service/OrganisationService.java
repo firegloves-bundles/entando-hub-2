@@ -60,10 +60,16 @@ public class OrganisationService {
     public List<Organisation> getOrganisations() {
         return organisationRepository.findAll(Sort.by(Sort.Order.asc("name")));
     }
-
-    public Optional<Organisation> getOrganisation(String organisationId) {
-        return organisationRepository.findById(Long.parseLong(organisationId));
+    public <T> Optional<Organisation> getOrganisation(T organisationId) {
+        if (organisationId instanceof Long) {
+            return organisationRepository.findById((Long) organisationId);
+        } else if (organisationId instanceof String) {
+            return organisationRepository.findById(Long.parseLong((String) organisationId));
+        } else {
+            throw new IllegalArgumentException("The provided organisationId must be either a Long or a String.");
+        }
     }
+
 
     @Transactional
     public Organisation createOrganisation(Organisation organisationEntity, OrganisationController.OrganisationNoId organisation) {

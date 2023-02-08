@@ -1,17 +1,3 @@
-logging:
-  level:
-    ROOT: INFO
-    com:
-      entando: DEBUG
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
-        SQL: DEBUG
-      springframework:
-        security: DEBUG
 
 spring:
   # Enable this section for h2

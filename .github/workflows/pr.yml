@@ -43,7 +43,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`
+            Requested publication of version: `${{ steps.pack.outputs.VERSION }}`
   layout-build:
     runs-on: ubuntu-latest
     container:
@@ -78,4 +78,4 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`
+            Requested publication of version: `${{ steps.pack.outputs.VERSION }}`

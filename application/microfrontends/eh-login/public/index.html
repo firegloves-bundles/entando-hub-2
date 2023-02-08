@@ -49,7 +49,7 @@
             keycloak.updateToken();
           };
           const onInit = createKcDispatcher({ eventType: 'onInit' });
-
+          
           window.entando = {
             ...(window.entando || {}),
             keycloak
@@ -59,10 +59,14 @@
           //you are automatically redirected to keycloak login page to speed up development.
 
           // const onLoad = window.location.hostname === 'localhost' ? 'login-required' : 'check-sso';
-          const onLoad = 'check-sso';
+          /*const onLoad = 'check-sso';
           const silentCheckSsoRedirectUri = window.location.origin + '/silent-check-sso.html';
 
-          window.entando.keycloak.init({ onLoad, silentCheckSsoRedirectUri }).success(onInit);
+          window.entando.keycloak.init({ onLoad, silentCheckSsoRedirectUri }).success(onInit);*/
+
+          window.entando.keycloak
+            .init({ onLoad: "check-sso" })
+            .success(onInit);
 
         }
         return initKeycloak;

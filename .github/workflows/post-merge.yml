@@ -33,11 +33,6 @@ jobs:
           ent --debug bundle publish
           version=$(bash ../.github/functions/utils.sh getBundleImage)
           echo "VERSION=$version" >> $GITHUB_OUTPUT
-      - name: Publish artifact version
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`
   layout-build:
     runs-on: ubuntu-latest
     container:
@@ -63,8 +58,3 @@ jobs:
           ent --debug bundle publish
           version=$(bash ../.github/functions/utils.sh getBundleImage)
           echo "VERSION=$version" >> $GITHUB_OUTPUT
-      - name: Publish artifact version
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`

@@ -1,9 +1,10 @@
-name: Build
+name: PR workflow
 on:
-  push:
-    branches: ["develop"]
   pull_request:
-    branches: ["develop"]
+    types:
+      - opened
+      - synchronize
+      - reopened
 jobs:
   app-build:
     runs-on: ubuntu-latest

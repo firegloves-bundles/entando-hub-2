@@ -2,7 +2,6 @@
 version: '3.7'
 services:
   keycloak:
-    user: "${UID}:${GID}"
     image: entando/entando-keycloak:7.0.1
     restart: always
     command: [

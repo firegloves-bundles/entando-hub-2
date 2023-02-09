@@ -54,16 +54,7 @@
             ...(window.entando || {}),
             keycloak
           };
-
-          //If you are locally running the widget in isolation and you are not logged in,
-          //you are automatically redirected to keycloak login page to speed up development.
-
-          // const onLoad = window.location.hostname === 'localhost' ? 'login-required' : 'check-sso';
-          /*const onLoad = 'check-sso';
-          const silentCheckSsoRedirectUri = window.location.origin + '/silent-check-sso.html';
-
-          window.entando.keycloak.init({ onLoad, silentCheckSsoRedirectUri }).success(onInit);*/
-
+          
           window.entando.keycloak
             .init({ onLoad: "check-sso" })
             .success(onInit);

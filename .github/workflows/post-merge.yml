@@ -8,7 +8,7 @@ jobs:
   app-build:
     runs-on: ubuntu-latest
     container:
-      image: cecchisandrone/ent:v7.1.3
+      image: entando/ent:v7.1.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
@@ -20,7 +20,7 @@ jobs:
           REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USER }}
           REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           REGISTRY_HOST: registry.hub.docker.com
-          DOCKER_ORG: cecchisandrone
+          DOCKER_ORG: entando
         run: |
           docker login $REGISTRY_HOST -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
           # Needed to build node-sass
@@ -36,7 +36,7 @@ jobs:
   layout-build:
     runs-on: ubuntu-latest
     container:
-      image: cecchisandrone/ent:v7.1.3
+      image: entando/ent:v7.1.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
@@ -48,7 +48,7 @@ jobs:
           REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USER }}
           REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           REGISTRY_HOST: registry.hub.docker.com
-          DOCKER_ORG: cecchisandrone
+          DOCKER_ORG: entando
         run: |
           docker login $REGISTRY_HOST -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
           versionSuffix=SNAPSHOT

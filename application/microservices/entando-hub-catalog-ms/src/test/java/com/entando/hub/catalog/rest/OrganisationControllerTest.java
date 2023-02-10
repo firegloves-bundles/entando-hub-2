@@ -74,7 +74,7 @@ public class OrganisationControllerTest {
 	@Test
 	public void testGetOrganisation() throws Exception {
 		Organisation organisation = getOrganisationObj();
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
 		mockMvc.perform(MockMvcRequestBuilders.get(URI + organisationId).accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -85,7 +85,7 @@ public class OrganisationControllerTest {
 	@Test
 	public void testGetOrganisationFails() throws Exception {
 		Organisation organisation = getOrganisationObj();
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(null)).thenReturn(Optional.of(organisation));
 		mockMvc.perform(MockMvcRequestBuilders.get(URI + organisationId)
 				.accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
@@ -114,7 +114,7 @@ public class OrganisationControllerTest {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
 		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.of(organisationId)),organisationNoId)).thenReturn(organisation);
@@ -131,10 +131,10 @@ public class OrganisationControllerTest {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
 
-		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.empty());
+		Mockito.when(organisationService.getOrganisation(organisation.getId())).thenReturn(Optional.empty());
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + organisationId).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(organisationNoId)).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
@@ -147,7 +147,7 @@ public class OrganisationControllerTest {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
 		organisationService.deleteOrganisation(organisationId);
 		mockMvc.perform(MockMvcRequestBuilders.delete(URI + organisationId).accept(MediaType.APPLICATION_JSON_VALUE))
@@ -158,7 +158,7 @@ public class OrganisationControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	public void testDeleteOrganisationFails() throws Exception {
 		Organisation organisation = getOrganisationObj();
-		String organisationId = Long.toString(organisation.getId());
+		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(null)).thenReturn(Optional.of(organisation));
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.empty());
 		organisationService.deleteOrganisation(organisationId);

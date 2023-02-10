@@ -60,14 +60,9 @@ public class OrganisationService {
     public List<Organisation> getOrganisations() {
         return organisationRepository.findAll(Sort.by(Sort.Order.asc("name")));
     }
-    public <T> Optional<Organisation> getOrganisation(T organisationId) {
-        if (organisationId instanceof Long) {
-            return organisationRepository.findById((Long) organisationId);
-        } else if (organisationId instanceof String) {
-            return organisationRepository.findById(Long.parseLong((String) organisationId));
-        } else {
-            throw new IllegalArgumentException("The provided organisationId must be either a Long or a String.");
-        }
+
+    public Optional<Organisation> getOrganisation(Long organisationId) {
+        return organisationRepository.findById(organisationId);
     }
 
 
@@ -79,8 +74,10 @@ public class OrganisationService {
         return entity;
     }
 
-    public void deleteOrganisation(String organisationId){
-        organisationRepository.deleteById(Long.valueOf(organisationId));
+    public void deleteOrganisation(Long organisationId){
+        organisationRepository.deleteById(organisationId);
     }
+
+
 }
 

@@ -11,5 +11,6 @@ public interface CatalogRepository extends JpaRepository<Catalog, Long> {
 
     List<Catalog> findAll();
 
-    Optional<Catalog> findByOrganisationId(Long id);
+    boolean existsByOrganisationId(Long organisationId);
+
 }

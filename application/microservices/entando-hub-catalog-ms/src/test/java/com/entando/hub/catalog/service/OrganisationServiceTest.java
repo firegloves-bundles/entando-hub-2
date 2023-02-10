@@ -79,8 +79,8 @@ public class OrganisationServiceTest {
 	public void getOrganisationTest() {
 		Organisation organisation = createOrganisation();
 		Optional<Organisation> organisationList = Optional.of(organisation);
-		String organisationId = Long.toString(organisation.getId());
-		Mockito.when(organisationRepository.findById(Long.parseLong(organisationId))).thenReturn(organisationList);
+		Long organisationId = organisation.getId();
+		Mockito.when(organisationRepository.findById(organisationId)).thenReturn(organisationList);
 		Optional<Organisation> organisationResult = organisationService.getOrganisation(organisationId);
 		assertNotNull(organisationResult);
 		assertEquals(organisationList.get().getId(), organisationResult.get().getId());
@@ -104,7 +104,7 @@ public class OrganisationServiceTest {
 	public void deleteOrganisationTest() {
 		Organisation organisation = createOrganisation();
 		organisationRepository.deleteById(organisation.getId());
-		String organisationId = String.valueOf(organisation.getId());
+		Long organisationId = organisation.getId();
 		organisationService.deleteOrganisation(organisationId);
 	}
 

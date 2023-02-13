@@ -7,13 +7,14 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="20230206-private-catalog" author="admin">
+        <createSequence dataType="bigint" incrementBy="1" sequenceName="SEQ_CATALOG_ID" startValue="1"/>
         <!-- Added the entity Catalog -->
         <createTable tableName="catalog">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="organisation_id" type="bigint">
-                <constraints foreignKeyName="fk_organisation_id"  referencedTableName="organisation"  referencedColumnNames="id" />
+                <constraints foreignKeyName="fk_catalog_organisation_id"  referencedTableName="organisation"  referencedColumnNames="id" />
             </column>
             <column name="name" type="varchar(255)"/>
         </createTable>

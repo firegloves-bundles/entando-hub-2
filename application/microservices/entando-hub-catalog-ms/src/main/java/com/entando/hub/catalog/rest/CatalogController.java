@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,10 @@ public class CatalogController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/", produces = {"application/json"})
-    public List<CatalogDTO> getCatalogs() {
+    public ResponseEntity<List<CatalogDTO>> getCatalogs() {
         logger.debug("REST request to get Catalogs");
-        return catalogService.getCatalogs();
+        List<CatalogDTO> catalogDTOList = catalogService.getCatalogs();
+        return new ResponseEntity<>(catalogDTOList, HttpStatus.OK);
     }
 
     @Operation(summary = "Get the Catalog by id", description = "Protected api, only eh-admin can access it.")

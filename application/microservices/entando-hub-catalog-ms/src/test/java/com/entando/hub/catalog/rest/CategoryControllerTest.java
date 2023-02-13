@@ -30,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.CategoryController.CategoryNoId;
+import com.entando.hub.catalog.rest.domain.CategoryNoId;
 import com.entando.hub.catalog.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

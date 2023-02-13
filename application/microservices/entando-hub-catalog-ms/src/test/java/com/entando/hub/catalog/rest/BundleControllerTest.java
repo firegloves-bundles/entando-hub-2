@@ -28,7 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.rest.domain.BundleNoId;
 import com.entando.hub.catalog.service.BundleService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

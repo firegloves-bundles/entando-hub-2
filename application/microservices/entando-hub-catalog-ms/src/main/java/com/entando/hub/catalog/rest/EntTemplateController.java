@@ -2,9 +2,9 @@ package com.entando.hub.catalog.rest;
 
 
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.domain.BundleTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,7 @@ public class EntTemplateController {
                         bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplate(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
                 )
                 .filter(bundleTemplate ->
-                        bundleTemplate.gitSrcRepoAddress != null && bundleTemplate.gitSrcRepoAddress.length() > 0
+                        bundleTemplate.getGitSrcRepoAddress() != null && bundleTemplate.getGitSrcRepoAddress().length() > 0
                 )
                 .collect(Collectors.toList());
 
@@ -77,37 +77,13 @@ public class EntTemplateController {
                         bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplate(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
                 )
                 .filter(bundleTemplate ->
-                        bundleTemplate.gitSrcRepoAddress != null && bundleTemplate.gitSrcRepoAddress.length() > 0
+                        bundleTemplate.getGitSrcRepoAddress() != null && bundleTemplate.getGitSrcRepoAddress().length() > 0
                 )
                 .collect(Collectors.toList());
 
         return bundleTemplateList;
     }
 
-
-    @Data
-    public static class BundleTemplate {
-        @Schema(example = "Entando 7.1 Tutorials")
-        private String bundleGroupName;
-
-        @Schema(example = "bundle-sample")
-        private String bundleName;
-
-        @Schema(example = "https://github.com/entando/bundle-sample.git")
-        private String gitSrcRepoAddress;
-        private Long bundleGroupVersionId;
-        private Long bundleGroupId;
-        private Long bundleId;
-
-        public BundleTemplate(BundleGroupVersion bundleGroupVersion, BundleGroup bundleGroup, Bundle bundle) {
-            this.bundleGroupName = bundleGroup.getName();
-            this.bundleName = bundle.getName();
-            this.gitSrcRepoAddress = bundle.getGitSrcRepoAddress();
-            this.bundleGroupVersionId = bundleGroupVersion.getId();
-            this.bundleGroupId = bundleGroup.getId();
-            this.bundleId = bundle.getId();
-        }
-    }
 
     @Data
     public static class BundleGroupTemplate { //this is a bundle group version containing templates

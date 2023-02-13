@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,6 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.OrganisationController;
 
 @Service
 public class OrganisationService {
@@ -37,7 +37,7 @@ public class OrganisationService {
      * @param toUpdate
      * @param organisation
      */
-    public void updateMappedBy(com.entando.hub.catalog.persistence.entity.Organisation toUpdate, OrganisationController.OrganisationNoId organisation) {
+    public void updateMappedBy(com.entando.hub.catalog.persistence.entity.Organisation toUpdate, OrganisationNoId organisation) {
     	logger.debug("update organisation entity");
     	Objects.requireNonNull(toUpdate.getId());
         if (organisation.getBundleGroups() != null) {
@@ -66,7 +66,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public Organisation createOrganisation(Organisation organisationEntity, OrganisationController.OrganisationNoId organisation) {
+    public Organisation createOrganisation(Organisation organisationEntity, OrganisationNoId organisation) {
     	logger.debug("create organisation entity");
         Organisation entity = organisationRepository.save(organisationEntity);
         updateMappedBy(entity, organisation);

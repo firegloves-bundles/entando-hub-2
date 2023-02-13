@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.rest.domain.RestUserRepresentation;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
@@ -8,9 +9,7 @@ import java.util.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.*;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,40 +64,6 @@ public class KeycloakUserController {
         }
         return new ResponseEntity<>(new RestUserRepresentation(user), HttpStatus.OK);
     }
-    
-    
-    @Getter
-    @Setter
-    @ToString
-    public static class RestUserRepresentation {
-        @Schema(example = "1d97d896-4761-21fc-8217-17d5d13a104b")
-        private String id;
-        private Date created;
 
-        @Schema(example = "admin")
-        private String username;
-        private boolean enabled;
-
-        @Schema(example = "Admin")
-        private String firstName;
-
-        @Schema(example = "Administrator")
-        private String lastName;
-
-        @Schema(example = "admin@localhost")
-        private String email;
-        private Set<String> organisationIds;
-
-        public RestUserRepresentation(com.entando.hub.catalog.service.model.UserRepresentation user) {
-            this.id = user.getId();
-            this.created = new Date(user.getCreatedTimestamp());
-            this.username = user.getUsername();
-            this.enabled = user.isEnabled();
-            this.firstName = user.getFirstName();
-            this.lastName = user.getLastName();
-            this.email = user.getEmail();
-            this. organisationIds = user.getOrganisationIds().stream().map(Object::toString).collect(Collectors.toSet());
-        }
-    }
 
 }

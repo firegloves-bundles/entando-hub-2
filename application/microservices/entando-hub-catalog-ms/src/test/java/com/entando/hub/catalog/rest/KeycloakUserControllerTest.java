@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
+import com.entando.hub.catalog.rest.domain.RestUserRepresentation;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;

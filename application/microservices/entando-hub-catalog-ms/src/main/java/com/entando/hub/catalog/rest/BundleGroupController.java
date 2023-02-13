@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.rest.domain.BundleGroup;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,10 +37,6 @@ import com.entando.hub.catalog.service.security.SecurityHelperService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -155,24 +152,6 @@ public class BundleGroupController {
         } else {
             bundleGroupService.deleteBundleGroup(bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    @EqualsAndHashCode(callSuper = true)
-    public static class BundleGroup extends BundleGroupNoId {
-        private final String bundleGroupId;
-
-        public BundleGroup(String bundleGroupId, String name, String organizationId) {
-            super(name, organizationId);
-            this.bundleGroupId = bundleGroupId;
-        }
-
-        public BundleGroup(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
-            super(entity);
-            this.bundleGroupId = entity.getId().toString();
         }
     }
 

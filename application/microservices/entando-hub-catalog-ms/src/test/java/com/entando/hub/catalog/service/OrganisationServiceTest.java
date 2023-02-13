@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -50,7 +51,7 @@ public class OrganisationServiceTest {
 		Set<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroups = new HashSet<>();
 		bundleGroups.add(bundleGroup);
 		organisation.setBundleGroups(bundleGroups);
-		OrganisationController.OrganisationNoId OrganisationNoId = new OrganisationController.OrganisationNoId(organisation) ;
+		OrganisationNoId OrganisationNoId = new OrganisationNoId(organisation) ;
 		bundleGroupRepository.findByOrganisationId(organisation.getId());
 		bundleGroup.setOrganisation(null); //this is the mappedBy field
 	    bundleGroupRepository.save(bundleGroup);
@@ -92,7 +93,7 @@ public class OrganisationServiceTest {
 	public void createOrganisationTest() {
 		Organisation organisation = createOrganisation();
 		OrganisationController OrganisationController = new OrganisationController(organisationService);
-		OrganisationController.OrganisationNoId OrganisationNoId = new OrganisationController.OrganisationNoId(organisation) ;
+		OrganisationNoId OrganisationNoId = new OrganisationNoId(organisation) ;
 		Mockito.when(organisationRepository.save(organisation)).thenReturn(organisation);
 		organisationService.updateMappedBy(organisation, OrganisationNoId);
 		Organisation organisationResult = organisationService.createOrganisation(organisation ,OrganisationNoId);

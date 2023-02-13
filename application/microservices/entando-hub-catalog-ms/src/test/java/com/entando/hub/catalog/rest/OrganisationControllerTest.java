@@ -28,7 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.OrganisationController.OrganisationNoId;
+import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,0 +1,87 @@
+package com.entando.hub.catalog.rest.domain;
+
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Data
+public class BundleNoId {
+  @Schema(example = "bundle identifier")
+  protected final String bundleId;
+
+  @Schema(example = "bundle-sample")
+  protected final String name;
+
+  @Schema(example = "This is a example bundle")
+  @Setter(AccessLevel.PUBLIC)
+  protected String description;
+
+  @Schema(example = "data:image/png;base64,base64code")
+  @Setter(AccessLevel.PUBLIC)
+  protected String descriptionImage;
+
+  @Schema(example = "V5")
+  protected final String descriptorVersion;
+
+  @Schema(example = "docker://registry.hub.docker.com/organization/bundle-sample")
+  protected final String gitRepoAddress;
+  @Schema(example = "https://github.com/organization/bundle-sample")
+  private final String gitSrcRepoAddress;
+
+  protected final List<String> dependencies;
+  protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
+
+  public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
+    this.bundleId = id;
+    this.name = name;
+    this.description = description;
+    this.gitRepoAddress = gitRepoAddress;
+    this.gitSrcRepoAddress = gitSrcRepoAddress;
+    this.dependencies = dependencies;
+    this.bundleGroups = bundleGroupVersions;
+    this.descriptorVersion = descriptorVersion;
+  }
+
+  public BundleNoId(com.entando.hub.catalog.persistence.entity.Bundle entity) {
+    this.bundleId = entity.getId().toString();
+    this.name = entity.getName();
+    this.description = entity.getDescription();
+    this.gitRepoAddress = entity.getGitRepoAddress();
+    this.gitSrcRepoAddress = entity.getGitSrcRepoAddress();
+    this.dependencies = Arrays.asList(entity.getDependencies().split(","));
+    this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
+    this.descriptorVersion = entity.getDescriptorVersion().toString();
+  }
+
+  public com.entando.hub.catalog.persistence.entity.Bundle createEntity(Optional<String> id) {
+    com.entando.hub.catalog.persistence.entity.Bundle ret = new com.entando.hub.catalog.persistence.entity.Bundle();
+    ret.setDescription(this.getDescription());
+    ret.setName(this.getName());
+    ret.setGitRepoAddress(this.getGitRepoAddress());
+    ret.setGitSrcRepoAddress(this.getGitSrcRepoAddress());
+    ret.setDependencies(String.join(",", this.getDependencies()));
+
+    //for now, if the repo address does not start with docker, we assume it's a V1 bundle.
+    boolean isDocker = (this.getGitRepoAddress() != null) && (this.getGitRepoAddress().startsWith("docker:"));
+    ret.setDescriptorVersion(isDocker ? Bundle.DescriptorVersion.V5 : Bundle.DescriptorVersion.V1);
+
+    //TODO bundlegroups contains bundle group version id! fix it!
+    Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
+      BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+      bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
+      return bundleGroupVersion;
+    }).collect(Collectors.toSet());
+    ret.setBundleGroupVersions(bundleGroupVersions);
+    id.map(Long::valueOf).ifPresent(ret::setId);
+    return ret;
+  }
+}

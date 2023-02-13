@@ -1,9 +1,9 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -126,39 +126,5 @@ public class OrganisationController {
         }
     }
 
-
-    @Data
-    public static class OrganisationNoId {
-        @Schema(example = "Entando")
-        protected final String name;
-
-        @Schema(example = "Application Composition Platform for Kubernetes")
-        protected final String description;
-
-        protected List<String> bundleGroups;
-
-        public OrganisationNoId(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
-
-        public OrganisationNoId(com.entando.hub.catalog.persistence.entity.Organisation entity) {
-            this.name = entity.getName();
-            this.description = entity.getDescription();
-            if (entity.getBundleGroups() != null) {
-                this.bundleGroups = entity.getBundleGroups().stream().map(bundleGroup -> bundleGroup.getId().toString()).collect(Collectors.toList());
-            }
-        }
-
-
-        public com.entando.hub.catalog.persistence.entity.Organisation createEntity(Optional<String> id) {
-            com.entando.hub.catalog.persistence.entity.Organisation ret = new com.entando.hub.catalog.persistence.entity.Organisation();
-            ret.setDescription(this.getDescription());
-            ret.setName(this.getName());
-            id.map(Long::valueOf).ifPresent(ret::setId);
-            return ret;
-        }
-
-    }
 
 }

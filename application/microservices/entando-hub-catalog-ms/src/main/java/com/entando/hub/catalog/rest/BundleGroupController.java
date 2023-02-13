@@ -13,8 +13,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
 import com.entando.hub.catalog.rest.domain.BundleGroup;
+import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
+import com.entando.hub.catalog.rest.domain.Category;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +30,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.Data;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -140,7 +138,7 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
-    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
+    public ResponseEntity<Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {
@@ -155,46 +153,4 @@ public class BundleGroupController {
         }
     }
 
-    @Data
-    public static class BundleGroupNoId {
-
-        @Schema(example = "bundle group name")
-        protected final String name;
-        protected String organisationId;
-
-        @Schema(example = "Entando")
-        protected String organisationName;
-        protected List<String> categories;
-        protected BundleGroupVersionView versionDetails;
-
-        public BundleGroupNoId(String name ,String organisationId) {
-            this.name = name;
-            this.organisationId = organisationId;
-        }
-
-        public BundleGroupNoId(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
-            this.name = entity.getName();
-
-            if (entity.getOrganisation() != null) {
-                this.organisationId = entity.getOrganisation().getId().toString();
-                this.organisationName = entity.getOrganisation().getName();
-            }
-            if (entity.getCategories() != null) {
-                this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
-            }
-        }
-
-        public com.entando.hub.catalog.persistence.entity.BundleGroup createEntity(Optional<String> id) {
-            com.entando.hub.catalog.persistence.entity.BundleGroup ret = new com.entando.hub.catalog.persistence.entity.BundleGroup();
-            ret.setName(this.getName());
-            if (this.organisationId != null) {
-                Organisation organisation = new Organisation();
-                organisation.setId(Long.parseLong(this.organisationId));
-                organisation.setName(this.organisationName);
-                ret.setOrganisation(organisation);
-            }
-            id.map(Long::valueOf).ifPresent(ret::setId);
-            return ret;
-        }
-    }
 }

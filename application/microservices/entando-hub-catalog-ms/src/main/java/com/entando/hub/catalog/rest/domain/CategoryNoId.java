@@ -3,19 +3,21 @@ package com.entando.hub.catalog.rest.domain;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class CategoryNoId {
 
   @Schema(example = "Solution Template")
-  protected final String name;
+  private String name;
 
   @Schema(example = "a brief description")
-  protected final String description;
+  private String description;
   protected List<String> bundleGroups;
 
   public CategoryNoId(String name, String description) {

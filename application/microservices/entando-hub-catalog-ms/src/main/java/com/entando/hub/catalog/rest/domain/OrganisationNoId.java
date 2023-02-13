@@ -2,18 +2,20 @@ package com.entando.hub.catalog.rest.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class OrganisationNoId {
   @Schema(example = "Entando")
-  protected final String name;
+  private String name;
 
   @Schema(example = "Application Composition Platform for Kubernetes")
-  protected final String description;
+  private String description;
 
   protected List<String> bundleGroups;
 

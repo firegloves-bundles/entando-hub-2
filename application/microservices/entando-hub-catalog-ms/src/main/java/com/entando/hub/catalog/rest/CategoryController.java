@@ -1,12 +1,12 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.config.ApplicationConstants;
+import com.entando.hub.catalog.rest.domain.Category;
 import com.entando.hub.catalog.rest.domain.CategoryNoId;
 import com.entando.hub.catalog.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -108,28 +108,6 @@ public class CategoryController {
                 return new ResponseEntity<>(ApplicationConstants.CATEGORY_DELETED, HttpStatus.OK);
             }
         }
-    }
-
-
-
-    @Getter
-    @Setter
-    @ToString
-    @EqualsAndHashCode(callSuper = false)
-    public static class Category extends CategoryNoId {
-        private final String categoryId;
-
-        public Category(com.entando.hub.catalog.persistence.entity.Category entity) {
-            super(entity);
-            this.categoryId = entity.getId().toString();
-        }
-
-        public Category(String organisationId, String name, String description) {
-            super(name, description);
-            this.categoryId = organisationId;
-        }
-
-
     }
 
 

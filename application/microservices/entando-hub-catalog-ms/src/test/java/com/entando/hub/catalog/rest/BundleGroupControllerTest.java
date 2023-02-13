@@ -30,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
+import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;

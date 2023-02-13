@@ -5,6 +5,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Arrays;
@@ -14,12 +15,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class BundleNoId {
   @Schema(example = "bundle identifier")
-  protected final String bundleId;
+  private String bundleId;
 
   @Schema(example = "bundle-sample")
-  protected final String name;
+  private String name;
 
   @Schema(example = "This is a example bundle")
   @Setter(AccessLevel.PUBLIC)
@@ -30,15 +32,15 @@ public class BundleNoId {
   protected String descriptionImage;
 
   @Schema(example = "V5")
-  protected final String descriptorVersion;
+  private String descriptorVersion;
 
   @Schema(example = "docker://registry.hub.docker.com/organization/bundle-sample")
-  protected final String gitRepoAddress;
+  private String gitRepoAddress;
   @Schema(example = "https://github.com/organization/bundle-sample")
-  private final String gitSrcRepoAddress;
+  private String gitSrcRepoAddress;
 
-  protected final List<String> dependencies;
-  protected final List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
+  private List<String> dependencies;
+  private List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 
   public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
     this.bundleId = id;

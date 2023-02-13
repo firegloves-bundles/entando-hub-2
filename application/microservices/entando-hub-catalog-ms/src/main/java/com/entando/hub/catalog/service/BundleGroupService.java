@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,6 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.BundleGroupController;
 
 @Service
 public class BundleGroupService {
@@ -64,14 +64,14 @@ public class BundleGroupService {
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupNoId bundleGroupNoId) {
     	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
         updateMappedBy(entity, bundleGroupNoId);
         return entity;
     }
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupNoId bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
 

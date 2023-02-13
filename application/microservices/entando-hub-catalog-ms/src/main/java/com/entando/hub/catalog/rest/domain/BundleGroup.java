@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.rest.domain;
 
-import com.entando.hub.catalog.rest.BundleGroupController;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class BundleGroup extends BundleGroupController.BundleGroupNoId {
+public class BundleGroup extends BundleGroupNoId {
   private final String bundleGroupId;
 
   public BundleGroup(String bundleGroupId, String name, String organizationId) {

@@ -1,18 +1,21 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
+import com.entando.hub.catalog.service.exception.ConflictException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 
@@ -35,8 +38,8 @@ public class CatalogController {
     @GetMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<List<CatalogDTO>> getCatalogs() {
         logger.debug("REST request to get Catalogs");
-        List<CatalogDTO> catalogDTOList = catalogService.getCatalogs();
-        return new ResponseEntity<>(catalogDTOList, HttpStatus.OK);
+        List<CatalogDTO> catalogsDTO = catalogService.getCatalogs().stream().map(this::mapToDTO).collect(Collectors.toList());
+        return new ResponseEntity<>(catalogsDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "Get the Catalog by id", description = "Protected api, only eh-admin can access it.")
@@ -48,7 +51,12 @@ public class CatalogController {
     @GetMapping(value = "/{catalogId}", produces = {"application/json"})
     public ResponseEntity<CatalogDTO> getCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to get Catalog by id");
-        return catalogService.getCatalogById(catalogId);
+        try {
+            Catalog response = catalogService.getCatalogById(catalogId);
+            return ResponseEntity.ok(mapToDTO(response));
+        } catch (NotFoundException notFoundException) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Create a new catalog", description = "Protected api, only eh-admin can access it.")
@@ -61,7 +69,14 @@ public class CatalogController {
     @PostMapping(value = "/{organisationId}", produces = {"application/json"})
     public ResponseEntity<CatalogDTO> createCatalog(@PathVariable Long organisationId) {
         logger.debug("REST request to create Catalog for organisation: {}", organisationId);
-        return catalogService.createCatalog(organisationId);
+        try {
+            Catalog response = catalogService.createCatalog(organisationId);
+            return ResponseEntity.ok(mapToDTO(response));
+        } catch (ConflictException conflictException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (NotFoundException notFoundException) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Delete a Catalog by Id", description = "Protected api, only eh-admin can access it. You have to provide the catalogId identifying the catalog")
@@ -73,7 +88,17 @@ public class CatalogController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<CatalogDTO> deleteCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to delete catalog {}", catalogId);
-        return this.catalogService.deleteCatalog(catalogId);
+        try {
+            Catalog response = this.catalogService.deleteCatalog(catalogId);
+            return ResponseEntity.ok(mapToDTO(response));
+        } catch (NotFoundException notFoundException) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    public CatalogDTO mapToDTO(Catalog catalog) {
+        return new CatalogDTO(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());
     }
 
 }

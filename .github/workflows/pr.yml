@@ -9,7 +9,7 @@ jobs:
   app-build:
     runs-on: ubuntu-latest
     container:
-      image: cecchisandrone/ent:v7.1.3
+      image: entando/ent:v7.1.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
@@ -26,7 +26,7 @@ jobs:
           REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USER }}
           REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           REGISTRY_HOST: registry.hub.docker.com
-          DOCKER_ORG: cecchisandrone
+          DOCKER_ORG: entando
         run: |
           docker login $REGISTRY_HOST -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
           # Needed to build node-sass
@@ -43,11 +43,11 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`
+            Requested publication of version: `${{ steps.pack.outputs.VERSION }}`
   layout-build:
     runs-on: ubuntu-latest
     container:
-      image: cecchisandrone/ent:v7.1.3
+      image: entando/ent:v7.1.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
@@ -64,7 +64,7 @@ jobs:
           REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USER }}
           REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           REGISTRY_HOST: registry.hub.docker.com
-          DOCKER_ORG: cecchisandrone
+          DOCKER_ORG: entando
         run: |
           docker login $REGISTRY_HOST -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
           versionSuffix=$(echo "${{ github.event.pull_request.title }}" | awk '{print $1}')
@@ -78,4 +78,4 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Published bundle image: `${{ steps.pack.outputs.VERSION }}`
+            Requested publication of version: `${{ steps.pack.outputs.VERSION }}`

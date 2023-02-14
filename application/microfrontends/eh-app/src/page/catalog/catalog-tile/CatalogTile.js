@@ -9,7 +9,6 @@ import { BUNDLE_STATUS, HOME_TO_BG_PAGE_URL, VERSIONS_TO_BG_PAGE_URL } from "../
 import i18n from "../../../i18n";
 
 const CatalogTile = ({
-  apiUrl,
   bundleGroupId,
   name,
   organisationName,
@@ -72,7 +71,6 @@ const CatalogTile = ({
         {isHubUser() && showFullPage && bundleStatus !== BUNDLE_STATUS.ARCHIVED && (
           <div className="CatalogTile-dropmenu">
             <CatalogTileOverflowMenu
-              apiUrl={apiUrl}
               bundleGroupId={bundleGroupId}
               bundleStatus={bundleStatus}
               bundleName={name}

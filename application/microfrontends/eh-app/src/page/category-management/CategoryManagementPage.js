@@ -21,6 +21,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./category-managment-page.scss"
 import i18n from "../../i18n"
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
+import { useApiUrl } from "../../contexts/ConfigContext"
 
 /*
 [
@@ -68,12 +69,14 @@ const headers = [
   },
 ]
 
-const CategoryManagementPage = ({apiUrl}) => {
+const CategoryManagementPage = () => {
   const [reloadToken, setReloadToken] = useState(
     new Date().getTime().toString()
   )
   const [categories, setCategories] = useState([])
   const [isLoading, setIsLoading] = useState(true);
+
+  const apiUrl = useApiUrl();
 
   // fetches the users to show
   useEffect(() => {
@@ -124,7 +127,7 @@ const CategoryManagementPage = ({apiUrl}) => {
                   <TableContainer title={i18n.t('page.management.categoryManagement')}>
                     <TableToolbar>
                       <TableToolbarContent>
-                        <ModalAddNewCategory onAfterSubmit={onAfterSubmit} apiUrl={apiUrl}/>
+                        <ModalAddNewCategory onAfterSubmit={onAfterSubmit} />
                       </TableToolbarContent>
                     </TableToolbar>
                     <Table {...getTableProps()}>
@@ -151,7 +154,6 @@ const CategoryManagementPage = ({apiUrl}) => {
                               return (
                                 <TableCell key={cell.id}>
                                   <CategoryManagementOverflowMenu
-                                      apiUrl={apiUrl}
                                     categoryObj={{
                                       categoryId: row.id,
                                       name: row.cells[0].value,

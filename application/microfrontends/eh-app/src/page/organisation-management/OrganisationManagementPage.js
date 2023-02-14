@@ -21,6 +21,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
 import i18n from "../../i18n"
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
+import { useApiUrl } from "../../contexts/ConfigContext"
 
 /*
 [
@@ -68,12 +69,14 @@ const headers = [
   },
 ]
 
-const OrganisationManagementPage = ({apiUrl}) => {
+const OrganisationManagementPage = () => {
     const [reloadToken, setReloadToken] = useState(
     new Date().getTime().toString()
   )
   const [organisations, setOrganisations] = useState([])
   const [isLoading, setIsLoading] = useState(true);
+
+  const apiUrl = useApiUrl();
 
   // fetches the users to show
   useEffect(() => {
@@ -124,7 +127,7 @@ const OrganisationManagementPage = ({apiUrl}) => {
                   <TableContainer title={i18n.t('page.management.organisationsManagement')}>
                     <TableToolbar>
                       <TableToolbarContent>
-                        <ModalAddNewOrganisation onAfterSubmit={onAfterSubmit} apiUrl={apiUrl}/>
+                        <ModalAddNewOrganisation onAfterSubmit={onAfterSubmit} />
                       </TableToolbarContent>
                     </TableToolbar>
                     <Table {...getTableProps()}>
@@ -151,7 +154,6 @@ const OrganisationManagementPage = ({apiUrl}) => {
                               return (
                                 <TableCell key={cell.id}>
                                   <OrganisationManagementOverflowMenu
-                                    apiUrl={apiUrl}
                                     organisationObj={{
                                       organisationId: row.id,
                                       name: row.cells[0].value,

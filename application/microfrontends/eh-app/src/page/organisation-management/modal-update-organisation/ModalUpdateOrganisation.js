@@ -6,9 +6,9 @@ import { organisationSchema } from "../../../helpers/validation/organisationSche
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import "./modal-update-organization.scss"
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
 export const ModalUpdateOrganisation = ({
-  apiUrl,
   organisationObj,
   open,
   onCloseModal,
@@ -16,6 +16,8 @@ export const ModalUpdateOrganisation = ({
 }) => {
   const [organisation, setOrganisation] = useState(organisationObj)
   const [validationResult, setValidationResult] = useState({})
+
+  const apiUrl = useApiUrl();
 
   const onDataChange = useCallback((newOrganisationObj) => {
     setOrganisation(newOrganisationObj)

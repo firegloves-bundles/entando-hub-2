@@ -8,7 +8,11 @@ import "./modal-add-new-category.scss"
 import { categorySchema } from "../../../helpers/validation/categorySchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import i18n from "../../../i18n"
-export const ModalAddNewCategory = ({onAfterSubmit,apiUrl}) => {
+import { useApiUrl } from "../../../contexts/ConfigContext"
+
+export const ModalAddNewCategory = ({ onAfterSubmit }) => {
+    const apiUrl = useApiUrl();
+
     const ModalStateManager = ({
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,

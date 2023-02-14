@@ -12,11 +12,12 @@ import { getPortalUserByUsername } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
+import { useApiUrl } from "../../contexts/ConfigContext";
 
 /*
 This is the HUB landing page
 */
-const CatalogPage = ({versionSearchTerm, setVersionSearchTerm, apiUrl}) => {
+const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const hubUser = isHubUser()
   const hasValidRole = isCurrentUserAssignedAValidRole();
   const isAuthenticated = isCurrentUserAuthenticated();
@@ -28,6 +29,8 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm, apiUrl}) => {
   const [currentUserOrg, setCurrentUserOrg] = useState(null);
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
+
+  const apiUrl = useApiUrl();
 
   // worker is a state that handle state of search input when terms comes from versionPage.
   // it helps to handle Api hit on every change Event.
@@ -173,7 +176,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm, apiUrl}) => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} apiUrl={apiUrl}/>}
+                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
@@ -201,7 +204,7 @@ const CatalogPage = ({versionSearchTerm, setVersionSearchTerm, apiUrl}) => {
                 If I'm an hub user I'll wait for status filter loading
                         */}
                 {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING" && !loading))
-                  && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} apiUrl={apiUrl}/>}
+                  && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} />}
               </div>
             </div>
           </div>

@@ -9,9 +9,9 @@ import { categorySchema } from "../../../helpers/validation/categorySchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import "./modal-update-category.scss"
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
 export const ModalUpdateCategory = ({
-  apiUrl,
   categoryObj,
   open,
   onCloseModal,
@@ -19,6 +19,8 @@ export const ModalUpdateCategory = ({
 }) => {
   const [category, setCategory] = useState(categoryObj)
   const [validationResult, setValidationResult] = useState({})
+
+  const apiUrl = useApiUrl();
 
   const onDataChange = useCallback((newCategoryObj) => {
     setCategory(newCategoryObj)

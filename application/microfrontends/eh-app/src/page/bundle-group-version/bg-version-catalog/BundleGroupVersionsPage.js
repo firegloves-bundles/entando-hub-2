@@ -11,12 +11,13 @@ import { useHistory } from "react-router-dom";
 import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTile";
 import BundleGroupStatusFilter from "../../catalog/bundle-group-status-filter/BundleGroupStatusFilter";
 import { INIT_PAGE, ITEMS_PER_PAGE } from "../../../helpers/constants";
+import { useApiUrl } from "../../../contexts/ConfigContext";
 
 let page_ = INIT_PAGE
 let pageSizes = ITEMS_PER_PAGE
 let currentPage = INIT_PAGE
 
-const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
+const BundleGroupVersionsPage = ({ setVersionSearchTerm }) => {
   const [bgVersionList, setBgVersionList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([])
@@ -27,6 +28,8 @@ const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
   const history = useHistory()
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+
+  const apiUrl = useApiUrl();
 
   const { id: bundleGroupId, categoryId } = useParams();
   const IS_VERSIONS_PAGE = true;
@@ -43,7 +46,7 @@ const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
     return (getAllBundleGroupVersionByBundleGroupId(apiUrl, bundleGroupId, PAGE, ITEMS_PER_PAGE, statusFilterValue && statusFilterValue));
   }
 
-  const onPaginationChange = async ({ apiUrl, page, pageSize }) => {
+  const onPaginationChange = async ({ page, pageSize }) => {
     pageSizes = pageSize
     page_ = page
     currentPage = page
@@ -88,7 +91,7 @@ const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
       }
       setCategories(data.categoryList);
     }
-    getCategories(apiUrl);
+    getCategories();
 
     let unmounted = false;
     const setOrg = async () => {
@@ -157,7 +160,7 @@ const BundleGroupVersionsPage = ({apiUrl, setVersionSearchTerm}) => {
               <div className="bx--col-lg-12 CatalogPageContent-wrapper">
                 {bgVersionList && bgVersionList.length
                   ?
-                  <CatalogTiles apiUrl={apiUrl} bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories}
+                  <CatalogTiles bundleGroups={bgVersionList} isVersionsPage={IS_VERSIONS_PAGE} categoryDetails={categories}
                   orgList={orgList}
                   reloadToken={reloadToken} onAfterSubmit={onAfterSubmit} showFullPage={true} />
                   :

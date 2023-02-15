@@ -8,8 +8,10 @@ import "./modal-add-new-organization.scss"
 import { organisationSchema } from "../../../helpers/validation/organisationSchema"
 import { fillErrors } from "../../../helpers/validation/fillErrors"
 import i18n from "../../../i18n"
-export const ModalAddNewOrganisation = ({onAfterSubmit, apiUrl}) => {
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
+export const ModalAddNewOrganisation = ({ onAfterSubmit }) => {
+    const apiUrl = useApiUrl();
 
     const ModalStateManager = ({
                                    renderLauncher: LauncherContent,

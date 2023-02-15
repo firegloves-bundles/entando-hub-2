@@ -13,29 +13,26 @@ import i18n from "./i18n"
 import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 import { useState } from "react"
 
-function AppCarbon({config}) {
+function AppCarbon() {
   const [versionSearchTerm, setVersionSearchTerm] = useState('');
-  const { systemParams } = config || {};
-  const { api } = systemParams || {};
-  const apiUrl = api && api['entando-hub-api'].url;
 
   return (
     <>
       <NotificationDispatcher />
       <HashRouter>
         <Switch>
-          <Route path="**/bundlegroup/:id" exact render={(props) => <BundleGroupPage apiUrl={apiUrl} {...props}/>}/>
-          <Route path="**/bundlegroup/versions/:id" render={(props) => <BundleGroupPage apiUrl={apiUrl} {...props}/>}/>
-          <Route path="**/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} apiUrl={apiUrl} {...props}/>}/>
-          <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage} apiUrl={apiUrl}/>
-          <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage} apiUrl={apiUrl}/>
-          <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage} apiUrl={apiUrl}/>
-          <RouteWithGate gateFunction={isHubAdmin} path="**/categories*" component={CategoryManagementPage} apiUrl={apiUrl}/>
-          <RouteWithGate gateFunction={isHubAdmin} path="**/category*" component={CategoryManagementPage} apiUrl={apiUrl}/>
+          <Route path="**/bundlegroup/:id" exact render={(props) => <BundleGroupPage {...props}/>}/>
+          <Route path="**/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props}/>}/>
+          <Route path="**/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} {...props}/>}/>
+          <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="**/categories*" component={CategoryManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="**/category*" component={CategoryManagementPage} />
           <Route path="**/unauthorized">
             {i18n.t('page.unauthorized')}
           </Route>
-          <Route path="**/" render={(props) => <CatalogPage  setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} apiUrl={apiUrl} {...props} />}/>
+          <Route path="**/" render={(props) => <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
         </Switch>
       </HashRouter>
     </>

@@ -24,6 +24,7 @@ import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./user-managment-page.scss"
 import i18n from "../../i18n"
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
+import { useApiUrl } from "../../contexts/ConfigContext"
 
 /*
 BUNDLEGROUP:
@@ -72,13 +73,15 @@ const headers = [
   },
 ]
 
-const UserManagementPage = ({apiUrl}) => {
+const UserManagementPage = () => {
 
   const [reloadToken, setReloadToken] = useState(
     new Date().getTime().toString()
   )
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const apiUrl = useApiUrl();
 
   // fetches the users to show
   useEffect(() => {
@@ -162,7 +165,7 @@ const UserManagementPage = ({apiUrl}) => {
                     <TableContainer title={i18n.t("page.admin.userManagement")}>
                       <TableToolbar>
                         <TableToolbarContent>
-                          <ModalAddNewUser onAfterSubmit={onAfterSubmit} apiUrl={apiUrl}/>
+                          <ModalAddNewUser onAfterSubmit={onAfterSubmit} />
                         </TableToolbarContent>
                       </TableToolbar>
                       <Table {...getTableProps()}>
@@ -192,7 +195,6 @@ const UserManagementPage = ({apiUrl}) => {
                                 return (
                                   <TableCell key={cell.id}>
                                     <UserManagementOverflowMenu
-                                        apiUrl={apiUrl}
                                       userObj={{
                                         username: row.cells[0].value,
                                         email: row.cells[1].value,

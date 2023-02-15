@@ -5,10 +5,8 @@ import { ModalDeleteCategory } from "../modal-delete-category/ModalDeleteCategor
 import i18n from "../../../i18n"
 
 const CategoryManagementOverflowMenu = ({
-  apiUrl,
   categoryObj,
   onAfterSubmit,
-  setReloadToken,
   categories,
 }) => {
   const [openModal, setOpenModal] = useState(false)
@@ -22,7 +20,6 @@ const CategoryManagementOverflowMenu = ({
       </OverflowMenu>
       {openModal && (
         <ModalUpdateCategory
-          apiUrl={apiUrl}
           categoryObj={categoryObj}
           open={openModal}
           onCloseModal={() => setOpenModal(false)}
@@ -31,7 +28,6 @@ const CategoryManagementOverflowMenu = ({
       )}
       {openDeleteModal && (
         <ModalDeleteCategory
-          apiUrl={apiUrl}
           categoryObj={categoryObj}
           open={openDeleteModal}
           onCloseModal={() => setOpenDeleteModal(false)}

@@ -1,21 +1,16 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-
-import com.entando.hub.catalog.rest.domain.BundleNoId;
+import com.entando.hub.catalog.rest.dto.BundleDtoIn;
+import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,13 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.entando.hub.catalog.service.BundleService;
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/bundles/")
@@ -44,9 +39,11 @@ public class BundleController {
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
 
     final private BundleService bundleService;
+    final private BundleMapper bundleMapper;
 
-    public BundleController(BundleService bundleService) {
+    public BundleController(BundleService bundleService, BundleMapper bundleMapper) {
         this.bundleService = bundleService;
+        this.bundleMapper = bundleMapper;
     }
 
     @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
@@ -77,14 +74,14 @@ public class BundleController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<Bundle> createBundle(@RequestBody BundleNoId bundle) {
-        logger.debug("REST request to create new Bundle: {}", bundle);
+    public ResponseEntity<Bundle> createBundle(@RequestBody BundleDtoIn bundleDto) {
+        logger.debug("REST request to create new Bundle: {}", bundleDto);
         
-        Optional<String> opt =  Objects.nonNull(bundle.getBundleId()) 
-   			 ?  Optional.of(bundle.getBundleId())
-   					 : Optional.empty();
-        
-        com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(opt));
+//        Optional<String> opt =  Objects.nonNull(bundle.getBundleId())
+//   			 ?  Optional.of(bundle.getBundleId())
+//   					 : Optional.empty();
+        com.entando.hub.catalog.persistence.entity.Bundle eBundle = bundleMapper.toEntity(bundleDto);
+        com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(eBundle);
         return new ResponseEntity<>(new Bundle(entity), HttpStatus.CREATED);
     }
 
@@ -95,14 +92,16 @@ public class BundleController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleNoId bundle) {
-        logger.debug("REST request to update a Bundle with id {}: {}", bundleId, bundle);
+    public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleDtoIn bundleDto) {
+        logger.debug("REST request to update a Bundle with id {}: {}", bundleId, bundleDto);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
+
         if (!bundleOptional.isPresent()) {
         	logger.warn("Bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(bundle.createEntity(Optional.of(bundleId)));
+            com.entando.hub.catalog.persistence.entity.Bundle eBundle = bundleMapper.toEntity(bundleDto);
+            com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(eBundle);
             return new ResponseEntity<>(new Bundle(entity), HttpStatus.OK);
         }
     }
@@ -130,7 +129,7 @@ public class BundleController {
     @Setter
     @ToString
     @EqualsAndHashCode(callSuper = true)
-    public static class Bundle extends BundleNoId {
+    public static class Bundle extends BundleDtoIn {
         @Schema(example = "bundle identifier")
         private final String bundleId;
         public Bundle(String bundleId, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroups, String descriptorVersion) {

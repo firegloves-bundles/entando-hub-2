@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,8 +96,8 @@ public class AppBuilderBundleControllerTest {
 		
 		Page<Bundle> response = new PageImpl<>(bundlesList);
 
-		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
-		versions.add(Bundle.DescriptorVersion.V1);
+		Set<DescriptorVersion> versions = new HashSet<>();
+		versions.add(DescriptorVersion.V1);
 
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
 		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
@@ -146,7 +147,7 @@ public class AppBuilderBundleControllerTest {
 				.andExpect(status().isOk());
 
 		//Case 5: provide one more good descriptorVersion as well as a bad one (which should be excluded.
-		versions.add(Bundle.DescriptorVersion.V5);
+		versions.add(DescriptorVersion.V5);
 		page = 1;
 
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));

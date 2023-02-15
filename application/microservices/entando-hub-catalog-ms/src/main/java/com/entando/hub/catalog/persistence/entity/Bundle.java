@@ -55,8 +55,4 @@ public class Bundle {
                 '}';
     }
 
-    public enum DescriptorVersion {
-        V1, V5
-    }
-
 }

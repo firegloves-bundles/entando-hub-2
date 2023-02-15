@@ -1,7 +1,5 @@
-package com.entando.hub.catalog.rest.domain;
+package com.entando.hub.catalog.rest.dto;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -10,13 +8,11 @@ import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BundleNoId {
+public class BundleDtoIn {
   @Schema(example = "bundle identifier")
   private String bundleId;
 
@@ -42,7 +38,9 @@ public class BundleNoId {
   private List<String> dependencies;
   private List<String> bundleGroups; //Used for bundle group versions, need to make it bundleGroupVersions
 
-  public BundleNoId(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
+
+  @Deprecated
+  public BundleDtoIn(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
     this.bundleId = id;
     this.name = name;
     this.description = description;
@@ -53,7 +51,8 @@ public class BundleNoId {
     this.descriptorVersion = descriptorVersion;
   }
 
-  public BundleNoId(com.entando.hub.catalog.persistence.entity.Bundle entity) {
+  @Deprecated
+  public BundleDtoIn(com.entando.hub.catalog.persistence.entity.Bundle entity) {
     this.bundleId = entity.getId().toString();
     this.name = entity.getName();
     this.description = entity.getDescription();
@@ -64,6 +63,7 @@ public class BundleNoId {
     this.descriptorVersion = entity.getDescriptorVersion().toString();
   }
 
+/*
   public com.entando.hub.catalog.persistence.entity.Bundle createEntity(Optional<String> id) {
     com.entando.hub.catalog.persistence.entity.Bundle ret = new com.entando.hub.catalog.persistence.entity.Bundle();
     ret.setDescription(this.getDescription());
@@ -74,7 +74,7 @@ public class BundleNoId {
 
     //for now, if the repo address does not start with docker, we assume it's a V1 bundle.
     boolean isDocker = (this.getGitRepoAddress() != null) && (this.getGitRepoAddress().startsWith("docker:"));
-    ret.setDescriptorVersion(isDocker ? Bundle.DescriptorVersion.V5 : Bundle.DescriptorVersion.V1);
+    ret.setDescriptorVersion(isDocker ? DescriptorVersion.V5 : DescriptorVersion.V1);
 
     //TODO bundlegroups contains bundle group version id! fix it!
     Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
@@ -86,4 +86,6 @@ public class BundleNoId {
     id.map(Long::valueOf).ifPresent(ret::setId);
     return ret;
   }
+*/
+
 }

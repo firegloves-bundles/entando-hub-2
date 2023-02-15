@@ -3,6 +3,7 @@ package com.entando.hub.catalog.rest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,18 +36,18 @@ public class AppBuilderBundleController {
 		this.bundleGroupVersionService = bundleGroupVersionService;
 	}
 
-	static Set<Bundle.DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
-		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
+	static Set<DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
+		Set<DescriptorVersion> versions = new HashSet<>();
 
 		//Default to V1 for best compatibility
 		if (ArrayUtils.isEmpty(descriptorVersions)) {
-			versions.add(Bundle.DescriptorVersion.V1);
+			versions.add(DescriptorVersion.V1);
 		}
 		//Otherwise map to the DescriptorVersion
 		else {
 			for (String v : descriptorVersions) {
 				try {
-					versions.add(Bundle.DescriptorVersion.valueOf(v.toUpperCase()));
+					versions.add(DescriptorVersion.valueOf(v.toUpperCase()));
 				} catch (Exception e) {
 					logger.warn("Ignoring unrecognized descriptorVersion {} provided.", v);
 				}
@@ -62,7 +63,7 @@ public class AppBuilderBundleController {
 	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
-		Set<Bundle.DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
+		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 
 		PagedContent<BundleController.Bundle, Bundle> pagedContent = new PagedContent<>(

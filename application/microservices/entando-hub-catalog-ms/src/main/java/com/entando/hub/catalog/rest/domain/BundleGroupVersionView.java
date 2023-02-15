@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest.domain;
 
+import com.entando.hub.catalog.rest.dto.BundleDtoIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class BundleGroupVersionView {
   protected List<String> categories;
   protected List<Long> children;
   protected String bundleGroupVersionId;
-  protected List<BundleNoId> bundles;
+  protected List<BundleDtoIn> bundles;
   protected Boolean displayContactUrl;
 
   @Schema(example = "https://yoursite.com/contact-us")

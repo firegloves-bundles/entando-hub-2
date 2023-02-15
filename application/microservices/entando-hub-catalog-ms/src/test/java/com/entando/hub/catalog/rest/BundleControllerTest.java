@@ -1,15 +1,13 @@
 package com.entando.hub.catalog.rest;
 
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.dto.BundleDtoIn;
+import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,30 +16,34 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.domain.BundleNoId;
-import com.entando.hub.catalog.service.BundleService;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleController.class)
-@WithMockUser(username="admin",roles={ADMIN})
+@WithMockUser(username="admin", roles={ADMIN})
+@ComponentScan(basePackageClasses = {BundleMapper.class, BundleMapperImpl.class})
 public class BundleControllerTest {
-	
+
+	@Autowired
+	private BundleMapper bundleMapper;
+
 	@Autowired
 	WebApplicationContext webApplicationContext;
 	
@@ -110,24 +112,27 @@ public class BundleControllerTest {
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
 	}
-	
+
 	@Test
 	public void testCreateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		//Case 1: bundleId is not null
-		BundleNoId bundleNoId = new BundleNoId(bundle);
-		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleNoId);
+		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
+		bundleDtoIn.setBundleId("2677");
+		// Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDtoIn);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
-		BundleNoId bundleNoId2 = new BundleNoId(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
-		Mockito.when(bundleService.createBundle(bundleNoId2.createEntity(Optional.empty()))).thenReturn(bundle);
-		inputJson = mapToJson(bundleNoId2);
+		BundleDtoIn bundleDtoIn2 = new BundleDtoIn(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
+//		Mockito.when(bundleService.createBundle(bundleDtoIn2.createEntity(Optional.empty()))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn2))).thenReturn(bundle);
+		inputJson = mapToJson(bundleDtoIn2);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
@@ -138,26 +143,29 @@ public class BundleControllerTest {
 	public void testUpdateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
-		BundleNoId bundleNoId = new BundleNoId(bundle);
+		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
+		bundleDtoIn.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
-		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleNoId);
+//		Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDtoIn);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().isOk());
-		
 	}
 	
 	@Test
 	public void testUpdateBundleFails() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
-		BundleNoId bundleNoId = new BundleNoId(bundle);
+		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
+		bundleDtoIn.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(null)).thenReturn(Optional.of(bundle));
-		Mockito.when(bundleService.createBundle(bundleNoId.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleNoId);
+//		Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDtoIn);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)

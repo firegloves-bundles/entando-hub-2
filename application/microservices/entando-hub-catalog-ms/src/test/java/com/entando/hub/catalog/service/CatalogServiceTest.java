@@ -7,7 +7,6 @@ import com.entando.hub.catalog.service.exception.ConflictException;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,10 +36,6 @@ class CatalogServiceTest {
     @BeforeEach
     void setUp() {
             this.catalogService = new CatalogService(catalogRepository, organisationService);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test

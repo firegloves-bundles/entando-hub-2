@@ -5,7 +5,6 @@ import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import javassist.NotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +28,6 @@ class CatalogControllerTest {
     @BeforeEach
     void setUp() {
         this.catalogController = new CatalogController(catalogService);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test

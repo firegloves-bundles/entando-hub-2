@@ -27,6 +27,8 @@ public class BundleGroupNoId {
     this.organisationId = organisationId;
   }
 
+  //  FIXME eliminare
+  @Deprecated
   public BundleGroupNoId(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
     this.name = entity.getName();
 
@@ -35,10 +37,14 @@ public class BundleGroupNoId {
       this.organisationName = entity.getOrganisation().getName();
     }
     if (entity.getCategories() != null) {
-      this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
+      this.categories = entity.getCategories().stream()
+        .map((category) -> category.getId().toString()).collect(Collectors.toList());
     }
   }
 
+
+  // FIXME eliminare
+  @Deprecated
   public com.entando.hub.catalog.persistence.entity.BundleGroup createEntity(Optional<String> id) {
     com.entando.hub.catalog.persistence.entity.BundleGroup ret = new com.entando.hub.catalog.persistence.entity.BundleGroup();
     ret.setName(this.getName());
@@ -51,4 +57,5 @@ public class BundleGroupNoId {
     id.map(Long::valueOf).ifPresent(ret::setId);
     return ret;
   }
+
 }

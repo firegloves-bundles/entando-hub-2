@@ -75,7 +75,7 @@ public class BundleGroupVersionController {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
         if (bundleGroupOptional.isPresent()) {
-        	logger.debug("BundleGroup is present with id: {}", bundleGroupOptional.get().getId());
+        	logger.debug("BundleGroupDto is present with id: {}", bundleGroupOptional.get().getId());
             List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
             if (CollectionUtils.isEmpty(bundleGroupVersions)) {
             	logger.info("Bundle group version list found with size: {}", bundleGroupVersions.size());

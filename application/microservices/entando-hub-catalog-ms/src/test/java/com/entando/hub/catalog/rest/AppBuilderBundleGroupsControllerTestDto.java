@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleGroupsController.class)
 @WithMockUser(username = "admin", roles = { ADMIN })
-public class AppBuilderBundleGroupsControllerTest {
+public class AppBuilderBundleGroupsControllerTestDto {
 	
 	@Autowired
 	WebApplicationContext webApplicationContext;

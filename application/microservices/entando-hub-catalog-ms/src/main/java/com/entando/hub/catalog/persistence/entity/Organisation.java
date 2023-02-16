@@ -28,19 +28,19 @@ public class Organisation {
     private Set<PortalUser> portalUsers;
 
 /*
-    public void addBundleGroup(BundleGroup bundleGroup) {
+    public void addBundleGroup(BundleGroupDto bundleGroup) {
         this.bundleGroups.add(bundleGroup);
         bundleGroup.setOrganisation(this);
     }
     //TODO performance check, we can do better
-    public void mergeBundleGroups(Set<BundleGroup> newBundleGroups) {
+    public void mergeBundleGroups(Set<BundleGroupDto> newBundleGroups) {
         if(this.bundleGroups==null) {
             this.bundleGroups=new HashSet<>();
         }
         //add all the new ones
         newBundleGroups.stream().forEach(this::addBundleGroup);
         //to exclude
-        Set<BundleGroup> toExclude = this.bundleGroups.stream().filter(bundleGroup -> !newBundleGroups.contains(bundleGroup)).collect(Collectors.toSet());
+        Set<BundleGroupDto> toExclude = this.bundleGroups.stream().filter(bundleGroup -> !newBundleGroups.contains(bundleGroup)).collect(Collectors.toSet());
         //remove the old ones
         toExclude.stream().forEach(bundleGroup -> {
             this.bundleGroups.remove(bundleGroup);

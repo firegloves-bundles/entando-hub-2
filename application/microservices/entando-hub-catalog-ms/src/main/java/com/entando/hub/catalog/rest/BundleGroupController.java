@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
-import com.entando.hub.catalog.rest.domain.BundleGroup;
+import com.entando.hub.catalog.rest.domain.BundleGroupDto;
 import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
 import com.entando.hub.catalog.rest.domain.Category;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,9 +55,9 @@ public class BundleGroupController {
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @GetMapping(value = "/", produces = {"application/json"})
-    public List<BundleGroup> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
+    public List<BundleGroupDto> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
-        return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
+        return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroupDto::new).collect(Collectors.toList());
     }
 
     //PUBLIC
@@ -65,11 +65,11 @@ public class BundleGroupController {
     @GetMapping(value = "/{bundleGroupId}", produces = {"application/json"})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
-        logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
+    public ResponseEntity<BundleGroupDto> getBundleGroup(@PathVariable String bundleGroupId) {
+        logger.debug("REST request to get BundleGroupDto by Id: {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (bundleGroupOptional.isPresent()) {
-            return new ResponseEntity<>(bundleGroupOptional.map(BundleGroup::new).get(), HttpStatus.OK);
+            return new ResponseEntity<>(bundleGroupOptional.map(BundleGroupDto::new).get(), HttpStatus.OK);
         } else {
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -82,15 +82,15 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
-        logger.debug("REST request to create BundleGroup: {}", bundleGroup);
+    public ResponseEntity<BundleGroupDto> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
+        logger.debug("REST request to create BundleGroupDto: {}", bundleGroup);
         //if not admin the organisationid of the bundle must be the same of the user
         if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
             logger.warn("Only {} users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN);
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
         com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup);
-        return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
+        return new ResponseEntity<>(new BundleGroupDto(saved), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
@@ -100,15 +100,15 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
-        logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
+    public ResponseEntity<BundleGroupDto> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
+        logger.debug("REST request to update BundleGroupDto with id {}: {}", bundleGroupId, bundleGroup);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
 
 		if (!bundleGroupOptional.isPresent()) {
-			logger.warn("BundleGroup '{}' does not exist", bundleGroupId);
+			logger.warn("BundleGroupDto '{}' does not exist", bundleGroupId);
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		} else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
-			logger.warn("BundleGroup '{}' is not editable", bundleGroupId);
+			logger.warn("BundleGroupDto '{}' is not editable", bundleGroupId);
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 		} else {
             //if the user is not ADMIN
@@ -123,7 +123,7 @@ public class BundleGroupController {
                 }
             }
             com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
-            return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.OK);
+            return new ResponseEntity<>(new BundleGroupDto(saved), HttpStatus.OK);
         }
     }
 

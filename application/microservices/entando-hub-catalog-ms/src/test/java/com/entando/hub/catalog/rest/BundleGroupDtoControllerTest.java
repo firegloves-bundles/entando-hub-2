@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleGroupController.class)
-public class BundleGroupControllerTest {
+public class BundleGroupDtoControllerTest {
 
 	@Autowired
 	WebApplicationContext webApplicationContext;

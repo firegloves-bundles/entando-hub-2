@@ -49,7 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleGroupVersionController.class)
 @WithMockUser(username="admin",roles={ADMIN})
-public class BundleGroupVersionControllerTest {
+public class BundleGroupDtoVersionControllerTest {
 	
 	@Autowired
 	WebApplicationContext webApplicationContext;

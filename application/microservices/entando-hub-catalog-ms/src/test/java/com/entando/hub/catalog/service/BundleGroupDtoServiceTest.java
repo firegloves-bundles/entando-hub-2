@@ -36,7 +36,7 @@ import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class BundleGroupServiceTest {
+public class BundleGroupDtoServiceTest {
 	@InjectMocks
 	BundleGroupService bundleGroupService;
 	@Mock

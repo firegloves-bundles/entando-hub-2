@@ -45,7 +45,7 @@ import com.entando.hub.catalog.rest.PagedContent;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class BundleGroupVersionServiceTest {
+public class BundleGroupDtoVersionServiceTest {
 
 	@InjectMocks
 	BundleGroupVersionService bundleGroupVersionService;

@@ -17,6 +17,7 @@ import i18n from "../../i18n"
 import { SLASH_VERSIONS } from "../../helpers/constants"
 import BundlesOfBundleGroup
   from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
+import { useApiUrl } from "../../contexts/ConfigContext";
 
 /*
 BUNDLEGROUP:
@@ -50,13 +51,15 @@ const formatLastUpdate = (date) => {
   return new Intl.DateTimeFormat([], { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(date))
 }
 
-const BundleGroupPage = ({apiUrl}) => {
-    const [pageModel, setPageModel] = useState({
+const BundleGroupPage = () => {
+  const [pageModel, setPageModel] = useState({
     bundleGroup: {},
     organisation: null,
     category: null,
     children: []
   })
+
+  const apiUrl = useApiUrl();
 
   const categoryId = pageModel.bundleGroup && pageModel.bundleGroup.categories && pageModel.bundleGroup.categories.length ? pageModel.bundleGroup.categories[0] : null;
   const { id: bundleGroupVersionId } = useParams()
@@ -66,7 +69,7 @@ const BundleGroupPage = ({apiUrl}) => {
 
   // fetches the bundle group
   useEffect(() => {
-    const getBundleGroupDetail = async (apiUrl, bundleGroupVersionId) => {
+    const getBundleGroupDetail = async (bundleGroupVersionId) => {
       const pageModel = {}
       const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId)).bgVersionDetails
       pageModel["bundleGroup"] = fetchedBundleGroup
@@ -85,7 +88,7 @@ const BundleGroupPage = ({apiUrl}) => {
     (async () => {
       const indexOf = bundleGroupVersionId.indexOf("&") === -1 ? bundleGroupVersionId.length : bundleGroupVersionId.indexOf("&")
       const sanitizedId = bundleGroupVersionId.substring(0, indexOf)
-      setPageModel(await getBundleGroupDetail(apiUrl,sanitizedId))
+      setPageModel(await getBundleGroupDetail(sanitizedId))
     })()
   }, [apiUrl, bundleGroupVersionId])
 

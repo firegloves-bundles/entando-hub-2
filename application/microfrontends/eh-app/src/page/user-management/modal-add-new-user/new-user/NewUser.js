@@ -2,6 +2,7 @@ import {useEffect, useState} from "react"
 import {Content, Select, SelectItem,} from "carbon-components-react"
 import {getAllKCUsers, getAllOrganisations, getAllUsers} from "../../../../integration/Integration"
 import i18n from "../../../../i18n"
+import { useApiUrl } from "../../../../contexts/ConfigContext"
 
 /*
 BUNDLEGROUP:
@@ -20,7 +21,7 @@ bundleGroupId	string
 }
  */
 
-const NewUser = ({onDataChange,apiUrl}) => {
+const NewUser = ({ onDataChange }) => {
 
     const [user, setUser] = useState({
         username: "",
@@ -29,6 +30,8 @@ const NewUser = ({onDataChange,apiUrl}) => {
     })
     const [organisations, setOrganisations] = useState([])
     const [availableUsers, setAvailableUsers] = useState([])
+
+    const apiUrl = useApiUrl();
 
     const changeUser = (field, value, user) => {
         const newObj = {

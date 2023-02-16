@@ -6,8 +6,11 @@ import NewUser from "./new-user/NewUser"
 import {createAUserForAnOrganisation} from "../../../integration/Integration"
 import "./modal-add-new-user.scss"
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
-export const ModalAddNewUser = ({onAfterSubmit,apiUrl}) => {
+export const ModalAddNewUser = ({ onAfterSubmit }) => {
+    const apiUrl = useApiUrl();
+
     const ModalStateManager = ({
                                    renderLauncher: LauncherContent,
                                    children: ModalContent,
@@ -77,7 +80,7 @@ export const ModalAddNewUser = ({onAfterSubmit,apiUrl}) => {
                     open={open}
                     onRequestClose={onRequestClose}
                     onRequestSubmit={onRequestSubmit}>
-                    <NewUser apiUrl={apiUrl} key={elemKey} onDataChange={onDataChange}/>
+                    <NewUser key={elemKey} onDataChange={onDataChange}/>
                 </Modal>
             )}
         </ModalStateManager>

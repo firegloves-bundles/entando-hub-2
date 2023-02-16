@@ -4,11 +4,14 @@ import { removeUserFromOrganisation } from "../../../integration/Integration";
 import "./modal-remove-user-from-org.scss";
 import RemoveUserFromOrg from "./remove-user-from-org/RemoveUserFromOrg";
 import i18n from "../../../i18n";
+import { useApiUrl } from "../../../contexts/ConfigContext";
 
-export const ModalRemoveUserFromOrg = ({apiUrl, userObj, open, onCloseModal, onAfterSubmit}) => {
+export const ModalRemoveUserFromOrg = ({ userObj, open, onCloseModal, onAfterSubmit }) => {
 
     const [user] = useState(userObj)
     const [visible, setVisible] = useState(false)
+
+    const apiUrl = useApiUrl();
 
     useEffect(() => {
         (async () => {

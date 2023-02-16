@@ -6,14 +6,16 @@ import {
   deleteOrganisation,
 } from "../../../integration/Integration"
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
 const OrganisationManagementOverflowMenu = ({
-  apiUrl,
   organisationObj,
   onAfterSubmit,
   setReloadToken,
 }) => {
   const [openModal, setOpenModal] = useState(false)
+
+  const apiUrl = useApiUrl();
 
   const deleteHandler = async () => {
     const org = await getSingleOrganisation(apiUrl,organisationObj.organisationId)
@@ -31,7 +33,6 @@ const OrganisationManagementOverflowMenu = ({
       </OverflowMenu>
       {openModal && (
         <ModalUpdateOrganisation
-          apiUrl={apiUrl}
           organisationObj={organisationObj}
           open={openModal}
           onCloseModal={() => setOpenModal(false)}

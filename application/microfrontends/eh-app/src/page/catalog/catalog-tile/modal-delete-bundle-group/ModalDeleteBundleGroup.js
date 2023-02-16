@@ -4,8 +4,10 @@ import { deleteBundleGroupVersion } from "../../../../integration/Integration"
 
 import "./modal-delete-bundle-group.scss"
 import i18n from "../../../../i18n";
+import { useApiUrl } from "../../../../contexts/ConfigContext";
 
-export const ModalDeleteBundleGroup = ({ apiUrl, open, onCloseModal, bundleGroupVersionId, onAfterSubmit}) => {
+export const ModalDeleteBundleGroup = ({ open, onCloseModal, bundleGroupVersionId, onAfterSubmit}) => {
+    const apiUrl = useApiUrl();
 
     const onRequestClose = (e) => {
         onCloseModal()

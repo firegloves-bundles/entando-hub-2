@@ -15,9 +15,9 @@ import { fillErrors } from "../../../../helpers/validation/fillErrors"
 import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
 import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
+import { useApiUrl } from "../../../../contexts/ConfigContext"
 
 export const ModalUpdateBundleGroup = ({
-  apiUrl,
   bundleGroupId,
   bundleStatus,
   open,
@@ -41,6 +41,7 @@ export const ModalUpdateBundleGroup = ({
   const [validationResult, setValidationResult] = useState({})
   const [minOneBundleError] = useState("")
 
+  const apiUrl = useApiUrl();
 
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)

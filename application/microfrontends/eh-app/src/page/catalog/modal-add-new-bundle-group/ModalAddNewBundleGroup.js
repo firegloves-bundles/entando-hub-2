@@ -12,12 +12,13 @@ import BundleGroupForm from "../../../components/forms/BundleGroupForm/BundleGro
 import values from "../../../config/common-configuration";
 import { DEFAULT_CATEGORY, BUNDLE_STATUS } from "../../../helpers/constants";
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
 /*
     This component manages the modal for adding a new bundle group
 */
-export const ModalAddNewBundleGroup = ({ apiUrl, onAfterSubmit, catList, orgList, currentUserOrg}) => {
-
+export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, currentUserOrg}) => {
+    const apiUrl = useApiUrl();
 
     const ModalStateManager = ({
         renderLauncher: LauncherContent,

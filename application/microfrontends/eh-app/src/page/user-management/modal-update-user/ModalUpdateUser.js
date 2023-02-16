@@ -9,13 +9,15 @@ import {
 
 import "./modal-update-user.scss"
 import i18n from "../../../i18n"
-export const ModalUpdateUser = ({apiUrl, userObj, open, onCloseModal, onAfterSubmit}) => {
+import { useApiUrl } from "../../../contexts/ConfigContext"
+
+export const ModalUpdateUser = ({ userObj, open, onCloseModal, onAfterSubmit }) => {
 
     const [user, setUser] = useState(userObj)
     const [visible, setVisible] = useState(false)
     const [organisations, setOrganisations] = useState([])
 
-
+    const apiUrl = useApiUrl();
 
     useEffect(() => {
         (async () => {

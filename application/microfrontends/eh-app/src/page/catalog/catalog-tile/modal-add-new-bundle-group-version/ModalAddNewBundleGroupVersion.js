@@ -18,9 +18,9 @@ import "./modal-add-new-bundle-group-version.scss"
 import BundleGroupVersionForm from "../../../../components/forms/BundleGroupVersionForm/BundleGroupVersionForm"
 import i18n from "../../../../i18n"
 import { isVersionDuplicate } from "../../../../helpers/validation/isVersionDuplicateValidate"
+import { useApiUrl } from "../../../../contexts/ConfigContext"
 
 export const ModalAddNewBundleGroupVersion = ({
-  apiUrl,
   theBundleGroup,
   open,
   onCloseModal,
@@ -40,6 +40,7 @@ export const ModalAddNewBundleGroupVersion = ({
   const [validationResult, setValidationResult] = useState({})
   const [minOneBundleError] = useState("")
 
+  const apiUrl = useApiUrl();
 
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)

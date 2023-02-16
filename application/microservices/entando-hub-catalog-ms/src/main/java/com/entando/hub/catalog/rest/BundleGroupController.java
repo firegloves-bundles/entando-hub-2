@@ -10,23 +10,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.ManyToOne;
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.OrganisationService;
+import com.entando.hub.catalog.service.exception.ConflictException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.annotation.*;
 
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
@@ -50,19 +50,23 @@ public class BundleGroupController {
     private final BundleGroupService bundleGroupService;
     private final SecurityHelperService securityHelperService;
     private final BundleGroupVersionService bundleGroupVersionService;
+    private final CatalogService catalogService;
+    private final OrganisationService organisationService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, CatalogService catalogService, OrganisationService organisationService) {
         this.bundleGroupService = bundleGroupService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupVersionService = bundleGroupVersionService;
+        this.catalogService = catalogService;
+        this.organisationService = organisationService;
     }
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @GetMapping(value = "/", produces = {"application/json"})
-    public List<BundleGroup> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
+    public List<BundleGroupDTO> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
-        return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroup::new).collect(Collectors.toList());
+        return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroupDTO::new).collect(Collectors.toList());
     }
 
     //PUBLIC
@@ -70,11 +74,11 @@ public class BundleGroupController {
     @GetMapping(value = "/{bundleGroupId}", produces = {"application/json"})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> getBundleGroup(@PathVariable String bundleGroupId) {
+    public ResponseEntity<BundleGroupDTO> getBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
-        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (bundleGroupOptional.isPresent()) {
-            return new ResponseEntity<>(bundleGroupOptional.map(BundleGroup::new).get(), HttpStatus.OK);
+            return new ResponseEntity<>(bundleGroupOptional.map(BundleGroupDTO::new).get(), HttpStatus.OK);
         } else {
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -87,15 +91,34 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
+    public ResponseEntity<BundleGroupDTO> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) throws NotFoundException {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
-        //if not admin the organisationid of the bundle must be the same of the user
-        if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
-            logger.warn("Only {} users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN);
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        this.validateRequest(bundleGroup);
+        BundleGroup entity = bundleGroup.createEntity(Optional.empty());
+        BundleGroup saved = bundleGroupService.createBundleGroup(entity, bundleGroup);
+        BundleGroupDTO bundleGroupDTO = new BundleGroupDTO(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bundleGroupDTO);
+    }
+
+    protected void validateRequest(BundleGroupNoId bundleGroup) throws NotFoundException {
+        if (!organisationService.existsById(bundleGroup.getOrganisationId())) {
+            throw new NotFoundException(String.format("Organisation with ID %d not found", bundleGroup.getOrganisationId()));
         }
-        com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.empty()), bundleGroup);
-        return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.CREATED);
+
+        if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
+            throw new AccessDeniedException(String.format("Only %s users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN));
+        }
+
+        if (bundleGroup.getIsPublic() == null || bundleGroup.getIsPublic()) {
+            bundleGroup.setIsPublic(true);
+            bundleGroup.setCatalogId(null);
+        } else {
+            if (bundleGroup.getCatalogId()==null) {
+                throw new IllegalArgumentException("Catalog ID is required for non-public bundle groups");
+            } else if (!catalogService.existCatalogById(bundleGroup.catalogId)) {
+                throw new NotFoundException(String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
+            }
+        }
     }
 
     @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
@@ -105,30 +128,20 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroup> updateBundleGroup(@PathVariable String bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
+    public ResponseEntity<BundleGroupDTO> updateBundleGroup(@PathVariable Long bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) throws NotFoundException {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
-        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        this.validateRequest(bundleGroup);
+        this.validateExistingBundleGroup(bundleGroupId);
+        BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
+        return new ResponseEntity<>(new BundleGroupDTO(saved), HttpStatus.OK);
+    }
 
-		if (!bundleGroupOptional.isPresent()) {
-			logger.warn("BundleGroup '{}' does not exist", bundleGroupId);
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		} else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
-			logger.warn("BundleGroup '{}' is not editable", bundleGroupId);
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-		} else {
-            //if the user is not ADMIN
-            if (!securityHelperService.hasRoles(Set.of(ADMIN))) {
-                //I'm going to check the organisation
-                com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroupEntity = bundleGroupOptional.get();
-
-                //must exist and the user mat be in it
-                if (bundleGroupEntity.getOrganisation() == null || !securityHelperService.userIsInTheOrganisation(bundleGroupEntity.getOrganisation().getId())) {
-                    logger.warn("Only {} users can update bundle groups for any organisation, the other ones can update bundle groups only for their organisation", ADMIN);
-                    return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-                }
-            }
-            com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
-            return new ResponseEntity<>(new BundleGroup(saved), HttpStatus.OK);
+    protected void validateExistingBundleGroup(Long bundleGroupId) throws NotFoundException {
+        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        if (!bundleGroupOptional.isPresent()) {
+            throw new NotFoundException(String.format("BundleGroup %s does not exist", bundleGroupId));
+        } else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
+            throw new ConflictException(String.format("BundleGroup %s is not editable", bundleGroupId));
         }
     }
 
@@ -143,9 +156,9 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
-    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
+    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
-        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {
             bundleGroupOptional.ifPresentOrElse(
                     bundleGroup -> logger.warn("Requested bundleGroup '{}' is not present", bundleGroupId),
@@ -162,15 +175,15 @@ public class BundleGroupController {
     @Setter
     @ToString
     @EqualsAndHashCode(callSuper = true)
-    public static class BundleGroup extends BundleGroupNoId {
+    public static class BundleGroupDTO extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroup(String bundleGroupId, String name, String organizationId) {
-            super(name, organizationId);
+        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean isPublic, Long catalogId) {
+            super(name, organizationId, isPublic, catalogId);
             this.bundleGroupId = bundleGroupId;
         }
 
-        public BundleGroup(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
+        public BundleGroupDTO(BundleGroup entity) {
             super(entity);
             this.bundleGroupId = entity.getId().toString();
         }
@@ -181,23 +194,29 @@ public class BundleGroupController {
 
         @Schema(example = "bundle group name")
         protected final String name;
-        protected String organisationId;
+        protected Long organisationId;
+        private Boolean isPublic;
+        private Long catalogId;
 
         @Schema(example = "Entando")
         protected String organisationName;
         protected List<String> categories;
         protected BundleGroupVersionView versionDetails;
 
-        public BundleGroupNoId(String name ,String organisationId) {
+        public BundleGroupNoId(String name ,Long organisationId, Boolean isPublic, Long catalogId) {
             this.name = name;
             this.organisationId = organisationId;
+            this.isPublic = isPublic;
+            this.catalogId = catalogId;
         }
 
-        public BundleGroupNoId(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
+        public BundleGroupNoId(BundleGroup entity) {
             this.name = entity.getName();
+            this.isPublic = entity.getIsPublic();
+            this.catalogId = entity.getCatalogId();
 
             if (entity.getOrganisation() != null) {
-                this.organisationId = entity.getOrganisation().getId().toString();
+                this.organisationId = entity.getOrganisation().getId();
                 this.organisationName = entity.getOrganisation().getName();
             }
             if (entity.getCategories() != null) {
@@ -205,17 +224,34 @@ public class BundleGroupController {
             }
         }
 
-        public com.entando.hub.catalog.persistence.entity.BundleGroup createEntity(Optional<String> id) {
-            com.entando.hub.catalog.persistence.entity.BundleGroup ret = new com.entando.hub.catalog.persistence.entity.BundleGroup();
-            ret.setName(this.getName());
+        public BundleGroup createEntity(Optional<Long> id) {
+            BundleGroup entity = new BundleGroup();
+            entity.setName(this.getName());
+            entity.setIsPublic(this.isPublic);
+            entity.setCatalogId(this.catalogId);
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
-                organisation.setId(Long.parseLong(this.organisationId));
+                organisation.setId(this.organisationId);
                 organisation.setName(this.organisationName);
-                ret.setOrganisation(organisation);
+                entity.setOrganisation(organisation);
             }
-            id.map(Long::valueOf).ifPresent(ret::setId);
-            return ret;
+            id.ifPresent(entity::setId);
+            return entity;
         }
+    }
+
+    @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, NotFoundException.class, ConflictException.class })
+    public ResponseEntity<String> handleException(Exception exception) {
+        HttpStatus status = null;
+        if (exception instanceof AccessDeniedException) {
+            status = HttpStatus.FORBIDDEN;
+        } else if (exception instanceof IllegalArgumentException) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof NotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (exception instanceof  ConflictException){
+            status = HttpStatus.CONFLICT;
+        }
+        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
     }
 }

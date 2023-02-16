@@ -50,12 +50,12 @@ public class SecurityHelperService {
     }
 
     //TRUE if user is not admin AND doesn't belong to the organisation
-    public Boolean userIsNotAdminAndDoesntBelongToOrg(String organisationId) {
+    public Boolean userIsNotAdminAndDoesntBelongToOrg(Long organisationId) {
         Boolean isAdmin = hasRoles(Set.of(ADMIN));
         if (isAdmin) {
             return false;
         }
-        return !userIsInTheOrganisation(Long.valueOf(organisationId));
+        return !userIsInTheOrganisation(organisationId);
 
     }
 

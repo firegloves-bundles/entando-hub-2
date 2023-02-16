@@ -90,7 +90,7 @@ public class BundleGroupVersionControllerTest {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();		
 		bundleGroupVersionsList.add(bundleGroupVersion);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroupVersion.getBundleGroup().getId().toString();
+		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
 		Integer page = 0;
 		Integer pageSize = 89;
 		String[] statuses = new String[]{BundleGroupVersion.Status.PUBLISHED.toString()};
@@ -168,7 +168,7 @@ public class BundleGroupVersionControllerTest {
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroupVersion.getBundleGroup().getId().toString();
+		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
 		String organisationId = bundleGroupVersion.getBundleGroup().getOrganisation().getId().toString();
 		Integer page = 0;
 		Integer pageSize = 89;
@@ -276,7 +276,7 @@ public class BundleGroupVersionControllerTest {
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = Optional.of(bundleGroup);
-		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(bundleGroupOptional);
+		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId())).thenReturn(bundleGroupOptional);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
     	Mockito.when(bundleGroupVersionService.createBundleGroupVersion(any(BundleGroupVersion.class), eq(bundleGroupVersionView))).thenReturn(bundleGroupVersion);
     	String inputJson = mapToJson(bundleGroupVersionView);
@@ -303,7 +303,7 @@ public class BundleGroupVersionControllerTest {
 				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
 		
 		//Case 2: when there already exists a version
-		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(Optional.of(bundleGroup));
+		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId())).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(List.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/")
@@ -316,7 +316,7 @@ public class BundleGroupVersionControllerTest {
 	public void testUpdateBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroup.getId().toString();
+		Long bundleGroupId = bundleGroup.getId();
 		bundleGroupVersion.setBundleGroup(bundleGroup);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
@@ -335,7 +335,7 @@ public class BundleGroupVersionControllerTest {
 	public void testUpdateBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroup.getId().toString();
+		Long bundleGroupId = bundleGroup.getId();
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
 		String inputJson = mapToJson(bundleGroupVersionView);

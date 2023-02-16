@@ -136,7 +136,7 @@ public class BundleGroupServiceTest {
 	public void getBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup();
 		Organisation organisation = bundleGroup.getOrganisation();
-		String organisationId =  String.valueOf(organisation.getId());
+		Long organisationId =  organisation.getId();
 		Optional<BundleGroup> bundleGrouplist = Optional.of(bundleGroup);
 		Mockito.when(bundleGroupRepository.findById(organisation.getId())).thenReturn(bundleGrouplist);
 		Optional<BundleGroup> bundleGroupresult = bundleGroupService.getBundleGroup(organisationId);
@@ -190,7 +190,7 @@ public class BundleGroupServiceTest {
 	@Test
 	public void deleteBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup();
-		String bundleGroupId = bundleGroup.getId().toString();
+		Long bundleGroupId = bundleGroup.getId();
 		Mockito.when(bundleGroupRepository.findById(bundleGroup.getId())).thenReturn(Optional.of(bundleGroup));
 		bundleGroupService.deleteBundleGroup(bundleGroupId);
 	}

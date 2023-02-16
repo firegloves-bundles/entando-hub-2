@@ -58,9 +58,8 @@ public class BundleGroupService {
         return bundleGroupRepository.findAll();
     }
 
-    public Optional<BundleGroup> getBundleGroup(String bundleGroupId) {
-    	logger.debug("{}: getBundleGroup: Get a bundle group by bundle group id: {}", CLASS_NAME, bundleGroupId);
-    	return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
+    public Optional<BundleGroup> getBundleGroup(Long bundleGroupId) {
+        return bundleGroupRepository.findById(bundleGroupId);
     }
 
     @Transactional
@@ -102,10 +101,9 @@ public class BundleGroupService {
 
     //This method is called from deleteBundleGroup() from BundleGroupController. In case if we remove Delete Bundle Group api this method also can be removed.
     @Transactional
-    public void deleteBundleGroup(String bundleGroupId) {
+    public void deleteBundleGroup(Long bundleGroupId) {
     	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
-        Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(bundleGroupId);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
             bundleGroupRepository.delete(bundleGroup);

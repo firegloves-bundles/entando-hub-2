@@ -1,4 +1,5 @@
 package com.entando.hub.catalog.rest;
+
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.CatalogService;

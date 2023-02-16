@@ -62,13 +62,11 @@ public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDt
   }
 
   static Set<Category> toCategories(List<String> value) {
-    System.out.println("-- toCategories --");
     return null;
   }
 
   static List<String> fromCategories(Set<Category> categories) {
-    System.out.println("-- fromCategories --");
-    if (!categories.isEmpty()) {
+    if (categories != null && !categories.isEmpty()) {
       return categories.stream().map(c -> c.getId().toString()).filter(i -> StringUtils.isNotBlank(i))
         .collect(Collectors.toList());
     }

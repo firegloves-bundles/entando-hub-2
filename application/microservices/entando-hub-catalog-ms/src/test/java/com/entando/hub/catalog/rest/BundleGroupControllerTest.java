@@ -1,16 +1,15 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.domain.BundleGroupDto;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,18 +27,22 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleGroupController.class)
-public class BundleGroupDtoControllerTest {
+@ComponentScan(basePackageClasses = {BundleGroupMapper.class, BundleGroupMapperImpl.class})
+public class BundleGroupControllerTest {
+
+	@Autowired
+	private BundleGroupMapper bundleGroupMapper;
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -136,40 +140,59 @@ public class BundleGroupDtoControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testCreateBundleGroup() throws Exception {
-		BundleGroup bundleGroup = getBundleGroupObj();
+		BundleGroup bundleGroupOut = getBundleGroupObj();
+		BundleGroup bundleGroupIn = getBundleGroupObj();
 		Organisation organisation = getOrganisationObj();
-		bundleGroup.setOrganisation(organisation);	
+
+		bundleGroupOut.setOrganisation(organisation);
+		bundleGroupIn.setOrganisation(organisation);
+
 		Category category = getCategoryObj();
 		category.setBundleGroups(null);
-		bundleGroup.setCategories(Set.of(category));
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
 
-		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
+		bundleGroupOut.setCategories(Set.of(category));
+		bundleGroupIn.setCategories(Set.of(category));
+
+		// EHUB-296 - Incoming object does NOT have a id specified
+		bundleGroupIn.setId(null);
+		BundleGroupDto dto = bundleGroupMapper.toDto(bundleGroupIn);
+
+//		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
+		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupIn, dto)).thenReturn(bundleGroupOut);
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(asJsonString(bundleGroupNoId))
+			.content(asJsonString(dto))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.bundleGroupId").value(bundleGroup.getId().toString()))
-			.andExpect(jsonPath("$.name").value(bundleGroup.getName()));
+			.andExpect(jsonPath("$.bundleGroupId").value(bundleGroupOut.getId().toString()))
+			.andExpect(jsonPath("$.name").value(bundleGroupOut.getName()));
 	}
 
 	@WithMockUser(roles = { AUTHOR })
 	@Test
 	public void testCreateBundleGroupFails() throws Exception {
-		BundleGroup bundleGroup = getBundleGroupObj();
-		bundleGroup.setOrganisation(null);	
-		bundleGroup.setCategories(null);
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		BundleGroup bundleGroupOut = getBundleGroupObj();
+		BundleGroup bundleGroupIn = getBundleGroupObj();
 
-		Mockito.when(securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroupNoId.getOrganisationId())).thenReturn(true);
-		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
+		bundleGroupOut.setOrganisation(null);
+		bundleGroupOut.setCategories(null);
+//		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		bundleGroupIn.setOrganisation(null);
+		bundleGroupIn.setCategories(null);
+
+		// EHUB-296
+		bundleGroupIn.setId(null);
+		BundleGroupDto dto = bundleGroupMapper.toDto(bundleGroupIn);
+
+		Mockito.when(securityHelperService.userIsNotAdminAndDoesntBelongToOrg(dto.getOrganisationId())).thenReturn(true);
+//		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
+		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dto), dto)).thenReturn(bundleGroupOut);
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(asJsonString(bundleGroupNoId))
+			.content(asJsonString(dto))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isForbidden());
 	}
@@ -177,27 +200,38 @@ public class BundleGroupDtoControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	@Test
 	public void testUpdateBundleGroup() throws Exception {
-		BundleGroup bundleGroup = getBundleGroupObj();
-		Organisation organisation = getOrganisationObj();
-		bundleGroup.setOrganisation(organisation);
-		String bundleGroupId = Long.toString(bundleGroup.getId());
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		BundleGroup bundleGroupOut = getBundleGroupObj();
+		BundleGroup bundleGroupIn = getBundleGroupObj();
 
-		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroup)).thenReturn(true);
+
+		Organisation organisation = getOrganisationObj();
+		bundleGroupOut.setOrganisation(organisation);
+		bundleGroupIn.setOrganisation(organisation);
+
+		String bundleGroupId = Long.toString(bundleGroupOut.getId());
+//		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+
+		// EHUB-296
+		BundleGroupDto dto = bundleGroupMapper.toDto(bundleGroupIn);
+
+		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroupOut)).thenReturn(true);
 		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(true);
-		Mockito.when(securityHelperService.userIsInTheOrganisation(bundleGroup.getOrganisation().getId())).thenReturn(true);
-		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
-		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
-		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.of(bundleGroupId)), bundleGroupNoId)).thenReturn(bundleGroup);
+		Mockito.when(securityHelperService.userIsInTheOrganisation(bundleGroupOut.getOrganisation().getId())).thenReturn(true);
+		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroupOut));
+//		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
+//		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.of(bundleGroupId)), bundleGroupNoId)).thenReturn(bundleGroup);
+		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dto), dto)).thenReturn(bundleGroupOut);
+		dto.setBundleGroupId(null); // simulates BundleGroupNoId
+		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dto), dto)).thenReturn(bundleGroupOut);
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)
            .contentType(MediaType.APPLICATION_JSON)
-           .content(asJsonString(bundleGroupNoId)) 
+           .content(asJsonString(dto))
            .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-           .andExpect(jsonPath("$.bundleGroupId").value(bundleGroup.getId().toString()))
-           .andExpect(jsonPath("$.name").value(bundleGroup.getName()));
+           .andExpect(jsonPath("$.bundleGroupId").value(bundleGroupOut.getId().toString()))
+           .andExpect(jsonPath("$.name").value(bundleGroupOut.getName()));
 	}
 
 	@WithMockUser(roles = { ADMIN })
@@ -207,13 +241,16 @@ public class BundleGroupDtoControllerTest {
 		Organisation organisation = getOrganisationObj();
 		bundleGroup.setOrganisation(organisation);
 		String bundleGroupId = Long.toString(bundleGroup.getId());
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+//		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+
+		// EHUB-296
+		BundleGroupDto dto = bundleGroupMapper.toDto(bundleGroup);
 
 		Mockito.when(bundleGroupService.getBundleGroup(null)).thenReturn(Optional.of(bundleGroup));
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(asJsonString(bundleGroupNoId))
+			.content(asJsonString(dto))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound());
 
@@ -222,7 +259,7 @@ public class BundleGroupDtoControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)
            .contentType(MediaType.APPLICATION_JSON)
-           .content(asJsonString(bundleGroupNoId)) 
+           .content(asJsonString(dto))
            .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isConflict());
 
@@ -233,7 +270,7 @@ public class BundleGroupDtoControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)
            .contentType(MediaType.APPLICATION_JSON)
-           .content(asJsonString(bundleGroupNoId)) 
+           .content(asJsonString(dto))
            .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isForbidden());
 
@@ -245,7 +282,7 @@ public class BundleGroupDtoControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)
            .contentType(MediaType.APPLICATION_JSON)
-           .content(asJsonString(bundleGroupNoId)) 
+           .content(asJsonString(dto))
            .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isForbidden());
 	}

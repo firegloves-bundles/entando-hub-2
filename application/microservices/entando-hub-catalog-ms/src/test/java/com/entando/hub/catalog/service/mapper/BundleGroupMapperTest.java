@@ -96,6 +96,24 @@ public class BundleGroupMapperTest {
     assertThat(categories, contains( "191045", "27147"));
   }
 
+  @Test
+  public void studyConversionBehavior() {
+    BundleGroup entity = new BundleGroup();
+
+    BundleGroupDto dto = bundleGroupMapper.toDto(entity);
+    assertNotNull(dto);
+    assertNull(dto.getBundleGroupId());
+    assertNull(dto.getCategories());
+    assertNull(dto.getName());
+    assertNull(dto.getOrganisationId());
+    assertNull(dto.getOrganisationName());
+
+    dto = new BundleGroupDto();
+    entity = bundleGroupMapper.toEntity(dto);
+    assertNotNull(entity);
+    assertNull(entity.getId());
+  }
+
   private BundleGroupDto createBundleGroupDto(String id) {
     BundleGroupDto dto = new BundleGroupDto();
 
@@ -151,7 +169,7 @@ public class BundleGroupMapperTest {
     bg.setId(id);
     return bg;
   }
-  
+
   public final static String BUNDLE_GROUP_NAME = "bundleGroupName";
   public final static String ORGANIZATION_NAME = "Organization2677Name";
   public final static String ORGANISATION_DESCRIPTION = "organisation description";

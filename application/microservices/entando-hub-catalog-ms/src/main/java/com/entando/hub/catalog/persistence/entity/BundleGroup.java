@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,8 +27,7 @@ import lombok.Setter;
  *
  */
 @Entity
-@Setter
-@Getter
+@Data
 @Table(name = "bundle_group")
 @NamedQuery(name = "BundleGroup.findAll", query = "select b from BundleGroup b order by b.name")
 public class BundleGroup {

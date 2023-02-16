@@ -1,24 +1,22 @@
 package com.entando.hub.catalog.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
-import com.entando.hub.catalog.rest.domain.BundleGroupNoId;
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.CategoryRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.rest.domain.BundleGroupDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.CategoryRepository;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BundleGroupService {
@@ -64,14 +62,14 @@ public class BundleGroupService {
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupNoId bundleGroupNoId) {
-    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupDto bundleGroupDto) {
+    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupDto);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
-        updateMappedBy(entity, bundleGroupNoId);
+        updateMappedBy(entity, bundleGroupDto);
         return entity;
     }
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupNoId bundleGroup) {
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupDto bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
 

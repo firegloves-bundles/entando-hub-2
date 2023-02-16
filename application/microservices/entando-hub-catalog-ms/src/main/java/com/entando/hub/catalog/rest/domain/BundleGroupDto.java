@@ -1,28 +1,39 @@
 package com.entando.hub.catalog.rest.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
+import java.util.List;
+
+@Data
 @NoArgsConstructor
-public class BundleGroupDto extends BundleGroupNoId {
+public class BundleGroupDto  {
 
   private String bundleGroupId;
+  @Schema(example = "bundle group name")
+  private String name;
+  protected String organisationId;
+
+  @Schema(example = "Entando")
+  protected String organisationName;
+  protected List<String> categories;
+  protected BundleGroupVersionView versionDetails;
 
   public BundleGroupDto(String bundleGroupId, String name, String organizationId) {
-    super(name, organizationId);
+//    super(name, organizationId);
     this.bundleGroupId = bundleGroupId;
   }
 
+  /*
   public BundleGroupDto(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
     super(entity);
     this.bundleGroupId = entity.getId().toString();
   }
+  */
 
 }

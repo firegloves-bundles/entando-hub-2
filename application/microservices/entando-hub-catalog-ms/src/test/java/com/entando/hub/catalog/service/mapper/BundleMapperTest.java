@@ -1,20 +1,16 @@
 package com.entando.hub.catalog.service.mapper;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static junit.framework.TestCase.*;
 
-public class BundleMapperTest {
+public class BundleMapperTest extends BaseMapperTest {
 
   private BundleMapper bundleMapper = Mappers.getMapper(BundleMapper.class);
 
@@ -113,35 +109,4 @@ public class BundleMapperTest {
     return dto;
   }
 
-  private static Bundle generateBundleEntity(Long id) {
-    Bundle bundle = new Bundle();
-
-    bundle.setId(id);
-    bundle.setName(BUNDLE_NAME);
-    bundle.setGitRepoAddress(GIT_REPO_ADDRESS);
-    bundle.setGitSrcRepoAddress(GIT_SRC_REPO_ADDRESS);
-    bundle.setDependencies("dep 1,dep 2");
-    bundle.setDescriptorVersion(DescriptorVersion.V5);
-
-    BundleGroupVersion bgv = new BundleGroupVersion();
-
-    bgv.setId(2381L);
-    bgv.setDescription("Bundle group Version description");
-    bgv.setDocumentationUrl("documentation URL");
-    bgv.setVersion("v0.0.1");
-    bgv.setDescriptionImage("description image");
-    bgv.setStatus(BundleGroupVersion.Status.ARCHIVE);
-
-    Set<BundleGroupVersion> versions = Stream.of(bgv, bgv)
-      .collect(Collectors.toSet());
-    bundle.setBundleGroupVersions(versions);
-    bundle.setDescription(BUNDLE_DESCRIPTION);
-
-    return bundle;
-  }
-
-  public static final String BUNDLE_NAME = "bundle name";
-  public static final String BUNDLE_DESCRIPTION = "description";
-  public static final String GIT_REPO_ADDRESS = "repo address";
-  public static final String GIT_SRC_REPO_ADDRESS = "src repo address";
 }

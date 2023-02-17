@@ -76,8 +76,8 @@ public class BundleDto {
     ret.setDescriptorVersion(isDocker ? DescriptorVersion.V5 : DescriptorVersion.V1);
 
     //TODO bundlegroups contains bundle group version id! fix it!
-    Set<BundleGroupVersion> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
-      BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+    Set<BundleGroupVersionDto> bundleGroupVersions = this.bundleGroups.stream().map((bundleGroupVersionId) -> {
+      BundleGroupVersionDto bundleGroupVersion = new BundleGroupVersionDto();
       bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
       return bundleGroupVersion;
     }).collect(Collectors.toSet());

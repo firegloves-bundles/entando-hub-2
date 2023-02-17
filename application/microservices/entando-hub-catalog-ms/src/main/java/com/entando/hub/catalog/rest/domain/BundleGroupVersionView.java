@@ -91,4 +91,5 @@ public class BundleGroupVersionView {
     id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
     return bundleGroupVersion;
   }
+
 }

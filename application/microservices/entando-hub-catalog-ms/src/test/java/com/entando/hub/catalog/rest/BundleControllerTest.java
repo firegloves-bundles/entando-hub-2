@@ -2,7 +2,7 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.dto.BundleDtoIn;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
 import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
@@ -118,21 +118,20 @@ public class BundleControllerTest {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		//Case 1: bundleId is not null
-		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
-		bundleDtoIn.setBundleId("2677");
-		// Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleDtoIn);
+		BundleDto bundleDto = bundleMapper.toDto(bundle);
+		// Mockito.when(bundleService.createBundle(bundleDto.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDto))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
-		BundleDtoIn bundleDtoIn2 = new BundleDtoIn(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
-//		Mockito.when(bundleService.createBundle(bundleDtoIn2.createEntity(Optional.empty()))).thenReturn(bundle);
-		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn2))).thenReturn(bundle);
-		inputJson = mapToJson(bundleDtoIn2);
+		BundleDto bundleDto2 = new BundleDto(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
+//		Mockito.when(bundleService.createBundle(bundleDto2.createEntity(Optional.empty()))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDto2))).thenReturn(bundle);
+		inputJson = mapToJson(bundleDto2);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
@@ -143,12 +142,12 @@ public class BundleControllerTest {
 	public void testUpdateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
-		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
-		bundleDtoIn.setBundleId(bundleId);
+		BundleDto bundleDto = bundleMapper.toDto(bundle); // new BundleDto(bundle);
+		bundleDto.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
-//		Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleDtoIn);
+//		Mockito.when(bundleService.createBundle(bundleDto.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDto))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDto);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -160,12 +159,12 @@ public class BundleControllerTest {
 	public void testUpdateBundleFails() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
-		BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
-		bundleDtoIn.setBundleId(bundleId);
+		BundleDto bundleDto = bundleMapper.toDto(bundle);// new BundleDto(bundle);
+		bundleDto.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(null)).thenReturn(Optional.of(bundle));
-//		Mockito.when(bundleService.createBundle(bundleDtoIn.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
-		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDtoIn))).thenReturn(bundle);
-		String inputJson = mapToJson(bundleDtoIn);
+//		Mockito.when(bundleService.createBundle(bundleDto.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
+		Mockito.when(bundleService.createBundle(bundleMapper.toEntity(bundleDto))).thenReturn(bundle);
+		String inputJson = mapToJson(bundleDto);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundles/{bundleId}", bundleId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)

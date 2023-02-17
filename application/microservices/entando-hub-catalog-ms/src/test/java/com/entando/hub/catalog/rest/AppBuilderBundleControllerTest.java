@@ -11,14 +11,19 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
+import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -36,7 +41,11 @@ import com.entando.hub.catalog.service.BundleService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleController.class)
+@ComponentScan(basePackageClasses = {BundleMapper.class, BundleMapperImpl.class})
 public class AppBuilderBundleControllerTest {
+
+	@Spy
+	private BundleMapper bundleMapper = new BundleMapperImpl();
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -90,8 +99,8 @@ public class AppBuilderBundleControllerTest {
 		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
-		BundleController.Bundle bundleC = new BundleController.Bundle(bundle);
-		List<BundleController.Bundle> bundlesCList = new ArrayList<>();
+		BundleDto bundleC = bundleMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
+		List<BundleDto> bundlesCList = new ArrayList<>();
 		bundlesCList.add(bundleC);
 		
 		Page<Bundle> response = new PageImpl<>(bundlesList);

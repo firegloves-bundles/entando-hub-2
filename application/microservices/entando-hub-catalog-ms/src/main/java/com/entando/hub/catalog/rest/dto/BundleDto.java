@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BundleDtoIn {
+public class BundleDto {
+
   @Schema(example = "bundle identifier")
   private String bundleId;
 
@@ -40,7 +39,7 @@ public class BundleDtoIn {
 
 
   @Deprecated
-  public BundleDtoIn(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
+  public BundleDto(String id, String name, String description, String gitRepoAddress, String gitSrcRepoAddress, List<String> dependencies, List<String> bundleGroupVersions, String descriptorVersion) {
     this.bundleId = id;
     this.name = name;
     this.description = description;
@@ -51,17 +50,17 @@ public class BundleDtoIn {
     this.descriptorVersion = descriptorVersion;
   }
 
-  @Deprecated
-  public BundleDtoIn(com.entando.hub.catalog.persistence.entity.Bundle entity) {
-    this.bundleId = entity.getId().toString();
-    this.name = entity.getName();
-    this.description = entity.getDescription();
-    this.gitRepoAddress = entity.getGitRepoAddress();
-    this.gitSrcRepoAddress = entity.getGitSrcRepoAddress();
-    this.dependencies = Arrays.asList(entity.getDependencies().split(","));
-    this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
-    this.descriptorVersion = entity.getDescriptorVersion().toString();
-  }
+//  @Deprecated
+//  public BundleDto(com.entando.hub.catalog.persistence.entity.Bundle entity) {
+//    this.bundleId = entity.getId().toString();
+//    this.name = entity.getName();
+//    this.description = entity.getDescription();
+//    this.gitRepoAddress = entity.getGitRepoAddress();
+//    this.gitSrcRepoAddress = entity.getGitSrcRepoAddress();
+//    this.dependencies = Arrays.asList(entity.getDependencies().split(","));
+//    this.bundleGroups = entity.getBundleGroupVersions().stream().map(bundleGroupVersion -> bundleGroupVersion.getId().toString()).collect(Collectors.toList());
+//    this.descriptorVersion = entity.getDescriptorVersion().toString();
+//  }
 
 /*
   public com.entando.hub.catalog.persistence.entity.Bundle createEntity(Optional<String> id) {

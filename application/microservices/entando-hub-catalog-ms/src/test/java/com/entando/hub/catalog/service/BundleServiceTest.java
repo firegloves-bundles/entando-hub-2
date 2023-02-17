@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import java.util.*;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
-import com.entando.hub.catalog.rest.dto.BundleDtoIn;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
 import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
 import org.junit.Test;
@@ -180,13 +180,13 @@ public class BundleServiceTest {
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
-		 BundleDtoIn bundleDtoIn = new BundleDtoIn(bundle);
-		 List<BundleDtoIn> bundleNoIdsList = new ArrayList<>();
-		 bundleNoIdsList.add(bundleDtoIn);
+		 BundleDto bundleDto = bundleMapper.toDto(bundle);
+		 List<BundleDto> bundleNoIdsList = new ArrayList<>();
+		 bundleNoIdsList.add(bundleDto);
 
 
 		 Mockito.when(bundleRepository.saveAll(bundlesList)).thenReturn(bundlesList);
-			Mockito.when(bundleMapper.toEntity(bundleDtoIn)).thenReturn(bundle);
+			Mockito.when(bundleMapper.toEntity(bundleDto)).thenReturn(bundle);
 		 
 		 //Case 1: bundleRequest given
 		 List<Bundle> bundleResult = bundleService.createBundleEntitiesAndSave(bundleNoIdsList);

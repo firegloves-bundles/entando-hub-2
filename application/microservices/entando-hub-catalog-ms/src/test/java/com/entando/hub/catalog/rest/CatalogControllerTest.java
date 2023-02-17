@@ -25,6 +25,7 @@ class CatalogControllerTest {
     private CatalogService catalogService;
 
     private CatalogController catalogController;
+
     @BeforeEach
     void setUp() {
         this.catalogController = new CatalogController(catalogService);

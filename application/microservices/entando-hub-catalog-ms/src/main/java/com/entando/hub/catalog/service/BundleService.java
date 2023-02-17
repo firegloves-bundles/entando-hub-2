@@ -20,7 +20,7 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.dto.BundleDtoIn;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 
 @Service
 public class BundleService {
@@ -122,7 +122,7 @@ public class BundleService {
 	 * @param bundleRequest
 	 * @return list of saved bundles or empty list
 	 */
-	public List<Bundle> createBundleEntitiesAndSave(List<BundleDtoIn> bundleRequest) {
+	public List<Bundle> createBundleEntitiesAndSave(List<BundleDto> bundleRequest) {
 		logger.debug("{}: createBundleEntitiesAndSave: Create bundles: {}", CLASS_NAME, bundleRequest);
 		try {
 			List<Bundle> bundles = new ArrayList<Bundle>();

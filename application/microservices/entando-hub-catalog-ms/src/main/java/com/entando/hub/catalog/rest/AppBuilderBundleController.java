@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
+import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,12 +30,15 @@ public class AppBuilderBundleController {
 
 	private final BundleService bundleService;
 	private final BundleGroupVersionService bundleGroupVersionService;
+	private final BundleMapper bundleMapper;
+
 	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-	public AppBuilderBundleController(BundleService bundleService,BundleGroupVersionService bundleGroupVersionService) {
+	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper) {
 		this.bundleService = bundleService;
 		this.bundleGroupVersionService = bundleGroupVersionService;
+		this.bundleMapper = bundleMapper;
 	}
 
 	static Set<DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
@@ -60,14 +65,14 @@ public class AppBuilderBundleController {
 	@GetMapping(value = "/", produces = {"application/json"})
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
 	@ApiResponse(responseCode = "200", description = "OK")
-	public PagedContent<BundleController.Bundle, Bundle> getBundles(@RequestParam Integer page,@RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
+	public PagedContent<BundleDto, Bundle> getBundles(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 
-		PagedContent<BundleController.Bundle, Bundle> pagedContent = new PagedContent<>(
-				bundlesPage.getContent().stream().map(BundleController.Bundle::new).peek(bundle -> {
+		PagedContent<BundleDto, Bundle> pagedContent = new PagedContent<>(
+				bundlesPage.getContent().stream().map(bundleMapper::toDto).peek(bundle -> {
 					// add the bundle group image as bundle image
 					List<String> bundleGroupVersions = bundle.getBundleGroups();
 					if (bundleGroupVersions != null && bundleGroupVersions.size() > 0) {

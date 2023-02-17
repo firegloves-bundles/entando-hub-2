@@ -3,18 +3,16 @@ package com.entando.hub.catalog.rest.dto;
 import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
+
 public class BundleGroupDto  {
 
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
   private String bundleGroupId;
   @Schema(example = "bundle group name")
   private String name;

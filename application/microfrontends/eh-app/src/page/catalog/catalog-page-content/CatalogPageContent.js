@@ -8,6 +8,7 @@ import {getHigherRole, isHubAdmin, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'
+import { useApiUrl } from '../../../contexts/ConfigContext'
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -41,7 +42,7 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({apiUrl, reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm, showFullPage }) => {
+const CatalogPageContent = ({ reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm, showFullPage }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -56,6 +57,8 @@ const CatalogPageContent = ({apiUrl, reloadToken, statusFilterValue, catList, is
         setLocalStatusFilerValue(statusFilterValue)
         setPage(1)
     }
+
+    const apiUrl = useApiUrl();
 
     const loadData = useCallback(async ( page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
         const userOrganisation = currentUserOrg;
@@ -117,7 +120,7 @@ const CatalogPageContent = ({apiUrl, reloadToken, statusFilterValue, catList, is
             setLoading(false)
 
         })()
-    }, [apiUrl, reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage])
+    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage])
 
 
     const onFilterChange = (newSelectedCategoryIds) => {
@@ -137,7 +140,7 @@ const CatalogPageContent = ({apiUrl, reloadToken, statusFilterValue, catList, is
                 <CatalogFilterTile categories={categories} onFilterChange={onFilterChange} />}
             </div>
             <div className="bx--col-lg-12 CatalogPageContent-wrapper">
-                <CatalogTiles apiUrl={apiUrl} bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList} showFullPage={showFullPage}/>
+                <CatalogTiles bundleGroups={filteredBundleGroups} categoryDetails={catList} onAfterSubmit={onAfterSubmit} orgList={orgList} showFullPage={showFullPage}/>
                 <Pagination
                     itemsPerPageText={i18n.t("component.pagination.itemsPerPage")}
                     itemRangeText={

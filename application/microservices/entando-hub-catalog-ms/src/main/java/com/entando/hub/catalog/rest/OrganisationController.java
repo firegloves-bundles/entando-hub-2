@@ -4,6 +4,7 @@ import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> getOrganisation(@PathVariable String organisationId) {
+    public ResponseEntity<Organisation> getOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (organisationOptional.isPresent()) {
@@ -75,7 +76,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> updateOrganisation(@PathVariable String organisationId, @RequestBody OrganisationNoId organisation) {
+    public ResponseEntity<Organisation> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
@@ -95,7 +96,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> deleteOrganisation(@PathVariable String organisationId) {
+    public ResponseEntity<Organisation> deleteOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to delete organisation {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
@@ -125,6 +126,7 @@ public class OrganisationController {
             this.organisationId = organisationId;
         }
     }
+
 
 
 }

@@ -3,15 +3,16 @@ import { TrashCan32 } from "@carbon/icons-react"
 import "./modal-delete-category.scss"
 import { deleteCategory } from "../../../integration/Integration"
 import i18n from "../../../i18n"
+import { useApiUrl } from "../../../contexts/ConfigContext"
 
 export const ModalDeleteCategory = ({
-    apiUrl,
     categoryObj,
     open,
     onCloseModal,
     onAfterSubmit,
     categories
 }) => {
+    const apiUrl = useApiUrl();
 
     const bundleGroupsLengthOfActiveCategory = categories.find(item => item.id === categoryObj.categoryId).bundleGroups.length;
 
@@ -20,7 +21,7 @@ export const ModalDeleteCategory = ({
     }
 
     const onRequestDelete = async (e) => {
-        await deleteCategory( apiUrl, categoryObj.categoryId, categoryObj.name)
+        await deleteCategory(apiUrl, categoryObj.categoryId, categoryObj.name)
         onCloseModal()
         onAfterSubmit()
     }

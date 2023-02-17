@@ -61,9 +61,10 @@ public class OrganisationService {
         return organisationRepository.findAll(Sort.by(Sort.Order.asc("name")));
     }
 
-    public Optional<Organisation> getOrganisation(String organisationId) {
-        return organisationRepository.findById(Long.parseLong(organisationId));
+    public Optional<Organisation> getOrganisation(Long organisationId) {
+        return organisationRepository.findById(organisationId);
     }
+
 
     @Transactional
     public Organisation createOrganisation(Organisation organisationEntity, OrganisationNoId organisation) {
@@ -73,8 +74,10 @@ public class OrganisationService {
         return entity;
     }
 
-    public void deleteOrganisation(String organisationId){
-        organisationRepository.deleteById(Long.valueOf(organisationId));
+    public void deleteOrganisation(Long organisationId){
+        organisationRepository.deleteById(organisationId);
     }
+
+
 }
 

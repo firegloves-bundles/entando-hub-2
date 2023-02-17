@@ -23,4 +23,7 @@
     <include file="config/changelog/20220624000000_bundle_add_src_address.xml" relativeToChangelogFile="false"/>
     <include file="config/changelog/20220802000000_v211_bundle_descriptor_group_description.xml" relativeToChangelogFile="false"/>
     <include file="config/changelog/20230130000000_bundlegroupversion_uniquekey.xml" relativeToChangelogFile="false"/>
+    <!-- Hub 3.0 -->
+    <include file="config/changelog/20230206000000_private_catalog.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>

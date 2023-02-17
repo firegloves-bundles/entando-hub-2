@@ -4,7 +4,7 @@ import { ModalUpdateUser } from "../modal-update-user/ModalUpdateUser";
 import { ModalRemoveUserFromOrg } from "../modal-remove-user-from-org/ModalRemoveUserFromOrg";
 import i18n from "../../../i18n";
 
-const UserManagementOverflowMenu = ({ apiUrl, userObj, onAfterSubmit }) => {
+const UserManagementOverflowMenu = ({ userObj, onAfterSubmit }) => {
     const [openModal, setOpenModal] = useState(false)
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     return (
@@ -14,10 +14,10 @@ const UserManagementOverflowMenu = ({ apiUrl, userObj, onAfterSubmit }) => {
                 <OverflowMenuItem itemText={i18n.t('component.button.remove')} onClick={() => setOpenDeleteModal(true)} />
             </OverflowMenu>
 
-            {openModal && <ModalUpdateUser apiUrl={apiUrl} userObj={userObj} open={openModal}
+            {openModal && <ModalUpdateUser userObj={userObj} open={openModal}
                 onCloseModal={() => setOpenModal(false)} onAfterSubmit={onAfterSubmit} />}
 
-            {openDeleteModal && <ModalRemoveUserFromOrg apiUrl={apiUrl} userObj={userObj} open={openDeleteModal}
+            {openDeleteModal && <ModalRemoveUserFromOrg userObj={userObj} open={openDeleteModal}
                 onCloseModal={() => setOpenDeleteModal(false)} onAfterSubmit={onAfterSubmit} />}
         </>
     )

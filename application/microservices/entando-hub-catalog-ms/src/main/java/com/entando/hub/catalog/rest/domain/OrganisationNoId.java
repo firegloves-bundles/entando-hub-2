@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.entando.hub.catalog.persistence.entity.Organisation;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +19,7 @@ public class OrganisationNoId {
   @Schema(example = "Application Composition Platform for Kubernetes")
   private String description;
 
-  protected List<String> bundleGroups;
+  private List<String> bundleGroups;
 
   public OrganisationNoId(String name, String description) {
     this.name = name;
@@ -32,13 +34,13 @@ public class OrganisationNoId {
     }
   }
 
-
-  public com.entando.hub.catalog.persistence.entity.Organisation createEntity(Optional<String> id) {
-    com.entando.hub.catalog.persistence.entity.Organisation ret = new com.entando.hub.catalog.persistence.entity.Organisation();
+  public Organisation createEntity(Optional<Long> id) {
+    Organisation ret = new Organisation();
     ret.setDescription(this.getDescription());
     ret.setName(this.getName());
     id.map(Long::valueOf).ifPresent(ret::setId);
     return ret;
   }
+
 
 }

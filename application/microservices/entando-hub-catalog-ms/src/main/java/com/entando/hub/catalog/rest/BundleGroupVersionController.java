@@ -80,7 +80,7 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
-        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId());
+        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()));
         if (bundleGroupOptional.isPresent()) {
         	logger.debug("BundleGroup is present with id: {}", bundleGroupOptional.get().getId());
             List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
@@ -238,7 +238,7 @@ public class BundleGroupVersionController {
 
 	@Data
     public static class BundleGroupVersionView {
-	    protected Long bundleGroupId;
+	    protected String bundleGroupId;
 
         @Schema(example = "a brief description")
 	    protected String description;
@@ -270,7 +270,7 @@ public class BundleGroupVersionController {
         @Schema(example = "https://yoursite.com/contact-us")
         protected String contactUrl;
 
-	    public BundleGroupVersionView(Long bundleGroupId, String description, String descriptionImage, String version) {
+	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
             this.description = description;
             this.descriptionImage = descriptionImage;
@@ -284,7 +284,7 @@ public class BundleGroupVersionController {
             this.documentationUrl = entity.getDocumentationUrl();
             this.version = entity.getVersion();
             if (entity.getBundleGroup()!= null) {
-            	this.bundleGroupId = entity.getBundleGroup().getId();
+            	this.bundleGroupId = entity.getBundleGroup().getId().toString();
             }
             if (entity.getBundleGroup().getOrganisation() != null) {
 	            this.organisationId = entity.getBundleGroup().getOrganisation().getId();

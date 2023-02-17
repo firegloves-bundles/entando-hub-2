@@ -19,6 +19,7 @@ import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -64,9 +65,10 @@ public class BundleGroupController {
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @GetMapping(value = "/", produces = {"application/json"})
-    public List<BundleGroupDTO> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
+    public ResponseEntity<List<BundleGroupDTO>> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
-        return bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroupDTO::new).collect(Collectors.toList());
+        List<BundleGroupDTO> bundleGroupList = bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroupDTO::new).collect(Collectors.toList());
+        return new ResponseEntity<>(bundleGroupList, HttpStatus.OK);
     }
 
     //PUBLIC
@@ -137,11 +139,14 @@ public class BundleGroupController {
     }
 
     protected void validateExistingBundleGroup(Long bundleGroupId) throws NotFoundException {
-        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent()) {
+        Boolean isPresent = bundleGroupService.existsById(bundleGroupId);
+        if (!isPresent) {
             throw new NotFoundException(String.format("BundleGroup %s does not exist", bundleGroupId));
-        } else if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
-            throw new ConflictException(String.format("BundleGroup %s is not editable", bundleGroupId));
+        } else {
+            Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
+            if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
+                throw new ConflictException(String.format("BundleGroup %s is not editable", bundleGroupId));
+            }
         }
     }
 
@@ -154,17 +159,14 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "204", description = "No Content", content = @Content)
     @Transactional
-    public ResponseEntity<CategoryController.Category> deleteBundleGroup(@PathVariable Long bundleGroupId) {
+    public ResponseEntity<Object> deleteBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
-        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (!bundleGroupOptional.isPresent()) {
-            bundleGroupOptional.ifPresentOrElse(
-                    bundleGroup -> logger.warn("Requested bundleGroup '{}' is not present", bundleGroupId),
-                    () -> logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId)
-            );
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Boolean bundleGroupExist = bundleGroupService.existsById(bundleGroupId);
+        if (!bundleGroupExist) {
+           logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
+           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             bundleGroupService.deleteBundleGroup(bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

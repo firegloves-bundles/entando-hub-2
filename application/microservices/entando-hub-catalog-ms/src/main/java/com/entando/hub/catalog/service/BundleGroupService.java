@@ -122,4 +122,8 @@ public class BundleGroupService {
     	logger.debug("{}: deleteFromOrganisations: Delete a bundle group from organisation", CLASS_NAME);
         bundleGroup.getOrganisation().getBundleGroups().remove(bundleGroup);
     }
+
+    public Boolean existsById(Long bundleGroupId){
+        return bundleGroupRepository.existsById(bundleGroupId);
+    }
 }

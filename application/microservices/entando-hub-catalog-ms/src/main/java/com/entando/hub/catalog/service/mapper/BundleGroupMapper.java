@@ -4,7 +4,7 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

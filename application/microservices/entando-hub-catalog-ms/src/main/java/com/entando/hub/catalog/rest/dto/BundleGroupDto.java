@@ -1,5 +1,6 @@
-package com.entando.hub.catalog.rest.domain;
+package com.entando.hub.catalog.rest.dto;
 
+import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

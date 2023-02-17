@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.rest.domain.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.domain.Category;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;

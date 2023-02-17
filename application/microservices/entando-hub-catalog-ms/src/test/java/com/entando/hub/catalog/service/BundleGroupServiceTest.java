@@ -7,7 +7,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;

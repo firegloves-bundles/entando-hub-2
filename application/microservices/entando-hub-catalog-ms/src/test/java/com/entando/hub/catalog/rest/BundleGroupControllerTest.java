@@ -3,7 +3,7 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;

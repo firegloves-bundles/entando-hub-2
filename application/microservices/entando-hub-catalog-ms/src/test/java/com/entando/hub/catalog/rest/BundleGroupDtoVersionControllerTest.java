@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +24,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
@@ -49,8 +54,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleGroupVersionController.class)
 @WithMockUser(username="admin",roles={ADMIN})
+@ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
 public class BundleGroupDtoVersionControllerTest {
-	
+
+	@Autowired
+	private BundleGroupVersionMapper bundleGroupVersionMapper;
+
 	@Autowired
 	WebApplicationContext webApplicationContext;
 	@Autowired
@@ -291,11 +300,17 @@ public class BundleGroupDtoVersionControllerTest {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionViewIn = new BundleGroupVersionView(bundleGroupVersion);
+		bundleGroupVersionViewIn.setBundleGroupId(null);
 		
 		//Case 1: bundle group does not exist
 		Mockito.when(bundleGroupService.getBundleGroup(null)).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
-		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+
+//		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+		BundleGroupVersion entity = bundleGroupVersionMapper.toEntity(bundleGroupVersionViewIn, bundleGroup);
+		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(entity, bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+
 		String inputJson = mapToJson(bundleGroupVersionView);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -305,7 +320,9 @@ public class BundleGroupDtoVersionControllerTest {
 		//Case 2: when there already exists a version
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(List.of(bundleGroupVersion));
-		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+//		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(entity, bundleGroupVersionView)).thenReturn(bundleGroupVersion);
+
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
@@ -325,7 +342,8 @@ public class BundleGroupDtoVersionControllerTest {
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));		
 		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(any(BundleGroupVersion.class), eq(bundleGroupVersionView))).thenReturn((bundleGroupVersion));
 		
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/{bundleGroupVersionId}", bundleGroupVersionId)
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/{bundleGroupVersionId}",
+					bundleGroupVersionId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().isOk());

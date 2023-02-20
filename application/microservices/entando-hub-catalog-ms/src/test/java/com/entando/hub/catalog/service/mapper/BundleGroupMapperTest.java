@@ -98,7 +98,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     List<String> categories = bundleGroup.getCategories();
     assertFalse(categories.isEmpty());
     assertEquals(2, categories.size());
-    assertThat(categories, contains( "191045", "27147"));
+    assertThat(categories, contains(String.valueOf(CAT_ID_2) , String.valueOf(CAT_ID_1)));
   }
 
 

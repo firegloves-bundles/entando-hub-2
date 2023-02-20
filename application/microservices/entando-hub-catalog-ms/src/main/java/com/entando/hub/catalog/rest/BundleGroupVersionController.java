@@ -12,8 +12,11 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionDto;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.collections.CollectionUtils;
@@ -56,11 +59,14 @@ public class BundleGroupVersionController {
     
     private final SecurityHelperService securityHelperService;
 
-    public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
+    private final BundleGroupVersionMapper bundleGroupVersionMapper;
+
+    public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService, BundleGroupVersionMapper bundleGroupVersionMapper) {
     	this.bundleGroupVersionService = bundleGroupVersionService;
     	this.bundleGroupService = bundleGroupService;
     	this.categoryService = categoryService;
     	this.securityHelperService = securityHelperService;
+      this.bundleGroupVersionMapper = bundleGroupVersionMapper;
     }
 
 	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
@@ -79,8 +85,13 @@ public class BundleGroupVersionController {
             List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
             if (CollectionUtils.isEmpty(bundleGroupVersions)) {
             	logger.info("Bundle group version list found with size: {}", bundleGroupVersions.size());
-		        com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
-		        return new ResponseEntity<>(new BundleGroupVersionDto(saved), HttpStatus.CREATED);
+
+              final BundleGroup bundleGroup = bundleGroupOptional.get();
+              BundleGroupVersion bundleGroupVersionEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionView, bundleGroup);
+
+              BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionEntity, bundleGroupVersionView);
+              BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(saved);
+		        return new ResponseEntity<>(dto, HttpStatus.CREATED);
             } else {
             	logger.warn("Bundle group version list found with size: {}", bundleGroupVersions.size());
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -140,10 +151,13 @@ public class BundleGroupVersionController {
                     return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
                 }
             }
-            com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(
-              bundleGroupVersionView.createEntity(Optional.of(bundleGroupVersionId), bundleGroupVersionOptional.get().getBundleGroup()),
-              bundleGroupVersionView);
-            return new ResponseEntity<>(new BundleGroupVersionDto(saved), HttpStatus.OK);
+//            BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.of(bundleGroupVersionId), bundleGroupVersionOptional.get().getBundleGroup()), bundleGroupVersionView);
+
+          final BundleGroup bundleGroup = bundleGroupVersionOptional.get().getBundleGroup();
+          BundleGroupVersion bundlegroupVersionEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionView, bundleGroup);
+          BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundlegroupVersionEntity, bundleGroupVersionView);
+          BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(saved);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         }
     }
     

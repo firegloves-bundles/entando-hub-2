@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperTest.BUNDLE_GROUP_VERSION_ID;
+
 public class BaseMapperTest {
 
   static Bundle generateBundleEntity(Long id) {
@@ -53,7 +55,7 @@ public class BaseMapperTest {
 
     bg.setOrganisation(org);
 
-    bg.setId(id);
+    bgv.setId(BUNDLE_GROUP_VERSION_ID);
     bgv.setDescription("Bundle group Version description");
     bgv.setDocumentationUrl("documentation URL");
     bgv.setVersion("v0.0.1");
@@ -66,20 +68,21 @@ public class BaseMapperTest {
 
     Category cat1 = new Category();
 
-    cat1.setId(27147L); // FIXME use constant
+    cat1.setId(CAT_ID_1);
     cat1.setName("category name 1");
     cat1.setDescription("category description 1");
 
     Category cat2 = new Category();
 
-    cat2.setId(191045L); // FIXME use constant
+    cat2.setId(CAT_ID_2);
     cat2.setName("category name 2");
     cat2.setDescription("category description 2");
 
     Set<Category> categories = Stream.of(cat2, cat1).collect(Collectors.toSet());
-    bg.setCategories(categories);
 
+    bg.setCategories(categories);
     bg.setName(BUNDLE_GROUP_NAME);
+    bg.setId(id);
 
     return bg;
   }
@@ -96,5 +99,8 @@ public class BaseMapperTest {
   public static final String BUNDLE_DESCRIPTION = "description";
   public static final String GIT_REPO_ADDRESS = "repo address";
   public static final String GIT_SRC_REPO_ADDRESS = "src repo address";
+
+  public static final Long CAT_ID_1 = 45L;
+  public static final Long CAT_ID_2 = 41L;
 
 }

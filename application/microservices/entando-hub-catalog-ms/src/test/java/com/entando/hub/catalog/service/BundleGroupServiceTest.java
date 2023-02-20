@@ -11,6 +11,8 @@ import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -39,11 +41,13 @@ import static org.junit.Assert.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
-@ComponentScan(basePackageClasses = {BundleGroupMapper.class, BundleGroupMapperImpl.class})
+@ComponentScan(basePackageClasses = {BundleGroupMapper.class, BundleGroupMapperImpl.class, BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
 public class BundleGroupServiceTest {
 
 	@Spy
 	private BundleGroupMapper bundleGroupMapper = new BundleGroupMapperImpl();
+	@Spy
+	private BundleGroupVersionMapper bundleGroupVersionMapper = new BundleGroupVersionMapperImpl();
 
 	@InjectMocks
 	BundleGroupService bundleGroupService;

@@ -78,18 +78,18 @@ public class BundleGroupVersionView {
     this.contactUrl = entity.getContactUrl();
   }
 
-  public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
-    com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleGroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();
-    bundleGroupVersion.setDescription(this.getDescription());
-    bundleGroupVersion.setDescriptionImage(this.getDescriptionImage());
-    bundleGroupVersion.setDocumentationUrl(this.getDocumentationUrl());
-    bundleGroupVersion.setStatus(this.getStatus());
-    bundleGroupVersion.setVersion(this.getVersion());
-    bundleGroupVersion.setBundleGroup(bundleGroup);
-    bundleGroupVersion.setDisplayContactUrl(this.getDisplayContactUrl());
-    bundleGroupVersion.setContactUrl(this.getContactUrl());
-    id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
-    return bundleGroupVersion;
-  }
+//  public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
+//    com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleGroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();
+//    bundleGroupVersion.setDescription(this.getDescription());
+//    bundleGroupVersion.setDescriptionImage(this.getDescriptionImage());
+//    bundleGroupVersion.setDocumentationUrl(this.getDocumentationUrl());
+//    bundleGroupVersion.setStatus(this.getStatus());
+//    bundleGroupVersion.setVersion(this.getVersion());
+//    bundleGroupVersion.setBundleGroup(bundleGroup);
+//    bundleGroupVersion.setDisplayContactUrl(this.getDisplayContactUrl());
+//    bundleGroupVersion.setContactUrl(this.getContactUrl());
+//    id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
+//    return bundleGroupVersion;
+//  }
 
 }

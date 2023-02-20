@@ -1,7 +1,7 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.rest.domain.CategoryDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
-import com.entando.hub.catalog.rest.domain.Category;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
@@ -144,7 +144,7 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
-    public ResponseEntity<Category> deleteBundleGroup(@PathVariable String bundleGroupId) {
+    public ResponseEntity<CategoryDto> deleteBundleGroup(@PathVariable String bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (!bundleGroupOptional.isPresent()) {

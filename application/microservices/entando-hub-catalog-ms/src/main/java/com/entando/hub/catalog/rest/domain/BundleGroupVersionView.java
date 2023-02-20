@@ -46,6 +46,7 @@ public class BundleGroupVersionView {
   @Schema(example = "https://yoursite.com/contact-us")
   protected String contactUrl;
 
+  @Deprecated
   public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
     this.bundleGroupId = bundleGroupId;
     this.description = description;
@@ -53,6 +54,7 @@ public class BundleGroupVersionView {
     this.version = version;
   }
 
+  @Deprecated
   public BundleGroupVersionView(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
     this.description = entity.getDescription();
     this.descriptionImage = entity.getDescriptionImage();

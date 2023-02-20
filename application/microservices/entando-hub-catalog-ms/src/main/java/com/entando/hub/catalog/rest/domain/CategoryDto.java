@@ -9,17 +9,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Category extends CategoryNoId {
+public class CategoryDto extends CategoryNoId {
 
   private String categoryId;
 
-  public Category(com.entando.hub.catalog.persistence.entity.Category entity) {
+  public CategoryDto(com.entando.hub.catalog.persistence.entity.Category entity) {
     super(entity);
     this.categoryId = entity.getId().toString();
   }
 
-  public Category(String organisationId, String name, String description) {
+  public CategoryDto(String organisationId, String name, String description) {
     super(name, description);
     this.categoryId = organisationId;
   }

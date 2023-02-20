@@ -6,7 +6,10 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,6 +88,20 @@ public class BaseMapperTest {
     bg.setId(id);
 
     return bg;
+  }
+
+  public BundleGroupDto generateBundleGroupDto(String id) {
+    BundleGroupDto dto = new BundleGroupDto();
+
+    dto.setBundleGroupId(id);
+    dto.setName(BUNDLE_GROUP_NAME);
+    dto.setOrganisationId(BUNDLE_GROUP_ID_STR);
+    dto.setOrganisationName(ORGANIZATION_NAME);
+    dto.setCategories(Arrays.asList("cat 1", "cat 2"));
+    dto.setVersionDetails(new BundleGroupVersionView("191045",
+      "description",
+      "descriptionImage", "v123"));
+    return dto;
   }
 
   public static final Long BUNDLE_GROUP_ID = 2677L;

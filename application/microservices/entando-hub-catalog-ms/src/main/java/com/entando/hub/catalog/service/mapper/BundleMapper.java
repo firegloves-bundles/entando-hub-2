@@ -26,7 +26,7 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
 
   @Mapping(source = "id", target = "bundleId", qualifiedByName = "toDtoID")
   @Mapping(source = "bundleGroupVersions", target = "bundleGroups", qualifiedByName = "toDtoGroups")
-  BundleDto toDto(Bundle dto);
+  BundleDto toDto(Bundle entity);
 
   default String toDependencies(List<String> dependencies) {
     if (!CollectionUtils.isEmpty(dependencies)) {

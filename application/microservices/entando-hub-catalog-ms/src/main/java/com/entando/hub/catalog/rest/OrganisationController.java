@@ -1,12 +1,11 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.rest.domain.Organisation;
 import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -107,26 +106,6 @@ public class OrganisationController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
-
-
-    @Getter
-    @Setter
-    @ToString
-    @EqualsAndHashCode(callSuper = true)
-    public static class Organisation extends OrganisationNoId {
-        private final String organisationId;
-
-        public Organisation(com.entando.hub.catalog.persistence.entity.Organisation entity) {
-            super(entity);
-            this.organisationId = entity.getId().toString();
-        }
-
-        public Organisation(String organisationId, String name, String description) {
-            super(name, description);
-            this.organisationId = organisationId;
-        }
-    }
-
 
 
 }

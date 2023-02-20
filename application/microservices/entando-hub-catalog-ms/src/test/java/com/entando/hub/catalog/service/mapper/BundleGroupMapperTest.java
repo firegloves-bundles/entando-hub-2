@@ -3,11 +3,9 @@ package com.entando.hub.catalog.service.mapper;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +18,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
 
   @Test
   public void toDto() {
-    BundleGroupDto dto = createBundleGroupDto("2381");
+    BundleGroupDto dto = generateBundleGroupDto("2381");
 
     BundleGroup bge = bundleGroupMapper.toEntity(dto);
     assertNotNull(bge);
@@ -36,7 +34,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
 
   @Test
   public void toDtoNoId() {
-    BundleGroupDto dto = createBundleGroupDto(null);
+    BundleGroupDto dto = generateBundleGroupDto(null);
 
     BundleGroup bge = bundleGroupMapper.toEntity(dto);
     assertNotNull(bge);
@@ -101,19 +99,5 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     assertThat(categories, contains(String.valueOf(CAT_ID_2) , String.valueOf(CAT_ID_1)));
   }
 
-
-  private BundleGroupDto createBundleGroupDto(String id) {
-    BundleGroupDto dto = new BundleGroupDto();
-
-    dto.setBundleGroupId(id);
-    dto.setName("bundleGroupName");
-    dto.setOrganisationId("2677");
-    dto.setOrganisationName("Organization2677Name");
-    dto.setCategories(Arrays.asList("cat 1", "cat 2")); // IGNORED
-    dto.setVersionDetails(new BundleGroupVersionView("191045",
-      "description",
-      "descriptionImage", "v123"));
-    return dto;
-  }
 
 }

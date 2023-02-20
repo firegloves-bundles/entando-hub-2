@@ -33,7 +33,7 @@ export const postData = async (url, payload, id) => {
   const data = await axios
     .post(url, payload, addAuthorizationRequestConfig())
     .then((res) => {
-      return res
+      return res.data
     })
     .catch((e) => {
       return e

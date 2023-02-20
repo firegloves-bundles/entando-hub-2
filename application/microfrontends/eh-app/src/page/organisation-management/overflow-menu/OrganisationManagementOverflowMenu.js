@@ -12,6 +12,8 @@ const OrganisationManagementOverflowMenu = ({
   organisationObj,
   onAfterSubmit,
   setReloadToken,
+  onCreatePrivateCatalog,
+  onNavigatePrivateCatalog,
 }) => {
   const [openModal, setOpenModal] = useState(false)
 
@@ -29,6 +31,11 @@ const OrganisationManagementOverflowMenu = ({
     <>
       <OverflowMenu>
         <OverflowMenuItem itemText={i18n.t('component.button.edit')} onClick={() => setOpenModal(true)} />
+        {organisationObj.privateCatalog ? (
+          <OverflowMenuItem itemText={i18n.t('component.button.navigatePrivateCatalog')} onClick={onNavigatePrivateCatalog} />
+        ) : (
+          <OverflowMenuItem itemText={i18n.t('component.button.createPrivateCatalog')} onClick={onCreatePrivateCatalog} />
+        )}
         <OverflowMenuItem itemText={i18n.t('component.button.delete')} onClick={deleteHandler} />
       </OverflowMenu>
       {openModal && (

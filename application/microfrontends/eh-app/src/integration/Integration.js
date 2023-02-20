@@ -8,6 +8,7 @@ const urlOrganisations = '/api/organisation/'
 const urlCategories = '/api/category/'
 const urlBundles = '/api/bundles/'
 const urlBundleGroups = '/api/bundlegroups/'
+const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
 const urlKC = '/api/keycloak/'
 
@@ -74,7 +75,7 @@ export const addNewOrganisation = async (apiUrl, organisationData) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToCreateOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data ? data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newOrganisation")
@@ -90,7 +91,7 @@ export const editOrganisation = async (apiUrl, organisationData, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data ? data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedOrganisation")
@@ -102,7 +103,7 @@ export const deleteOrganisation = async (apiUrl, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToDeleteOrganisation')} ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.organisation')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.deleted')}`
+    `${i18n.t('component.bundleModalFields.organisation')} ${data ? data.name : ""} ${i18n.t('toasterMessage.deleted')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "deletedOrganisation")
@@ -140,7 +141,7 @@ export const addNewCategory = async (apiUrl, categoryData) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToCreateCategory')}  ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.category')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
+    `${i18n.t('component.bundleModalFields.category')} ${data ? data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newCategory")
@@ -152,7 +153,7 @@ export const editCategory = async (apiUrl, categoryData, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateCategory')}  ${data ? data.message : ""}`,
-    `${i18n.t('component.bundleModalFields.category')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('component.bundleModalFields.category')} ${data ? data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedCategory")
@@ -222,7 +223,7 @@ export const addNewBundle = async (apiUrl, bundleData) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToCreateBundle')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundle')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
+    `${i18n.t('toasterMessage.bundle')} ${data ? data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundle")
@@ -234,7 +235,7 @@ export const editBundle = async (apiUrl, bundleData, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateBundle')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundle')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('toasterMessage.bundle')} ${data ? data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "editedBundle")
@@ -317,7 +318,7 @@ export const addNewBundleGroup = async (apiUrl,bundleGroupData) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToCreateBundleGroup')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.created')}`
+    `${i18n.t('toasterMessage.bundleGroup')} ${data ? data.name : ""} ${i18n.t('toasterMessage.created')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, "newBundleGroup")
@@ -329,7 +330,7 @@ export const editBundleGroup = async (apiUrl,bundleGroupData, id) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.impossibleToUpdateBundleGroup')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundleGroup')} ${data.data ? data.data.name : ""} ${i18n.t('toasterMessage.updated')}`
+    `${i18n.t('toasterMessage.bundleGroup')} ${data ? data.name : ""} ${i18n.t('toasterMessage.updated')}`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
@@ -477,7 +478,7 @@ export const getAllKCUsers = async (apiUrl) => {
   eventHandler(
     isError,
     `${i18n.t('toasterMessage.unableToAddBundleGroupVersion')} ${data ? data.message : ""}`,
-    `${i18n.t('toasterMessage.bundleGroupVersion')} ${data.data ? data.data.name : ""} saved`
+    `${i18n.t('toasterMessage.bundleGroupVersion')} ${data ? data.name : ""} saved`
   )
 
   return checkForErrorsAndSendResponse(data, isError, API_RESPONSE_KEY.EDITED_BUNDLE_GROUP)
@@ -544,3 +545,33 @@ export const editBundleGroupVersion = async (apiUrl,bundleGroupVersionData, bund
 
   return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }
+
+/*******************
+ * CATALOGS ********
+ *******************/
+
+export const createPrivateCatalog = async (apiUrl, organisationId) => {
+  const url = `${apiUrl}${urlCatalogs}`;
+  const { data, isError } = await postData(url, null, organisationId);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToCreatePrivateCatalog')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.created')} ${data.name}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const getPrivateCatalogs = async (apiUrl) => {
+  const url = `${apiUrl}${urlCatalogs}`;
+  const { data, isError } = await getData(url);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};

@@ -65,8 +65,6 @@ const BundleGroupForm = ({
     const [mounted, setMounted] = useState(false);
     const timerRef = useRef(null);
 
-    const orgsList = orgList && orgList.length ? orgList : [];
-
     const renderOrganisationColumn = (currOrganisationId, organisations) => {
         if(!currOrganisationId) return;
 
@@ -170,6 +168,7 @@ const BundleGroupForm = ({
     const organisationChangeHandler = (e) => {
         const selectedOrganisationId = e.target.value
         changeBundleGroup("organisationId", selectedOrganisationId)
+        changeBundleGroup("catalogId", orgList.find(org => org.organisationId === selectedOrganisationId)?.catalogId)
     }
 
     const categoryChangeHandler = (e) => {
@@ -327,6 +326,10 @@ const BundleGroupForm = ({
         createVersionDetailsObj("bundles", newBundleList)
     }
 
+    const handleIsPublicChange = (value) => {
+        changeBundleGroup('isPublic', value);
+    };
+
     const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
     const versionDetails = bundleGroup && bundleGroup.versionDetails ? bundleGroup.versionDetails : {}
     return (
@@ -340,6 +343,17 @@ const BundleGroupForm = ({
                                 disabled={disabled}
                                 onImageChange={imagesChangeHandler}
                                 onImageDelete={imagesDeleteHandler}
+                            />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <Column sm={16} md={8} lg={{ span: 8, offset: 8 }}>
+                            <Checkbox
+                                disabled={disabled}
+                                id={"isPublic"}
+                                labelText={`${i18n.t('component.bundleModalFields.includeInPublicCatalog')}`}
+                                checked={!!bundleGroup.isPublic}
+                                onChange={handleIsPublicChange}
                             />
                         </Column>
                     </Row>
@@ -409,7 +423,7 @@ const BundleGroupForm = ({
                             />
                         </Column>
 
-                        {renderOrganisationColumn(bundleGroup.organisationId, orgsList)}
+                        {renderOrganisationColumn(bundleGroup.organisationId, orgList)}
                         <Column sm={16} md={16} lg={16}>
                             <Select
                                 invalid={!!validationResult["versionDetails.status"]}

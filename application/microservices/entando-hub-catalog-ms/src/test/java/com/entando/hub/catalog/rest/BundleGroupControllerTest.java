@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BundleGroupControllerTest {
+class BundleGroupControllerTest {
 
     @Mock
     private  BundleGroupService bundleGroupService;
@@ -110,7 +110,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidOrganisationId() {
+    void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidOrganisationId() {
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, 1L);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(false);
@@ -126,7 +126,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidCatalogId() {
+    void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidCatalogId() {
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, false, 1L);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
@@ -142,7 +142,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldThrowAccessDeniedExceptionWhenCreateBundleGroupWithInvalidUser() {
+    void shouldThrowAccessDeniedExceptionWhenCreateBundleGroupWithInvalidUser() {
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
@@ -178,7 +178,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldThrowNotFoundExceptionWhenUpdateBundleGroupWithBundleGroupNotExisting() {
+    void shouldThrowNotFoundExceptionWhenUpdateBundleGroupWithBundleGroupNotExisting() {
         Long bundleGroupId = 1L;
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
 
@@ -196,7 +196,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldThrowConflictExceptionWhenUpdateBundleGroupNotEditable() {
+    void shouldThrowConflictExceptionWhenUpdateBundleGroupNotEditable() {
         Long bundleGroupId = 1L;
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
@@ -218,7 +218,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldDeleteBundleGroup(){
+    void shouldDeleteBundleGroup(){
         Long bundleGroupId = 1L;
 
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(true);
@@ -228,7 +228,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    public void shouldReturnNotFoundWhenDeleteBundleGroupThatNotExist(){
+    void shouldReturnNotFoundWhenDeleteBundleGroupThatNotExist(){
         Long bundleGroupId = 1L;
 
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(false);

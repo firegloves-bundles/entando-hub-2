@@ -76,13 +76,10 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupDTO> getBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
-        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-        if (bundleGroupOptional.isPresent()) {
-            return new ResponseEntity<>(bundleGroupOptional.map(BundleGroupDTO::new).get(), HttpStatus.OK);
-        } else {
-            logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        return bundleGroupService.getBundleGroup(bundleGroupId)
+                .map(BundleGroupDTO::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
@@ -117,10 +114,8 @@ public class BundleGroupController {
         if (!bundleGroup.getPublicCatalog() && bundleGroup.getCatalogId() == null){
             throw new IllegalArgumentException("Catalog ID is required for non-public bundle groups");
         }
-        if (bundleGroup.getCatalogId() != null){
-            if (!catalogService.existCatalogById(bundleGroup.getCatalogId())) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
-            }
+        if (bundleGroup.getCatalogId() != null && !catalogService.existCatalogById(bundleGroup.getCatalogId())){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
         }
     }
 
@@ -140,12 +135,12 @@ public class BundleGroupController {
     }
 
     protected void validateExistingBundleGroup(Long bundleGroupId) {
-        Boolean isPresent = bundleGroupService.existsById(bundleGroupId);
+        boolean isPresent = bundleGroupService.existsById(bundleGroupId);
         if (!isPresent) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("BundleGroup %s does not exist", bundleGroupId));
         } else {
             Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
-            if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
+            if (bundleGroupOptional.isPresent() && !bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
                 throw new ConflictException(String.format("BundleGroup %s is not editable", bundleGroupId));
             }
         }
@@ -164,7 +159,7 @@ public class BundleGroupController {
     @Transactional
     public ResponseEntity<Void> deleteBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
-        Boolean bundleGroupExist = bundleGroupService.existsById(bundleGroupId);
+        boolean bundleGroupExist = bundleGroupService.existsById(bundleGroupId);
         if (!bundleGroupExist) {
            logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -245,7 +240,7 @@ public class BundleGroupController {
 
     @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
     public ResponseEntity<String> handleException(Exception exception) {
-        HttpStatus status = null;
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (exception instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
         } else if (exception instanceof IllegalArgumentException) {

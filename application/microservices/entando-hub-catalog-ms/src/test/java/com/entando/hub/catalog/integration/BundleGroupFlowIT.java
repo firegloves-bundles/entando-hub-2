@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-public class BundleGroupFlowIT {
+class BundleGroupFlowIT {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -177,7 +177,7 @@ public class BundleGroupFlowIT {
 
     @Test
     @WithMockUser(roles={ADMIN})
-    public void shouldUpdateBundleGroup() throws Exception {
+    void shouldUpdateBundleGroup() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
@@ -196,7 +196,7 @@ public class BundleGroupFlowIT {
 
     @Test
     @WithMockUser(roles={ADMIN})
-    public void shouldReturnNotFoundWhenUpdateBundleGroupThatDoesntExist() throws Exception {
+    void shouldReturnNotFoundWhenUpdateBundleGroupThatDoesntExist() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
@@ -212,7 +212,7 @@ public class BundleGroupFlowIT {
 
     @Test
     @WithMockUser(roles={ADMIN})
-    public void shouldReturnConflictWhenBundleGroupIsNotEditable() throws Exception {
+    void shouldReturnConflictWhenBundleGroupIsNotEditable() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
@@ -247,7 +247,7 @@ public class BundleGroupFlowIT {
 
     @Test
     @WithMockUser(roles={ADMIN})
-    public void shouldDeleteBundleGroup() throws Exception {
+    void shouldDeleteBundleGroup() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroup savedStubBundleGroup = bundleGroupRepository.save(stubBundleGroup);
@@ -260,7 +260,7 @@ public class BundleGroupFlowIT {
 
     @Test
     @WithMockUser(roles={ADMIN})
-    public void shouldNotDeleteBundleGroupWhenItIsNotFound() throws Exception {
+    void shouldNotDeleteBundleGroupWhenItIsNotFound() throws Exception {
         String bundleGroupId = "1";
         organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
 

@@ -1,15 +1,13 @@
 package com.entando.hub.catalog.service.mapper;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
-import com.entando.hub.catalog.rest.domain.OrganisationDto;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

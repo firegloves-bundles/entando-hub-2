@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.entando.hub.catalog.rest.domain.OrganisationDto;
-import com.entando.hub.catalog.rest.domain.OrganisationNoId;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;

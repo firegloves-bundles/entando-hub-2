@@ -4,7 +4,7 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.OrganisationController;
-import com.entando.hub.catalog.rest.domain.OrganisationDto;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import com.entando.hub.catalog.service.mapper.OrganizationMapper;
 import com.entando.hub.catalog.service.mapper.OrganizationMapperImpl;
 import org.junit.Test;

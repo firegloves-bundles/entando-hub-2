@@ -1,8 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.OrganisationDto;
-import com.entando.hub.catalog.rest.domain.OrganisationNoId;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.mapper.OrganizationMapper;
 import io.swagger.v3.oas.annotations.Operation;

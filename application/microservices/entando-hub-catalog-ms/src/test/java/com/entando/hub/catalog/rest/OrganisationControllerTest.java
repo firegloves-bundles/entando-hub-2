@@ -3,7 +3,6 @@ package com.entando.hub.catalog.rest;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static net.bytebuddy.implementation.FixedValue.nullValue;
 import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -14,9 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.entando.hub.catalog.rest.domain.OrganisationDto;
-import com.entando.hub.catalog.service.mapper.CategoryMapper;
-import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import com.entando.hub.catalog.service.mapper.OrganizationMapper;
 import com.entando.hub.catalog.service.mapper.OrganizationMapperImpl;
 import org.junit.Before;
@@ -39,7 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -157,8 +153,6 @@ public class OrganisationControllerTest {
 		assertNotNull(organisationNoId.getOrganisationId());
 		Mockito.when(organisationService.createOrganisation(entity,organisationNoId)).thenReturn(organisation);
 
-		System.out.println(">>> " + asJsonString(organisationNoId));
-
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + organisationId).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(organisationNoId)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -173,7 +167,7 @@ public class OrganisationControllerTest {
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
 		Long organisationId = organisation.getId();
-		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
+		OrganisationDto organisationNoId = new OrganisationDto(null, organisation.getName(), organisation.getDescription());
 
 		Mockito.when(organisationService.getOrganisation(organisation.getId())).thenReturn(Optional.empty());
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + organisationId).contentType(MediaType.APPLICATION_JSON)

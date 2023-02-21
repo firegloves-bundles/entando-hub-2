@@ -59,6 +59,7 @@ public class BundleGroupService {
     }
 
     public Optional<BundleGroup> getBundleGroup(Long bundleGroupId) {
+        logger.debug("{}: getBundleGroup: Get a bundle group by bundle group id: {}", CLASS_NAME, bundleGroupId);
         return bundleGroupRepository.findById(bundleGroupId);
     }
 
@@ -111,7 +112,7 @@ public class BundleGroupService {
     }
 
     public void deleteFromCategories(BundleGroup bundleGroup) {
-    	logger.debug("{}: deleteFromCategories: Delete a bundle group from categoris", CLASS_NAME);
+    	logger.debug("{}: deleteFromCategories: Delete a bundle group from categories", CLASS_NAME);
         bundleGroup.getCategories().forEach((category) -> {
             category.getBundleGroups().remove(bundleGroup);
             categoryRepository.save(category);

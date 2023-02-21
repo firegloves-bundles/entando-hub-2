@@ -9,7 +9,6 @@ import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
-import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.server.ResponseStatusException;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,7 +96,7 @@ public class BundleGroupControllerTest {
     }
 
     @Test
-    void shouldCreateBundleGroup() throws NotFoundException {
+    void shouldCreateBundleGroup() {
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
@@ -115,7 +115,7 @@ public class BundleGroupControllerTest {
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(false);
 
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+        Exception exception = Assertions.assertThrows(ResponseStatusException.class, () -> {
             bundleGroupController.createBundleGroup(bundleGroup);
         });
 
@@ -132,7 +132,7 @@ public class BundleGroupControllerTest {
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(catalogService.existCatalogById(bundleGroup.getCatalogId())).thenReturn(false);
 
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+        Exception exception = Assertions.assertThrows(ResponseStatusException.class, () -> {
             bundleGroupController.createBundleGroup(bundleGroup);
         });
 
@@ -160,7 +160,7 @@ public class BundleGroupControllerTest {
 
 
     @Test
-    void shouldUpdateBundleGroup() throws NotFoundException {
+    void shouldUpdateBundleGroup() {
         Long bundleGroupId = 1L;
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
@@ -185,7 +185,7 @@ public class BundleGroupControllerTest {
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(false);
 
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+        Exception exception = Assertions.assertThrows(ResponseStatusException.class, () -> {
             bundleGroupController.updateBundleGroup(bundleGroupId,bundleGroup);
         });
 
@@ -223,7 +223,7 @@ public class BundleGroupControllerTest {
 
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(true);
 
-        ResponseEntity<Object> response = bundleGroupController.deleteBundleGroup(bundleGroupId);
+        ResponseEntity<Void> response = bundleGroupController.deleteBundleGroup(bundleGroupId);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
@@ -233,7 +233,7 @@ public class BundleGroupControllerTest {
 
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(false);
 
-        ResponseEntity<Object> response = bundleGroupController.deleteBundleGroup(bundleGroupId);
+        ResponseEntity<Void> response = bundleGroupController.deleteBundleGroup(bundleGroupId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 

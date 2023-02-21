@@ -6,11 +6,9 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
-import javax.persistence.ManyToOne;
 import javax.transaction.Transactional;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -21,7 +19,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,6 +38,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -93,7 +91,7 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupDTO> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) throws NotFoundException {
+    public ResponseEntity<BundleGroupDTO> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         this.validateRequest(bundleGroup);
         BundleGroup entity = bundleGroup.createEntity(Optional.empty());
@@ -102,23 +100,26 @@ public class BundleGroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(bundleGroupDTO);
     }
 
-    protected void validateRequest(BundleGroupNoId bundleGroup) throws NotFoundException {
+    protected void validateRequest(BundleGroupNoId bundleGroup) {
         if (!organisationService.existsById(bundleGroup.getOrganisationId())) {
-            throw new NotFoundException(String.format("Organisation with ID %d not found", bundleGroup.getOrganisationId()));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Organisation with ID %d not found", bundleGroup.getOrganisationId()));
         }
-
         if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
             throw new AccessDeniedException(String.format("Only %s users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN));
         }
+        this.validateCatalogFields(bundleGroup);
+    }
 
-        if (bundleGroup.getIsPublic() == null || bundleGroup.getIsPublic()) {
-            bundleGroup.setIsPublic(true);
-            bundleGroup.setCatalogId(null);
-        } else {
-            if (bundleGroup.getCatalogId()==null) {
-                throw new IllegalArgumentException("Catalog ID is required for non-public bundle groups");
-            } else if (!catalogService.existCatalogById(bundleGroup.catalogId)) {
-                throw new NotFoundException(String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
+    protected void validateCatalogFields(BundleGroupNoId bundleGroup) {
+        if (bundleGroup.getPublicCatalog() == null){
+            bundleGroup.setPublicCatalog(true);
+        }
+        if (!bundleGroup.getPublicCatalog() && bundleGroup.getCatalogId() == null){
+            throw new IllegalArgumentException("Catalog ID is required for non-public bundle groups");
+        }
+        if (bundleGroup.getCatalogId() != null){
+            if (!catalogService.existCatalogById(bundleGroup.getCatalogId())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
             }
         }
     }
@@ -130,7 +131,7 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupDTO> updateBundleGroup(@PathVariable Long bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) throws NotFoundException {
+    public ResponseEntity<BundleGroupDTO> updateBundleGroup(@PathVariable Long bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         this.validateRequest(bundleGroup);
         this.validateExistingBundleGroup(bundleGroupId);
@@ -138,10 +139,10 @@ public class BundleGroupController {
         return new ResponseEntity<>(new BundleGroupDTO(saved), HttpStatus.OK);
     }
 
-    protected void validateExistingBundleGroup(Long bundleGroupId) throws NotFoundException {
+    protected void validateExistingBundleGroup(Long bundleGroupId) {
         Boolean isPresent = bundleGroupService.existsById(bundleGroupId);
         if (!isPresent) {
-            throw new NotFoundException(String.format("BundleGroup %s does not exist", bundleGroupId));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("BundleGroup %s does not exist", bundleGroupId));
         } else {
             Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
             if (!bundleGroupVersionService.isBundleGroupEditable(bundleGroupOptional.get())) {
@@ -161,7 +162,7 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "204", description = "No Content", content = @Content)
     @Transactional
-    public ResponseEntity<Object> deleteBundleGroup(@PathVariable Long bundleGroupId) {
+    public ResponseEntity<Void> deleteBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to delete bundleGroup {}", bundleGroupId);
         Boolean bundleGroupExist = bundleGroupService.existsById(bundleGroupId);
         if (!bundleGroupExist) {
@@ -180,8 +181,8 @@ public class BundleGroupController {
     public static class BundleGroupDTO extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean isPublic, Long catalogId) {
-            super(name, organizationId, isPublic, catalogId);
+        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean publicCatalog, Long catalogId) {
+            super(name, organizationId, publicCatalog, catalogId);
             this.bundleGroupId = bundleGroupId;
         }
 
@@ -197,7 +198,7 @@ public class BundleGroupController {
         @Schema(example = "bundle group name")
         protected final String name;
         protected Long organisationId;
-        private Boolean isPublic;
+        private Boolean publicCatalog;
         private Long catalogId;
 
         @Schema(example = "Entando")
@@ -205,16 +206,16 @@ public class BundleGroupController {
         protected List<String> categories;
         protected BundleGroupVersionView versionDetails;
 
-        public BundleGroupNoId(String name ,Long organisationId, Boolean isPublic, Long catalogId) {
+        public BundleGroupNoId(String name ,Long organisationId, Boolean publicCatalog, Long catalogId) {
             this.name = name;
             this.organisationId = organisationId;
-            this.isPublic = isPublic;
+            this.publicCatalog = publicCatalog;
             this.catalogId = catalogId;
         }
 
         public BundleGroupNoId(BundleGroup entity) {
             this.name = entity.getName();
-            this.isPublic = entity.getIsPublic();
+            this.publicCatalog = entity.getPublicCatalog();
             this.catalogId = entity.getCatalogId();
 
             if (entity.getOrganisation() != null) {
@@ -229,7 +230,7 @@ public class BundleGroupController {
         public BundleGroup createEntity(Optional<Long> id) {
             BundleGroup entity = new BundleGroup();
             entity.setName(this.getName());
-            entity.setIsPublic(this.isPublic);
+            entity.setPublicCatalog(this.publicCatalog);
             entity.setCatalogId(this.catalogId);
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
@@ -242,15 +243,13 @@ public class BundleGroupController {
         }
     }
 
-    @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, NotFoundException.class, ConflictException.class })
+    @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
     public ResponseEntity<String> handleException(Exception exception) {
         HttpStatus status = null;
         if (exception instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
         } else if (exception instanceof IllegalArgumentException) {
             status = HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof NotFoundException) {
-            status = HttpStatus.NOT_FOUND;
         } else if (exception instanceof  ConflictException){
             status = HttpStatus.CONFLICT;
         }

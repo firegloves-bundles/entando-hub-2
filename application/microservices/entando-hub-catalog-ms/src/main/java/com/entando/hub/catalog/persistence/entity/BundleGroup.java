@@ -32,7 +32,7 @@ public class BundleGroup {
     private Long catalogId;
 
     @Column(name = "is_public")
-    private Boolean isPublic;
+    private Boolean publicCatalog;
 
     @ManyToOne
     private Organisation organisation;

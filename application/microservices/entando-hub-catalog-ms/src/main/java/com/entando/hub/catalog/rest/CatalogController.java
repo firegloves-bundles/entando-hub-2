@@ -4,10 +4,10 @@ import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
 import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -95,7 +95,6 @@ public class CatalogController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     public CatalogDTO mapToDTO(Catalog catalog) {
         return new CatalogDTO(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());

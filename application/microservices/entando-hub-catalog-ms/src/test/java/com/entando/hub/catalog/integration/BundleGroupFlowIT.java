@@ -46,6 +46,7 @@ public class BundleGroupFlowIT {
     SecurityHelperService securityHelperService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private static final String URI = "/api/bundlegroups/";
     private static final Long BUNDLE_GROUP_ID = 1L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
     private static final String ORG_NAME = "Test Org Name";
@@ -76,7 +77,7 @@ public class BundleGroupFlowIT {
         bundleGroupRepository.save(stubBundleGroup2);
 
         //Case 1: no organisation specified
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroups/")
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -86,7 +87,7 @@ public class BundleGroupFlowIT {
                 .andExpect(jsonPath("$.[1].name").value(BUNDLE_GROUP_NAME));
 
         //Case 2: testing with specific organisation
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroups/" + "?organisationId=" + organisationSaved.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(URI + "?organisationId=" + organisationSaved.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -106,7 +107,7 @@ public class BundleGroupFlowIT {
         BundleGroup stubBundleGroup2 = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId())).setId(null);
         bundleGroupRepository.save(stubBundleGroup2);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroups/"+ stubBundleGroup1.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(URI + stubBundleGroup1.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -122,7 +123,7 @@ public class BundleGroupFlowIT {
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroups/")
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
@@ -142,7 +143,7 @@ public class BundleGroupFlowIT {
         BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.of(catalogSaved.getId()));
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroups/")
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
@@ -162,7 +163,7 @@ public class BundleGroupFlowIT {
         bundleGroupRepository.save(stubBundleGroup);
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroups/" + stubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
@@ -181,12 +182,11 @@ public class BundleGroupFlowIT {
 
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroups/" + stubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -216,7 +216,7 @@ public class BundleGroupFlowIT {
         bundleGroupVersionRepository.saveAndFlush(bgv2);
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroups/" + stubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
@@ -231,7 +231,7 @@ public class BundleGroupFlowIT {
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroup savedStubBundleGroup = bundleGroupRepository.save(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/bundlegroups/" + savedStubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(URI + savedStubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -240,21 +240,22 @@ public class BundleGroupFlowIT {
     @Test
     @WithMockUser(roles={ADMIN})
     public void shouldNotDeleteBundleGroupWhenItIsNotFound() throws Exception {
+        String bundleGroupId = "1";
         organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/bundlegroups/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete(URI + bundleGroupId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
-    private BundleGroup getStubBundleGroup(Boolean isPublic, Organisation organisation, Optional<Long> catalogId){
+    private BundleGroup getStubBundleGroup(Boolean publicCatalog, Organisation organisation, Optional<Long> catalogId){
         return new BundleGroup()
                 .setId(BUNDLE_GROUP_ID)
                 .setName(BUNDLE_GROUP_NAME)
                 .setOrganisation(organisation)
-                .setIsPublic(isPublic)
-                .setCatalogId(isPublic ? null : catalogId.get());
+                .setPublicCatalog(publicCatalog)
+                .setCatalogId(publicCatalog ? null : catalogId.get());
     }
 
 }

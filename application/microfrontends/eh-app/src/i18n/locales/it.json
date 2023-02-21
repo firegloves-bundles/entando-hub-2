@@ -61,8 +61,7 @@
       "bundleUrl": "URI del bundle",
       "sourceUrl": "URL di origine",
       "privateCatalog": "Catalogo privato",
-      "createPrivateCatalog": "Crea catalogo privato",
-      "navigatePrivateCatalog": "Vai al catalogo privato"
+      "includeInPublicCatalog": "Includi nel catalogo pubblico"
     },
     "button": {
       "add": "Aggiungi",
@@ -80,7 +79,9 @@
       "selectOneUsername": "Seleziona un nome utente",
       "newVersion": "Nuova versione",
       "viewVersions": "Visualizza versioni",
-      "submit": "Invia"
+      "submit": "Invia",
+      "createPrivateCatalog": "Crea catalogo privato",
+      "navigatePrivateCatalog": "Vai al catalogo privato"
     },
     "pagination": {
       "page": "pagina",

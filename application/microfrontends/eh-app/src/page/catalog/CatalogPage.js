@@ -5,7 +5,7 @@ import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNew
 import React, { useCallback, useEffect, useState } from "react";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
@@ -61,6 +61,10 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   }
 
   useEffect(() => {
+    let isMounted = true;
+
+    let orgCatalogMap;
+
     const getCatOrgList = async () => {
       const data = (await getAllCategories(apiUrl));
       if (data.isError) {
@@ -68,32 +72,45 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
         setLoading(false)
       }
       setCategories(data.categoryList);
-      const orgData = (await getAllOrganisations(apiUrl)).organisationList;
-      setOrgList(orgData)
-    }
-    getCatOrgList();
-  }, [apiUrl])
 
-  useEffect(() => {
-    let isMounted = true;
+      const { organisationList } = await getAllOrganisations(apiUrl);
+      const { data: privateCatalogs, isError } = await getPrivateCatalogs(apiUrl);
+
+      orgCatalogMap = isError ? {} : privateCatalogs.reduce((m, { id, organisationId }) => ({
+        [organisationId]: id,
+        ...m,
+      }), {});
+
+      setOrgList(organisationList.map(org => ({
+        ...org,
+        catalogId: orgCatalogMap[org.organisationId],
+      })));
+    };
+
     (async () => {
+      await getCatOrgList();
       const username = await getUserName();
       if (username) {
         const portalUserResp = (await getPortalUserByUsername(apiUrl, username));
         if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
-          setOrgLength(portalUserResp.portalUser.organisations.length);
+          const portalUserOrgs = portalUserResp.portalUser.organisations;
+          setOrgLength(portalUserOrgs.length);
           setPortalUserPresent(true);
-          setCurrentUserOrg(portalUserResp.portalUser.organisations[0]);
+          setCurrentUserOrg({
+            ...portalUserOrgs[0],
+            catalogId: orgCatalogMap[portalUserOrgs[0].organisationId],
+          });
         } else if (isMounted && portalUserResp && portalUserResp.isError) {
           setOrgLength(0);
           setPortalUserPresent(false);
         }
         setLoading(false);
       }
-    })()
+    })();
+  
     return () => {
       isMounted = false;
-    }
+    };
   }, [apiUrl])
 
   /**

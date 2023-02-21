@@ -60,7 +60,8 @@
       "search": "Search",
       "bundleUrl": "Bundle URI",
       "sourceUrl": "Source URL",
-      "privateCatalog": "Private Catalog"
+      "privateCatalog": "Private Catalog",
+      "includeInPublicCatalog": "Include in the Public Catalog"
     },
     "button": {
       "add": "Add",

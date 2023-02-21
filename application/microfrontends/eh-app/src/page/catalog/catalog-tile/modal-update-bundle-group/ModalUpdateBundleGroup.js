@@ -92,6 +92,8 @@ export const ModalUpdateBundleGroup = ({
           name: bg.name,
           categories: bg.categories,
           organisationId: bg.organisationId,
+          catalogId: bg.catalogId,
+          isPublic: bg.isPublic,
           isEditable: bg.isEditable,
           versionDetails: {
             bundleGroupVersionId: bg.bundleGroupVersionId,

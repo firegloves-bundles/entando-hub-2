@@ -21,6 +21,10 @@
         <log4j.version>2.19.0</log4j.version>
         <liquibase.version>3.7.0</liquibase.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <!-- SONAR -->
+        <github.organization>entando-samples</github.organization>
+        <sonar.organization>${github.organization}</sonar.organization>
+        <sonar.projectKey>${github.organization}_${project.artifactId}</sonar.projectKey>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -209,7 +213,42 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+           <id>ci</id>
+           <activation>
+                <property>
+                    <name>env.CI</name>
+                    <value>true</value>
+                </property>
+           </activation>
+           <build>
+               <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.7</version>
+                        <executions>
+                            <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                            </execution>
+                            <execution>
+                            <id>report</id>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <formats>
+                                <format>XML</format>
+                                </formats>
+                            </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+               </plugins>
+           </build>
+        </profile>
     </profiles>
-
-
 </project>

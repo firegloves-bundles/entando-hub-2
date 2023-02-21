@@ -18,12 +18,14 @@
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "react-scripts": "5.0.1",
-    "sass": "^1.58.1"
+    "sass": "^1.58.1",
+    "sonarqube-scanner": "^3.0.1"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "sonar": "craco test --coverage && node sonarqube.js"
   },
   "eslintConfig": {
     "extends": [

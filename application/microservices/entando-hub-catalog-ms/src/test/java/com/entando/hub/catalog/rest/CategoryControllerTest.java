@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.entando.hub.catalog.rest.domain.CategoryDto;
-import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
-import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.rest.dto.CategoryDto;
 import com.entando.hub.catalog.service.mapper.CategoryMapper;
 import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
 import org.junit.Before;
@@ -36,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.domain.CategoryNoId;
 import com.entando.hub.catalog.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -139,7 +136,7 @@ public class CategoryControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	public void testUpdateCategory() throws Exception {
 	Category category = getCategoryObj();
-	CategoryNoId categoryNoId = new CategoryNoId(category);
+	CategoryDto categoryNoId = new CategoryDto(category);
 	String categoryId = Long.toString(category.getId());
 	Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
 	Mockito.when(categoryService.createCategory(category)).thenReturn(category);
@@ -158,7 +155,7 @@ public class CategoryControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	public void testUpdateCategoryFails() throws Exception {
 		Category category = getCategoryObj();
-		CategoryNoId categoryNoId = new CategoryNoId(category);
+		CategoryDto categoryNoId = new CategoryDto(category);
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.empty());
 		Mockito.when(categoryService.createCategory(category)).thenReturn(category);

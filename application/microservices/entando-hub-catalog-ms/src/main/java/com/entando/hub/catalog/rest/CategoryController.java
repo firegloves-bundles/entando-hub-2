@@ -2,8 +2,7 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.config.ApplicationConstants;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.domain.CategoryDto;
-import com.entando.hub.catalog.rest.domain.CategoryNoId;
+import com.entando.hub.catalog.rest.dto.CategoryDto;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.mapper.CategoryMapper;
 import io.swagger.v3.oas.annotations.Operation;

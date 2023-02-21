@@ -34,19 +34,19 @@ public class CategoryNoId {
     }
   }
 
-  public com.entando.hub.catalog.persistence.entity.Category createEntity(Optional<String> id) {
-    com.entando.hub.catalog.persistence.entity.Category ret = new com.entando.hub.catalog.persistence.entity.Category();
-    ret.setDescription(this.getDescription());
-    ret.setName(this.getName());
-    if (this.getBundleGroups() != null) {
-      ret.setBundleGroups(this.getBundleGroups().stream().map(bundleGroupId -> {
-        com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup = new BundleGroup();
-        bundleGroup.setId(Long.valueOf(bundleGroupId));
-        return bundleGroup;
-      }).collect(Collectors.toSet()));
-    }
-    id.map(Long::valueOf).ifPresent(ret::setId);
-    return ret;
-  }
+//  public com.entando.hub.catalog.persistence.entity.Category createEntity(Optional<String> id) {
+//    com.entando.hub.catalog.persistence.entity.Category ret = new com.entando.hub.catalog.persistence.entity.Category();
+//    ret.setDescription(this.getDescription());
+//    ret.setName(this.getName());
+//    if (this.getBundleGroups() != null) {
+//      ret.setBundleGroups(this.getBundleGroups().stream().map(bundleGroupId -> {
+//        com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup = new BundleGroup();
+//        bundleGroup.setId(Long.valueOf(bundleGroupId));
+//        return bundleGroup;
+//      }).collect(Collectors.toSet()));
+//    }
+//    id.map(Long::valueOf).ifPresent(ret::setId);
+//    return ret;
+//  }
 
 }

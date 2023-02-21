@@ -1,9 +1,11 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.config.ApplicationConstants;
+import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.domain.CategoryDto;
 import com.entando.hub.catalog.rest.domain.CategoryNoId;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.mapper.CategoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,10 +27,11 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 public class CategoryController {
     
     private final Logger logger = LoggerFactory.getLogger(CategoryController.class);
-    
+    private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
     
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryMapper categoryMapper, CategoryService categoryService) {
+        this.categoryMapper = categoryMapper;
         this.categoryService = categoryService;
     }
 
@@ -60,10 +63,12 @@ public class CategoryController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryNoId category) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto category) {
         logger.debug("REST request to create CategoryDto: {}", category);
-        com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
-        return new ResponseEntity<>(new CategoryDto(entity), HttpStatus.CREATED);
+//        com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
+        Category entity = categoryMapper.toEntity(category);
+        entity = categoryService.createCategory(entity);
+        return new ResponseEntity<>(categoryMapper.toDto(entity), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
@@ -73,14 +78,17 @@ public class CategoryController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDto category) {
         logger.debug("REST request to update CategoryDto {}: {}", categoryId, category);
-        Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
+        Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId.toString());
         if (!categoryOptional.isPresent()) {
             logger.warn("CategoryDto '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            com.entando.hub.catalog.persistence.entity.Category savedEntity = categoryService.createCategory(category.createEntity(Optional.of(categoryId)));
+//            com.entando.hub.catalog.persistence.entity.Category savedEntity = categoryService.createCategory(category.createEntity(Optional.of(categoryId)));
+            Category entity = categoryMapper.toEntity(category);
+            entity.setId(categoryId);
+            Category savedEntity = categoryService.createCategory(entity);
             return new ResponseEntity<>(new CategoryDto(savedEntity), HttpStatus.OK);
         }
     }

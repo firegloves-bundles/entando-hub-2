@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.domain.CategoryDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.service.mapper.CategoryMapper;
+import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +24,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,8 +42,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(CategoryController.class)
+@ComponentScan(basePackageClasses = {CategoryMapper.class, CategoryMapperImpl.class})
 public class CategoryControllerTest {
-	
+
+	@Autowired
+	CategoryMapper categoryMapper;
+
 	@Autowired
 	WebApplicationContext webApplicationContext;
 
@@ -105,13 +115,19 @@ public class CategoryControllerTest {
 	@Test
 	@WithMockUser(roles = { ADMIN })
 	public void testCreateCategory() throws Exception {
-		Category category = getCategoryObj();
-		CategoryNoId categoryNoId = new CategoryNoId(category);
-		Mockito.when(categoryService.createCategory(categoryNoId.createEntity(Optional.empty()))).thenReturn(category);
+		Category category = getCategoryObj(); // start from a entity...
+//		CategoryNoId categoryNoId = new CategoryNoId(category); // ..get the dto..
+//		Mockito.when(categoryService.createCategory(categoryNoId.createEntity(Optional.empty()))).thenReturn(category); // convert again to entity and mock
+
+		CategoryDto dto = categoryMapper.toDto(category); // ..get the dto..
+		dto.setCategoryId(null);
+		Category entity = categoryMapper.toEntity(dto); // ...convert again..
+
+		Mockito.when(categoryService.createCategory(entity)).thenReturn(category);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post(URI)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(asJsonString(categoryNoId))
+			.content(asJsonString(dto))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))

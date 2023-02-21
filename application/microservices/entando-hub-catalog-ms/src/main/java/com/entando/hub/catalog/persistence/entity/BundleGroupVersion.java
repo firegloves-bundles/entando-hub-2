@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
@@ -34,6 +35,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
+@Accessors(chain = true)
 @Table(uniqueConstraints = { @UniqueConstraint(name = "bundle_group_version_unique_key",columnNames = { "BUNDLE_GROUP_ID", "VERSION" }) })
 public class BundleGroupVersion {
 	@Id

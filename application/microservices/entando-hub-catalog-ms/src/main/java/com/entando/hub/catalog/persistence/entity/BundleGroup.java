@@ -9,6 +9,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * This entity class is for BUNDLE_GROUP table 
@@ -18,6 +19,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
+@Accessors(chain = true)
 @Table(name = "bundle_group")
 @NamedQuery(name = "BundleGroup.findAll", query = "select b from BundleGroup b order by b.name")
 public class BundleGroup {

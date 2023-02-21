@@ -21,10 +21,10 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
 
 
   @Mapping(source = "bundleGroups", target = "bundleGroupVersions", qualifiedByName = "toEntityGroups")
-  @Mapping(source = "bundleId", target = "id", qualifiedByName = "toEntityID")
+  @Mapping(source = "bundleId", target = "id", qualifiedByName = "toEntityId")
   Bundle toEntity(BundleDto dto);
 
-  @Mapping(source = "id", target = "bundleId", qualifiedByName = "toDtoID")
+  @Mapping(source = "id", target = "bundleId", qualifiedByName = "toDtoId")
   @Mapping(source = "bundleGroupVersions", target = "bundleGroups", qualifiedByName = "toDtoGroups")
   BundleDto toDto(Bundle entity);
 
@@ -75,19 +75,5 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
         .map(bundleGroupVersion -> bundleGroupVersion.getId().toString())
         .collect(Collectors.toList()) : null;
   }
-
-  @Named("toEntityID")
-  static Long idConvert(String value) {
-    if (StringUtils.isNotBlank(value)) {
-      return Long.parseLong(value);
-    }
-    return null;
-  }
-
-  @Named("toDtoID")
-  static String fromEntityId(Long value) {
-    return value != null ? value.toString() : null;
-  }
-
 
 }

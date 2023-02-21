@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.rest.domain.Organisation;
+import com.entando.hub.catalog.rest.domain.OrganisationDto;
 import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +34,9 @@ public class OrganisationController {
 
     @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
     @GetMapping(value = "/", produces = "application/json")
-    public List<Organisation> getOrganisations() {
+    public List<OrganisationDto> getOrganisations() {
         logger.debug("REST request to get organisations");
-        return organisationService.getOrganisations().stream().map(Organisation::new).collect(Collectors.toList());
+        return organisationService.getOrganisations().stream().map(OrganisationDto::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
@@ -44,11 +44,11 @@ public class OrganisationController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> getOrganisation(@PathVariable Long organisationId) {
+    public ResponseEntity<OrganisationDto> getOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (organisationOptional.isPresent()) {
-            return new ResponseEntity<>(organisationOptional.map(Organisation::new).get(), HttpStatus.OK);
+            return new ResponseEntity<>(organisationOptional.map(OrganisationDto::new).get(), HttpStatus.OK);
         } else {
             logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -61,10 +61,10 @@ public class OrganisationController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> createOrganisation(@RequestBody OrganisationNoId organisation) {
+    public ResponseEntity<OrganisationDto> createOrganisation(@RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
         com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
-        return new ResponseEntity<>(new Organisation(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(new OrganisationDto(entity), HttpStatus.CREATED);
     }
 
 
@@ -75,7 +75,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationNoId organisation) {
+    public ResponseEntity<OrganisationDto> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationNoId organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
@@ -84,7 +84,7 @@ public class OrganisationController {
         } else {
             //com.entando.hub.catalog.persistence.entity.Organisation storedEntity = organisationOptional.get();
             com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.of(organisationId)), organisation);
-            return new ResponseEntity<>(new Organisation(entity), HttpStatus.OK);
+            return new ResponseEntity<>(new OrganisationDto(entity), HttpStatus.OK);
         }
     }
 
@@ -95,7 +95,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Organisation> deleteOrganisation(@PathVariable Long organisationId) {
+    public ResponseEntity<OrganisationDto> deleteOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to delete organisation {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {

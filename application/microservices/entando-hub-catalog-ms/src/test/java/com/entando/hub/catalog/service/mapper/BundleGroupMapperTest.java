@@ -26,7 +26,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
 
     assertNotNull(bge.getOrganisation());
     assertNotNull(bge.getId());
-    assertEquals((long)bge.getOrganisation().getId(), 2677L);
+    assertEquals((Long)ORGANIZATION_ID, bge.getOrganisation().getId());
     assertEquals(bge.getOrganisation().getName(), ORGANIZATION_NAME);
     assertNull(bge.getCategories());
     // versiondetails ignored
@@ -42,7 +42,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
 
     assertNotNull(bge.getOrganisation());
     assertNull(bge.getId());
-    assertEquals((long)bge.getOrganisation().getId(), 2677L);
+    assertEquals((Long) ORGANIZATION_ID, bge.getOrganisation().getId());
     assertEquals(bge.getOrganisation().getName(), ORGANIZATION_NAME);
     assertNull(bge.getCategories());
     // versiondetails ignored

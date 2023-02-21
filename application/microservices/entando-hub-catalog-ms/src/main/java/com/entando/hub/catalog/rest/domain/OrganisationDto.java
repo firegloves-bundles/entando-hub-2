@@ -2,23 +2,23 @@ package com.entando.hub.catalog.rest.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Organisation extends OrganisationNoId {
+public class OrganisationDto extends OrganisationNoId {
 
-  private final String organisationId;
+  private String organisationId;
 
-  public Organisation(com.entando.hub.catalog.persistence.entity.Organisation entity) {
+  public OrganisationDto(com.entando.hub.catalog.persistence.entity.Organisation entity) {
     super(entity);
     this.organisationId = entity.getId().toString();
   }
 
-  public Organisation(String organisationId, String name, String description) {
+  public OrganisationDto(String organisationId, String name, String description) {
     super(name, description);
     this.organisationId = organisationId;
   }

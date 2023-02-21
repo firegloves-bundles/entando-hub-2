@@ -8,7 +8,6 @@ import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.Set;
@@ -18,28 +17,15 @@ import java.util.stream.Collectors;
 public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDto> {
 
   // NOTE: the categories are not converted
-  @Mapping(source = "bundleGroupId", target = "id", qualifiedByName = "toEntityID")
+  @Mapping(source = "bundleGroupId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "organisation", expression = "java(toOrganization(dto.getOrganisationName(), dto.getOrganisationId()))")
   BundleGroup toEntity(BundleGroupDto dto);
 
 
-  @Mapping(source = "id", target = "bundleGroupId", qualifiedByName = "toDtoID")
+  @Mapping(source = "id", target = "bundleGroupId", qualifiedByName = "toDtoId")
   @Mapping(target = "organisationId", expression = "java(fromOrganizationId(entity.getOrganisation()))")
   @Mapping(target = "organisationName", expression = "java(fromOrganizationName(entity.getOrganisation()))")
   BundleGroupDto toDto(BundleGroup entity);
-
-  @Named("toEntityID")
-  static Long toEntityId(String value) {
-    if (StringUtils.isNotBlank(value)) {
-      return Long.parseLong(value);
-    }
-    return null;
-  }
-
-  @Named("toDtoID")
-  static String fromEntityId(Long value) {
-    return value != null ? value.toString() : null;
-  }
 
   default Organisation toOrganization(String name, String id) {
     Organisation org = null;

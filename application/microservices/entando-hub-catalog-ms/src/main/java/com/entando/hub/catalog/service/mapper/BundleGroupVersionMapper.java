@@ -20,17 +20,17 @@ import java.util.stream.Collectors;
 public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion, BundleGroupVersionDto> {
 
   @Override
-  @Mapping(source = "bundleGroupVersionId", target = "id", qualifiedByName = "toEntityID")
+  @Mapping(source = "bundleGroupVersionId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "bundles", ignore = true)
   BundleGroupVersion toEntity(BundleGroupVersionDto dto);
 
-  @Mapping(source = "dto.bundleGroupVersionId", target = "id", qualifiedByName = "toEntityID")
+  @Mapping(source = "dto.bundleGroupVersionId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "dto.bundleGroup", expression = "java(toEntityBundleGroup(bundleGroup))")
   @Mapping(source = "dto.version", target = "version")
   @Mapping(target = "bundles", ignore = true)
   BundleGroupVersion toEntity(BundleGroupVersionDto dto, BundleGroup bundleGroup);
 
-  @Mapping(source = "dto.bundleGroupVersionId", target = "id", qualifiedByName = "toEntityID")
+  @Mapping(source = "dto.bundleGroupVersionId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "dto.bundleGroup", expression = "java(toEntityBundleGroup(bundleGroup))")
   @Mapping(source = "dto.version", target = "version")
   @Mapping(target = "bundles", ignore = true)
@@ -47,21 +47,8 @@ public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion,
   @Mapping(target = "categories", expression = "java(toDtoCategorie(entity.getBundleGroup()))")
   BundleGroupVersionDto toDto(BundleGroupVersion entity);
 
-  @Named("toEntityID")
-  static Long toEntityId(String value) {
-    if (StringUtils.isNotBlank(value)) {
-      return Long.parseLong(value);
-    }
-    return null;
-  }
-
   default BundleGroup toEntityBundleGroup(BundleGroup bundleGroup) {
     return bundleGroup;
-  }
-
-  @Named("toDtoID")
-  static String fromEntityId(Long value) {
-    return value != null ? value.toString() : null;
   }
 
   default List<Long> toDtoBundles(Set<Bundle> bundles) {

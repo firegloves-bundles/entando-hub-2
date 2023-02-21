@@ -54,7 +54,7 @@ public class BaseMapperTest {
 
     org.setId(ORGANIZATION_ID);
     org.setName(ORGANIZATION_NAME);
-    org.setDescription(ORGANISATION_DESCRIPTION);
+    org.setDescription(ORGANIZATION_DESCRIPTION);
 
     bg.setOrganisation(org);
 
@@ -95,7 +95,7 @@ public class BaseMapperTest {
 
     dto.setBundleGroupId(id);
     dto.setName(BUNDLE_GROUP_NAME);
-    dto.setOrganisationId(BUNDLE_GROUP_ID_STR);
+    dto.setOrganisationId(ORGANIZATION_ID.toString());
     dto.setOrganisationName(ORGANIZATION_NAME);
     dto.setCategories(Arrays.asList("cat 1", "cat 2"));
     dto.setVersionDetails(new BundleGroupVersionView("191045",
@@ -108,7 +108,7 @@ public class BaseMapperTest {
   public static final String BUNDLE_GROUP_ID_STR = "2677";
   public final static String BUNDLE_GROUP_NAME = "bundleGroupName";
   public final static String ORGANIZATION_NAME = "Organization2677Name";
-  public final static String ORGANISATION_DESCRIPTION = "organisation description";
+  public final static String ORGANIZATION_DESCRIPTION = "organisation description";
   public  static final Long ORGANIZATION_ID = 27147L;
   public  static final String ORGANIZATION_ID_STR = "27147";
 

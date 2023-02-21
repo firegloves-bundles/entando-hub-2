@@ -21,11 +21,13 @@ public class OrganisationNoId {
 
   private List<String> bundleGroups;
 
+  @Deprecated
   public OrganisationNoId(String name, String description) {
     this.name = name;
     this.description = description;
   }
 
+  @Deprecated
   public OrganisationNoId(com.entando.hub.catalog.persistence.entity.Organisation entity) {
     this.name = entity.getName();
     this.description = entity.getDescription();
@@ -34,13 +36,13 @@ public class OrganisationNoId {
     }
   }
 
-  public Organisation createEntity(Optional<Long> id) {
-    Organisation ret = new Organisation();
-    ret.setDescription(this.getDescription());
-    ret.setName(this.getName());
-    id.map(Long::valueOf).ifPresent(ret::setId);
-    return ret;
-  }
+//  public Organisation createEntity(Optional<Long> id) {
+//    Organisation ret = new Organisation();
+//    ret.setDescription(this.getDescription());
+//    ret.setName(this.getName());
+//    id.map(Long::valueOf).ifPresent(ret::setId);
+//    return ret;
+//  }
 
 
 }

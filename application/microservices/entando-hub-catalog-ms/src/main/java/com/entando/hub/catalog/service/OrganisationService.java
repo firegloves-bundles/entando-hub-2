@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.rest.domain.OrganisationDto;
 import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class OrganisationService {
      * @param toUpdate
      * @param organisation
      */
-    public void updateMappedBy(com.entando.hub.catalog.persistence.entity.Organisation toUpdate, OrganisationNoId organisation) {
+    public void updateMappedBy(Organisation toUpdate, OrganisationDto organisation) {
     	logger.debug("update organisation entity");
     	Objects.requireNonNull(toUpdate.getId());
         if (organisation.getBundleGroups() != null) {
@@ -67,7 +68,7 @@ public class OrganisationService {
 
 
     @Transactional
-    public Organisation createOrganisation(Organisation organisationEntity, OrganisationNoId organisation) {
+    public Organisation createOrganisation(Organisation organisationEntity, OrganisationDto organisation) {
     	logger.debug("create organisation entity");
         Organisation entity = organisationRepository.save(organisationEntity);
         updateMappedBy(entity, organisation);

@@ -1,8 +1,10 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.domain.OrganisationDto;
 import com.entando.hub.catalog.rest.domain.OrganisationNoId;
 import com.entando.hub.catalog.service.OrganisationService;
+import com.entando.hub.catalog.service.mapper.OrganizationMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,10 +27,11 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 public class OrganisationController {
     
     private final Logger logger = LoggerFactory.getLogger(OrganisationController.class);
-
+    private final OrganizationMapper organizationMapper;
     private final OrganisationService organisationService;
 
-    public OrganisationController(OrganisationService organisationService) {
+    public OrganisationController(OrganizationMapper organizationMapper, OrganisationService organisationService) {
+        this.organizationMapper = organizationMapper;
         this.organisationService = organisationService;
     }
 
@@ -61,9 +64,12 @@ public class OrganisationController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<OrganisationDto> createOrganisation(@RequestBody OrganisationNoId organisation) {
+    public ResponseEntity<OrganisationDto> createOrganisation(@RequestBody OrganisationDto organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
-        com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
+//        com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
+
+
+        Organisation entity = organisationService.createOrganisation(organizationMapper.toEntity(organisation), organisation);
         return new ResponseEntity<>(new OrganisationDto(entity), HttpStatus.CREATED);
     }
 
@@ -75,7 +81,7 @@ public class OrganisationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<OrganisationDto> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationNoId organisation) {
+    public ResponseEntity<OrganisationDto> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationDto organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (!organisationOptional.isPresent()) {
@@ -83,7 +89,10 @@ public class OrganisationController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             //com.entando.hub.catalog.persistence.entity.Organisation storedEntity = organisationOptional.get();
-            com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.of(organisationId)), organisation);
+//            com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.of(organisationId)), organisation);
+            Organisation entity = organizationMapper.toEntity(organisation);
+            entity.setId(organisationId);
+            entity = organisationService.createOrganisation(entity, organisation);
             return new ResponseEntity<>(new OrganisationDto(entity), HttpStatus.OK);
         }
     }

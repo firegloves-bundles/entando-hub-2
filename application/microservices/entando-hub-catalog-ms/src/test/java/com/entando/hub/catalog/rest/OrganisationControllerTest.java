@@ -1,6 +1,11 @@
 package com.entando.hub.catalog.rest;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static net.bytebuddy.implementation.FixedValue.nullValue;
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -9,6 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.domain.OrganisationDto;
+import com.entando.hub.catalog.service.mapper.CategoryMapper;
+import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
+import com.entando.hub.catalog.service.mapper.OrganizationMapper;
+import com.entando.hub.catalog.service.mapper.OrganizationMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +27,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -34,7 +45,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(OrganisationController.class)
+@ComponentScan(basePackageClasses = {OrganizationMapper.class, OrganizationMapperImpl.class})
 public class OrganisationControllerTest {
+
+	@Autowired
+	private OrganizationMapper organizationMapper;
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -98,8 +113,16 @@ public class OrganisationControllerTest {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
-		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
-		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.empty()),organisationNoId)).thenReturn(organisation);
+//		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
+//		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.empty()),organisationNoId)).thenReturn(organisation);
+		OrganisationDto organisationNoId = new OrganisationDto();
+		organisationNoId.setName(organisationNoId.getName());
+		organisationNoId.setDescription(organisationNoId.getDescription());
+
+		Organisation entity = organizationMapper.toEntity(organisationNoId);
+		assertNull(entity.getId());
+		assertNull(organisationNoId.getOrganisationId());
+		Mockito.when(organisationService.createOrganisation(entity, organisationNoId)).thenReturn(organisation);
 		mockMvc.perform(MockMvcRequestBuilders.post(URI).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(organisationNoId)).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -115,9 +138,27 @@ public class OrganisationControllerTest {
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
 		Long organisationId = organisation.getId();
-		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
+		OrganisationDto organisationNoId = new OrganisationDto(); // new OrganisationDto(organisation.getName(), organisation.getDescription());
+		organisationNoId.setName(organisation.getName());
+		organisationNoId.setDescription(organisation.getDescription());
+		// we have the organization id!
+		organisationNoId.setOrganisationId(organisationId.toString());
+
+
+//		OrganisationDto organisationNoId = new OrganisationDto();
+//		organisationNoId.setName(organisationNoId.getName());
+//		organisationNoId.setDescription(organisationNoId.getDescription());
+
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
-		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.of(organisationId)),organisationNoId)).thenReturn(organisation);
+//		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.of(organisationId)),organisationNoId)).thenReturn(organisation);
+
+		Organisation entity = organizationMapper.toEntity(organisationNoId);
+		assertNotNull(entity.getId());
+		assertNotNull(organisationNoId.getOrganisationId());
+		Mockito.when(organisationService.createOrganisation(entity,organisationNoId)).thenReturn(organisation);
+
+		System.out.println(">>> " + asJsonString(organisationNoId));
+
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + organisationId).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(organisationNoId)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -168,7 +168,6 @@ const BundleGroupForm = ({
     const organisationChangeHandler = (e) => {
         const selectedOrganisationId = e.target.value
         changeBundleGroup("organisationId", selectedOrganisationId)
-        changeBundleGroup("catalogId", orgList.find(org => org.organisationId === selectedOrganisationId)?.catalogId)
     }
 
     const categoryChangeHandler = (e) => {

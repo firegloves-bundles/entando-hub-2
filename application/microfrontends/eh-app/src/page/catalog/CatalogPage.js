@@ -5,7 +5,7 @@ import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNew
 import React, { useCallback, useEffect, useState } from "react";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
@@ -66,25 +66,17 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     let orgCatalogMap;
 
     const getCatOrgList = async () => {
-      const data = (await getAllCategories(apiUrl));
+      const data = await getAllCategories(apiUrl);
+
       if (data.isError) {
         setIsError(data.isError)
         setLoading(false)
       }
+  
       setCategories(data.categoryList);
 
       const { organisationList } = await getAllOrganisations(apiUrl);
-      const { data: privateCatalogs, isError } = await getPrivateCatalogs(apiUrl);
-
-      orgCatalogMap = isError ? {} : privateCatalogs.reduce((m, { id, organisationId }) => ({
-        [organisationId]: id,
-        ...m,
-      }), {});
-
-      setOrgList(organisationList.map(org => ({
-        ...org,
-        catalogId: orgCatalogMap[org.organisationId],
-      })));
+      setOrgList(organisationList);
     };
 
     (async () => {
@@ -96,10 +88,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
           const portalUserOrgs = portalUserResp.portalUser.organisations;
           setOrgLength(portalUserOrgs.length);
           setPortalUserPresent(true);
-          setCurrentUserOrg({
-            ...portalUserOrgs[0],
-            catalogId: orgCatalogMap[portalUserOrgs[0].organisationId],
-          });
+          setCurrentUserOrg(portalUserOrgs[0]);
         } else if (isMounted && portalUserResp && portalUserResp.isError) {
           setOrgLength(0);
           setPortalUserPresent(false);

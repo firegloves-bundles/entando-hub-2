@@ -21,4 +21,5 @@ public interface PrivateCatalogApiKeyRepository extends JpaRepository<PrivateCat
     @Query("select p from PrivateCatalogApiKey p where p.apiKey = :apiKey")
     Optional<PrivateCatalogApiKey> findByApiKey(@Param("apiKey") String apiKey);
 
+    boolean existsByApiKey(String apiKey);
 }

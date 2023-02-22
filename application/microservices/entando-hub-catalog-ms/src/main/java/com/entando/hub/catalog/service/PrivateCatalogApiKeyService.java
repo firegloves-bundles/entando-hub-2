@@ -10,6 +10,8 @@ import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
+import liquibase.util.ObjectUtil;
+import liquibase.util.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -109,6 +111,10 @@ public class PrivateCatalogApiKeyService {
             String errorMessage = "Invalid Api key";
             throw new NotFoundException(errorMessage);
         }
+    }
+
+    public boolean doesApiKeyExist(String apiKey) {
+        return this.privateCatalogApiKeyRepository.existsByApiKey(apiKey);
     }
 
     public static Pageable getPageable(Integer pageSize, int pageNum) {

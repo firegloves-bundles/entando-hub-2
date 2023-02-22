@@ -1,10 +1,14 @@
 package com.entando.hub.catalog.config;
 
+
+import com.entando.hub.catalog.config.filter.ApiKeyFilter;
+import com.entando.hub.catalog.service.CategoryService;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -67,5 +71,13 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS,"/api/**").permitAll()
                 .anyRequest()
                 .permitAll();
+    }
+
+    @Bean
+    public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter(CategoryService categoryService) {
+        FilterRegistrationBean<ApiKeyFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new ApiKeyFilter(categoryService));
+        registrationBean.addUrlPatterns("/ent/api/*", "/appbuilder/api/*");
+        return registrationBean;
     }
 }

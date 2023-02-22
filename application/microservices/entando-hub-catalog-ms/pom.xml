@@ -235,15 +235,11 @@
                             </goals>
                             </execution>
                             <execution>
-                            <id>report</id>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                            <configuration>
-                                <formats>
-                                <format>XML</format>
-                                </formats>
-                            </configuration>
+                                <id>report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <phase>test</phase>
                             </execution>
                         </executions>
                     </plugin>

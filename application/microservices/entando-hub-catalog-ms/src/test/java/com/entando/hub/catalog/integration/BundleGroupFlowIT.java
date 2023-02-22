@@ -138,9 +138,9 @@ class BundleGroupFlowIT {
     @WithMockUser(roles={ADMIN})
     void shouldCreateBundleGroupAndAssociationWithCatalogWhenIsPrivate() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
-        Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
+        catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
 
-        BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.of(catalogSaved.getId()));
+        BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.empty());
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
@@ -151,16 +151,35 @@ class BundleGroupFlowIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.bundleGroupId").value(stubBundleGroup.getId().toString()))
                 .andExpect(jsonPath("$.name").value(stubBundleGroup.getName()))
-                .andExpect(jsonPath("$.catalogId").value(stubBundleGroup.getCatalogId()));
+                .andExpect(jsonPath("$.publicCatalog").value(stubBundleGroup.getPublicCatalog()));
+    }
+
+    @Test
+    @WithMockUser(roles={ADMIN})
+    void shouldCreateBundleGroupAndNotAssociationWithPrivateCatalogWhenIsPublic() throws Exception {
+        Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
+
+        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
+        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.bundleGroupId").value(stubBundleGroup.getId().toString()))
+                .andExpect(jsonPath("$.name").value(stubBundleGroup.getName()))
+                .andExpect(jsonPath("$.publicCatalog").value(stubBundleGroup.getPublicCatalog()));
     }
 
     @Test
     @WithMockUser(roles={ADMIN})
     void shouldCreateBundleGroupAndAssociationWithPublicAndPrivateCatalog() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
-        Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
+        catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
 
-        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
+        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
@@ -171,16 +190,32 @@ class BundleGroupFlowIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.bundleGroupId").value(stubBundleGroup.getId().toString()))
                 .andExpect(jsonPath("$.name").value(stubBundleGroup.getName()))
-                .andExpect(jsonPath("$.publicCatalog").value(stubBundleGroup.getPublicCatalog()))
-                .andExpect(jsonPath("$.catalogId").value(stubBundleGroup.getCatalogId()));
+                .andExpect(jsonPath("$.publicCatalog").value(stubBundleGroup.getPublicCatalog()));
+    }
+
+    @Test
+    @WithMockUser(roles={ADMIN})
+    void shouldNotCreateBundleGroupAndWhenIsNotPublicAndPrivateCatalogIsNotFound() throws Exception {
+        Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
+
+        BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.empty());
+        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Private Catalog is required for non-public bundle groups"));
     }
 
     @Test
     @WithMockUser(roles={ADMIN})
     void shouldUpdateBundleGroup() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
-        Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
-        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
+        catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
+        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         bundleGroupRepository.save(stubBundleGroup);
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
@@ -198,8 +233,8 @@ class BundleGroupFlowIT {
     @WithMockUser(roles={ADMIN})
     void shouldReturnNotFoundWhenUpdateBundleGroupThatDoesntExist() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
-        Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
-        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
+        catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
+        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
 
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
@@ -214,8 +249,8 @@ class BundleGroupFlowIT {
     @WithMockUser(roles={ADMIN})
     void shouldReturnConflictWhenBundleGroupIsNotEditable() throws Exception {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
-        Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
-        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId()));
+        catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
+        BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroup savedStubBundleGroup = bundleGroupRepository.save(stubBundleGroup);
 
         BundleGroupVersion bgv1 = new BundleGroupVersion()
@@ -276,7 +311,7 @@ class BundleGroupFlowIT {
                 .setName(BUNDLE_GROUP_NAME)
                 .setOrganisation(organisation)
                 .setPublicCatalog(publicCatalog)
-                .setCatalogId(publicCatalog ? null : catalogId.get());
+                .setCatalogId(catalogId.orElse(null));
     }
 
 }

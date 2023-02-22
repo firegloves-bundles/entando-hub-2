@@ -49,14 +49,12 @@ public class BundleGroupController {
     private final BundleGroupService bundleGroupService;
     private final SecurityHelperService securityHelperService;
     private final BundleGroupVersionService bundleGroupVersionService;
-    private final CatalogService catalogService;
     private final OrganisationService organisationService;
 
     public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, CatalogService catalogService, OrganisationService organisationService) {
         this.bundleGroupService = bundleGroupService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupVersionService = bundleGroupVersionService;
-        this.catalogService = catalogService;
         this.organisationService = organisationService;
     }
 
@@ -104,18 +102,8 @@ public class BundleGroupController {
         if (securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())) {
             throw new AccessDeniedException(String.format("Only %s users can create bundle groups for any organisation, the other ones can create bundle groups only for their organisation", ADMIN));
         }
-        this.validateCatalogFields(bundleGroup);
-    }
-
-    protected void validateCatalogFields(BundleGroupNoId bundleGroup) {
-        if (bundleGroup.getPublicCatalog() == null){
-            bundleGroup.setPublicCatalog(true);
-        }
-        if (!bundleGroup.getPublicCatalog() && bundleGroup.getCatalogId() == null){
-            throw new IllegalArgumentException("Catalog ID is required for non-public bundle groups");
-        }
-        if (bundleGroup.getCatalogId() != null && !catalogService.existCatalogById(bundleGroup.getCatalogId())){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Catalog with ID %d not found", bundleGroup.getCatalogId()));
+        if(bundleGroup.getPublicCatalog() == null) {
+             bundleGroup.setPublicCatalog(true);
         }
     }
 
@@ -194,7 +182,6 @@ public class BundleGroupController {
         protected final String name;
         protected Long organisationId;
         private Boolean publicCatalog;
-        private Long catalogId;
 
         @Schema(example = "Entando")
         protected String organisationName;
@@ -205,13 +192,11 @@ public class BundleGroupController {
             this.name = name;
             this.organisationId = organisationId;
             this.publicCatalog = publicCatalog;
-            this.catalogId = catalogId;
         }
 
         public BundleGroupNoId(BundleGroup entity) {
             this.name = entity.getName();
             this.publicCatalog = entity.getPublicCatalog();
-            this.catalogId = entity.getCatalogId();
 
             if (entity.getOrganisation() != null) {
                 this.organisationId = entity.getOrganisation().getId();
@@ -226,7 +211,7 @@ public class BundleGroupController {
             BundleGroup entity = new BundleGroup();
             entity.setName(this.getName());
             entity.setPublicCatalog(this.publicCatalog);
-            entity.setCatalogId(this.catalogId);
+
             if (this.organisationId != null) {
                 Organisation organisation = new Organisation();
                 organisation.setId(this.organisationId);

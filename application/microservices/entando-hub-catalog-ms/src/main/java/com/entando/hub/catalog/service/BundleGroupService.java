@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.entando.hub.catalog.persistence.CatalogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.BundleGroupController;
+import com.entando.hub.catalog.persistence.entity.Catalog;
 
 @Service
 public class BundleGroupService {
@@ -26,15 +28,17 @@ public class BundleGroupService {
     final private CategoryRepository categoryRepository;
     private final BundleGroupVersionService bundleGroupVersionService;
 
+    private final CatalogRepository catalogRepository;
+
     private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 
-    		BundleGroupVersionService bundleGroupVersionService,
-    		BundleService bundleService) {
+    		BundleGroupVersionService bundleGroupVersionService, CatalogRepository catalogRepository) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
+        this.catalogRepository = catalogRepository;
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
@@ -66,9 +70,22 @@ public class BundleGroupService {
     @Transactional
     public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
     	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
+        this.associatePrivateCatalog(bundleGroupEntity);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
         updateMappedBy(entity, bundleGroupNoId);
         return entity;
+    }
+
+    private void associatePrivateCatalog(BundleGroup bundleGroupEntity){
+        logger.debug("{}: associatePrivateCatalog: get private catalog by organisationId if exists", CLASS_NAME);
+        Long organisationId = bundleGroupEntity.getOrganisation().getId();
+        if(catalogRepository.existsByOrganisationId(organisationId)) {
+            logger.debug("{}: associatePrivateCatalog: private catalog found for organisation {}", CLASS_NAME, organisationId);
+            Catalog catalog = catalogRepository.findByOrganisationId(organisationId);
+            bundleGroupEntity.setCatalogId(catalog.getId());
+        } else if (!bundleGroupEntity.getPublicCatalog()){
+                throw new IllegalArgumentException("Private Catalog is required for non-public bundle groups");
+        }
     }
 
     public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {

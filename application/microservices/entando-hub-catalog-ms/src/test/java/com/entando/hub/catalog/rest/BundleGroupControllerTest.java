@@ -126,22 +126,6 @@ class BundleGroupControllerTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidCatalogId() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, false, 1L);
-
-        when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
-        when(catalogService.existCatalogById(bundleGroup.getCatalogId())).thenReturn(false);
-
-        Exception exception = Assertions.assertThrows(ResponseStatusException.class, () -> {
-            bundleGroupController.createBundleGroup(bundleGroup);
-        });
-
-        String expectedMessage = String.format("Catalog with ID %d not found", bundleGroup.getCatalogId());
-        String actualMessage = exception.getMessage();
-        Assertions.assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
     void shouldThrowAccessDeniedExceptionWhenCreateBundleGroupWithInvalidUser() {
         BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
 

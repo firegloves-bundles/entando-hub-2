@@ -99,8 +99,9 @@ public class BundleController {
         	logger.warn("Bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            com.entando.hub.catalog.persistence.entity.Bundle eBundle = bundleMapper.toEntity(bundleDto);
-            com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(eBundle);
+            bundleDto.setBundleId(bundleId);
+            Bundle eBundle = bundleMapper.toEntity(bundleDto);
+            Bundle entity = bundleService.createBundle(eBundle);
             return new ResponseEntity<>(bundleMapper.toDto(entity), HttpStatus.OK);
         }
     }

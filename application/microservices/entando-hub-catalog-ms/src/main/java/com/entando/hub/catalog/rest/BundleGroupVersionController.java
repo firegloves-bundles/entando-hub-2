@@ -153,10 +153,11 @@ public class BundleGroupVersionController {
             }
 //            BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.of(bundleGroupVersionId), bundleGroupVersionOptional.get().getBundleGroup()), bundleGroupVersionView);
 
-          final BundleGroup bundleGroup = bundleGroupVersionOptional.get().getBundleGroup();
-          BundleGroupVersion bundlegroupVersionEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionView, bundleGroup);
-          BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundlegroupVersionEntity, bundleGroupVersionView);
-          BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(saved);
+            final BundleGroup bundleGroup = bundleGroupVersionOptional.get().getBundleGroup();
+            bundleGroupVersionView.setBundleGroupVersionId(bundleGroupVersionId);
+            BundleGroupVersion bundlegroupVersionEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionView, bundleGroup);
+            BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundlegroupVersionEntity, bundleGroupVersionView);
+            BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(saved);
             return new ResponseEntity<>(dto, HttpStatus.OK);
         }
     }

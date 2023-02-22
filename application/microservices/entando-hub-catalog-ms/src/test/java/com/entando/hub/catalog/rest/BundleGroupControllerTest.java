@@ -213,6 +213,8 @@ public class BundleGroupControllerTest {
 
 		// EHUB-296
 		BundleGroupDto dto = bundleGroupMapper.toDto(bundleGroupIn);
+		BundleGroupDto dtoNoId = bundleGroupMapper.toDto(bundleGroupIn);
+		dtoNoId.setBundleGroupId(null); // simulates BundleGroupNoId
 
 		Mockito.when(bundleGroupVersionService.isBundleGroupEditable(bundleGroupOut)).thenReturn(true);
 		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(true);
@@ -220,8 +222,7 @@ public class BundleGroupControllerTest {
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroupOut));
 //		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.empty()), bundleGroupNoId)).thenReturn(bundleGroup);
 //		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupNoId.createEntity(Optional.of(bundleGroupId)), bundleGroupNoId)).thenReturn(bundleGroup);
-		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dto), dto)).thenReturn(bundleGroupOut);
-		dto.setBundleGroupId(null); // simulates BundleGroupNoId
+		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dtoNoId), dto)).thenReturn(bundleGroupOut);
 		Mockito.when(bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(dto), dto)).thenReturn(bundleGroupOut);
 
 		mockMvc.perform(MockMvcRequestBuilders.post(URI + bundleGroupId)

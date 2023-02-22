@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
-import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Before;
@@ -55,7 +53,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(BundleGroupVersionController.class)
 @WithMockUser(username="admin",roles={ADMIN})
 @ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
-public class BundleGroupDtoVersionControllerTest {
+public class BundleGroupVersionControllerTest {
 
 	@Autowired
 	private BundleGroupVersionMapper bundleGroupVersionMapper;

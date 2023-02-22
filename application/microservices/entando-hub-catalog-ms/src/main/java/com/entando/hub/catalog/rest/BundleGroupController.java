@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.rest.dto.CategoryDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.service.BundleGroupService;
@@ -118,7 +119,7 @@ public class BundleGroupController {
             //if the user is not ADMIN
             if (!securityHelperService.hasRoles(Set.of(ADMIN))) {
                 //I'm going to check the organisation
-                com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroupEntity = bundleGroupOptional.get();
+                BundleGroup bundleGroupEntity = bundleGroupOptional.get();
 
                 //must exist and the user mat be in it
                 if (bundleGroupEntity.getOrganisation() == null || !securityHelperService.userIsInTheOrganisation(bundleGroupEntity.getOrganisation().getId())) {
@@ -127,7 +128,8 @@ public class BundleGroupController {
                 }
             }
             // com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
-            com.entando.hub.catalog.persistence.entity.BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(bundleGroup), bundleGroup);
+            bundleGroup.setBundleGroupId(bundleGroupId);
+            BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(bundleGroup), bundleGroup);
         BundleGroupDto dto = bundleGroupMapper.toDto(saved);
             return new ResponseEntity<>(dto, HttpStatus.OK);
         }

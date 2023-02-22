@@ -59,7 +59,8 @@
       "description": "Description",
       "search": "Search",
       "bundleUrl": "Bundle URI",
-      "sourceUrl": "Source URL"
+      "sourceUrl": "Source URL",
+      "privateCatalog": "Private Catalog"
     },
     "button": {
       "add": "Add",
@@ -78,7 +79,9 @@
       "selectOneUsername": "Select one Username",
       "newVersion": "New Version",
       "viewVersions": "View Versions",
-      "submit": "Submit"
+      "submit": "Submit",
+      "createPrivateCatalog": "Create Private Catalog",
+      "navigatePrivateCatalog": "Go to Private Catalog"
     },
     "pagination": {
       "page": "page",
@@ -117,6 +120,8 @@
     "impossibleToLoadUsers": "Impossible to load users.",
     "impossibleToDeleteUser": "Impossible to delete user.",
     "impossibleToRemoveUser": "Impossible to remove user.",
+    "impossibleToLoadPrivateCatalogs": "Impossible to load private catalogs",
+    "impossibleToCreatePrivateCatalog": "Impossible to create private catalog",
     "userRemovedFromTheOrganisation": "User removed from the organisation",
     "unableToAddBundleGroupVersion": "Unable to add bundle group version.",
     "impossibleToLoadBundleGroupVersions": "Impossible to load bundle group versions",

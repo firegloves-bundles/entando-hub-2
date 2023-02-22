@@ -326,8 +326,8 @@ const BundleGroupForm = ({
         createVersionDetailsObj("bundles", newBundleList)
     }
 
-    const handleIsPublicChange = (value) => {
-        changeBundleGroup('isPublic', value);
+    const handlePublicCatalogChange = (value) => {
+        changeBundleGroup('publicCatalog', value);
     };
 
     const shouldDisable = disabled || (!bundleGroup.isEditable && mode === "Edit");
@@ -350,10 +350,10 @@ const BundleGroupForm = ({
                         <Column sm={16} md={8} lg={{ span: 8, offset: 8 }}>
                             <Checkbox
                                 disabled={disabled}
-                                id={"isPublic"}
+                                id="publicCatalog"
                                 labelText={`${i18n.t('component.bundleModalFields.includeInPublicCatalog')}`}
-                                checked={!!bundleGroup.isPublic}
-                                onChange={handleIsPublicChange}
+                                checked={!!bundleGroup.publicCatalog}
+                                onChange={handlePublicCatalogChange}
                             />
                         </Column>
                     </Row>

@@ -124,7 +124,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         categories: [defaultCategoryId],
                         organisationId,
                         catalogId,
-                        isPublic: false,
+                        publicCatalog: false,
                         versionDetails: {
                             bundleGroupVersionId: null,
                             description: "",

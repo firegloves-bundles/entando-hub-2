@@ -5,7 +5,6 @@ import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupDTO;
 import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -39,21 +38,19 @@ class BundleGroupControllerTest {
     @Mock
     private BundleGroupVersionService bundleGroupVersionService;
     @Mock
-    private CatalogService catalogService;
-    @Mock
     private OrganisationService organisationService;
 
 
     private BundleGroupController bundleGroupController;
     @BeforeEach
     void setUp() {
-        this.bundleGroupController = new BundleGroupController(bundleGroupService, securityHelperService, bundleGroupVersionService, catalogService, organisationService);
+        this.bundleGroupController = new BundleGroupController(bundleGroupService, securityHelperService, bundleGroupVersionService, organisationService);
     }
 
     @Test
     void shouldGetBundleGroupListByOrganisationId() {
         long organisationId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         List<BundleGroup> listBundleGroup = Arrays.asList(bundleGroup.createEntity(Optional.of(1L)));
         List<BundleGroupDTO> expectedListBundleGroupDTO = Arrays.asList(stubBundleGroupDTO(bundleGroup.createEntity(Optional.of(1L))));
 
@@ -67,7 +64,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldGetBundleGroupById(){
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
         BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
@@ -83,7 +80,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldReturnNotFoundWhenBundleGroupNotExists(){
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
         BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
@@ -97,7 +94,7 @@ class BundleGroupControllerTest {
 
     @Test
     void shouldCreateBundleGroup() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
@@ -111,7 +108,7 @@ class BundleGroupControllerTest {
 
     @Test
     void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidOrganisationId() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, 1L);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(false);
 
@@ -127,7 +124,7 @@ class BundleGroupControllerTest {
 
     @Test
     void shouldThrowAccessDeniedExceptionWhenCreateBundleGroupWithInvalidUser() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())).thenReturn(true);
@@ -146,7 +143,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldUpdateBundleGroup() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
@@ -164,7 +161,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldThrowNotFoundExceptionWhenUpdateBundleGroupWithBundleGroupNotExisting() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(false);
@@ -182,7 +179,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldThrowConflictExceptionWhenUpdateBundleGroupNotEditable() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true, null);
+        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
         BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);

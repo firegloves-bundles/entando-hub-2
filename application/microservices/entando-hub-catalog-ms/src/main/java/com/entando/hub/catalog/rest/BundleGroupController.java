@@ -12,7 +12,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +50,7 @@ public class BundleGroupController {
     private final BundleGroupVersionService bundleGroupVersionService;
     private final OrganisationService organisationService;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, CatalogService catalogService, OrganisationService organisationService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, OrganisationService organisationService) {
         this.bundleGroupService = bundleGroupService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupVersionService = bundleGroupVersionService;
@@ -164,8 +163,8 @@ public class BundleGroupController {
     public static class BundleGroupDTO extends BundleGroupNoId {
         private final String bundleGroupId;
 
-        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean publicCatalog, Long catalogId) {
-            super(name, organizationId, publicCatalog, catalogId);
+        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean publicCatalog) {
+            super(name, organizationId, publicCatalog);
             this.bundleGroupId = bundleGroupId;
         }
 
@@ -188,7 +187,7 @@ public class BundleGroupController {
         protected List<String> categories;
         protected BundleGroupVersionView versionDetails;
 
-        public BundleGroupNoId(String name ,Long organisationId, Boolean publicCatalog, Long catalogId) {
+        public BundleGroupNoId(String name ,Long organisationId, Boolean publicCatalog) {
             this.name = name;
             this.organisationId = organisationId;
             this.publicCatalog = publicCatalog;

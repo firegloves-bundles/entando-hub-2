@@ -23,6 +23,7 @@ jobs:
         bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
         bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
         ent bundle build --all --stdout --fail-fast
+        echo "### TEST failsafe reports ###" && ls microservices/entando-hub-catalog-ms/target/failsafe-reports -al
         cd microservices/entando-hub-catalog-ms && mvn sonar:sonar && cd ../..
         cd microfrontends/eh-login && ent npm run sonar && cd ../..
         cd microfrontends/eh-app && ent npm run sonar && cd ../..

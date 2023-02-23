@@ -59,7 +59,10 @@
       "description": "Descrizione",
       "search": "Ricerca",
       "bundleUrl": "URI del bundle",
-      "sourceUrl": "URL di origine"
+      "sourceUrl": "URL di origine",
+      "privateCatalog": "Catalogo privato",
+      "createPrivateCatalog": "Crea catalogo privato",
+      "navigatePrivateCatalog": "Vai al catalogo privato"
     },
     "button": {
       "add": "Aggiungi",
@@ -116,6 +119,8 @@
     "impossibleToLoadUsers": "Impossibile caricare gli utenti.",
     "impossibleToDeleteUser": "Impossibile eliminare l'utente.",
     "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
+    "impossibleToLoadPrivateCatalogs": "Impossibile caricare cataloghi privati",
+    "impossibleToCreatePrivateCatalog": "Impossibile creare un catalogo privato",
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
     "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",

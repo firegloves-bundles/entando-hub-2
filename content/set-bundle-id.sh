@@ -14,6 +14,8 @@
 # minimum example usage ./set-bundle-id.sh -o mydockerorg
 # full example usage ./set-bundle-id.sh -o mydockerorg -f microfrontends -a MY_CUSTOM_PLACEHOLDER -c MY_CUSTOM_PLACEHOLDER_2
 
+set -x
+
 while [ "$#" -gt 0 ]; do
   case "$1" in
     "-f") FOLDER_OVERRIDE="$2";shift;;
@@ -47,7 +49,7 @@ echo "Content Bundle ID: ${CONTENT_BUNDLE_ID}"
 echo "#########################"
 echo "Replacing..."
 
-grep -rl "${APPLICATION_TARGET}" "${FOLDER}" | xargs sed -i "" -e "s/${APPLICATION_TARGET}/${APPLICATION_BUNDLE_ID}/g"
-grep -rl "${CONTENT_TARGET}" "${FOLDER}" | xargs sed -i "" -e "s/${CONTENT_TARGET}/${CONTENT_BUNDLE_ID}/g"
+grep -rl "${APPLICATION_TARGET}" "${FOLDER}" | xargs sed -ie "s/${APPLICATION_TARGET}/${APPLICATION_BUNDLE_ID}/g"
+grep -rl "${CONTENT_TARGET}" "${FOLDER}" | xargs sed -ie "s/${CONTENT_TARGET}/${CONTENT_BUNDLE_ID}/g"
 
 echo "...DONE"

@@ -14,9 +14,10 @@ import {
   TableToolbar,
   TableToolbarContent,
 } from "carbon-components-react"
+import { Password16 as KeyIcon } from '@carbon/icons-react'
 import OrganisationManagementOverflowMenu from "./overflow-menu/OrganisationManagementOverflowMenu"
 import {ModalAddNewOrganisation} from "./modal-add-new-organisation/ModalAddNewOrganisation"
-import {getAllOrganisations,} from "../../integration/Integration"
+import { createPrivateCatalog, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration"
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb"
 import "./organisation-managment-page.scss"
 import i18n from "../../i18n"
@@ -64,6 +65,10 @@ const headers = [
     header: "Description",
   },
   {
+    key: "privateCatalog",
+    header: "Private Catalog",
+  },
+  {
     key: "overflow",
     header: "",
   },
@@ -82,16 +87,22 @@ const OrganisationManagementPage = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      const organisationList = (await getAllOrganisations(apiUrl)).organisationList;
-      if (organisationList === undefined) {
-        setIsLoading(false)
-      }
+      const { organisationList } = await getAllOrganisations(apiUrl);
+
+      const { data: privateCatalogs } = await getPrivateCatalogs(apiUrl);
+      const privateCatalogMap = privateCatalogs.reduce((m, { organisationId }) => ({
+        [organisationId]: true,
+        ...m,
+      }), {});
+      
       setOrganisations(organisationList.map(organisation=>{
         return {
           id: organisation.organisationId,
+          privateCatalog: !!privateCatalogMap[organisation.organisationId],
           ...organisation
         }
       }))
+
       setIsLoading(false)
     })()
   }, [apiUrl, reloadToken])
@@ -99,6 +110,21 @@ const OrganisationManagementPage = () => {
   const onAfterSubmit = () => {
     setReloadToken(new Date().getTime().toString())
   }
+
+  const handleCreatePrivateCatalog = async (organisationId) => {
+    setIsLoading(true);
+    const { data, isError } = await createPrivateCatalog(apiUrl, organisationId);
+
+    if (!isError) {
+      setOrganisations(organisations.map(org => ({
+        ...org,
+        privateCatalog: +org.organisationId === data.organisationId || org.privateCatalog,
+      })));
+    }
+      
+    setIsLoading(false);
+  };
+
   return (
     <>
       <Content className="OrganizationManagmentPage">
@@ -135,7 +161,7 @@ const OrganisationManagementPage = () => {
                         <TableRow>
                           {headers.map((header) => (
                             <TableHeader {...getHeaderProps({ header })}>
-                              {header.header ? i18n.t(`component.bundleModalFields.${header.header.toLowerCase()}`) : ''}
+                              {header.header ? i18n.t(`component.bundleModalFields.${header.key}`) : ''}
                             </TableHeader>
                           ))}
                         </TableRow>
@@ -143,27 +169,36 @@ const OrganisationManagementPage = () => {
                       <TableBody>
                         {rows.map((row) => (
                           <TableRow {...getRowProps({ row })}>
-                            {row.cells.map((cell, index) => {
-                              if (cell.id !== row.id + ":overflow") {
+                            {row.cells.map((cell) => {
+                              if (cell.info.header === 'overflow') {
+                                return (
+                                  <TableCell key={cell.id}>
+                                    <OrganisationManagementOverflowMenu
+                                      organisationObj={{
+                                        organisationId: row.id,
+                                        name: row.cells[0].value,
+                                        description: row.cells[1].value,
+                                        privateCatalog: row.cells[2].value,
+                                      }}
+                                      onAfterSubmit={onAfterSubmit}
+                                      setReloadToken={setReloadToken}
+                                      onCreatePrivateCatalog={() => handleCreatePrivateCatalog(row.id)}
+                                      onNavigatePrivateCatalog={() => {}}
+                                    />
+                                  </TableCell>
+                                )
+                              } else if (cell.info.header === 'privateCatalog') {
+                                return (
+                                  <TableCell key={cell.id} style={{ textAlign: 'center' }}>
+                                    {cell.value && <KeyIcon />}
+                                  </TableCell>
+                                )
+                              } else
                                 return (
                                   <TableCell key={cell.id}>
                                     {cell.value}
                                   </TableCell>
                                 )
-                              }
-                              return (
-                                <TableCell key={cell.id}>
-                                  <OrganisationManagementOverflowMenu
-                                    organisationObj={{
-                                      organisationId: row.id,
-                                      name: row.cells[0].value,
-                                      description: row.cells[1].value
-                                    }}
-                                    onAfterSubmit={onAfterSubmit}
-                                    setReloadToken={setReloadToken}
-                                  />
-                                </TableCell>
-                              )
                             })}
                           </TableRow>
                         ))}

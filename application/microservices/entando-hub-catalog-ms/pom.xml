@@ -25,13 +25,9 @@
         <github.organization>entando-samples</github.organization>
         <sonar.organization>${github.organization}</sonar.organization>
         <sonar.projectKey>${github.organization}_${project.artifactId}</sonar.projectKey>
-        <!--<sonar.jacoco.reportPaths>${project.build.directory}/jacoco-merged.exec</sonar.jacoco.reportPaths>
-        <sonar.jacoco.xmlReportPaths>${project.build.directory}/jacoco-merged.exec</sonar.jacoco.xmlReportPaths> -->
         <sonar.junit.reportPaths>
             ${project.basedir}/target/surefire-reports/,${project.basedir}/target/failsafe-reports/
         </sonar.junit.reportPaths>
-        <sonar.jacoco.xmlReportPaths> ${project.basedir}/target/surefire-reports/,${project.basedir}/target/failsafe-reports/</sonar.jacoco.xmlReportPaths>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/surefire-reports/,${project.basedir}/target/failsafe-reports/</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -258,63 +254,22 @@
                            </execution>
                            <execution>
                                <id>report</id>
-                               <phase>test</phase>
                                <goals>
                                    <goal>report</goal>
                                </goals>
                            </execution>
                            <execution>
                                <id>report-integration</id>
-                               <phase>test</phase>
                                <goals>
                                    <goal>report-integration</goal>
                                </goals>
                            </execution>
-                           <!-- <execution>
-                               <id>post-integration-test</id>
-                               <phase>test</phase>
-                               <goals>
-                                   <goal>report-aggregate</goal>
-                               </goals>
-                           </execution>
-                           <execution>
-                               <id>merge</id>
-                               <phase>test</phase>
-                               <goals>
-                                   <goal>merge</goal>
-                               </goals>
-                               <configuration>
-                                   <fileSets>
-                                       <fileSet>
-                                           <directory>
-                                               target
-                                           </directory>
-                                           <includes>
-                                               <include>jacoco.exec</include>
-                                               <include>jacoco-it.exec</include>
-                                           </includes>
-                                       </fileSet>
-                                   </fileSets>
-                                   <destFile>
-                                       ${project.build.directory}/jacoco-merged.exec
-                                   </destFile>
-                               </configuration>
-                           </execution> -->
                        </executions>
                    </plugin>
                    <plugin>
                        <groupId>org.apache.maven.plugins</groupId>
                        <artifactId>maven-failsafe-plugin</artifactId>
-                       <version>3.0.0-M5</version>
-                       <executions>
-                           <execution>
-                               <goals>
-                                   <goal>integration-test</goal>
-                                   <goal>verify</goal>
-                               </goals>
-                               <phase>test</phase>
-                           </execution>
-                       </executions>
+                       <version>3.0.0-M9</version>
                    </plugin>
                </plugins>
            </build>

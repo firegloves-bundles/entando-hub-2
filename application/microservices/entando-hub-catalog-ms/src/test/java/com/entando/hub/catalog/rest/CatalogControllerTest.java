@@ -1,10 +1,21 @@
 package com.entando.hub.catalog.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
 import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import javassist.NotFoundException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,29 +24,29 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import static org.assertj.core.api.Assertions.assertThat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CatalogControllerTest {
 
     @Mock
     private CatalogService catalogService;
+    @Mock
+    private SecurityHelperService securityHelperService;
 
     private CatalogController catalogController;
+
     @BeforeEach
     void setUp() {
-        this.catalogController = new CatalogController(catalogService);
+        this.catalogController = new CatalogController(catalogService, securityHelperService);
     }
 
     @Test
     void shouldGetCatalogs() {
         List<Catalog> expectedCatalogs = Arrays.asList(stubCatalog(), stubCatalog());
         List<CatalogDTO> expectedCatalogsDTO = Arrays.asList(stubCatalogDTO(), stubCatalogDTO());
-        when(catalogService.getCatalogs()).thenReturn(expectedCatalogs);
+        when(catalogService.getCatalogs(anyString(), anyBoolean())).thenReturn(expectedCatalogs);
+        when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         ResponseEntity<List<CatalogDTO>> responseEntity = catalogController.getCatalogs();
 
@@ -47,7 +58,9 @@ class CatalogControllerTest {
     @Test
     void shouldGetEmptyListOfCatalogs() {
 
-        when(catalogService.getCatalogs()).thenReturn(Collections.emptyList());
+        when(catalogService.getCatalogs(anyString(), anyBoolean())).thenReturn(Collections.emptyList());
+        when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         ResponseEntity<List<CatalogDTO>> responseEntity = catalogController.getCatalogs();
 

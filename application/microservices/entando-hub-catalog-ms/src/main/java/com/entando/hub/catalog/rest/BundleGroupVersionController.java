@@ -4,19 +4,29 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
-
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,36 +41,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CategoryService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /*
  * Controller for Bundle Group Version operations
- * 
+ *
  */
 @RestController
 @RequestMapping("/api/bundlegroupversions")
 public class BundleGroupVersionController {
-	
+
     private final Logger logger = LoggerFactory.getLogger(BundleGroupVersionController.class);
-    
+
     private final BundleGroupVersionService bundleGroupVersionService;
-    
+
     private final BundleGroupService bundleGroupService;
-    
+
     private final CategoryService categoryService;
-    
+
     private final SecurityHelperService securityHelperService;
 
     public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
@@ -97,7 +93,7 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-	
+
 	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @GetMapping(value = "/filtered", produces = {"application/json"})
@@ -151,7 +147,7 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.OK);
         }
     }
-    
+
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub filtered by bundleGroupId and statuses", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @GetMapping(value = "/versions/{bundleGroupId}",produces = {"application/json"})
@@ -174,7 +170,7 @@ public class BundleGroupVersionController {
             return pagedContent;
         }
     }
-    
+
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
     @RolesAllowed({ADMIN, MANAGER})
     @DeleteMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
@@ -198,7 +194,7 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
     }
-    
+
 	// PUBLIC
 	@Operation(summary = "Get the BundleGroupVersion details by id", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
 	@GetMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
@@ -227,9 +223,9 @@ public class BundleGroupVersionController {
     @ToString
     @EqualsAndHashCode(callSuper = true)
     public static class BundleGroupVersion extends BundleGroupVersionView {
-    	
+
         private final String bundleGroupVersionId;
-        
+
         public BundleGroupVersion(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
             super(entity);
             this.bundleGroupVersionId = entity.getId().toString();

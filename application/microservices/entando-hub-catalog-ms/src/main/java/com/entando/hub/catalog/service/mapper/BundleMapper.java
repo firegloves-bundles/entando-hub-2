@@ -13,15 +13,17 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring")
 public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
 
 
   @Mapping(source = "bundleGroups", target = "bundleGroupVersions", qualifiedByName = "toEntityGroups")
   @Mapping(source = "bundleId", target = "id", qualifiedByName = "toEntityId")
+  @Mapping(target = "descriptorVersion", expression = "java(toDescriptorVersion(dto.getGitRepoAddress()))")
   Bundle toEntity(BundleDto dto);
 
   @Mapping(source = "id", target = "bundleId", qualifiedByName = "toDtoId")
@@ -29,22 +31,19 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
   BundleDto toDto(Bundle entity);
 
   default String toDependencies(List<String> dependencies) {
-    if (!CollectionUtils.isEmpty(dependencies)) {
+    if (dependencies != null && !CollectionUtils.isEmpty(dependencies)) {
       return String.join(",", dependencies);
     }
     return null;
   }
 
   default List<String> fromDependencies(String value) {
-    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : null;
+    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : null ;
   }
 
   default DescriptorVersion toDescriptorVersion(String value) {
-    if (StringUtils.isNotBlank(value)) {
-      switch (value) {
-        case "V5":
-          return DescriptorVersion.V5;
-      }
+    if (StringUtils.isNotBlank(value) && value.startsWith("docker:")) {
+      return DescriptorVersion.V5;
     }
     return DescriptorVersion.V1;
   }
@@ -58,10 +57,11 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
     if (groups != null && !CollectionUtils.isEmpty(groups)) {
       return groups.stream().map((bundleGroupVersionId) -> {
           BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+
           bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
           return bundleGroupVersion;
         })
-        .filter(g -> g != null)
+        .filter(Objects::nonNull)
         .collect(Collectors.toSet());
     }
     return null;

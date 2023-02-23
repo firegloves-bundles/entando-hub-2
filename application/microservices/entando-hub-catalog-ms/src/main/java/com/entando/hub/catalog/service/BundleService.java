@@ -125,7 +125,7 @@ public class BundleService {
 	public List<Bundle> createBundleEntitiesAndSave(List<BundleDto> bundleRequest) {
 		logger.debug("{}: createBundleEntitiesAndSave: Create bundles: {}", CLASS_NAME, bundleRequest);
 		try {
-			List<Bundle> bundles = new ArrayList<Bundle>();
+			List<Bundle> bundles = new ArrayList<>();
 			if (!CollectionUtils.isEmpty(bundleRequest)) {
 				bundleRequest.forEach((element) -> {
 					bundles.add(bundlemapper.toEntity(element));

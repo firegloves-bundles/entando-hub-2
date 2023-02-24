@@ -34,11 +34,11 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
     if (dependencies != null && !CollectionUtils.isEmpty(dependencies)) {
       return String.join(",", dependencies);
     }
-    return null;
+    return ""; // EHUB-296 - retain behaviour
   }
 
   default List<String> fromDependencies(String value) {
-    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : null ;
+    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : Arrays.asList("") ; // EHUB-296 - retain behaviour
   }
 
   default DescriptorVersion toDescriptorVersion(String value) {

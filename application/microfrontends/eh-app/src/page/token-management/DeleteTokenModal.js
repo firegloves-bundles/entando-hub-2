@@ -10,7 +10,10 @@ const DeleteTokenModal = ({ open, onClose, onConfirm }) => {
       onClose={onClose}
       size="xs"
     >
-      <ModalHeader label={i18n.t('component.button.deleteToken')} />
+      <ModalHeader
+        label={i18n.t('component.button.deleteToken')}
+        buttonOnClick={onClose}
+      />
       <ModalBody>
         {i18n.t('modalMsg.deleteToken')}
       </ModalBody>

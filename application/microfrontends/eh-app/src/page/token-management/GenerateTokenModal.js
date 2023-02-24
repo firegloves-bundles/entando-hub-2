@@ -10,6 +10,12 @@ const GenerateTokenModal = ({ open, onClose, onSubmit }) => {
     setTokenName(e.target.value);
   };
 
+  const handleClose = () => {
+    console.log('close');
+    setTokenName('');
+    onClose();
+  };
+
   const handleSubmit = () => {
     onSubmit({ tokenName });
   };
@@ -20,20 +26,25 @@ const GenerateTokenModal = ({ open, onClose, onSubmit }) => {
       open={open}
       onClose={onClose}
       size="xs"
+      preventCloseOnClickOutside
     >
-      <ModalHeader label={i18n.t('component.button.generateToken')} />
+      <ModalHeader
+        label={i18n.t('component.button.generateToken')}
+        buttonOnClick={handleClose}
+      />
       <ModalBody>
         <TextInput
           id="name"
           labelText={`${i18n.t('component.bundleModalFields.name')}`}
           value={tokenName}
           onChange={handleTokenNameChange}
+          maxLength={128}
         />
       </ModalBody>
       <ModalFooter>
         <Button
           kind="secondary"
-          onClick={onClose}
+          onClick={handleClose}
         >
           {i18n.t('component.button.cancel')}
         </Button>

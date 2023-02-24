@@ -7,7 +7,7 @@ import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
-import com.entando.hub.catalog.stubs.TestHelper;
+import com.entando.hub.catalog.testhelper.TestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;

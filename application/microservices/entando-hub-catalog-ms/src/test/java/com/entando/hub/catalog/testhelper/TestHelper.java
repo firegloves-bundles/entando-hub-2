@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.stubs;
+package com.entando.hub.catalog.testhelper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

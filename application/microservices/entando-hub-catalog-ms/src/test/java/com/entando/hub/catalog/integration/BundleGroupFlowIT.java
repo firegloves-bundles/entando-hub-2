@@ -8,7 +8,7 @@ import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleGroupController;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
-import com.entando.hub.catalog.stubs.TestHelper;
+import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

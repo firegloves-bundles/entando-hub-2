@@ -144,7 +144,7 @@ const UserManagementPage = () => {
               <EhBreadcrumb
                 pathElements={[{
                   path: i18n.t('navLink.userManagement'),
-                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isUserManagementPage
+                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.userManagementPage
                 }]}
               />
             </div>

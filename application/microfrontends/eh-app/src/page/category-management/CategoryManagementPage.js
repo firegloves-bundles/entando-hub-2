@@ -108,7 +108,7 @@ const CategoryManagementPage = () => {
               <EhBreadcrumb
                 pathElements={[{
                   path: i18n.t('navLink.categoryManagement'),
-                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCategoryManagementPage
+                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.categoryManagementPage
                 }]}
               />
             </div>

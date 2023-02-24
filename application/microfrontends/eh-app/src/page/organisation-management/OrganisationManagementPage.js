@@ -134,7 +134,7 @@ const OrganisationManagementPage = () => {
               <EhBreadcrumb
                 pathElements={[{
                   path: i18n.t('navLink.organisationManagement'),
-                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isOrganisationManagementPage
+                  page: SHOW_NAVBAR_ON_MOUNTED_PAGE.organisationManagementPage
                 }]}
               />
             </div>

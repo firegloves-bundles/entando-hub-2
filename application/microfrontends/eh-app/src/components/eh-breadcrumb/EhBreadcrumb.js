@@ -34,7 +34,7 @@ const EhBreadcrumb = ({pathElements = []}) => {
       {elementList}
       {showNavBar && (
         <div className="navigation-bar"
-          style={currentPath === SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage ? { "marginRight": "0rem" } : { "marginRight": "1.8rem" }}>
+          style={currentPath === SHOW_NAVBAR_ON_MOUNTED_PAGE.catalogPage ? { "marginRight": "0rem" } : { "marginRight": "1.8rem" }}>
           <Link to="/admin">
             {i18n.t('navLink.userManagement')}
           </Link>

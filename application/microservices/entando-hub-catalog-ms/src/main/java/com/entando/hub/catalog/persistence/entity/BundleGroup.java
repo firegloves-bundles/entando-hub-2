@@ -31,7 +31,7 @@ public class BundleGroup {
     @Column(name = "id_catalog")
     private Long catalogId;
 
-    @Column(name = "is_public")
+    @Column(name = "public_catalog")
     private Boolean publicCatalog;
 
     @ManyToOne

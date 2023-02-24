@@ -1,0 +1,84 @@
+.TokenManagmentPage {
+  background: var(--clr-transparent);
+
+  &-wrapper {
+    padding: 0 15% 4rem;
+
+    @media screen and (max-width: 1040px) {
+      padding: 0 3.8% 4rem;
+    }
+  }
+
+  &-breadcrumb {
+    margin: 2rem 1rem;
+  }
+
+  &-section {
+    margin: 0;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 44px;
+    color: var(--clr-black);
+    margin-bottom: 20px;
+    background: var(--clr-white);
+
+    .bx--data-table-content {
+      padding: 1rem;
+    }
+
+    .bx--data-table-container,
+    .bx--data-table-header,
+    .bx--table-toolbar {
+      background: var(--clr-white);
+    }
+
+    .bx--table-toolbar {
+      padding: 0 1rem;
+    }
+
+    .bx--data-table tbody tr {
+      td {
+        border-top: 1px solid #E5E5E5;
+        border-bottom: 1px solid #E5E5E5;
+        background: #F4F4F4;
+        color: #161616;
+      }
+
+      &:hover {
+        td {
+          border-top: 1px solid #E5E5E5;
+          border-bottom: 1px solid #E5E5E5;
+          background: #E5E5E5;
+          color: #161616;
+        }
+      }
+    }
+  }
+
+  .bx--btn--icon-only {
+    &:hover {
+      opacity: 0.6
+    }
+
+    &:before, .bx--assistive-text {
+      display: none !important;
+    }
+  }
+}
+
+.GenerateTokenModal,
+.EditTokenModal,
+.DeleteTokenModal {
+  .bx--modal-container {
+    background-color: var(--clr-white);
+
+    .bx--modal-header__label {
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 26px;
+      color: #161616;
+    }
+  }
+}

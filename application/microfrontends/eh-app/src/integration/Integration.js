@@ -10,6 +10,7 @@ const urlBundles = '/api/bundles/'
 const urlBundleGroups = '/api/bundlegroups/'
 const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
+const urlTokens = '/api/tokens/'
 const urlKC = '/api/keycloak/'
 
 //Bundle group version urls
@@ -570,6 +571,70 @@ export const getPrivateCatalogs = async (apiUrl) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url);
   eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};
+
+/*******************
+ * TOKENS **********
+ *******************/
+
+export const generateToken = async (apiUrl, tokenData) => {
+  const url = `${apiUrl}${urlTokens}`;
+  const { data, isError } = await postData(url, tokenData);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToGenerateToken')}: ${data?.message || ''}`,
+    `Token ${i18n.t('toasterMessage.generated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const getTokens = async (apiUrl) => {
+  // const url = `${apiUrl}${urlTokens}`;
+  // const { data, isError } = await getData(url);
+  // eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadTokens')}: ${data?.message || ''}`);
+
+  return {
+    data: [
+      {
+          'id': '1',
+          'name': 'Token 1',
+          'tokenData': 'sdf2PgQTJ4mu',
+      },
+      {
+          'id': '2',
+          'name': 'Token 2',
+          'tokenData': 'aaPg23sg2QTJ4mu',
+      },
+      {
+          'id': '3',
+          'name': 'Token 3',
+          'tokenData': 'aaPgQsdf2J4mu',
+    
+      }
+    ],
+    isError: false,
+  };
+};
+
+export const deleteToken = async (apiUrl, tokenId) => {
+  const url = `${apiUrl}${urlTokens}`;
+  const { data, isError } = await deleteData(url, tokenId);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToDeleteToken')}: ${data?.message || ''}`,
+    `Token ${i18n.t('toasterMessage.deleted')}`,
+  );
+
   return {
     data,
     isError,

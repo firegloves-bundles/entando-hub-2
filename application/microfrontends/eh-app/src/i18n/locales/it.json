@@ -81,7 +81,10 @@
       "viewVersions": "Visualizza versioni",
       "submit": "Invia",
       "createPrivateCatalog": "Crea catalogo privato",
-      "navigatePrivateCatalog": "Vai al catalogo privato"
+      "navigatePrivateCatalog": "Vai al catalogo privato",
+      "generateToken": "Generare Token",
+      "deleteToken": "Eliminare Token",
+      "editToken": "Modifica token"
     },
     "pagination": {
       "page": "pagina",
@@ -125,13 +128,17 @@
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
     "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
+    "impossibleToGenerateToken": "Impossibile generare token",
+    "impossibleToLoadTokens": "Impossibile caricare i token",
+    "impossibleToDeleteToken": "Impossibile eliminare il token",
     "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",
     "bundle": "Bundle",
     "bundleGroup": "Bundle Group",
     "created": "Creato",
     "updated": "Aggiornato",
-    "deleted": "Cancellato"
+    "deleted": "Cancellato",
+    "generated": "Generato"
   },
   "formValidationMsg": {
     "nameRequired": "Il nome è un campo obbligatorio",
@@ -164,12 +171,14 @@
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
-    "addNewVersion": "Aggiungi nuova versione"
+    "addNewVersion": "Aggiungi nuova versione",
+    "deleteToken": "Sei sicuro di voler eliminare questo token?"
   },
   "navLink": {
     "userManagement": "Gestione utente",
     "categoryManagement": "Gestione delle categorie",
-    "organisationManagement": "Gestione dell'organizzazione"
+    "organisationManagement": "Gestione dell'organizzazione",
+    "tokenManagement": "Gestione dei token"
   },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",

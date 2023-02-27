@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,8 @@ public class PortalUserControllerTest {
 	PortalUserController portalUserController;
 	@MockBean
 	PortalUserService portalUserService;
+	@MockBean
+	SecurityHelperService securityHelperService;
 	private final Long ID = 1001L;
 	private final String USERNAME = "Admin";
 	private final String EMAIL = "admin.123@test.co.in";
@@ -86,8 +89,9 @@ public class PortalUserControllerTest {
 		PortalUser portalUser = populatePortalUser();
 		portalUserList.add(portalUser);
 		String username = portalUser.getUsername();
+		Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(username);
 		Mockito.when(portalUserService.getUserByUsername(username)).thenReturn(portalUserResponseView);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}",username)
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/details",username)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isOk());
 	}
@@ -100,7 +104,7 @@ public class PortalUserControllerTest {
 		portalUserList.add(portalUser);
 		String username = portalUser.getUsername();
 		Mockito.when(portalUserService.getUserByUsername(username)).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username)
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/details", username)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().is(HttpStatus.NO_CONTENT.value()));
 	}

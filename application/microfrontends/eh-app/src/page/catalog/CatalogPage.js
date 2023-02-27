@@ -63,8 +63,6 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   useEffect(() => {
     let isMounted = true;
 
-    let orgCatalogMap;
-
     const getCatOrgList = async () => {
       const data = await getAllCategories(apiUrl);
 

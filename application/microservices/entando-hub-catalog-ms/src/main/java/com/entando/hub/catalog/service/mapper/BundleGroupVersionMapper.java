@@ -47,6 +47,15 @@ public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion,
   @Mapping(source = "id", target = "bundleGroupVersionId", qualifiedByName = "toBundleGroupVersionId")
   BundleGroupVersionDto toDto(BundleGroupVersion entity);
 
+  // Helper to make sure the bundleGroupVersionId is not set
+  @Named("ununsedAnnotation")
+  default BundleGroupVersionDto toViewDto(BundleGroupVersion entity) {
+    BundleGroupVersionDto dto = toDto(entity);
+
+    dto.setBundleGroupVersionId(null);
+    return dto;
+  }
+
   default BundleGroup toEntityBundleGroup(BundleGroup bundleGroup) {
     return bundleGroup;
   }

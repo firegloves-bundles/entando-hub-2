@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +20,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -45,6 +49,7 @@ import com.entando.hub.catalog.rest.PagedContent;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
+@ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
 public class BundleGroupVersionServiceTest {
 
 	@InjectMocks
@@ -61,7 +66,11 @@ public class BundleGroupVersionServiceTest {
 	CategoryRepository categoryRepository;
 	@Mock
 	Environment environment;
-	
+
+	@Spy
+	BundleGroupVersionMapper bundleGroupVersionMapper = new BundleGroupVersionMapperImpl();
+
+
 	private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
     private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";
     private static final String BUNDLE_GROUP_VERSION_VERSION = "v1.0.0";
@@ -106,7 +115,7 @@ public class BundleGroupVersionServiceTest {
 		bundleGroupVersion.setBundles(Set.of(bundle));
 		List<Bundle> bundlesList = new ArrayList<>();
 		bundlesList.add(bundle);		
-		BundleGroupVersionView bundleGroupVersionView1 = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionView1 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion);// new BundleGroupVersionView(bundleGroupVersion);
 		String bundleId = bundle.getId().toString();
 		BundleGroupVersion bundleGroupVersion2 = new BundleGroupVersion();
 		bundleGroupVersion2.setId(1001L);
@@ -115,7 +124,7 @@ public class BundleGroupVersionServiceTest {
 		bundleGroupVersion2.setVersion("v1.0.0");
 		bundleGroupVersion2.setBundleGroup(bundleGroup);
 		bundleGroupVersion2.setBundles(Set.of(bundle));
-		BundleGroupVersionView bundleGroupVersionView2 = new BundleGroupVersionView(bundleGroupVersion2);
+		BundleGroupVersionView bundleGroupVersionView2 =  bundleGroupVersionMapper.toViewDto(bundleGroupVersion2); // new BundleGroupVersionView(bundleGroupVersion2);
 		
 		Mockito.when(bundleRepository.save(bundle)).thenReturn(bundle);	
 		Mockito.when(bundleRepository.findById(Long.valueOf(bundleId))).thenReturn(Optional.of(bundle));	

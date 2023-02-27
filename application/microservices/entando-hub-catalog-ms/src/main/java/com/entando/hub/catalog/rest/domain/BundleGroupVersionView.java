@@ -54,31 +54,31 @@ public class BundleGroupVersionView {
     this.version = version;
   }
 
-  @Deprecated
-  public BundleGroupVersionView(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
-    this.description = entity.getDescription();
-    this.descriptionImage = entity.getDescriptionImage();
-    this.status = entity.getStatus();
-    this.documentationUrl = entity.getDocumentationUrl();
-    this.version = entity.getVersion();
-    if (entity.getBundleGroup() != null) {
-      this.bundleGroupId = entity.getBundleGroup().getId().toString();
-    }
-    if (entity.getBundleGroup().getOrganisation() != null) {
-      this.organisationId = entity.getBundleGroup().getOrganisation().getId();
-      this.organisationName = entity.getBundleGroup().getOrganisation().getName();
-    }
-    this.name = entity.getBundleGroup().getName();
-    this.lastUpdate = entity.getLastUpdated();
-    if (entity.getBundleGroup().getCategories() != null) {
-      this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
-    }
-    if (entity.getBundles() != null) {
-      this.children = entity.getBundles().stream().map((children) -> children.getId()).collect(Collectors.toList());
-    }
-    this.displayContactUrl = entity.getDisplayContactUrl();
-    this.contactUrl = entity.getContactUrl();
-  }
+//  @Deprecated
+//  public BundleGroupVersionView(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
+//    this.description = entity.getDescription();
+//    this.descriptionImage = entity.getDescriptionImage();
+//    this.status = entity.getStatus();
+//    this.documentationUrl = entity.getDocumentationUrl();
+//    this.version = entity.getVersion();
+//    if (entity.getBundleGroup() != null) {
+//      this.bundleGroupId = entity.getBundleGroup().getId().toString();
+//    }
+//    if (entity.getBundleGroup().getOrganisation() != null) {
+//      this.organisationId = entity.getBundleGroup().getOrganisation().getId();
+//      this.organisationName = entity.getBundleGroup().getOrganisation().getName();
+//    }
+//    this.name = entity.getBundleGroup().getName();
+//    this.lastUpdate = entity.getLastUpdated();
+//    if (entity.getBundleGroup().getCategories() != null) {
+//      this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
+//    }
+//    if (entity.getBundles() != null) {
+//      this.children = entity.getBundles().stream().map((children) -> children.getId()).collect(Collectors.toList());
+//    }
+//    this.displayContactUrl = entity.getDisplayContactUrl();
+//    this.contactUrl = entity.getContactUrl();
+//  }
 
 //  public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
 //    com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleGroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();

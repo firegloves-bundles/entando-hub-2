@@ -281,7 +281,7 @@ public class BundleGroupVersionControllerTest {
 	public void testCreateBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = Optional.of(bundleGroup);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(bundleGroupOptional);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
@@ -297,8 +297,8 @@ public class BundleGroupVersionControllerTest {
 	public void testCreateBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
-		BundleGroupVersionView bundleGroupVersionViewIn = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionViewIn = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		bundleGroupVersionViewIn.setBundleGroupId(null);
 		
 		//Case 1: bundle group does not exist

@@ -215,14 +215,15 @@ public class BundleGroupVersionController {
 	@GetMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-	public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
+	public ResponseEntity<BundleGroupVersionDto> getBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
 		logger.debug("REST request to get BundleGroupVersionDto by Id: {}", bundleGroupVersionId);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
 		if (bundleGroupVersionOptional.isPresent()) {
 		    com.entando.hub.catalog.persistence.entity.BundleGroupVersion version = bundleGroupVersionOptional.get();
 		    //Prevent this view unless the user is authenticated or the version is published
 		    if (securityHelperService.isUserAuthenticated() || version.getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED)) {
-                BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(version);
+//                BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(version);
+                BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(version);
                 return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
             }
             logger.warn("Requested bundleGroupVersion '{}' exists but is protected", bundleGroupVersionOptional);

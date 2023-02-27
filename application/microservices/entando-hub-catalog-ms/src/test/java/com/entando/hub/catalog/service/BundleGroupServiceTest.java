@@ -183,7 +183,7 @@ public class BundleGroupServiceTest {
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();
 		BundleGroupVersion bundleGroupVersion = bundleGroup.getVersion().iterator().next();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		
 		Mockito.when(bundleGroupRepository.save(bundleGroup)).thenReturn(bundleGroup);
 		Mockito.when(categoryRepository.findByBundleGroupsIs(bundleGroup)).thenReturn(List.of(category));
@@ -197,7 +197,7 @@ public class BundleGroupServiceTest {
 		
 		//Case 2: versionId is null
 		bundleGroupVersion.setId(null);
-		BundleGroupVersionView bundleGroupVersionView2 = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionView bundleGroupVersionView2 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		bundleGroupDto.setVersionDetails(bundleGroupVersionView2);
 		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupDto);
 

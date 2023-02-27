@@ -7,6 +7,7 @@ import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.dto.CatalogDTO;
+import com.entando.hub.catalog.testhelper.TestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
@@ -29,17 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class CatalogFlowIT {
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private OrganisationRepository organisationRepository;
     @Autowired
     private CatalogRepository catalogRepository;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -47,8 +44,8 @@ public class CatalogFlowIT {
     public void tearDown() {
         catalogRepository.deleteAll();
         organisationRepository.deleteAll();
-        resetSequenceNumber("SEQ_CATALOG_ID");
-        resetSequenceNumber("SEQ_ORGANISATION_ID");
+        TestHelper.resetSequenceNumber(this.jdbcTemplate,"SEQ_CATALOG_ID");
+        TestHelper.resetSequenceNumber(this.jdbcTemplate,"SEQ_ORGANISATION_ID");
     }
 
     @Test
@@ -245,10 +242,6 @@ public class CatalogFlowIT {
                     return organisationRepository.save(o);
                 })
                 .collect(Collectors.toList());
-    }
-
-    private void resetSequenceNumber(String sequenceName) {
-        jdbcTemplate.update(String.format("ALTER SEQUENCE %s RESTART WITH 1", sequenceName));
     }
 
     public CatalogDTO mapToDTO(Catalog catalog) {

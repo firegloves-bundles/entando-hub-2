@@ -90,7 +90,7 @@ public class BundleGroupVersionControllerTest {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();		
 		bundleGroupVersionsList.add(bundleGroupVersion);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroupVersion.getBundleGroup().getId().toString();
+		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
 		Integer page = 0;
 		Integer pageSize = 89;
 		String[] statuses = new String[]{BundleGroupVersion.Status.PUBLISHED.toString()};
@@ -168,7 +168,7 @@ public class BundleGroupVersionControllerTest {
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		String bundleGroupId = bundleGroupVersion.getBundleGroup().getId().toString();
+		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
 		String organisationId = bundleGroupVersion.getBundleGroup().getOrganisation().getId().toString();
 		Integer page = 0;
 		Integer pageSize = 89;
@@ -276,7 +276,7 @@ public class BundleGroupVersionControllerTest {
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = Optional.of(bundleGroup);
-		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(bundleGroupOptional);
+		Mockito.when(bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()))).thenReturn(bundleGroupOptional);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
     	Mockito.when(bundleGroupVersionService.createBundleGroupVersion(any(BundleGroupVersion.class), eq(bundleGroupVersionView))).thenReturn(bundleGroupVersion);
     	String inputJson = mapToJson(bundleGroupVersionView);
@@ -303,7 +303,7 @@ public class BundleGroupVersionControllerTest {
 				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
 		
 		//Case 2: when there already exists a version
-		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(Optional.of(bundleGroup));
+		Mockito.when(bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()))).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(List.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/")

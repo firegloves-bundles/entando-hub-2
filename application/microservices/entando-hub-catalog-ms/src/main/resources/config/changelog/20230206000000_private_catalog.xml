@@ -23,7 +23,7 @@
             <column name="id_catalog" type="bigint">
                 <constraints foreignKeyName="fk_id_catalog" referencedTableName="catalog" referencedColumnNames="id"/>
             </column>
-            <column name="is_public" type="boolean" defaultValue="true"/>
+            <column name="public_catalog" type="boolean" defaultValue="true"/>
         </addColumn>
 
     </changeSet>

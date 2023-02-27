@@ -25,6 +25,9 @@
         <github.organization>entando-samples</github.organization>
         <sonar.organization>${github.organization}</sonar.organization>
         <sonar.projectKey>${github.organization}_${project.artifactId}</sonar.projectKey>
+        <sonar.junit.reportPaths>
+            ${project.basedir}/target/surefire-reports/,${project.basedir}/target/failsafe-reports/
+        </sonar.junit.reportPaths>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -221,28 +224,50 @@
                     <value>true</value>
                 </property>
            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                </dependency>
+            </dependencies>
            <build>
                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.7</version>
-                        <executions>
-                            <execution>
-                            <id>prepare-agent</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <phase>test</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
+                   <plugin>
+                       <groupId>org.jacoco</groupId>
+                       <artifactId>jacoco-maven-plugin</artifactId>
+                       <version>0.8.7</version>
+                       <executions>
+                           <execution>
+                               <id>prepare-agent</id>
+                               <goals>
+                                   <goal>prepare-agent</goal>
+                               </goals>
+                           </execution>
+                           <execution>
+                               <id>prepare-agent-integration</id>
+                               <goals>
+                                   <goal>prepare-agent-integration</goal>
+                               </goals>
+                           </execution>
+                           <execution>
+                               <id>report</id>
+                               <goals>
+                                   <goal>report</goal>
+                               </goals>
+                           </execution>
+                           <execution>
+                               <id>report-integration</id>
+                               <goals>
+                                   <goal>report-integration</goal>
+                               </goals>
+                           </execution>
+                       </executions>
+                   </plugin>
+                   <plugin>
+                       <groupId>org.apache.maven.plugins</groupId>
+                       <artifactId>maven-failsafe-plugin</artifactId>
+                       <version>3.0.0-M9</version>
+                   </plugin>
                </plugins>
            </build>
         </profile>

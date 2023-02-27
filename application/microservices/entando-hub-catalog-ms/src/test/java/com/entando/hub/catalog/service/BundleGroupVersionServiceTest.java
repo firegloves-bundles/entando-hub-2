@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Ignore;
@@ -43,7 +44,6 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.rest.PagedContent;
 
 @ExtendWith(MockitoExtension.class)
@@ -115,7 +115,7 @@ public class BundleGroupVersionServiceTest {
 		bundleGroupVersion.setBundles(Set.of(bundle));
 		List<Bundle> bundlesList = new ArrayList<>();
 		bundlesList.add(bundle);		
-		BundleGroupVersionView bundleGroupVersionView1 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion);// new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView1 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion);// new BundleGroupVersionView(bundleGroupVersion);
 		String bundleId = bundle.getId().toString();
 		BundleGroupVersion bundleGroupVersion2 = new BundleGroupVersion();
 		bundleGroupVersion2.setId(1001L);
@@ -124,7 +124,7 @@ public class BundleGroupVersionServiceTest {
 		bundleGroupVersion2.setVersion("v1.0.0");
 		bundleGroupVersion2.setBundleGroup(bundleGroup);
 		bundleGroupVersion2.setBundles(Set.of(bundle));
-		BundleGroupVersionView bundleGroupVersionView2 =  bundleGroupVersionMapper.toViewDto(bundleGroupVersion2); // new BundleGroupVersionView(bundleGroupVersion2);
+		BundleGroupVersionDto bundleGroupVersionView2 =  bundleGroupVersionMapper.toViewDto(bundleGroupVersion2); // new BundleGroupVersionView(bundleGroupVersion2);
 		
 		Mockito.when(bundleRepository.save(bundle)).thenReturn(bundle);	
 		Mockito.when(bundleRepository.findById(Long.valueOf(bundleId))).thenReturn(Optional.of(bundle));	

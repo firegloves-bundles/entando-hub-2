@@ -6,8 +6,8 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -98,9 +98,14 @@ public class BaseMapperTest {
     dto.setOrganisationId(ORGANIZATION_ID.toString());
     dto.setOrganisationName(ORGANIZATION_NAME);
     dto.setCategories(Arrays.asList("cat 1", "cat 2"));
-    dto.setVersionDetails(new BundleGroupVersionView("191045",
-      "description",
-      "descriptionImage", "v123"));
+
+    BundleGroupVersionDto bundleGroupVersion = new BundleGroupVersionDto();
+    bundleGroupVersion.setBundleGroupId("191045");
+    bundleGroupVersion.setDescription("description");
+    bundleGroupVersion.setDescriptionImage("descriptionImage");
+    bundleGroupVersion.setVersion("v123");
+
+    dto.setVersionDetails(bundleGroupVersion);
     return dto;
   }
 

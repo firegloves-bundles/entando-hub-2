@@ -4,7 +4,6 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,12 +27,6 @@ public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion,
   @Mapping(source = "dto.version", target = "version")
   @Mapping(target = "bundles", ignore = true)
   BundleGroupVersion toEntity(BundleGroupVersionDto dto, BundleGroup bundleGroup);
-
-  @Mapping(source = "dto.bundleGroupVersionId", target = "id", qualifiedByName = "toEntityId")
-  @Mapping(target = "dto.bundleGroup", expression = "java(toEntityBundleGroup(bundleGroup))")
-  @Mapping(source = "dto.version", target = "version")
-  @Mapping(target = "bundles", ignore = true)
-  BundleGroupVersion toEntity(BundleGroupVersionView dto, BundleGroup bundleGroup);
 
   @Override
   @Mapping(target = "children", expression = "java(toDtoBundles(entity.getBundles()))")

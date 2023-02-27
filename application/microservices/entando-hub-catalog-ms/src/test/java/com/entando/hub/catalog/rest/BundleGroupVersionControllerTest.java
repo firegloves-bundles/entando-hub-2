@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Before;
@@ -41,7 +42,6 @@ import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
@@ -281,7 +281,7 @@ public class BundleGroupVersionControllerTest {
 	public void testCreateBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = Optional.of(bundleGroup);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString())).thenReturn(bundleGroupOptional);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
@@ -297,8 +297,8 @@ public class BundleGroupVersionControllerTest {
 	public void testCreateBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
-		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
-		BundleGroupVersionView bundleGroupVersionViewIn = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionViewIn = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		bundleGroupVersionViewIn.setBundleGroupId(null);
 		
 		//Case 1: bundle group does not exist
@@ -334,7 +334,8 @@ public class BundleGroupVersionControllerTest {
 		String bundleGroupId = bundleGroup.getId().toString();
 		bundleGroupVersion.setBundleGroup(bundleGroup);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
+		BundleGroupVersionDto bundleGroupVersionView = generateBundleGroupVersionView(bundleGroupVersion, bundleGroupId);
+		// new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
 		String inputJson = mapToJson(bundleGroupVersionView);
 		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(true);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));		
@@ -353,7 +354,8 @@ public class BundleGroupVersionControllerTest {
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		String bundleGroupId = bundleGroup.getId().toString();
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
+		BundleGroupVersionDto bundleGroupVersionView = generateBundleGroupVersionView(bundleGroupVersion, bundleGroupId); // bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
+
 		String inputJson = mapToJson(bundleGroupVersionView);
 		
 		//Case 1: bundle group version does not exist
@@ -395,7 +397,18 @@ public class BundleGroupVersionControllerTest {
 				.content(inputJson))
 				.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
 	}
-	
+
+	private static BundleGroupVersionDto generateBundleGroupVersionView(BundleGroupVersion bundleGroupVersion, String bundleGroupId) {
+		BundleGroupVersionDto bundleGroupVersionView = new BundleGroupVersionDto();
+
+		bundleGroupVersionView.setBundleGroupId(bundleGroupId);
+		bundleGroupVersionView.setDescription(bundleGroupVersion.getDescription());
+		bundleGroupVersionView.setDescriptionImage(bundleGroupVersion.getDescriptionImage());
+		bundleGroupVersionView.setVersion(bundleGroupVersion.getVersion());
+
+		return bundleGroupVersionView;
+	}
+
 	@Test
 	public void testDeleteBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();

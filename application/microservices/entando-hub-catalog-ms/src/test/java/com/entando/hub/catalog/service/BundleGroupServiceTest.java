@@ -8,7 +8,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
-import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
@@ -183,7 +183,7 @@ public class BundleGroupServiceTest {
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();
 		BundleGroupVersion bundleGroupVersion = bundleGroup.getVersion().iterator().next();
-		BundleGroupVersionView bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		
 		Mockito.when(bundleGroupRepository.save(bundleGroup)).thenReturn(bundleGroup);
 		Mockito.when(categoryRepository.findByBundleGroupsIs(bundleGroup)).thenReturn(List.of(category));
@@ -197,7 +197,7 @@ public class BundleGroupServiceTest {
 		
 		//Case 2: versionId is null
 		bundleGroupVersion.setId(null);
-		BundleGroupVersionView bundleGroupVersionView2 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView2 = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		bundleGroupDto.setVersionDetails(bundleGroupVersionView2);
 		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupDto);
 

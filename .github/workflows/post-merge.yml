@@ -52,6 +52,7 @@ jobs:
           versionSuffix=SNAPSHOT
           cd content
           bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
+          sh set-bundle-id.sh $DOCKER_ORG
           ent --debug bundle pack --org $DOCKER_ORG --stdout
           ent --debug bundle publish
           version=$(bash ../.github/functions/utils.sh getBundleImage)
@@ -74,7 +75,6 @@ jobs:
         bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
         ent bundle build --all --stdout --fail-fast
         cd microservices/entando-hub-catalog-ms && mvn sonar:sonar && cd ../..
-        export LD_LIBRARY_PATH=/usr/lib/jvm/java-11-openjdk/lib/server
         cd microfrontends/eh-login && ent npm run sonar && cd ../..
         cd microfrontends/eh-app && ent npm run sonar && cd ../..
       env:

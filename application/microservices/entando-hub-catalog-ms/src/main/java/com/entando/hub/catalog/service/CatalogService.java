@@ -4,7 +4,7 @@ import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.exception.ConflictException;
-import javassist.NotFoundException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class CatalogService {
         return catalogRepository.findAll();
     }
 
-    public Catalog getCatalogById(Long id) throws NotFoundException {
+    public Catalog getCatalogById(Long id) {
         Optional<Catalog> catalog = catalogRepository.findById(id);
         logger.debug("{} catalog details: {} ", CLASS_NAME, catalog);
         if (catalog.isPresent()){
@@ -68,6 +68,10 @@ public class CatalogService {
             logger.debug("{} catalog {} not found, delete failed", CLASS_NAME, catalogId);
             throw new NotFoundException("Catalog not found");
         }
+    }
+
+    public Boolean existCatalogById(Long catalogId) {
+        return this.catalogRepository.existsById(catalogId);
     }
 
 }

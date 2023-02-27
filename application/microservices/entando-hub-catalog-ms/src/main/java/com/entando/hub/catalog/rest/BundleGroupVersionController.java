@@ -79,7 +79,7 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersionDto> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersionDto: {}", bundleGroupVersionView);
-        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
+        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
         if (bundleGroupOptional.isPresent()) {
         	logger.debug("BundleGroupDto is present with id: {}", bundleGroupOptional.get().getId());
             List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
@@ -89,6 +89,7 @@ public class BundleGroupVersionController {
               final BundleGroup bundleGroup = bundleGroupOptional.get();
               BundleGroupVersion bundleGroupVersionEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionView, bundleGroup);
 
+              bundleGroupVersionEntity.setId(null); // EHUB-296 impose expected null id
               BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionEntity, bundleGroupVersionView);
               BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(saved);
 		        return new ResponseEntity<>(dto, HttpStatus.CREATED);

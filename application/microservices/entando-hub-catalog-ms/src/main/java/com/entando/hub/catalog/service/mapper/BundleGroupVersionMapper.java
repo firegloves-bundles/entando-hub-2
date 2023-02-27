@@ -8,6 +8,7 @@ import com.entando.hub.catalog.rest.domain.BundleGroupVersionView;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +44,7 @@ public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion,
   @Mapping(target = "name", expression = "java(toDtoName(entity.getBundleGroup()))")
   @Mapping(target = "lastUpdate", expression = "java(toDtoLastUpdated(entity))")
   @Mapping(target = "categories", expression = "java(toDtoCategories(entity.getBundleGroup()))")
+  @Mapping(source = "id", target = "bundleGroupVersionId", qualifiedByName = "toBundleGroupVersionId")
   BundleGroupVersionDto toDto(BundleGroupVersion entity);
 
   default BundleGroup toEntityBundleGroup(BundleGroup bundleGroup) {
@@ -81,6 +83,11 @@ public interface BundleGroupVersionMapper extends BaseMapper<BundleGroupVersion,
     return (group != null && group.getCategories() != null && !group.getCategories().isEmpty()) ?
       group.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList()) :
       null;
+  }
+
+  @Named("toBundleGroupVersionId")
+  default String toBundleGroupVersionId(Long id) {
+    return id != null? id.toString() : null;
   }
 
 }

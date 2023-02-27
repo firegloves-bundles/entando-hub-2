@@ -4,6 +4,7 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
+import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.service.BundleGroupService;
@@ -292,7 +293,7 @@ public class BundleGroupVersionController {
                 this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
             }
             if (entity.getBundles() != null) {
-            	this.children = entity.getBundles().stream().map((children) -> children.getId()).collect(Collectors.toList());
+            	this.children = entity.getBundles().stream().map(Bundle::getId).collect(Collectors.toList());
             }
             this.displayContactUrl = entity.getDisplayContactUrl();
             this.contactUrl = entity.getContactUrl();

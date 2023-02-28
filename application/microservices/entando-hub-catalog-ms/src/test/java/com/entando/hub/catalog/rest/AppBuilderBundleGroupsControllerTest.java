@@ -197,8 +197,8 @@ public class AppBuilderBundleGroupsControllerTest {
 		return new PageImpl<>(page.getContent()
 				.stream()
 				.map(e -> bundleGroupVersionMapper.toEntityDto(e))
-				.collect(Collectors.toList())
-				, page.getPageable(), page.getNumberOfElements());
+				.collect(Collectors.toList()),
+				page.getPageable(), page.getNumberOfElements());
 	}
 
 }

@@ -4,6 +4,8 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionEntityMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

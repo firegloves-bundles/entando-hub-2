@@ -103,15 +103,15 @@ class BundleGroupFlowIT {
         Catalog catalogSaved = catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
 
         BundleGroup stubBundleGroup1 = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId())).setId(null);
-        bundleGroupRepository.save(stubBundleGroup1);
+        BundleGroup savedBundleGroup = bundleGroupRepository.save(stubBundleGroup1);
         BundleGroup stubBundleGroup2 = getStubBundleGroup(true, organisationSaved, Optional.of(catalogSaved.getId())).setId(null);
         bundleGroupRepository.save(stubBundleGroup2);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URI + stubBundleGroup1.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(URI + savedBundleGroup.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.bundleGroupId").value(1L))
+                .andExpect(jsonPath("$.bundleGroupId").value(savedBundleGroup.getId()))
                 .andExpect(jsonPath("$.name").value(BUNDLE_GROUP_NAME));
     }
 
@@ -216,17 +216,17 @@ class BundleGroupFlowIT {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
-        bundleGroupRepository.save(stubBundleGroup);
+        BundleGroup savedBundleGroup = bundleGroupRepository.save(stubBundleGroup);
         BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(URI + savedBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.bundleGroupId").value(stubBundleGroup.getId().toString()))
-                .andExpect(jsonPath("$.name").value(stubBundleGroup.getName()));
+                .andExpect(jsonPath("$.bundleGroupId").value(savedBundleGroup.getId().toString()))
+                .andExpect(jsonPath("$.name").value(savedBundleGroup.getName()));
     }
 
     @Test
@@ -251,7 +251,8 @@ class BundleGroupFlowIT {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
-        BundleGroup savedStubBundleGroup = bundleGroupRepository.save(stubBundleGroup);
+        BundleGroup savedStubBundleGroup = bundleGroupRepository.saveAndFlush(stubBundleGroup);
+        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
         BundleGroupVersion bgv1 = new BundleGroupVersion()
                 .setBundleGroup(savedStubBundleGroup)
@@ -270,9 +271,8 @@ class BundleGroupFlowIT {
 
         bundleGroupVersionRepository.saveAndFlush(bgv1);
         bundleGroupVersionRepository.saveAndFlush(bgv2);
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(URI + savedStubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))

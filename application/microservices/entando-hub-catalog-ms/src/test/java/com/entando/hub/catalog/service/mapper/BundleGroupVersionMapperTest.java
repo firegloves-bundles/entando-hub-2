@@ -5,7 +5,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -81,7 +81,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
   public void toOutDto() {
     BundleGroupVersion entity = generateBundleGroupVersionEntity(153L);
 
-    BundleGroupVersionOutDto dto = bundleGroupVersionEntityMapper.toDto(entity);
+    BundleGroupVersionEntityDto dto = bundleGroupVersionEntityMapper.toDto(entity);
     assertNotNull(dto);
     assertEquals(entity.getId(), dto.getId());
     assertEquals(entity.getDescription(), dto.getDescription());

@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.rest.dto;
+package com.entando.hub.catalog.service.dto;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -13,11 +13,11 @@ import java.util.Set;
 /**
  *
  * This is the exact match of com.entando.hub.catalog.persistence.entity.BundleGroupVersion.
- * TODO find usage in the FE and try to get rid of it and possibly use the proper dto
+ * TODO find usage in the FE and and possibly use the proper dto
  */
 @Data
 @NoArgsConstructor
-public class BundleGroupVersionOutDto {
+public class BundleGroupVersionEntityDto {
 
     private Long id;
 

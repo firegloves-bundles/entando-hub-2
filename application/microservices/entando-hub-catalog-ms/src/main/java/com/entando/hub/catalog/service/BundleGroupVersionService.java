@@ -8,14 +8,13 @@ import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.PagedContent;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionEntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -40,6 +39,8 @@ public class BundleGroupVersionService {
 
     @Autowired
     private Environment environment;
+	@Autowired
+	private BundleGroupVersionEntityMapper entityMapper;
 
     public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository,BundleRepository bundleRepository,CategoryRepository categoryRepository, BundleService bundleService) {
     	this.bundleGroupVersionRepository = bundleGroupVersionRepository;
@@ -117,7 +118,7 @@ public class BundleGroupVersionService {
     	return entity;
     }
 
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, Optional<String> searchText) {
     	logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
         Pageable paging;
         if (pageSize == 0) {
@@ -142,10 +143,11 @@ public class BundleGroupVersionService {
         	bunleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
         }
         
-        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);  
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
+        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bunleGroups, statusSet, paging);
+		PageImpl<BundleGroupVersionEntityDto> converted = convertoToDto(page);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(toResponseViewList(converted).stream()
         	.sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName, String::compareToIgnoreCase))
-        	.collect(Collectors.toList()), page);
+        	.collect(Collectors.toList()), converted);
         logger.debug("{}: getBundleGroupVersions id {}: Number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
         return pagedContent;
     }
@@ -164,7 +166,7 @@ public class BundleGroupVersionService {
 		return "";
 	}
 	
-	public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion>  getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
+	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto>  getBundleGroupVersions(Integer pageNum, Integer pageSize, String[] statuses, BundleGroup bundleGroup) {
 		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by statuses: {} and bundle group: {}", CLASS_NAME, statuses, bundleGroup);
         Pageable paging;
         if (pageSize == 0) {
@@ -178,8 +180,10 @@ public class BundleGroupVersionService {
         Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupAndStatusIn(bundleGroup, statusSet, paging);
         logger.debug("{}: getBundleGroupVersions: Found pages, number of elements: {}", CLASS_NAME, page.getNumberOfElements());
 
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page).stream()
-        .collect(Collectors.toList()), page);
+		PageImpl<BundleGroupVersionEntityDto> converted = convertoToDto(page);
+
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(toResponseViewList(converted).stream()
+        .collect(Collectors.toList()), converted);
         return pagedContent;
 	 }
 
@@ -277,7 +281,7 @@ public class BundleGroupVersionService {
 	 * @param page
 	 * @return
 	 */
-	private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page) {
+	private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersionEntityDto> page) {
 		logger.debug("{}: toResponseViewList: Convert Bundle Group Version list to response view list", CLASS_NAME);
 		List<BundleGroupVersionFilteredResponseView> list = new ArrayList<BundleGroupVersionFilteredResponseView>();
 		page.getContent().stream().forEach((entity) -> {
@@ -332,7 +336,7 @@ public class BundleGroupVersionService {
 	 * @param searchText
 	 * @return
 	 */
-	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
+	public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> searchBundleGroupVersions(Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses, String searchText) {
 		logger.debug("{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}", CLASS_NAME, organisationId, categoryIds, statuses);
 		Pageable paging;
 		if (pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
@@ -382,9 +386,20 @@ public class BundleGroupVersionService {
 		}
 
 		Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups, statusSet, paging);
-		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(toResponseViewList(page), page);
+
+		PageImpl<BundleGroupVersionEntityDto> coverted = convertoToDto(page);
+
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(toResponseViewList(coverted), coverted);
 		logger.debug("{}: getBundleGroupVersions: organisationId {}, number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
 		return pagedContent;
+	}
+
+	protected PageImpl<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
+		return new PageImpl<>(page.getContent()
+				.stream()
+				.map(e -> entityMapper.toDto(e))
+				.collect(Collectors.toList())
+				, page.getPageable(), page.getNumberOfElements());
 	}
 
 }

@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -41,8 +44,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleGroupsController.class)
 @WithMockUser(username = "admin", roles = { ADMIN })
-public class AppBuilderBundleGroupsControllerTestDto {
-	
+@ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
+public class AppBuilderBundleGroupsControllerTest {
+
+	@Autowired
+	private BundleGroupVersionMapper bundleGroupVersionMapper;
 	@Autowired
 	WebApplicationContext webApplicationContext;
 
@@ -99,7 +105,8 @@ public class AppBuilderBundleGroupsControllerTestDto {
 		String inputJsonPageSize = mapToJson(pageSize);
 		
 		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
-		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(list, response);
+		PageImpl<BundleGroupVersionEntityDto> responseDto = convertoToDto(response);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(list, responseDto);
 		
 		//Case 1: all optional parameters given
 		Mockito.when(bundleGroupVersionController.getBundleGroupsAndFilterThem(page, pageSize, null, null, statuses, null)).thenReturn(pagedContent);
@@ -185,13 +192,13 @@ public class AppBuilderBundleGroupsControllerTestDto {
 		return category;
 	}
 
-//
-//	private PageImpl<BundleGroupVersionOutDto> convertoToDto(Page<BundleGroupVersion> page) {
-//		return new PageImpl<>(page.getContent()
-//				.stream()
-//				.map(e -> entityMapper.toDto(e))
-//				.collect(Collectors.toList())
-//				, page.getPageable(), page.getNumberOfElements());
-//	}
+
+	private PageImpl<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
+		return new PageImpl<>(page.getContent()
+				.stream()
+				.map(e -> bundleGroupVersionMapper.toEntityDto(e))
+				.collect(Collectors.toList())
+				, page.getPageable(), page.getNumberOfElements());
+	}
 
 }

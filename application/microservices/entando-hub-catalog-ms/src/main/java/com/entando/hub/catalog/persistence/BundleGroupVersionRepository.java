@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,10 +3,14 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * This acts as a container for the two mapper that handle the same entity (gosh!)
+ * TODO: refactor to only ONE dto if possible
+ */
 @Mapper(componentModel = "spring", uses={BundleGroupVersionEntityMapper.class, BundleGroupVersionStandardMapper.class})
 public abstract class BundleGroupVersionMapper {
 
@@ -31,7 +35,7 @@ public abstract class BundleGroupVersionMapper {
         return bundleGroupVersionStandardMapper.toViewDto(entity);
     }
 
-    public BundleGroupVersionOutDto toEntityDto(BundleGroupVersion bundleGroupVersion) {
+    public BundleGroupVersionEntityDto toEntityDto(BundleGroupVersion bundleGroupVersion) {
         return bundleGroupVersionEntityMapper.toDto(bundleGroupVersion);
     }
 }

@@ -16,7 +16,7 @@ import javax.transaction.Transactional;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -111,7 +111,7 @@ public class BundleGroupVersionController {
     @GetMapping(value = "/filtered", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
     	logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
@@ -126,10 +126,7 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> result = bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, searchText);
-//        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionOutDto> lillo = new PagedContent<>()
-
-        return result;
+        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, searchText);
     }
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
@@ -174,11 +171,11 @@ public class BundleGroupVersionController {
     @GetMapping(value = "/versions/{bundleGroupId}",produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get bundle group versions by bundleGroupId: {} and statuses {}", bundleGroupId, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = null;
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = null;
         if (statusFilterValues == null) {
             statuses = Arrays.stream(BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
         }
@@ -241,7 +238,7 @@ public class BundleGroupVersionController {
 	}
 
 
-    protected PageImpl<BundleGroupVersionOutDto> convertoToDto(Page<BundleGroupVersion> page) {
+    protected PageImpl<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
         return new PageImpl<>(page.getContent()
                 .stream()
                 .map(e -> bundleGroupVersionMapper.toEntityDto(e))

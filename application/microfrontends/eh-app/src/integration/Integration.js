@@ -10,7 +10,7 @@ const urlBundles = '/api/bundles/'
 const urlBundleGroups = '/api/bundlegroups/'
 const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
-const urlTokens = '/api/tokens/'
+const urlCatalogApiKeys = '/api/private-catalog-api-key/'
 const urlKC = '/api/keycloak/'
 
 //Bundle group version urls
@@ -577,18 +577,18 @@ export const getPrivateCatalogs = async (apiUrl) => {
   };
 };
 
-/*******************
- * TOKENS **********
- *******************/
+/*******************************
+ * Private Catalog API KEYS ****
+ *******************************/
 
-export const generateToken = async (apiUrl, tokenData) => {
-  const url = `${apiUrl}${urlTokens}`;
-  const { data, isError } = await postData(url, tokenData);
+export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await postData(url, apiKeyData);
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToGenerateToken')}: ${data?.message || ''}`,
-    `Token ${i18n.t('toasterMessage.generated')}`,
+    `${i18n.t('toasterMessage.impossibleToGenerateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.generated')}`,
   );
 
   return {
@@ -597,10 +597,10 @@ export const generateToken = async (apiUrl, tokenData) => {
   };
 };
 
-export const getTokens = async (apiUrl) => {
-  // const url = `${apiUrl}${urlTokens}`;
+export const getCatalogApiKeys = async (apiUrl) => {
+  // const url = `${apiUrl}${urlCatalogApiKeys}`;
   // const { data, isError } = await getData(url);
-  // eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadTokens')}: ${data?.message || ''}`);
+  // eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.message || ''}`);
 
   return {
     data: [
@@ -625,14 +625,14 @@ export const getTokens = async (apiUrl) => {
   };
 };
 
-export const deleteToken = async (apiUrl, tokenId) => {
-  const url = `${apiUrl}${urlTokens}`;
-  const { data, isError } = await deleteData(url, tokenId);
+export const deleteCatalogApiKey = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await deleteData(url, id);
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToDeleteToken')}: ${data?.message || ''}`,
-    `Token ${i18n.t('toasterMessage.deleted')}`,
+    `${i18n.t('toasterMessage.impossibleToDeleteApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.deleted')}`,
   );
 
   return {

@@ -18,15 +18,15 @@ import {
   TrashCan16 as DeleteIcon,
 } from '@carbon/icons-react';
 
-import GenerateTokenModal from './GenerateTokenModal';
-import { getTokens, generateToken } from '../../integration/Integration';
+import GenerateApiKeyModal from './GenerateApiKeyModal';
+import { getCatalogApiKeys, generateCatalogApiKey } from '../../integration/Integration';
 import EhBreadcrumb from '../../components/eh-breadcrumb/EhBreadcrumb';
-import './token-management-page.scss';
+import './api-key-management-page.scss';
 import i18n from '../../i18n';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from '../../helpers/constants';
 import { useApiUrl } from '../../contexts/ConfigContext';
-import DeleteTokenModal from './DeleteTokenModal';
-import EditTokenModal from './EditTokenModal';
+import DeleteApiKeyModal from './DeleteApiKeyModal';
+import EditApiKeyModal from './EditApiKeyModal';
 
 const headers = [
   {
@@ -35,8 +35,8 @@ const headers = [
   }
 ];
 
-const TokenManagementPage = () => {
-  const [tokens, setTokens] = useState([]);
+const ApiKeyManagementPage = () => {
+  const [apiKeys, setApiKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modal, setModal] = useState({
     id: null,
@@ -48,15 +48,15 @@ const TokenManagementPage = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      const { data } = await getTokens();
-      setTokens(data);
+      const { data } = await getCatalogApiKeys();
+      setApiKeys(data);
       setIsLoading(false);
     })();
   }, []);
 
   const handleGenerateClick = () => {
     setModal({
-      id: 'GenerateTokenModal',
+      id: 'GenerateApiKeyModal',
     });
   };
 
@@ -67,66 +67,66 @@ const TokenManagementPage = () => {
     });
   };
 
-  const handleGenerateTokenModalSubmit = async (tokenData) => {
-    // const { data, isError } = await generateToken(apiUrl, tokenData);
-    console.log(tokenData);
+  const handleGenerateApiKeyModalSubmit = async (apiKeyData) => {
+    // const { data, isError } = await generateCatalogApiKey(apiUrl, apiKeyData);
+    console.log(apiKeyData);
   };
 
-  const handleDeleteTokenModalSubmit = async () => {
-    // const { isError } = await deleteToken(apiUrl, modal.data.id);
+  const handleDeleteApiKeyModalSubmit = async () => {
+    // const { isError } = await deleteCatalogApiKey(apiUrl, modal.data.id);
     console.log('confirmed delete');
   };
 
-  const handleEditTokenModalSubmit = async (tokenData) => {
-    // const { isError } = await updateToken(apiUrl, tokenData, tokenData.id);
-    console.log('updated token');
+  const handleEditApiKeyModalSubmit = async (apiKeyData) => {
+    // const { isError } = await updateApiKey(apiUrl, apiKeyData, apiKeyData.id);
+    console.log('updated api key');
   }
 
   const handleEditClick = (rowData) => {
-    const tokenData = {
+    const apiKeyData = {
       id: rowData.id,
       name: rowData.cells[0].value
     };
-    console.log(tokenData);
+    console.log(apiKeyData);
     setModal({
-      id: 'EditTokenModal',
-      data: tokenData,
+      id: 'EditApiKeyModal',
+      data: apiKeyData,
     });
   };
 
   const handleDeleteClick = (rowData) => {
-    const tokenData = {
+    const apiKeyData = {
       id: rowData.id,
       name: rowData.cells[0].value
     };
-    console.log(tokenData);
+    console.log(apiKeyData);
     setModal({
-      id: 'DeleteTokenModal',
-      data: tokenData,
+      id: 'DeleteApiKeyModal',
+      data: apiKeyData,
     });
   };
 
   return (
     <>
-      <Content className="TokenManagmentPage">
-        <div className="TokenManagmentPage-wrapper">
+      <Content className="ApiKeyManagementPage">
+        <div className="ApiKeyManagementPage-wrapper">
         <div className="bx--row">
-          <div className="bx--col-lg-16 TokenManagmentPage-breadcrumb">
+          <div className="bx--col-lg-16 ApiKeyManagementPage-breadcrumb">
             <EhBreadcrumb
             pathElements={[{
-              path: i18n.t('navLink.tokenManagement'),
-              page: SHOW_NAVBAR_ON_MOUNTED_PAGE.tokenManagementPage
+              path: i18n.t('navLink.apiKeyManagement'),
+              page: SHOW_NAVBAR_ON_MOUNTED_PAGE.apiKeyManagementPage
             }]}
             />
           </div>
         </div>
         <div className="bx--row">
-          <div className="bx--col-lg-16 TokenManagmentPage-section">
+          <div className="bx--col-lg-16 ApiKeyManagementPage-section">
             {isLoading ? (
             <DataTableSkeleton columnCount={3} rowCount={10}/>
             ) : (
             <DataTable 
-              rows={tokens} 
+              rows={apiKeys} 
               headers={headers}
             >
               {({
@@ -134,10 +134,10 @@ const TokenManagementPage = () => {
                 getTableProps,
                 getRowProps,
               }) => (
-                <TableContainer title={i18n.t('navLink.tokenManagement')}>
+                <TableContainer title={i18n.t('navLink.apiKeyManagement')}>
                   <TableToolbar>
                   <TableToolbarContent>
-                    <Button onClick={handleGenerateClick} renderIcon={AddIcon}>{i18n.t('component.button.generateToken')}</Button>
+                    <Button onClick={handleGenerateClick} renderIcon={AddIcon}>{i18n.t('component.button.generateApiKey')}</Button>
                   </TableToolbarContent>
                   </TableToolbar>
                   <Table {...getTableProps()}>
@@ -174,24 +174,24 @@ const TokenManagementPage = () => {
         </div>
         </div>
       </Content>
-      <GenerateTokenModal
-        open={modal.id === 'GenerateTokenModal'}
+      <GenerateApiKeyModal
+        open={modal.id === 'GenerateApiKeyModal'}
         onClose={handleModalClose}
-        onSubmit={handleGenerateTokenModalSubmit}
+        onSubmit={handleGenerateApiKeyModalSubmit}
       />
-      <EditTokenModal
-        open={modal.id === 'EditTokenModal'}
+      <EditApiKeyModal
+        open={modal.id === 'EditApiKeyModal'}
         onClose={handleModalClose}
-        onSubmit={handleEditTokenModalSubmit}
-        tokenData={modal.data}
+        onSubmit={handleEditApiKeyModalSubmit}
+        apiKeyData={modal.data}
       />
-      <DeleteTokenModal
-        open={modal.id === 'DeleteTokenModal'}
+      <DeleteApiKeyModal
+        open={modal.id === 'DeleteApiKeyModal'}
         onClose={handleModalClose}
-        onConfirm={handleDeleteTokenModalSubmit}
+        onConfirm={handleDeleteApiKeyModalSubmit}
       />
     </>
   )
 };
 
-export default TokenManagementPage;
+export default ApiKeyManagementPage;

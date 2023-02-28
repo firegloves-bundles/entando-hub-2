@@ -1,50 +1,48 @@
 import { Button, ComposedModal, ModalBody, ModalFooter, ModalHeader, TextInput } from 'carbon-components-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import i18n from '../../i18n';
 
-const GenerateTokenModal = ({ open, onClose, onSubmit }) => {
-  const [tokenName, setTokenName] = useState('');
+const EditApiKeyModal = ({ open, apiKeyData, onClose, onSubmit }) => {
+  const [apiKeyName, setApiKeyName] = useState('');
 
-  const handleTokenNameChange = (e) => {
-    setTokenName(e.target.value);
-  };
+  useEffect(() => {
+    setApiKeyName(apiKeyData?.name || '');
+  }, [apiKeyData]);
 
-  const handleClose = () => {
-    console.log('close');
-    setTokenName('');
-    onClose();
+  const handleApiKeyNameChange = (e) => {
+    setApiKeyName(e.target.value);
   };
 
   const handleSubmit = () => {
-    onSubmit({ tokenName });
+    onSubmit({ apiKeyName });
   };
 
   return (
     <ComposedModal
-      className="GenerateTokenModal"
+      className="EditApiKeyModal"
       open={open}
       onClose={onClose}
       size="xs"
       preventCloseOnClickOutside
     >
       <ModalHeader
-        label={i18n.t('component.button.generateToken')}
-        buttonOnClick={handleClose}
+        label={i18n.t('component.button.editApiKey')}
+        buttonOnClick={onClose}
       />
       <ModalBody>
         <TextInput
           id="name"
           labelText={`${i18n.t('component.bundleModalFields.name')}`}
-          value={tokenName}
-          onChange={handleTokenNameChange}
+          value={apiKeyName}
+          onChange={handleApiKeyNameChange}
           maxLength={128}
         />
       </ModalBody>
       <ModalFooter>
         <Button
           kind="secondary"
-          onClick={handleClose}
+          onClick={onClose}
         >
           {i18n.t('component.button.cancel')}
         </Button>
@@ -52,11 +50,11 @@ const GenerateTokenModal = ({ open, onClose, onSubmit }) => {
           kind="primary"
           onClick={handleSubmit}
         >
-          {i18n.t('component.button.generateToken')}
+          {i18n.t('component.button.save')}
         </Button>
       </ModalFooter>
     </ComposedModal>
   );
 };
 
-export default GenerateTokenModal;
+export default EditApiKeyModal;

@@ -82,9 +82,9 @@
       "submit": "Invia",
       "createPrivateCatalog": "Crea catalogo privato",
       "navigatePrivateCatalog": "Vai al catalogo privato",
-      "generateToken": "Generare Token",
-      "deleteToken": "Eliminare Token",
-      "editToken": "Modifica token"
+      "generateApiKey": "Generare API Key",
+      "deleteApiKey": "Eliminare API Key",
+      "editApiKey": "Modifica API Key"
     },
     "pagination": {
       "page": "pagina",
@@ -128,9 +128,9 @@
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
     "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
-    "impossibleToGenerateToken": "Impossibile generare token",
-    "impossibleToLoadTokens": "Impossibile caricare i token",
-    "impossibleToDeleteToken": "Impossibile eliminare il token",
+    "impossibleToGenerateApiKey": "Impossibile generare la API key",
+    "impossibleToLoadApiKeys": "Impossibile caricare le API keys",
+    "impossibleToDeleteApiKey": "Impossibile eliminare la API key",
     "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",
     "bundle": "Bundle",
@@ -172,13 +172,13 @@
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
     "addNewVersion": "Aggiungi nuova versione",
-    "deleteToken": "Sei sicuro di voler eliminare questo token?"
+    "deleteApiKey": "Sei sicuro di voler eliminare questo API key?"
   },
   "navLink": {
     "userManagement": "Gestione utente",
     "categoryManagement": "Gestione delle categorie",
     "organisationManagement": "Gestione dell'organizzazione",
-    "tokenManagement": "Gestione dei token"
+    "apiKeyManagement": "Gestione dei API key"
   },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",

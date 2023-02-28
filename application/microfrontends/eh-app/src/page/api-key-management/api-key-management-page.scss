@@ -1,4 +1,4 @@
-.TokenManagmentPage {
+.ApiKeyManagementPage {
   background: var(--clr-transparent);
 
   &-wrapper {
@@ -68,9 +68,9 @@
   }
 }
 
-.GenerateTokenModal,
-.EditTokenModal,
-.DeleteTokenModal {
+.GenerateApiKeyModal,
+.EditApiKeyModal,
+.DeleteApiKeyModal {
   .bx--modal-container {
     background-color: var(--clr-white);
 

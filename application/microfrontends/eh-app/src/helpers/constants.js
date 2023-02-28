@@ -116,7 +116,7 @@ export const SHOW_NAVBAR_ON_MOUNTED_PAGE = {
     categoryManagementPage: "categoryManagementPage",
     userManagementPage: "userManagementPage",
     organisationManagementPage: "organisationManagementPage",
-    tokenManagementPage: "tokenManagementPage",
+    apiKeyManagementPage: "apiKeyManagementPage",
 }
 
 // Git Repo Address

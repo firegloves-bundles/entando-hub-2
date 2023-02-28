@@ -12,7 +12,7 @@ import NotificationDispatcher from "./components/notification/NotificationDispat
 import i18n from "./i18n"
 import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 import { useState } from "react"
-import TokenManagementPage from "./page/token-management/TokenManagementPage"
+import ApiKeyManagementPage from "./page/api-key-management/ApiKeyManagementPage"
 
 function AppCarbon() {
   const [versionSearchTerm, setVersionSearchTerm] = useState('');
@@ -25,7 +25,7 @@ function AppCarbon() {
           <Route path="**/bundlegroup/:id" exact render={(props) => <BundleGroupPage {...props}/>}/>
           <Route path="**/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props}/>}/>
           <Route path="**/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} {...props}/>}/>
-          <Route path="**/tokens*" render={(props) => <TokenManagementPage {...props} />} />
+          <Route path="**/apikeys*" render={(props) => <ApiKeyManagementPage {...props} />} />
           <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage} />
           <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage} />
           <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage} />

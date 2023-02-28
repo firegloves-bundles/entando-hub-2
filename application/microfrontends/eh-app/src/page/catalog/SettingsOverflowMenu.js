@@ -7,15 +7,15 @@ import i18n from '../../i18n';
 const SettingsOverflowMenu = () => {
   const history = useHistory();
 
-  const handleTokenManagementClick = () => {
-    history.push('/tokens');
+  const handleApiKeyManagementClick = () => {
+    history.push('/apikeys');
   };
 
   return (
     <OverflowMenu renderIcon={SettingsIcon}>
       <OverflowMenuItem
-        itemText={i18n.t('navLink.tokenManagement')}
-        onClick={handleTokenManagementClick}
+        itemText={i18n.t('navLink.apiKeyManagement')}
+        onClick={handleApiKeyManagementClick}
       />
     </OverflowMenu>
   )

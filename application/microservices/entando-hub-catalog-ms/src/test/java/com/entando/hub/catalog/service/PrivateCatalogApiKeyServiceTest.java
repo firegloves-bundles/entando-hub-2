@@ -55,7 +55,7 @@ public class PrivateCatalogApiKeyServiceTest {
     private final static Long PORTAL_USER_ID_2 = 2200L;
 
     @Test
-    public void getAllApiKeysByUsernameTest() {
+    void getAllApiKeysByUsernameTest() {
         List<PrivateCatalogApiKey> apiKeyList = new ArrayList<>();
         PrivateCatalogApiKey privateCatalogApiKey1 = createPrivateCatalogApiKey1();
         PrivateCatalogApiKey privateCatalogApiKey2 = createPrivateCatalogApiKey2();
@@ -71,7 +71,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void editLabelTest() {
+    void editLabelTest() {
         //Edit an api key that exists should return true as result
         PrivateCatalogApiKey privateCatalogApiKey = createPrivateCatalogApiKey1();
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
@@ -81,7 +81,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void editLabelNotExistTest() {
+    void editLabelNotExistTest() {
         //Edit an api key that don't exist should throw a BadRequestException
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {
@@ -92,7 +92,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void deleteApiKeyTest() {
+    void deleteApiKeyTest() {
         //Delete an api key that exists should return true as result
         PrivateCatalogApiKey privateCatalogApiKey = createPrivateCatalogApiKey1();
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
@@ -102,7 +102,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void deleteApiKeyNotExistTest() {
+    void deleteApiKeyNotExistTest() {
         //Delete an Api key that don't exist should throw a BadRequestException
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {
@@ -113,7 +113,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void regenerateApiKeyTest() {
+    void regenerateApiKeyTest() {
         //Regenerate an api key that exists should return a String as result
         PrivateCatalogApiKey privateCatalogApiKey = generatePrivateCatalogApiKeyEntity(API_KEY_ID,PORTAL_USER_ID );
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
@@ -124,7 +124,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    public void regenerateMyApiKeyNotExistTest() {
+    void regenerateMyApiKeyNotExistTest() {
         //Regenerate an api key that don't exist should throw a BadRequestException
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {

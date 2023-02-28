@@ -28,7 +28,7 @@ public class PrivateCatalogApiKeyMapperTest {
     private static String GENERATED_LABEL_2 = API_KEY_ID_2 + LABEL;
 
     @Test
-    public void testToDto() {
+    void testToDto() {
         PrivateCatalogApiKey entity = generatePrivateCatalogApiKeyEntity(API_KEY_ID_1, PORTAL_USER_ID_1);
         GetApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toDto(entity);
         assertNotNull(dto);
@@ -38,13 +38,13 @@ public class PrivateCatalogApiKeyMapperTest {
     }
 
     @Test
-    public void testToDtoNull() {
+    void testToDtoNull() {
         GetApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toDto((PrivateCatalogApiKey) null);
         assertNull(dto);
     }
 
     @Test
-    public void testListToDto() {
+    void testListToDto() {
         PrivateCatalogApiKey entity1 = generatePrivateCatalogApiKeyEntity(API_KEY_ID_1, PORTAL_USER_ID_1);
         PrivateCatalogApiKey entity2 = generatePrivateCatalogApiKeyEntity(API_KEY_ID_2, PORTAL_USER_ID_2);
         List<PrivateCatalogApiKey> list = new ArrayList<>();
@@ -62,7 +62,7 @@ public class PrivateCatalogApiKeyMapperTest {
     }
 
     @Test
-    public void testListToDtoNull() {
+    void testListToDtoNull() {
         List<GetApiKeyResponseDTO> dto = privateCatalogApiKeyMapper.toDto((List<PrivateCatalogApiKey>) null);
         assertNull(dto);
     }

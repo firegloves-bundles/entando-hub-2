@@ -9,7 +9,7 @@ import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ComponentScan(basePackageClasses = {PrivateCatalogApiKeyMapper.class, PrivateCatalogApiKeyMapperImpl.class})
-public class PrivateCatalogApiKeyControllerTest {
+class PrivateCatalogApiKeyControllerTest {
     @Autowired
     WebApplicationContext webApplicationContext;
     @Autowired
@@ -65,14 +65,14 @@ public class PrivateCatalogApiKeyControllerTest {
     private final String ID_URI = URI + "{id}";
     private final String REGENERATE_MY_API_KEY_URI = URI + "regenerate/{id}";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    public void testGetMyApiKeysAdmin() throws Exception {
+    void testGetMyApiKeysAdmin() throws Exception {
         PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> apiKeyList = getListApiKeyResponseDTO(createPrivateCatalogApiKey());
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
         Mockito.when(privateCatalogApiKeyService.getApiKeysByUsername(ADMIN_USERNAME, PAGE, PAGE_SIZE)).thenReturn(apiKeyList);
@@ -92,7 +92,7 @@ public class PrivateCatalogApiKeyControllerTest {
     }
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    public void TestDeleteMyApiKey() throws Exception {
+    void TestDeleteMyApiKey() throws Exception {
         Mockito.when(privateCatalogApiKeyService.deleteApiKey(ADMIN_API_KEY_ID, ADMIN_USERNAME)).thenReturn(Boolean.TRUE);
         mockMvc.perform(MockMvcRequestBuilders.delete(ID_URI, ADMIN_API_KEY_ID)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -102,7 +102,7 @@ public class PrivateCatalogApiKeyControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    public void TestEditMyLabel() throws Exception {
+    void TestEditMyLabel() throws Exception {
         EditApiKeyRequestDTO request = new EditApiKeyRequestDTO();
         request.setLabel(LABEL);
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
@@ -118,7 +118,7 @@ public class PrivateCatalogApiKeyControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    public void TestRegenerateMyApiKey() throws Exception {
+    void TestRegenerateMyApiKey() throws Exception {
         EditApiKeyRequestDTO request = new EditApiKeyRequestDTO();
         request.setLabel(LABEL);
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
@@ -132,7 +132,7 @@ public class PrivateCatalogApiKeyControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    public void TestAddMyApiKey() throws Exception {
+    void TestAddMyApiKey() throws Exception {
         AddApiKeyRequestDTO request = new AddApiKeyRequestDTO();
         request.setLabel(LABEL);
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);

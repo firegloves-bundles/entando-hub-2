@@ -4,15 +4,19 @@ import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static com.entando.hub.catalog.service.helpers.PrivateCatalogApiKeyTestHelper.generatePrivateCatalogApiKeyEntity;
 import static junit.framework.TestCase.*;
 
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class PrivateCatalogApiKeyMapperTest {
 
     private PrivateCatalogApiKeyMapper privateCatalogApiKeyMapper = Mappers.getMapper(PrivateCatalogApiKeyMapper.class);

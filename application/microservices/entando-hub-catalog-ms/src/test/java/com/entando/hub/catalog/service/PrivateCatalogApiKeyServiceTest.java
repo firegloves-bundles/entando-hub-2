@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.service;
 
+import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.PrivateCatalogApiKeyRepository;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
@@ -9,15 +10,14 @@ import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.*;
 
@@ -30,18 +30,28 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ComponentScan(basePackageClasses = {PrivateCatalogApiKeyMapper.class, PrivateCatalogApiKeyMapperImpl.class})
 public class PrivateCatalogApiKeyServiceTest {
-    @InjectMocks
     PrivateCatalogApiKeyService privateCatalogApiKeyService;
     @Mock
     PrivateCatalogApiKeyRepository privateCatalogApiKeyRepository;
     @Mock
     private ApiKeyGeneratorHelper apiKeyGeneratorHelper;
+    @Mock
+    PortalUserRepository portalUserRepository;
+
     @Spy
-    private static PrivateCatalogApiKeyMapper mapper = new PrivateCatalogApiKeyMapperImpl();
+    private static PrivateCatalogApiKeyMapper privateCatalogApiKeyMapper = new PrivateCatalogApiKeyMapperImpl();
+
+    @BeforeEach
+    void setUp() {
+        this.privateCatalogApiKeyService = new PrivateCatalogApiKeyService(privateCatalogApiKeyRepository,
+                portalUserRepository,
+                apiKeyGeneratorHelper,
+                privateCatalogApiKeyMapper);
+    }
 
     private final Integer PAGE = 1;
     private final Integer PAGE_SIZE = 25;

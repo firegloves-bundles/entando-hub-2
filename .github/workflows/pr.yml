@@ -24,8 +24,8 @@ jobs:
         bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
         ent bundle build --all --stdout --fail-fast
         cd microservices/entando-hub-catalog-ms && mvn sonar:sonar && cd ../..
-        cd microfrontends/eh-login && npm i -D @craco/craco && ent npm run sonar && cd ../..
-        cd microfrontends/eh-app && npm i -D @craco/craco && ent npm run sonar && cd ../..
+        cd microfrontends/eh-login && ent npm run sonar && cd ../..
+        cd microfrontends/eh-app && ent npm run sonar && cd ../..
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

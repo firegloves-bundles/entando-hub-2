@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.dto.UserDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.rest.domain.RestUserRepresentation;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
@@ -87,8 +87,8 @@ public class KeycloakUserControllerTest {
 	public void testGetUser() throws Exception {
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
-		RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
-		Mockito.when(keyCloakService.getUser(restUserRepresentation.getUsername())).thenReturn(user);
+		UserDto userDto = populateRestUserRepresentation();
+		Mockito.when(keyCloakService.getUser(userDto.getUsername())).thenReturn(user);
 		mockMvc.perform(MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON_VALUE).content(username))
 	      .andExpect(status().is(HttpStatus.OK.value()))
 	      
@@ -127,20 +127,20 @@ public class KeycloakUserControllerTest {
 		return user;
 	}
 
-	private RestUserRepresentation populateRestUserRepresentation() {
+	private UserDto populateRestUserRepresentation() {
 	   
 		    Set<String> organisationIds = new HashSet<String>();
 	        organisationIds.add(ORGID);
 	        organisationIds.add(ORGID);
-      		RestUserRepresentation restUserRepresentation = new RestUserRepresentation(populateUserRepresentation());
-		    restUserRepresentation.setId(ID);
-	        restUserRepresentation.setFirstName(FIRSTNAME);
-	        restUserRepresentation.setLastName(LASTNAME);
-	        restUserRepresentation.setUsername(USERNAME);
-	        restUserRepresentation.setEmail(EMAIL);
-	        restUserRepresentation.setOrganisationIds(organisationIds);
-	        restUserRepresentation.setEnabled(true);
-		    return restUserRepresentation;
+      		UserDto userDto = new UserDto(populateUserRepresentation());
+		    userDto.setId(ID);
+	        userDto.setFirstName(FIRSTNAME);
+	        userDto.setLastName(LASTNAME);
+	        userDto.setUsername(USERNAME);
+	        userDto.setEmail(EMAIL);
+	        userDto.setOrganisationIds(organisationIds);
+	        userDto.setEnabled(true);
+		    return userDto;
 	}
 	
 	private SearchKeycloackUserRequest populateSearchKeycloackUserRequest() {

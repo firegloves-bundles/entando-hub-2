@@ -7,7 +7,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionStandardMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,18 +26,18 @@ public class BundleGroupService {
     final private BundleGroupRepository bundleGroupRepository;
     final private CategoryRepository categoryRepository;
     private final BundleGroupVersionService bundleGroupVersionService;
-    private final BundleGroupVersionMapper bundleGroupVersionMapper;
+    private final BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper;
 
     private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository,
                               BundleGroupVersionService bundleGroupVersionService,
-                              BundleService bundleService, BundleGroupVersionMapper bundleGroupVersionMapper) {
+                              BundleService bundleService, BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
-      this.bundleGroupVersionMapper = bundleGroupVersionMapper;
+      this.bundleGroupVersionStandardMapper = bundleGroupVersionStandardMapper;
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
@@ -102,7 +102,7 @@ public class BundleGroupService {
 //        	 bundleGroupVersionService.createBundleGroupVersion(bundleGroup.getVersionDetails().createEntity(optBundleGroupVersionId, toUpdate), bundleGroup.getVersionDetails());
 
           final BundleGroupVersionDto bundleGroupVersionDetails = bundleGroup.getVersionDetails();
-            BundleGroupVersion BundleGroupVersionViewEntity = bundleGroupVersionMapper.toEntity(bundleGroupVersionDetails, toUpdate);
+            BundleGroupVersion BundleGroupVersionViewEntity = bundleGroupVersionStandardMapper.toEntity(bundleGroupVersionDetails, toUpdate);
           bundleGroupVersionService.createBundleGroupVersion(BundleGroupVersionViewEntity, bundleGroup.getVersionDetails());
         }
     }

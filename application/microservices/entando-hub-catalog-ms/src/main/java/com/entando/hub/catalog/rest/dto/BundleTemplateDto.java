@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.rest.domain;
+package com.entando.hub.catalog.rest.dto;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class BundleTemplate {
+public class BundleTemplateDto {
   @Schema(example = "Entando 7.1 Tutorials")
   private String bundleGroupName;
 
@@ -20,7 +20,7 @@ public class BundleTemplate {
   private Long bundleGroupId;
   private Long bundleId;
 
-  public BundleTemplate(BundleGroupVersion bundleGroupVersion, BundleGroup bundleGroup, Bundle bundle) {
+  public BundleTemplateDto(BundleGroupVersion bundleGroupVersion, BundleGroup bundleGroup, Bundle bundle) {
     this.bundleGroupName = bundleGroup.getName();
     this.bundleName = bundle.getName();
     this.gitSrcRepoAddress = bundle.getGitSrcRepoAddress();

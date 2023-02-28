@@ -7,7 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -182,4 +184,14 @@ public class AppBuilderBundleGroupsControllerTestDto {
 		category.setBundleGroups(null);
 		return category;
 	}
+
+//
+//	private PageImpl<BundleGroupVersionOutDto> convertoToDto(Page<BundleGroupVersion> page) {
+//		return new PageImpl<>(page.getContent()
+//				.stream()
+//				.map(e -> entityMapper.toDto(e))
+//				.collect(Collectors.toList())
+//				, page.getPageable(), page.getNumberOfElements());
+//	}
+
 }

@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.rest.domain;
+package com.entando.hub.catalog.rest.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-public class RestUserRepresentation {
+public class UserDto {
   @Schema(example = "1d97d896-4761-21fc-8217-17d5d13a104b")
   private String id;
   private Date created;
@@ -31,7 +31,7 @@ public class RestUserRepresentation {
   private String email;
   private Set<String> organisationIds;
 
-  public RestUserRepresentation(com.entando.hub.catalog.service.model.UserRepresentation user) {
+  public UserDto(com.entando.hub.catalog.service.model.UserRepresentation user) {
     this.id = user.getId();
     this.created = new Date(user.getCreatedTimestamp());
     this.username = user.getUsername();

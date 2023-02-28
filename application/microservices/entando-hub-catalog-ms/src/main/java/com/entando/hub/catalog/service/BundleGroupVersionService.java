@@ -386,4 +386,5 @@ public class BundleGroupVersionService {
 		logger.debug("{}: getBundleGroupVersions: organisationId {}, number of elements: {}", CLASS_NAME, organisationId, page.getNumberOfElements());
 		return pagedContent;
 	}
+
 }

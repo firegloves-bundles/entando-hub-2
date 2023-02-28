@@ -3,8 +3,9 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionOutDto;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -13,7 +14,6 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 import static junit.framework.TestCase.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -21,14 +21,16 @@ import static org.hamcrest.Matchers.hasItems;
 public class BundleGroupVersionMapperTest extends BaseMapperTest {
 
 
-  private BundleGroupVersionMapper bundleGroupVersionMapper = Mappers.getMapper(BundleGroupVersionMapper.class);
+  private BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper = Mappers.getMapper(BundleGroupVersionStandardMapper.class);
+
+  private BundleGroupVersionEntityMapper bundleGroupVersionEntityMapper = Mappers.getMapper(BundleGroupVersionEntityMapper.class);
 
   @Test
   public void testToEntity() {
     BundleGroupVersionDto dto = generateBundleGroupVersionDto("2381");
     BundleGroup bg = generateBundleGroupEntity(2382L);
 
-    BundleGroupVersion entity = bundleGroupVersionMapper.toEntity(dto, bg);
+    BundleGroupVersion entity = bundleGroupVersionStandardMapper.toEntity(dto, bg);
     assertNotNull(entity);
     assertNotNull(entity.getId());
     assertEquals((Long)2381L, entity.getId());
@@ -40,7 +42,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
     BundleGroupVersionDto dto = generateBundleGroupVersionDto(null);
     BundleGroup bg = generateBundleGroupEntity(2382L);
 
-    BundleGroupVersion entity = bundleGroupVersionMapper.toEntity(dto, bg);
+    BundleGroupVersion entity = bundleGroupVersionStandardMapper.toEntity(dto, bg);
     assertNotNull(entity);
     assertNull(entity.getId());
     testCommonData(bg, entity);
@@ -50,7 +52,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
   public void toDto() {
     BundleGroupVersion entity = generateBundleGroupVersionEntity(191045L);
 
-    BundleGroupVersionDto dto = bundleGroupVersionMapper.toDto(entity);
+    BundleGroupVersionDto dto = bundleGroupVersionStandardMapper.toDto(entity);
     assertNotNull(dto);
     assertEquals(BUNDLE_GROUP_VERSION_DESCRIPTION, dto.getDescription());
     assertEquals(BUNDLE_GROUP_VERSION_DESCRIPTION_IMG, dto.getDescriptionImage());
@@ -73,6 +75,25 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
     assertThat(dto.getChildren(), hasItems(BUNDLE_ID, BUNDLE_ID + 1));
     assertEquals(BUNDLE_GROUP_VERSION_DISPLAY_CONTACT_URL, dto.getDisplayContactUrl());
     assertEquals(BUNDLE_GROUP_VERSION_CONTACT_URL, dto.getContactUrl());
+  }
+
+  @Test
+  public void toOutDto() {
+    BundleGroupVersion entity = generateBundleGroupVersionEntity(153L);
+
+    BundleGroupVersionOutDto dto = bundleGroupVersionEntityMapper.toDto(entity);
+    assertNotNull(dto);
+    assertEquals(entity.getId(), dto.getId());
+    assertEquals(entity.getDescription(), dto.getDescription());
+    assertEquals(entity.getDocumentationUrl(), dto.getDocumentationUrl());
+    assertEquals(entity.getVersion(), dto.getVersion());
+    assertEquals(entity.getDescriptionImage(), dto.getDescriptionImage());
+    assertEquals(entity.getStatus(), dto.getStatus());
+    assertEquals(entity.getDisplayContactUrl(), dto.getDisplayContactUrl());
+    assertEquals(entity.getContactUrl(), dto.getContactUrl());
+    assertEquals(entity.getBundleGroup(), dto.getBundleGroup());
+    assertEquals(entity.getBundles().size(), dto.getBundles().size());
+    assertEquals(entity.getLastUpdated(), dto.getLastUpdated());
   }
 
   public static void testCommonData(BundleGroup bg, BundleGroupVersion entity) {

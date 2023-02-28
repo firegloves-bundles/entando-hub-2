@@ -4,7 +4,7 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.domain.BundleTemplate;
+import com.entando.hub.catalog.rest.dto.BundleTemplateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,12 +31,12 @@ public class EntTemplateController {
     @GetMapping(value = "/bundles", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<BundleTemplate> getBundleTemplates() {
+    public List<BundleTemplateDto> getBundleTemplates() {
         List<BundleGroupVersion> bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInIt();
 
-        List<BundleTemplate> bundleTemplateList = bundleGroupVersionList.stream()
+        List<BundleTemplateDto> bundleTemplateList = bundleGroupVersionList.stream()
                 .flatMap(bundleGroupVersion ->
-                        bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplate(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
+                        bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplateDto(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
                 )
                 .filter(bundleTemplate ->
                         bundleTemplate.getGitSrcRepoAddress() != null && bundleTemplate.getGitSrcRepoAddress().length() > 0
@@ -68,13 +68,13 @@ public class EntTemplateController {
     @GetMapping(value = "/bundlegroups/{id}", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<BundleTemplate> getBundleTemplateByBundleGroupId(@PathVariable Long id) {
+    public List<BundleTemplateDto> getBundleTemplateByBundleGroupId(@PathVariable Long id) {
         List<BundleGroupVersion> bundleGroupVersionList;
         bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInItAndId(id);
 
-        List<BundleTemplate> bundleTemplateList = bundleGroupVersionList.stream()
+        List<BundleTemplateDto> bundleTemplateList = bundleGroupVersionList.stream()
                 .flatMap(bundleGroupVersion ->
-                        bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplate(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
+                        bundleGroupVersion.getBundles().stream().map(bundle -> new BundleTemplateDto(bundleGroupVersion, bundleGroupVersion.getBundleGroup(), bundle))
                 )
                 .filter(bundleTemplate ->
                         bundleTemplate.getGitSrcRepoAddress() != null && bundleTemplate.getGitSrcRepoAddress().length() > 0

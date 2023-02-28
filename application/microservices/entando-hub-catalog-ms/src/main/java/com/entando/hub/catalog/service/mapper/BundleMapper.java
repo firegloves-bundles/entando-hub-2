@@ -11,10 +11,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -55,25 +52,27 @@ public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
   @Named("toEntityGroups")
   static Set<BundleGroupVersion> toEntityGroups(List<String> groups) {
     if (groups != null && !CollectionUtils.isEmpty(groups)) {
-      return groups.stream().map((bundleGroupVersionId) -> {
-          BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+      return groups.stream()
+              .filter(id -> StringUtils.isNotBlank(id))
+              .map((bundleGroupVersionId) -> {
+                BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
 
-          bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
-          return bundleGroupVersion;
-        })
-        .filter(Objects::nonNull)
-        .collect(Collectors.toSet());
+                bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));
+                return bundleGroupVersion;
+              })
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
     }
-    return null;
+    return new HashSet<>(); // EHUB-296 - retain behaviour
   }
 
   @Named("toDtoGroups")
   static List<String> toDtoGroups(Set<BundleGroupVersion> bundleGroupVersions) {
     return (bundleGroupVersions != null && !bundleGroupVersions.isEmpty()) ?
-      bundleGroupVersions
-        .stream()
-        .map(bundleGroupVersion -> bundleGroupVersion.getId().toString())
-        .collect(Collectors.toList()) : null;
+            bundleGroupVersions
+                    .stream()
+                    .map(bundleGroupVersion -> bundleGroupVersion.getId().toString())
+                    .collect(Collectors.toList()) : Arrays.asList(); // EHUB-296 - retain behaviour
   }
 
 }

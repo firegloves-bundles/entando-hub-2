@@ -3,7 +3,7 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;

@@ -9,14 +9,12 @@ import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -34,7 +32,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-@RunWith(MockitoJUnitRunner.Silent.class)
 @ComponentScan(basePackageClasses = {PrivateCatalogApiKeyMapper.class, PrivateCatalogApiKeyMapperImpl.class})
 public class PrivateCatalogApiKeyServiceTest {
     @InjectMocks
@@ -121,7 +118,7 @@ public class PrivateCatalogApiKeyServiceTest {
         PrivateCatalogApiKey privateCatalogApiKey = generatePrivateCatalogApiKeyEntity(API_KEY_ID,PORTAL_USER_ID );
         Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
         Mockito.when(this.apiKeyGeneratorHelper.generateApiKey()).thenReturn(API_KEY);
-        Mockito.when(this.apiKeyGeneratorHelper.toSha(eq(API_KEY))).thenReturn(API_KEY_SHA);
+        Mockito.when(this.apiKeyGeneratorHelper.toSha(API_KEY)).thenReturn(API_KEY_SHA);
         String result = privateCatalogApiKeyService.regenerateApiKey(API_KEY_ID, GENERATED_USERNAME);
         assertNotNull(result);
     }

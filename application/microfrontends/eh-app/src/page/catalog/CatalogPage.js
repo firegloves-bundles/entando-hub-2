@@ -1,11 +1,13 @@
-import { Content, Search } from "carbon-components-react";
+import { Content, OverflowMenu, OverflowMenuItem, Search } from "carbon-components-react";
+import { ChevronDown20 as ChevronIcon } from '@carbon/icons-react';
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import { getPortalUserByUsername } from "../../integration/Integration";
@@ -22,6 +24,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const hasValidRole = isCurrentUserAssignedAValidRole();
   const isAuthenticated = isCurrentUserAuthenticated();
   const hasPreferredName = isCurrentUserAssignedAPreferredName();
+
   const [categories, setCategories] = useState([])
   const [orgList, setOrgList] = useState([])
   const [loading, setLoading] = useState(true)
@@ -29,8 +32,11 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const [currentUserOrg, setCurrentUserOrg] = useState(null);
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
+  const [catalogs, setCatalogs] = useState([]);
 
   const apiUrl = useApiUrl();
+
+  const history = useHistory();
 
   // worker is a state that handle state of search input when terms comes from versionPage.
   // it helps to handle Api hit on every change Event.
@@ -77,8 +83,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
       setOrgList(organisationList);
     };
 
-    (async () => {
-      await getCatOrgList();
+    const getPortalUserDetails = async () => {
       const username = await getUserName();
       if (username) {
         const portalUserResp = (await getPortalUserByUsername(apiUrl, username));
@@ -93,7 +98,16 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
         }
         setLoading(false);
       }
-    })();
+    };
+
+    const getCatalogs = async () => {
+      const { data } = await getPrivateCatalogs(apiUrl);
+      setCatalogs(data);
+    };
+
+    getCatOrgList();
+    getPortalUserDetails();
+    getCatalogs();
   
     return () => {
       isMounted = false;
@@ -142,6 +156,11 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     }
   }
 
+  const handleCatalogChange = (catalog) => {
+    history.push(`/catalog/${catalog.organisationId}`);
+    console.log(catalog);
+  };
+
   /**
    * Check to show full page or only public discovery view after login.
    * Show only public discovery view if user is authenticated but does not have an assigned Hub role(eh-admin,eh-manager,eh-author)
@@ -174,6 +193,20 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 </div>
                 <div className="bx--col-lg-5 CatalogPage-section">
                   {i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                  <OverflowMenu
+                    className="CatalogPage-catalog-menu"
+                    menuOptionsClass="CatalogPage-catalog-options"
+                    renderIcon={ChevronIcon}
+                    flipped
+                  >
+                    {catalogs.map(catalog => (
+                      <OverflowMenuItem
+                        key={catalog.id}
+                        itemText={catalog.name}
+                        onClick={() => handleCatalogChange(catalog)}
+                      />
+                    ))}
+                  </OverflowMenu>
                 </div>
                 <div className="bx--col-lg-3 CatalogPage-section">
                   {/*

@@ -6,8 +6,8 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionEntityMapper;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
+import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionEntityMapper;
+import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapper;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 

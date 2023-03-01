@@ -1,15 +1,17 @@
 package com.entando.hub.catalog.persistence.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
+
 
 @Entity
 @Setter
 @Getter
+@EqualsAndHashCode
 public class PrivateCatalogApiKey {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,19 +44,6 @@ public class PrivateCatalogApiKey {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PrivateCatalogApiKey privateCatalogApiKey = (PrivateCatalogApiKey) o;
-        return Objects.equals(id, privateCatalogApiKey.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
     public String toString() {
         return "PrivateCatalogApiKey{" +
                 "id=" + id +
@@ -64,5 +53,4 @@ public class PrivateCatalogApiKey {
                 ", lastUpdateDate='" + lastUpdateDate + '\'' +
                 '}';
     }
-
 }

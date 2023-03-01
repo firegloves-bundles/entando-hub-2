@@ -16,7 +16,7 @@ import static junit.framework.TestCase.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class PrivateCatalogApiKeyMapperTest {
+class PrivateCatalogApiKeyMapperTest {
 
     private PrivateCatalogApiKeyMapper privateCatalogApiKeyMapper = Mappers.getMapper(PrivateCatalogApiKeyMapper.class);
     static final Long PORTAL_USER_ID_1 = 1001L;

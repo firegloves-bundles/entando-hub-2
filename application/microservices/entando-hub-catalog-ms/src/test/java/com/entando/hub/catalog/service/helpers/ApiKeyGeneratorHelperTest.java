@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class ApiKeyGeneratorHelperTest {
+class ApiKeyGeneratorHelperTest {
 
     @Autowired
     private ApiKeyGeneratorHelper apiKeyGeneratorHelper;

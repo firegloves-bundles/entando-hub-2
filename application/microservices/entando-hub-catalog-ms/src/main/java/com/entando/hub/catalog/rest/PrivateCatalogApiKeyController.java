@@ -1,7 +1,10 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
-import com.entando.hub.catalog.rest.dto.apikey.*;
+import com.entando.hub.catalog.rest.dto.apikey.AddApiKeyRequestDTO;
+import com.entando.hub.catalog.rest.dto.apikey.ApiKeyResponseDTO;
+import com.entando.hub.catalog.rest.dto.apikey.EditApiKeyRequestDTO;
+import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,13 +79,11 @@ public class PrivateCatalogApiKeyController {
     public ResponseEntity<Map<String, Boolean>> editMyLabel(@PathVariable @NotNull Long id, @Valid @RequestBody EditApiKeyRequestDTO request) {
         String username = securityHelperService.getContextAuthenticationUsername();
         logger.debug("REST User {} request to edit the api key label with id {}", username, id);
-        privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
         boolean result = privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
         Map<String, Boolean> mapResult = new HashMap<>();
         mapResult.put("result", result);
         return new ResponseEntity<>(mapResult, HttpStatus.OK);
     }
-
 
     @Operation(summary = "Delete an api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
@@ -95,7 +95,6 @@ public class PrivateCatalogApiKeyController {
     public ResponseEntity<Map<String, Boolean>> deleteMyApiKey(@PathVariable @NotNull Long id) {
         String username = securityHelperService.getContextAuthenticationUsername();
         logger.debug("REST User {} request to delete the api key with id {}", username, id);
-        privateCatalogApiKeyService.deleteApiKey(id, username);
         boolean result = privateCatalogApiKeyService.deleteApiKey(id, username);
         Map<String, Boolean> mapResult = new HashMap<>();
         mapResult.put("result", result);
@@ -112,7 +111,6 @@ public class PrivateCatalogApiKeyController {
     public ResponseEntity<ApiKeyResponseDTO> regenerateMyApiKey(@PathVariable @NotNull long id) {
         String username = securityHelperService.getContextAuthenticationUsername();
         logger.debug("REST User {} request to regenerate the api key with id {}", username, id);
-        privateCatalogApiKeyService.regenerateApiKey(id, username);
         String result = privateCatalogApiKeyService.regenerateApiKey(id, username);
         ApiKeyResponseDTO responseDTO = new ApiKeyResponseDTO();
         responseDTO.setApiKey(result);

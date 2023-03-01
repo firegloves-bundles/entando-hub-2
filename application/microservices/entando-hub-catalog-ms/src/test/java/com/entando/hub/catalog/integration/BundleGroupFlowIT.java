@@ -125,7 +125,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -145,7 +145,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -164,7 +164,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -184,7 +184,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -203,7 +203,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -221,7 +221,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI + savedBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -240,7 +240,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -274,7 +274,7 @@ class BundleGroupFlowIT {
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI + savedStubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestHelper.asJsonString(bundleGroupNoId))
+                        .content(TestHelper.mapToJson(bundleGroupNoId))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

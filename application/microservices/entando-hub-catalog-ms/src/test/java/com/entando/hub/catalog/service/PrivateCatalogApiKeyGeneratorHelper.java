@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.service.helpers;
+package com.entando.hub.catalog.service;
 
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class PrivateCatalogApiKeyTestHelper {
+public class PrivateCatalogApiKeyGeneratorHelper {
     public static String PORTAL_USER_EMAIL = "email";
     public static String PORTAL_USER_USERNAME = "username";
     public static String API_KEY = "api-key";

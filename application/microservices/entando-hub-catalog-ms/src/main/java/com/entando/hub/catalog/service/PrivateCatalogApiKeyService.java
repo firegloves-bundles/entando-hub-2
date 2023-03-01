@@ -5,11 +5,10 @@ import com.entando.hub.catalog.persistence.PrivateCatalogApiKeyRepository;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
-import com.entando.hub.catalog.rest.exceptions.BadRequestException;
 import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
+import com.entando.hub.catalog.rest.exceptions.BadRequestException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -55,7 +54,6 @@ public class PrivateCatalogApiKeyService {
         this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
         return generatedApiKey;
     }
-
     public boolean editLabel(long id, String username, String label) {
         logger.debug("Edit the label api key for the username {} and label {}", username, label);
         Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);

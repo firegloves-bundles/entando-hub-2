@@ -2,6 +2,7 @@ package com.entando.hub.catalog.service;
 
 import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.PrivateCatalogApiKeyRepository;
+import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
 import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
@@ -19,16 +20,19 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import static com.entando.hub.catalog.service.helpers.PrivateCatalogApiKeyTestHelper.*;
+import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -78,6 +82,41 @@ public class PrivateCatalogApiKeyServiceTest {
         assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());
         assertEquals(GENERATED_USERNAME, apiKeys.getPayload().get(0).getUsername());
         assertEquals(GENERATED_LABEL, apiKeys.getPayload().get(0).getLabel());
+    }
+    @Test
+    void getAllApiKeysByUsernameUnpagedTest() {
+        List<PrivateCatalogApiKey> apiKeyList = new ArrayList<>();
+        PrivateCatalogApiKey privateCatalogApiKey1 = createPrivateCatalogApiKey1();
+        PrivateCatalogApiKey privateCatalogApiKey2 = createPrivateCatalogApiKey2();
+        apiKeyList.add(privateCatalogApiKey1);
+        apiKeyList.add(privateCatalogApiKey2);
+        Page<PrivateCatalogApiKey> response = new PageImpl<>(apiKeyList);
+        Mockito.when(privateCatalogApiKeyRepository.findByPortalUserUsername(any(Pageable.class), eq(GENERATED_USERNAME))).thenReturn(response);
+        PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME,PAGE, 0);
+        assertNotNull(apiKeys);
+        assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());
+        assertEquals(GENERATED_USERNAME, apiKeys.getPayload().get(0).getUsername());
+        assertEquals(GENERATED_LABEL, apiKeys.getPayload().get(0).getLabel());
+    }
+
+    @Test
+    void addApiKeyTest() {
+        //Add an api key that exists should return a string as result
+        PortalUser portalUser = createPortalUser();
+        Mockito.when(this.portalUserRepository.findByUsername(GENERATED_USERNAME)).thenReturn(portalUser);
+        Mockito.when(apiKeyGeneratorHelper.generateApiKey()).thenReturn(API_KEY);
+        String result = privateCatalogApiKeyService.addApiKey(GENERATED_USERNAME, GENERATED_LABEL);
+        assertNotNull(result);
+    }
+
+    @Test
+    void addApiKeyPortalUserNotExistTest() {
+        Mockito.when(this.portalUserRepository.findByUsername(GENERATED_USERNAME)).thenReturn(null);
+        try {
+            privateCatalogApiKeyService.addApiKey(GENERATED_USERNAME, GENERATED_LABEL);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof BadRequestException);
+        }
     }
 
     @Test
@@ -143,11 +182,14 @@ public class PrivateCatalogApiKeyServiceTest {
             Assert.assertTrue(e instanceof BadRequestException);
         }
     }
+
     private PrivateCatalogApiKey createPrivateCatalogApiKey1() {
         return generatePrivateCatalogApiKeyEntity(API_KEY_ID,PORTAL_USER_ID);
     }
     private PrivateCatalogApiKey createPrivateCatalogApiKey2() {
         return generatePrivateCatalogApiKeyEntity(API_KEY_ID_2,PORTAL_USER_ID_2);
     }
-
+    private PortalUser createPortalUser() {
+        return generatePortalUserEntity(PORTAL_USER_ID);
+    }
 }

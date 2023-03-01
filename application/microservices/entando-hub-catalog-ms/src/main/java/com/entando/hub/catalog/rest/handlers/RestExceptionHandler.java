@@ -1,7 +1,7 @@
 package com.entando.hub.catalog.rest.handlers;
 
-import com.entando.hub.catalog.rest.exceptions.BadRequestException;
 import com.entando.hub.catalog.rest.dto.ErrorResponse;
+import com.entando.hub.catalog.rest.exceptions.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

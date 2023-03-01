@@ -41,6 +41,9 @@
       "categoryManagement": "Gestione delle categorie",
       "organisationsManagement": "Gestione delle organizzazioni"
     },
+    "apiKeys": {
+      "empty": "Ancora nessuna chiave API"
+    },
     "unauthorized": "NON AUTORIZZATO"
   },
   "component": {

@@ -581,6 +581,17 @@ export const getPrivateCatalogs = async (apiUrl) => {
  * Private Catalog API KEYS ****
  *******************************/
 
+export const getCatalogApiKeys = async (apiUrl, { page = 0, pageSize = 0 } = {}) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}?page=${page}&pageSize=${pageSize}`;
+  const { data, isError } = await getData(url);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.message || ''}`);
+
+  return {
+    data: data.payload,
+    isError,
+  };
+};
+
 export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
   const url = `${apiUrl}${urlCatalogApiKeys}`;
   const { data, isError } = await postData(url, apiKeyData);
@@ -594,34 +605,6 @@ export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
   return {
     data,
     isError,
-  };
-};
-
-export const getCatalogApiKeys = async (apiUrl) => {
-  // const url = `${apiUrl}${urlCatalogApiKeys}`;
-  // const { data, isError } = await getData(url);
-  // eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.message || ''}`);
-
-  return {
-    data: [
-      {
-          'id': '1',
-          'name': 'Token 1',
-          'tokenData': 'sdf2PgQTJ4mu',
-      },
-      {
-          'id': '2',
-          'name': 'Token 2',
-          'tokenData': 'aaPg23sg2QTJ4mu',
-      },
-      {
-          'id': '3',
-          'name': 'Token 3',
-          'tokenData': 'aaPgQsdf2J4mu',
-    
-      }
-    ],
-    isError: false,
   };
 };
 

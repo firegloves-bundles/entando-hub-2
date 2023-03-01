@@ -17,7 +17,7 @@ const GenerateApiKeyModal = ({ open, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    onSubmit({ apiKeyName });
+    onSubmit({ label: apiKeyName });
   };
 
   return (
@@ -25,7 +25,7 @@ const GenerateApiKeyModal = ({ open, onClose, onSubmit }) => {
       className="GenerateApiKeyModal"
       open={open}
       onClose={onClose}
-      size="xs"
+      size="sm"
       preventCloseOnClickOutside
     >
       <ModalHeader

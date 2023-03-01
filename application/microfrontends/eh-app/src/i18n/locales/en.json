@@ -41,6 +41,9 @@
       "categoryManagement": "Category Management",
       "organisationsManagement": "Organisation Management"
     },
+    "apiKeys": {
+      "empty": "No API keys yet"
+    },
     "unauthorized": "UNAUTHORIZED"
   },
   "component": {

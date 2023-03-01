@@ -16,6 +16,7 @@ import {
   Add16 as AddIcon,
   Edit16 as EditIcon,
   TrashCan16 as DeleteIcon,
+  Copy16 as CopyIcon,
 } from '@carbon/icons-react';
 
 import GenerateApiKeyModal from './GenerateApiKeyModal';
@@ -30,9 +31,13 @@ import EditApiKeyModal from './EditApiKeyModal';
 
 const headers = [
   {
-   key: 'name',
-   header: 'Name',
-  }
+   key: 'label',
+   header: 'Label',
+  },
+  {
+    key: 'apiKey',
+    header: 'API key',
+  },
 ];
 
 const ApiKeyManagementPage = () => {
@@ -43,16 +48,18 @@ const ApiKeyManagementPage = () => {
     data: null,
   });
 
-  const apiUrl = useApiUrl;
+  const apiUrl = useApiUrl();
 
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      const { data } = await getCatalogApiKeys();
-      setApiKeys(data);
+      const { data, isError } = await getCatalogApiKeys(apiUrl);
+      if (!isError) {
+        setApiKeys(data);
+      }
       setIsLoading(false);
     })();
-  }, []);
+  }, [apiUrl]);
 
   const handleGenerateClick = () => {
     setModal({
@@ -68,8 +75,10 @@ const ApiKeyManagementPage = () => {
   };
 
   const handleGenerateApiKeyModalSubmit = async (apiKeyData) => {
-    // const { data, isError } = await generateCatalogApiKey(apiUrl, apiKeyData);
-    console.log(apiKeyData);
+    const { data, isError } = await generateCatalogApiKey(apiUrl, apiKeyData);
+    if (!isError) {
+      setApiKeys([...apiKeys, { label: apiKeyData.label, apiKey: data.apiKey }]);
+    }
   };
 
   const handleDeleteApiKeyModalSubmit = async () => {
@@ -85,7 +94,7 @@ const ApiKeyManagementPage = () => {
   const handleEditClick = (rowData) => {
     const apiKeyData = {
       id: rowData.id,
-      name: rowData.cells[0].value
+      label: rowData.cells[0].value
     };
     console.log(apiKeyData);
     setModal({
@@ -97,7 +106,7 @@ const ApiKeyManagementPage = () => {
   const handleDeleteClick = (rowData) => {
     const apiKeyData = {
       id: rowData.id,
-      name: rowData.cells[0].value
+      label: rowData.cells[0].value
     };
     console.log(apiKeyData);
     setModal({
@@ -125,8 +134,8 @@ const ApiKeyManagementPage = () => {
             {isLoading ? (
             <DataTableSkeleton columnCount={3} rowCount={10}/>
             ) : (
-            <DataTable 
-              rows={apiKeys} 
+            <DataTable
+              rows={apiKeys}
               headers={headers}
             >
               {({
@@ -140,33 +149,39 @@ const ApiKeyManagementPage = () => {
                     <Button onClick={handleGenerateClick} renderIcon={AddIcon}>{i18n.t('component.button.generateApiKey')}</Button>
                   </TableToolbarContent>
                   </TableToolbar>
-                  <Table {...getTableProps()}>
-                    <TableBody>
-                      {rows.map((row) => (
-                        <TableRow {...getRowProps({ row })}>
-                          {row.cells.map((cell) => (
-                            <TableCell key={cell.id}>
-                              {cell.value}
+                  {apiKeys.length === 0 ? (
+                    <p className="ApiKeyManagementPage-empty-message">{i18n.t('page.apiKeys.empty')}</p>
+                  ) : (
+                    <Table {...getTableProps()}>
+                      <TableBody>
+                        {rows.map((row) => (
+                          <TableRow {...getRowProps({ row })}>
+                            <TableCell>
+                              {row.cells[0].value}
                             </TableCell>
-                          ))}
-                          <TableCell align="right">
-                            <Button
-                              renderIcon={EditIcon}
-                              kind="ghost"
-                              iconDescription="Edit"
-                              onClick={() => handleEditClick(row)}
-                              hasIconOnly />
-                            <Button
-                              renderIcon={DeleteIcon}
-                              kind="ghost"
-                              iconDescription="Delete"
-                              onClick={() => handleDeleteClick(row)}
-                              hasIconOnly />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                            <TableCell>
+                              {row.cells[1].value}
+                              <CopyIcon />
+                            </TableCell>
+                            <TableCell align="right">
+                              <Button
+                                renderIcon={EditIcon}
+                                kind="ghost"
+                                iconDescription="Edit"
+                                onClick={() => handleEditClick(row)}
+                                hasIconOnly />
+                              <Button
+                                renderIcon={DeleteIcon}
+                                kind="ghost"
+                                iconDescription="Delete"
+                                onClick={() => handleDeleteClick(row)}
+                                hasIconOnly />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
                 </TableContainer>
               )}
             </DataTable>)}

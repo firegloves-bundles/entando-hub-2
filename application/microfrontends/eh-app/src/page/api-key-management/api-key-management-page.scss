@@ -13,6 +13,11 @@
     margin: 2rem 1rem;
   }
 
+  &-empty-message {
+    color: var(--clr-dark-grey);
+    text-align: center;
+  }
+
   &-section {
     margin: 0;
     font-family: Roboto;

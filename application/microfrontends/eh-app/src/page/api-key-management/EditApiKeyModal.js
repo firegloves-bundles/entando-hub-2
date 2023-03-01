@@ -15,7 +15,7 @@ const EditApiKeyModal = ({ open, apiKeyData, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    onSubmit({ apiKeyName });
+    onSubmit({ label: apiKeyName });
   };
 
   return (
@@ -23,7 +23,7 @@ const EditApiKeyModal = ({ open, apiKeyData, onClose, onSubmit }) => {
       className="EditApiKeyModal"
       open={open}
       onClose={onClose}
-      size="xs"
+      size="sm"
       preventCloseOnClickOutside
     >
       <ModalHeader

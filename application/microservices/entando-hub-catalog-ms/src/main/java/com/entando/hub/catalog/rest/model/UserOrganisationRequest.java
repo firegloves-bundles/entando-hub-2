@@ -11,10 +11,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
 public class UserOrganisationRequest {
     @NotEmpty
     @Schema(example = "admin")

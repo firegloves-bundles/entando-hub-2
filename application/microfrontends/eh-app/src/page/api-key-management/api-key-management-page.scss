@@ -62,6 +62,19 @@
     }
   }
 
+  &-api-key {
+    color: var(--clr-blue);
+    cursor: pointer;
+
+    &:active {
+      cursor: default;
+    }
+
+    svg {
+      margin-left: 0.5rem;
+    }
+  }
+
   .bx--btn--icon-only {
     &:hover {
       opacity: 0.6

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createRef } from 'react';
 import {
   Content,
   DataTable,
@@ -50,12 +50,20 @@ const ApiKeyManagementPage = () => {
 
   const apiUrl = useApiUrl();
 
+  const [apiKeyTextRefs, setApiKeyTextRefs] = useState({});
+
   useEffect(() => {
     (async () => {
       setIsLoading(true)
       const { data, isError } = await getCatalogApiKeys(apiUrl);
       if (!isError) {
-        setApiKeys(data);
+        // convert each id to string since DataTable expects each row id to be of that type
+        setApiKeys(data.map(d => ({
+          ...d,
+          id: `${d.id}`,
+        })));
+
+        setApiKeyTextRefs(data.map(() => createRef()));
       }
       setIsLoading(false);
     })();
@@ -78,6 +86,8 @@ const ApiKeyManagementPage = () => {
     const { data, isError } = await generateCatalogApiKey(apiUrl, apiKeyData);
     if (!isError) {
       setApiKeys([...apiKeys, { label: apiKeyData.label, apiKey: data.apiKey }]);
+      setApiKeyTextRefs({ ...apiKeyTextRefs, [data.apiKey]: createRef() });
+      handleModalClose();
     }
   };
 
@@ -89,7 +99,7 @@ const ApiKeyManagementPage = () => {
   const handleEditApiKeyModalSubmit = async (apiKeyData) => {
     // const { isError } = await updateApiKey(apiUrl, apiKeyData, apiKeyData.id);
     console.log('updated api key');
-  }
+  };
 
   const handleEditClick = (rowData) => {
     const apiKeyData = {
@@ -115,6 +125,18 @@ const ApiKeyManagementPage = () => {
     });
   };
 
+  // selects the apiKey text and copies the apiKey to the clipboard
+  const handleApiKeyClick = (apiKey) => {
+    let range = document.createRange();
+    range.selectNodeContents(apiKeyTextRefs[apiKey].current);
+    let sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    navigator.clipboard.writeText(apiKey);
+  };
+
+  const rows = [...apiKeys].reverse();
+
   return (
     <>
       <Content className="ApiKeyManagementPage">
@@ -135,7 +157,7 @@ const ApiKeyManagementPage = () => {
             <DataTableSkeleton columnCount={3} rowCount={10}/>
             ) : (
             <DataTable
-              rows={apiKeys}
+              rows={rows}
               headers={headers}
             >
               {({
@@ -160,8 +182,12 @@ const ApiKeyManagementPage = () => {
                               {row.cells[0].value}
                             </TableCell>
                             <TableCell>
-                              {row.cells[1].value}
-                              <CopyIcon />
+                              {row.cells[1].value && (
+                                <span className="ApiKeyManagementPage-api-key" onClick={() => handleApiKeyClick(row.cells[1].value)}>
+                                  <span ref={apiKeyTextRefs[row.cells[1].value]}>{row.cells[1].value}</span>
+                                  <CopyIcon />
+                                </span>
+                              )}
                             </TableCell>
                             <TableCell align="right">
                               <Button

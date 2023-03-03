@@ -65,7 +65,7 @@ constructor(props) {
           currentUserName: username,
         })
 
-          getPortalUserDetails(apiUrl, username).then(portalUser => {
+          getPortalUserDetails(apiUrl).then(portalUser => {
           this.setState({
             currentUserOrgName: portalUser
               && portalUser.organisations

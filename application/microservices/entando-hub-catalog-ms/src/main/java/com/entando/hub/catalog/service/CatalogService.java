@@ -5,11 +5,11 @@ import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CatalogService {
@@ -22,9 +22,14 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
         this.organisationService = organisationService;
     }
-    public List<Catalog> getCatalogs() {
-        return catalogRepository.findAll();
+    public List<Catalog> getCatalogs(String username, boolean userIsAdmin) {
+        if (userIsAdmin) {
+            return catalogRepository.findAll();
+        } else {
+            return catalogRepository.findByOrganisation_PortalUsers_Username(username);
+        }
     }
+
 
     public Catalog getCatalogById(Long id) {
         Optional<Catalog> catalog = catalogRepository.findById(id);

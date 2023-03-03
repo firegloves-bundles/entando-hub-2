@@ -74,7 +74,7 @@ jobs:
         bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
         bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
         ent bundle build --all --stdout --fail-fast
-        cd microservices/entando-hub-catalog-ms && mvn sonar:sonar && cd ../..
+        cd microservices/entando-hub-catalog-ms && mvn sonar:sonar --no-transfer-progress && cd ../..
         cd microfrontends/eh-login && ent npm run sonar && cd ../..
         cd microfrontends/eh-app && ent npm run sonar && cd ../..
       env:

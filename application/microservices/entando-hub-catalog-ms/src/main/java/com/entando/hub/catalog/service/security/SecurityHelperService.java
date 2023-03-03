@@ -1,18 +1,17 @@
 package com.entando.hub.catalog.service.security;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+
 import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.keycloak.KeycloakPrincipal;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 
 @Service
 public class SecurityHelperService {
@@ -59,4 +58,16 @@ public class SecurityHelperService {
 
     }
 
+    public String getContextAuthenticationUsername() {
+        return ((KeycloakPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal())
+                .getKeycloakSecurityContext()
+                .getToken()
+                .getPreferredUsername();
+    }
+
+    public boolean isAdmin() {
+        return this.hasRoles(Set.of(ADMIN));
+    }
 }

@@ -1,26 +1,28 @@
 package com.entando.hub.catalog.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -39,24 +41,36 @@ class CatalogServiceTest {
     }
 
     @Test
-    void shouldReturnAllCatalogs() {
+    void shouldReturnAllCatalogsWhileAdmin() {
         List<Catalog> expectedCatalogs = Arrays.asList(stubCatalog());
         when(this.catalogRepository.findAll()).thenReturn(expectedCatalogs);
 
-        List<Catalog> actualCatalogs = catalogService.getCatalogs();
+        List<Catalog> actualCatalogs = catalogService.getCatalogs("my-username", true);
 
         assertThat(actualCatalogs).hasSize(expectedCatalogs.size());
         assertThat(actualCatalogs).usingRecursiveComparison().isEqualTo(expectedCatalogs);
+        verify(this.catalogRepository, never()).findByOrganisation_PortalUsers_Username(anyString());
+    }
+
+    @Test
+    void shouldReturnCatalogsBelongingToTheReceivedUserWhileNONAdmin() {
+        List<Catalog> expectedCatalogs = Arrays.asList(stubCatalog());
+        when(this.catalogRepository.findByOrganisation_PortalUsers_Username(anyString())).thenReturn(expectedCatalogs);
+
+        List<Catalog> actualCatalogs = catalogService.getCatalogs("my-username", false);
+
+        assertThat(actualCatalogs).hasSize(expectedCatalogs.size());
+        assertThat(actualCatalogs).usingRecursiveComparison().isEqualTo(expectedCatalogs);
+        verify(this.catalogRepository, never()).findAll();
     }
 
     @Test
     void shouldReturnEmptyCatalogList() {
         when(this.catalogRepository.findAll()).thenReturn(new ArrayList<>());
 
-        List<Catalog> actualCatalogsDTO = catalogService.getCatalogs();
+        List<Catalog> actualCatalogsDTO = catalogService.getCatalogs("my-username", true);
 
         assertThat(actualCatalogsDTO).hasSize(0);
-
     }
 
     @Test
@@ -174,3 +188,4 @@ class CatalogServiceTest {
         return new Organisation().setId(2L).setName("Entando");
     }
 }
+

@@ -1,166 +1,179 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import com.entando.hub.catalog.service.model.UserRepresentation;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-@WithMockUser(username="admin",roles={ADMIN})
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(PortalUserController.class)
-public class PortalUserControllerTest {
-	@Autowired
-	WebApplicationContext webApplicationContext;
-	@Autowired
-	private MockMvc mockMvc;
-	@InjectMocks
-	PortalUserController portalUserController;
-	@MockBean
-	PortalUserService portalUserService;
-	private final Long ID = 1001L;
-	private final String USERNAME = "Admin";
-	private final String EMAIL = "admin.123@test.co.in";
-	private final String ORGANISATIONID = "2001";
+import java.util.*;
 
-	@Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+@ExtendWith(MockitoExtension.class)
+class PortalUserControllerTest {
+    @Mock
+    private PortalUserService portalUserService;
+    @Mock
+    private SecurityHelperService securityHelperService;
+
+    private PortalUserController portalUserController;
+
+    private final String ID = "1";
+    private final String USERNAME = "Admin";
+    private final String EMAIL = "admin.123@test.co.in";
+
+    @BeforeEach
+    void setUp() {
+        this.portalUserController = new PortalUserController(portalUserService, securityHelperService);
     }
 
-	@Test
-	public void testGetUsers()throws Exception {
-		List<PortalUser> portalUserList = new ArrayList<>();
-		List<UserRepresentation> userRepresentationList = new ArrayList<>();
-		PortalUser portalUser = populatePortalUser();
-		portalUserList.add(portalUser);
-		Mockito.when(portalUserService.getUsersByOrganisation(ORGANISATIONID)).thenReturn(userRepresentationList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/").accept(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-	}
 
-	@Test
-	public void testGetUsersFails() throws Exception{
-		List<PortalUser> portalUserList = new ArrayList<>();
-		List<UserRepresentation> userRepresentationList = new ArrayList<>();
-		PortalUser portalUser = populatePortalUser();
-		portalUserList.add(portalUser);
-		Mockito.when(portalUserService.getUsersByOrganisation(null)).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(ORGANISATIONID))
-				.andExpect(status().is(HttpStatus.NOT_FOUND.value()));
-	}
+    @Test
+    void shouldGetCatalogs(){
+        List<UserRepresentation> expectedUsers = List.of(this.getMockUserRepresentation(), this.getMockUserRepresentation());
+        List<RestUserRepresentation> expectedUsersDTO = this.getMockRestUserRepresentationByUsers(expectedUsers);
 
-	@Test 
-	public void getPortalUserByUsername() throws Exception {
-		List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUserResponseView portalUserResponseView = new PortalUserResponseView();
-		PortalUser portalUser = populatePortalUser();
-		portalUserList.add(portalUser);
-		String username = portalUser.getUsername();
-		Mockito.when(portalUserService.getUserByUsername(username)).thenReturn(portalUserResponseView);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}",username)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(status().isOk());
-	}
+        when(portalUserService.getUsersByOrganisation(null)).thenReturn(expectedUsers);
 
-	@Test
-	public void getPortalUserByUsernameFails() throws Exception{
-		List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUserResponseView portalUserResponseView = null;
-		PortalUser portalUser = populatePortalUser();
-		portalUserList.add(portalUser);
-		String username = portalUser.getUsername();
-		Mockito.when(portalUserService.getUserByUsername(username)).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(status().is(HttpStatus.NO_CONTENT.value()));
-	}
+        ResponseEntity<List<RestUserRepresentation>> responseEntity = portalUserController.getUsers(null);
 
-	@Test
-	public void TestAddUserToOrganisation() throws Exception{
-		List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = populatePortalUser();
-		UserOrganisationRequest userOrganisationRequest = new UserOrganisationRequest();
-		userOrganisationRequest.setUsername(USERNAME);
-		portalUserList.add(portalUser);
-		String username =  userOrganisationRequest.getUsername();
-		String inputJson = mapToJson(userOrganisationRequest);
-		Mockito.when(portalUserService.addUserToOrganization(username,ORGANISATIONID)).thenReturn(Boolean.TRUE);
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/users/{organisationId}",ORGANISATIONID)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(inputJson))
-			      .andExpect(status().isOk())
-			      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
-	}
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        List<RestUserRepresentation> actualUsersDTO = responseEntity.getBody();
+        assertThat(actualUsersDTO).usingRecursiveComparison().isEqualTo(expectedUsersDTO);
+    }
 
-	@Test
-	public void TestDeleteUser() throws Exception
-	{
-		List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = new PortalUser();
-		UserOrganisationRequest userOrganisationRequest = new UserOrganisationRequest();
-		userOrganisationRequest.setUsername(USERNAME);
-		portalUserList.add(portalUser);
-		String username =  userOrganisationRequest.getUsername();
-		Mockito.when(portalUserService.removeUser(username)).thenReturn(Boolean.TRUE);
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{username}",username).accept(MediaType.APPLICATION_JSON_VALUE))
-	      .andExpect(status().isOk())
-	      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-	}
+    @Test
+    void shouldGetPortalUserByUsernameFromToken(){
+        PortalUserResponseView expectedPortalUser = this.getMockPortalUserResponseView();
 
-	@Test
-	public void testDeleteUserFromOrganisation() throws Exception {
-		List<PortalUser> portalUserList = new ArrayList<>();
-		PortalUser portalUser = new PortalUser();
-		UserOrganisationRequest userOrganisationRequest = new UserOrganisationRequest();
-		userOrganisationRequest.setUsername(USERNAME);
-		portalUserList.add(portalUser);
-		String username =  userOrganisationRequest.getUsername();
-		Mockito.when(portalUserService.removeUserFromOrganization(username, ORGANISATIONID)).thenReturn(Boolean.TRUE);
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{organisationId}/user/{username}",username,ORGANISATIONID).accept(MediaType.APPLICATION_JSON_VALUE))
-	      .andExpect(status().isOk())
-	      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-	}
+        when(securityHelperService.getContextAuthenticationUsername()).thenReturn(USERNAME);
+        when(portalUserService.getUserByUsername(USERNAME)).thenReturn(expectedPortalUser);
 
-	private String mapToJson(Object obj) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.writeValueAsString(obj);
-	}
+        ResponseEntity<PortalUserResponseView> responseEntity = portalUserController.getPortalUserByUsername();
 
-	private PortalUser populatePortalUser() {
-		PortalUser portalUser = new PortalUser();
-        portalUser.setId(ID);
-		portalUser.setUsername(USERNAME);
-		portalUser.setEmail(EMAIL);
-		return portalUser;
-	}
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(responseEntity.getBody()).usingRecursiveComparison().isEqualTo(expectedPortalUser);
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenCallGetPortalUserByUsernameFromTokenWithoutUsername(){
+        when(securityHelperService.getContextAuthenticationUsername()).thenReturn(USERNAME);
+        when(portalUserService.getUserByUsername(USERNAME)).thenReturn(null);
+
+        ResponseEntity<PortalUserResponseView> responseEntity = portalUserController.getPortalUserByUsername();
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void shouldAddUserToOrganisation(){
+        String organisationId = "1";
+        UserOrganisationRequest request = this.getMockUserOrganisationRequest();
+
+        when(portalUserService.addUserToOrganization(USERNAME, organisationId)).thenReturn(true);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.addUserToOrganisation(organisationId, request);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", true);
+    }
+
+    @Test
+    void shouldNotAddUserToOrganisation(){
+        String organisationId = "1";
+        UserOrganisationRequest request = this.getMockUserOrganisationRequest();
+
+        when(portalUserService.addUserToOrganization(USERNAME, organisationId)).thenReturn(false);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.addUserToOrganisation(organisationId, request);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", false);
+    }
+
+    @Test
+    void shouldDeleteUserFromOrganisation(){
+        String organisationId = "1";
+
+        when(portalUserService.removeUserFromOrganization(USERNAME, organisationId)).thenReturn(true);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.deleteUserFromOrganisation(organisationId, USERNAME);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", true);
+    }
+
+    @Test
+    void shouldNotDeleteUserFromOrganisation(){
+        String organisationId = "1";
+
+        when(portalUserService.removeUserFromOrganization(USERNAME, organisationId)).thenReturn(false);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.deleteUserFromOrganisation(organisationId, USERNAME);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", false);
+    }
+
+    @Test
+    void shouldDeleteUser(){
+        when(portalUserService.removeUser(USERNAME)).thenReturn(true);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.deleteUser(USERNAME);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", true);
+    }
+
+    @Test
+    void shouldNotDeleteUser(){
+        when(portalUserService.removeUser(USERNAME)).thenReturn(false);
+
+        ResponseEntity<Map<String, Boolean>> responseEntity = portalUserController.deleteUser(USERNAME);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).containsEntry("result", false);
+    }
+
+
+    private UserRepresentation getMockUserRepresentation(){
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setId(ID);
+        userRepresentation.setUsername(USERNAME);
+        userRepresentation.setEmail(EMAIL);
+        return userRepresentation;
+    }
+
+    private List<RestUserRepresentation> getMockRestUserRepresentationByUsers(List<UserRepresentation> users){
+        List <RestUserRepresentation> expectedRestUserRepresentations = new ArrayList<>();
+        for ( UserRepresentation user : users ){
+            expectedRestUserRepresentations.add(new RestUserRepresentation(user));
+        }
+        return expectedRestUserRepresentations;
+    }
+
+    private PortalUserResponseView getMockPortalUserResponseView(){
+        PortalUserResponseView portalUserResponseView = new PortalUserResponseView();
+        portalUserResponseView.setId(Long.parseLong(ID));
+        portalUserResponseView.setUsername(USERNAME);
+        portalUserResponseView.setEmail(EMAIL);
+        return portalUserResponseView;
+    }
+
+    private UserOrganisationRequest getMockUserOrganisationRequest() {
+        return new UserOrganisationRequest().setUsername(USERNAME);
+    }
+
 }

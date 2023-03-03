@@ -58,7 +58,7 @@ public class PrivateCatalogApiKeyService {
             this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
             return true;
         } else {
-            String errorMessage = "Label " + label + NOT_FOUND_MSG + username;
+            String errorMessage = "Api key " + id + NOT_FOUND_MSG + username;
             throw new BadRequestException(errorMessage);
         }
     }

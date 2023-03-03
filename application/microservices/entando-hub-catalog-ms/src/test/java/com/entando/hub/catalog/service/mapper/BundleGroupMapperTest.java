@@ -91,7 +91,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     assertEquals(BUNDLE_GROUP_NAME, bundleGroup.getName());
     assertNotNull(bundleGroup.getOrganisationId());
     assertEquals(ORGANIZATION_NAME, bundleGroup.getOrganisationName());
-    assertEquals(ORGANIZATION_ID_STR, bundleGroup.getOrganisationId());
+    assertEquals(ORGANIZATION_ID, bundleGroup.getOrganisationId());
     assertNotNull(bundleGroup.getCategories());
     List<String> categories = bundleGroup.getCategories();
     assertFalse(categories.isEmpty());

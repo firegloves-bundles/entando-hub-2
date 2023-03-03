@@ -8,24 +8,25 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-
 public class BundleGroupDto  {
 
   @Schema(accessMode = Schema.AccessMode.READ_ONLY)
   private String bundleGroupId;
   @Schema(example = "bundle group name")
   private String name;
-  protected String organisationId;
+  private Long organisationId;
+
+  private Boolean publicCatalog;
 
   @Schema(example = "Entando")
-  protected String organisationName;
-  protected List<String> categories;
-  protected BundleGroupVersionDto versionDetails;
+  private String organisationName;
+  private List<String> categories;
+  private BundleGroupVersionDto versionDetails;
 
-  public BundleGroupDto(String bundleGroupId, String name, String organizationId) {
+//  public BundleGroupDto(String bundleGroupId, String name, String organizationId) {
 //    super(name, organizationId);
-    this.bundleGroupId = bundleGroupId;
-  }
+//    this.bundleGroupId = bundleGroupId;
+//  }
 
   /*
   public BundleGroupDto(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {

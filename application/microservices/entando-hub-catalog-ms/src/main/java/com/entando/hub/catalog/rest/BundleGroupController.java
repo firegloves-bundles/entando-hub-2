@@ -1,22 +1,15 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +17,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.web.server.ResponseStatusException;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -50,20 +37,25 @@ public class BundleGroupController {
     private final SecurityHelperService securityHelperService;
     private final BundleGroupVersionService bundleGroupVersionService;
     private final OrganisationService organisationService;
+    private final BundleGroupMapper bundleGroupMapper;
 
-    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, OrganisationService organisationService) {
+    public BundleGroupController(BundleGroupService bundleGroupService, SecurityHelperService securityHelperService, BundleGroupVersionService bundleGroupVersionService, OrganisationService organisationService, BundleGroupMapper bundleGroupMapper) {
         this.bundleGroupService = bundleGroupService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupVersionService = bundleGroupVersionService;
         this.organisationService = organisationService;
+        this.bundleGroupMapper = bundleGroupMapper;
     }
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<BundleGroupDTO>> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
+    public ResponseEntity<List<BundleGroupDto>> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
-        List<BundleGroupDTO> bundleGroupList = bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId)).stream().map(BundleGroupDTO::new).collect(Collectors.toList());
+        List<BundleGroupDto> bundleGroupList = bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId))
+                .stream()
+                .map(entity -> bundleGroupMapper.toDto(entity))
+                .collect(Collectors.toList());
         return new ResponseEntity<>(bundleGroupList, HttpStatus.OK);
     }
 
@@ -72,10 +64,10 @@ public class BundleGroupController {
     @GetMapping(value = "/{bundleGroupId}", produces = {"application/json"})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupDTO> getBundleGroup(@PathVariable Long bundleGroupId) {
+    public ResponseEntity<BundleGroupDto> getBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
         return bundleGroupService.getBundleGroup(bundleGroupId)
-                .map(BundleGroupDTO::new)
+                .map(entity -> bundleGroupMapper.toDto(entity))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -86,16 +78,18 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupDTO> createBundleGroup(@RequestBody BundleGroupNoId bundleGroup) {
+    public ResponseEntity<BundleGroupDto> createBundleGroup(@RequestBody BundleGroupDto bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         this.validateRequest(bundleGroup);
-        BundleGroup entity = bundleGroup.createEntity(Optional.empty());
+//        BundleGroup entity = bundleGroup.createEntity(Optional.empty());
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        entity.setId(null); // FIXME creare metodo temporaneo nel mapper
         BundleGroup saved = bundleGroupService.createBundleGroup(entity, bundleGroup);
-        BundleGroupDTO bundleGroupDTO = new BundleGroupDTO(saved);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bundleGroupDTO);
+        BundleGroupDto BundleGroupDto = bundleGroupMapper.toDto(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BundleGroupDto);
     }
 
-    protected void validateRequest(BundleGroupNoId bundleGroup) {
+    protected void validateRequest(BundleGroupDto bundleGroup) {
         if (!organisationService.existsById(bundleGroup.getOrganisationId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Organisation with ID %d not found", bundleGroup.getOrganisationId()));
         }
@@ -114,12 +108,13 @@ public class BundleGroupController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupDTO> updateBundleGroup(@PathVariable Long bundleGroupId, @RequestBody BundleGroupNoId bundleGroup) {
+    public ResponseEntity<BundleGroupDto> updateBundleGroup(@PathVariable Long bundleGroupId, @RequestBody BundleGroupDto bundleGroup) {
         logger.debug("REST request to update BundleGroup with id {}: {}", bundleGroupId, bundleGroup);
         this.validateRequest(bundleGroup);
         this.validateExistingBundleGroup(bundleGroupId);
-        BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroup.createEntity(Optional.of(bundleGroupId)), bundleGroup);
-        return new ResponseEntity<>(new BundleGroupDTO(saved), HttpStatus.OK);
+        bundleGroup.setBundleGroupId(bundleGroupId.toString());
+        BundleGroup saved = bundleGroupService.createBundleGroup(bundleGroupMapper.toEntity(bundleGroup), bundleGroup);
+        return new ResponseEntity<>(bundleGroupMapper.toDto(saved), HttpStatus.OK);
     }
 
     protected void validateExistingBundleGroup(Long bundleGroupId) {
@@ -154,72 +149,6 @@ public class BundleGroupController {
         } else {
             bundleGroupService.deleteBundleGroup(bundleGroupId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    @EqualsAndHashCode(callSuper = true)
-    public static class BundleGroupDTO extends BundleGroupNoId {
-        private final String bundleGroupId;
-
-        public BundleGroupDTO(String bundleGroupId, String name, Long organizationId, Boolean publicCatalog) {
-            super(name, organizationId, publicCatalog);
-            this.bundleGroupId = bundleGroupId;
-        }
-
-        public BundleGroupDTO(BundleGroup entity) {
-            super(entity);
-            this.bundleGroupId = entity.getId().toString();
-        }
-    }
-
-    @Data
-    public static class BundleGroupNoId {
-
-        @Schema(example = "bundle group name")
-        protected final String name;
-        protected Long organisationId;
-        private Boolean publicCatalog;
-
-        @Schema(example = "Entando")
-        protected String organisationName;
-        protected List<String> categories;
-        protected BundleGroupVersionView versionDetails;
-
-        public BundleGroupNoId(String name ,Long organisationId, Boolean publicCatalog) {
-            this.name = name;
-            this.organisationId = organisationId;
-            this.publicCatalog = publicCatalog;
-        }
-
-        public BundleGroupNoId(BundleGroup entity) {
-            this.name = entity.getName();
-            this.publicCatalog = entity.getPublicCatalog();
-
-            if (entity.getOrganisation() != null) {
-                this.organisationId = entity.getOrganisation().getId();
-                this.organisationName = entity.getOrganisation().getName();
-            }
-            if (entity.getCategories() != null) {
-                this.categories = entity.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
-            }
-        }
-
-        public BundleGroup createEntity(Optional<Long> id) {
-            BundleGroup entity = new BundleGroup();
-            entity.setName(this.getName());
-            entity.setPublicCatalog(this.publicCatalog);
-
-            if (this.organisationId != null) {
-                Organisation organisation = new Organisation();
-                organisation.setId(this.organisationId);
-                organisation.setName(this.organisationName);
-                entity.setOrganisation(organisation);
-            }
-            id.ifPresent(entity::setId);
-            return entity;
         }
     }
 

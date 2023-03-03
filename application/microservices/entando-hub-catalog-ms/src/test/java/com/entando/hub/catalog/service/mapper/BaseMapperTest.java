@@ -95,7 +95,7 @@ public class BaseMapperTest {
 
     dto.setBundleGroupId(id);
     dto.setName(BUNDLE_GROUP_NAME);
-    dto.setOrganisationId(ORGANIZATION_ID.toString());
+    dto.setOrganisationId(ORGANIZATION_ID);
     dto.setOrganisationName(ORGANIZATION_NAME);
     dto.setCategories(Arrays.asList("cat 1", "cat 2"));
 

@@ -27,20 +27,16 @@ public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDt
   @Mapping(target = "organisationName", expression = "java(fromOrganizationName(entity.getOrganisation()))")
   BundleGroupDto toDto(BundleGroup entity);
 
-  default Organisation toOrganization(String name, String id) {
-    Organisation org = null;
+  default Organisation toOrganization(String name, Long id) {
+    Organisation org = new Organisation();
 
-    if (StringUtils.isNotBlank(id)) { // NOTE: we inherit the behavior, no check on name
-      org = new Organisation();
-
-      org.setId(Long.parseLong(id));
-      org.setName(name);
-    }
+    org.setId(id);
+    org.setName(name);
     return org;
   }
 
-  default String fromOrganizationId(Organisation organisation) {
-    return (organisation != null && organisation.getId() != null) ? organisation.getId().toString() : null;
+  default Long fromOrganizationId(Organisation organisation) {
+    return (organisation != null && organisation.getId() != null) ? organisation.getId() : null;
   }
 
   default String fromOrganizationName(Organisation organisation) {

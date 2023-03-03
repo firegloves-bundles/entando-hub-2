@@ -182,7 +182,8 @@ public class BundleGroupServiceTest {
 	@Test
 	public void createBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup().setPublicCatalog(true);
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+//		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(bundleGroup);
 		bundleGroupNoId.setVersionDetails(null);
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();

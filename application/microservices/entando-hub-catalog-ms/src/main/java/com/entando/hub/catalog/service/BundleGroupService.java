@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.entando.hub.catalog.persistence.CatalogRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
+import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -34,11 +38,12 @@ public class BundleGroupService {
     private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 
-    		BundleGroupVersionService bundleGroupVersionService, CatalogRepository catalogRepository) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository,
+                              BundleGroupVersionService bundleGroupVersionService, BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper, CatalogRepository catalogRepository) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
+        this.bundleGroupVersionStandardMapper = bundleGroupVersionStandardMapper;
         this.catalogRepository = catalogRepository;
     }
 
@@ -69,11 +74,11 @@ public class BundleGroupService {
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupDto bundleGroupNoId) {
     	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
         this.associatePrivateCatalog(bundleGroupEntity);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
-        updateMappedBy(entity, bundleGroupDto);
+        updateMappedBy(entity, bundleGroupNoId);
         return entity;
     }
 
@@ -89,7 +94,7 @@ public class BundleGroupService {
         }
     }
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupDto bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
 

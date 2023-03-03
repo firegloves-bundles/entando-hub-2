@@ -56,12 +56,13 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categories[0]
                 }
             }
-            const organizationId = (allowedOrganisations && allowedOrganisations.length > 0) ? allowedOrganisations[0].organisationId : null;
+            const { organisationId } = (allowedOrganisations && allowedOrganisations.length > 0) ? allowedOrganisations[0] : {};
+
             setBundleGroup(
                 {
                     name: "",
                     categories: [defaultCategoryId],
-                    organisationId: organizationId,
+                    organisationId,
                     versionDetails: {
                         bundleGroupVersionId: null,
                         description: "",
@@ -115,12 +116,13 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             defaultCategoryId = (filtered.length > 0) ? filtered[0].categoryId : categoryList[0]
                         }
                     }
-                    const organizationId = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0].organisationId : null;
+                    const { organisationId } = (localAllowedOrganisations && localAllowedOrganisations.length > 0) ? localAllowedOrganisations[0] : {};
 
                     const newObj = {
                         name: "",
                         categories: [defaultCategoryId],
-                        organisationId: organizationId,
+                        organisationId,
+                        publicCatalog: false,
                         versionDetails: {
                             bundleGroupVersionId: null,
                             description: "",

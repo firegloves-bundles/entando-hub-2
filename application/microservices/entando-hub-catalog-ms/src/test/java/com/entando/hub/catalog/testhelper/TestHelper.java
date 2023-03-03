@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @UtilityClass
 public class TestHelper {
-
     public static final Long BUNDLE_GROUP_ID_1 = 1L;
     public static final Long BUNDLE_GROUP_ID_2 = 2L;
     public static final Long BUNDLE_GROUP_VERSION_ID = 3L;
@@ -34,8 +33,7 @@ public class TestHelper {
     public static final boolean EDITABLE = true;
     public static final boolean CAN_ADD_NEW_VERSIONS = true;
 
-
-    public static String asJsonString(final Object obj) {
+    public static String mapToJson(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {

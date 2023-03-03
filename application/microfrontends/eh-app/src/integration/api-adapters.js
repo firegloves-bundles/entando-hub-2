@@ -1,9 +1,9 @@
-import { getPortalUserByUsername } from "./Integration";
+import { getPortalUser } from "./Integration";
 import { getUserName, isHubUser } from "../helpers/helpers";
 
 //portal user
-export const getPortalUserDetails = async (username) => {
-    const user = (await getPortalUserByUsername(username)).portalUser;
+export const getPortalUserDetails = async () => {
+    const user = (await getPortalUser()).portalUser;
     if (user) {
         return {
             ...user

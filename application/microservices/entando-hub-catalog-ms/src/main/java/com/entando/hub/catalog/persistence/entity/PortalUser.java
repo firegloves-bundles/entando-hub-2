@@ -2,14 +2,23 @@ package com.entando.hub.catalog.persistence.entity;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 public class PortalUser {
 
     @Id

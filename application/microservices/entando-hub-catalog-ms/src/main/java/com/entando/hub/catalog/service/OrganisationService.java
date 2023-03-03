@@ -78,6 +78,10 @@ public class OrganisationService {
         organisationRepository.deleteById(organisationId);
     }
 
+    public Boolean existsById(Long organisationId){
+        return organisationRepository.existsById(organisationId);
+    }
+
 
 }
 

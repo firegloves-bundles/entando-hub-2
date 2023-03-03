@@ -4,22 +4,30 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
-
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
-import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +43,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CategoryService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 /*
  * Controller for Bundle Group Version operations
@@ -80,9 +80,9 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<BundleGroupVersionDto> createBundleGroupVersion(@RequestBody BundleGroupVersionDto bundleGroupVersionView) {
-        logger.debug("REST request to create BundleGroupVersionDto: {}", bundleGroupVersionView);
-        Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupVersionView.getBundleGroupId().toString());
+    public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
+        logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
+        Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()));
         if (bundleGroupOptional.isPresent()) {
         	logger.debug("BundleGroupDto is present with id: {}", bundleGroupOptional.get().getId());
             List<BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
@@ -171,7 +171,7 @@ public class BundleGroupVersionController {
     @GetMapping(value = "/versions/{bundleGroupId}",produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@PathVariable String bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable Long bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
     	logger.debug("REST request to get bundle group versions by bundleGroupId: {} and statuses {}", bundleGroupId, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
@@ -184,6 +184,7 @@ public class BundleGroupVersionController {
         	pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
             return pagedContent;
         } else {
+            // TODO check the impact on the FE if we return a non null object
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return pagedContent;
         }
@@ -237,13 +238,99 @@ public class BundleGroupVersionController {
 		}
 	}
 
+    @Getter
+    @Setter
+    @ToString
+    @EqualsAndHashCode(callSuper = true)
+    public static class BundleGroupVersion extends BundleGroupVersionView {
 
-    protected PageImpl<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(e -> bundleGroupVersionMapper.toEntityDto(e))
-                .collect(Collectors.toList()),
-                page.getPageable(),
-                page.getNumberOfElements());
+        private final String bundleGroupVersionId;
+
+        public BundleGroupVersion(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
+            super(entity);
+            this.bundleGroupVersionId = entity.getId().toString();
+        }
     }
+
+	@Data
+    public static class BundleGroupVersionView {
+	    protected String bundleGroupId;
+
+        @Schema(example = "a brief description")
+	    protected String description;
+
+        @Schema(example = "data:image/png;base64,base64code")
+	    @ToString.Exclude
+	    protected String descriptionImage;
+
+        @Schema(example = "https://github.com/organization/sample-bundle#read-me")
+	    protected String documentationUrl;
+
+        @Schema(example = "1.0.0")
+	    protected String version;
+	    protected com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status status;
+	    protected Long organisationId;
+
+        @Schema(example = "Entando")
+        protected String organisationName;
+
+        @Schema(example = "simple bundle name")
+        protected String name;
+        protected LocalDateTime lastUpdate;
+        protected List<String> categories;
+        protected List<Long> children;
+        protected String bundleGroupVersionId;
+        protected List<BundleNoId> bundles;
+        protected Boolean displayContactUrl;
+
+        @Schema(example = "https://yoursite.com/contact-us")
+        protected String contactUrl;
+
+	    public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
+            this.bundleGroupId = bundleGroupId;
+            this.description = description;
+            this.descriptionImage = descriptionImage;
+            this.version = version;
+         }
+
+        public BundleGroupVersionView(com.entando.hub.catalog.persistence.entity.BundleGroupVersion entity) {
+       	 	this.description = entity.getDescription();
+       	 	this.descriptionImage = entity.getDescriptionImage();
+            this.status = entity.getStatus();
+            this.documentationUrl = entity.getDocumentationUrl();
+            this.version = entity.getVersion();
+            if (entity.getBundleGroup()!= null) {
+            	this.bundleGroupId = entity.getBundleGroup().getId().toString();
+            }
+            if (entity.getBundleGroup().getOrganisation() != null) {
+	            this.organisationId = entity.getBundleGroup().getOrganisation().getId();
+	            this.organisationName = entity.getBundleGroup().getOrganisation().getName();
+            }
+            this.name = entity.getBundleGroup().getName();
+            this.lastUpdate = entity.getLastUpdated();
+            if (entity.getBundleGroup().getCategories() != null) {
+                this.categories = entity.getBundleGroup().getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList());
+            }
+            if (entity.getBundles() != null) {
+            	this.children = entity.getBundles().stream().map(Bundle::getId).collect(Collectors.toList());
+            }
+            this.displayContactUrl = entity.getDisplayContactUrl();
+            this.contactUrl = entity.getContactUrl();
+       }
+
+        public com.entando.hub.catalog.persistence.entity.BundleGroupVersion createEntity(Optional<String> id, com.entando.hub.catalog.persistence.entity.BundleGroup bundleGroup) {
+            com.entando.hub.catalog.persistence.entity.BundleGroupVersion bundleGroupVersion = new com.entando.hub.catalog.persistence.entity.BundleGroupVersion();
+            bundleGroupVersion.setDescription(this.getDescription());
+            bundleGroupVersion.setDescriptionImage(this.getDescriptionImage());
+            bundleGroupVersion.setDocumentationUrl(this.getDocumentationUrl());
+            bundleGroupVersion.setStatus(this.getStatus());
+            bundleGroupVersion.setVersion(this.getVersion());
+            bundleGroupVersion.setBundleGroup(bundleGroup);
+            bundleGroupVersion.setDisplayContactUrl(this.getDisplayContactUrl());
+            bundleGroupVersion.setContactUrl(this.getContactUrl());
+            id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
+            return bundleGroupVersion;
+        }
+    }
+
 }

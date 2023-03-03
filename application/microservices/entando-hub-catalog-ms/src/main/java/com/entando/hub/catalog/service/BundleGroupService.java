@@ -1,25 +1,26 @@
 package com.entando.hub.catalog.service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.CategoryRepository;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.dto.BundleGroupDto;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapper;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
+import com.entando.hub.catalog.persistence.CatalogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.CategoryRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.rest.BundleGroupController;
+import com.entando.hub.catalog.persistence.entity.Catalog;
 
 @Service
 public class BundleGroupService {
@@ -28,16 +29,17 @@ public class BundleGroupService {
     private final BundleGroupVersionService bundleGroupVersionService;
     private final BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper;
 
+    private final CatalogRepository catalogRepository;
+
     private final Logger logger = LoggerFactory.getLogger(BundleGroupService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository,
-                              BundleGroupVersionService bundleGroupVersionService,
-                              BundleService bundleService, BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper) {
+    public BundleGroupService(BundleGroupRepository bundleGroupRepository, CategoryRepository categoryRepository, 
+    		BundleGroupVersionService bundleGroupVersionService, CatalogRepository catalogRepository) {
         this.bundleGroupRepository = bundleGroupRepository;
         this.categoryRepository = categoryRepository;
         this.bundleGroupVersionService = bundleGroupVersionService;
-      this.bundleGroupVersionStandardMapper = bundleGroupVersionStandardMapper;
+        this.catalogRepository = catalogRepository;
     }
 
     public List<BundleGroup> getBundleGroups(Optional<String> organisationId) {
@@ -61,20 +63,33 @@ public class BundleGroupService {
         return bundleGroupRepository.findAll();
     }
 
-    public Optional<BundleGroup> getBundleGroup(String bundleGroupId) {
-    	logger.debug("{}: getBundleGroup: Get a bundle group by bundle group id: {}", CLASS_NAME, bundleGroupId);
-    	return bundleGroupRepository.findById(Long.parseLong(bundleGroupId));
+    public Optional<BundleGroup> getBundleGroup(Long bundleGroupId) {
+        logger.debug("{}: getBundleGroup: Get a bundle group by bundle group id: {}", CLASS_NAME, bundleGroupId);
+        return bundleGroupRepository.findById(bundleGroupId);
     }
 
     @Transactional
-    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupDto bundleGroupDto) {
-    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupDto);
+    public BundleGroup createBundleGroup(BundleGroup bundleGroupEntity, BundleGroupController.BundleGroupNoId bundleGroupNoId) {
+    	logger.debug("{}: createBundleGroup: Create a bundle group: {}", CLASS_NAME, bundleGroupNoId);
+        this.associatePrivateCatalog(bundleGroupEntity);
         BundleGroup entity = bundleGroupRepository.save(bundleGroupEntity);
         updateMappedBy(entity, bundleGroupDto);
         return entity;
     }
 
-    public void updateMappedBy(BundleGroup toUpdate, BundleGroupDto bundleGroup) {
+    private void associatePrivateCatalog(BundleGroup bundleGroupEntity){
+        logger.debug("{}: associatePrivateCatalog: get private catalog by organisationId if exists", CLASS_NAME);
+        Long organisationId = bundleGroupEntity.getOrganisation().getId();
+        if(catalogRepository.existsByOrganisationId(organisationId)) {
+            logger.debug("{}: associatePrivateCatalog: private catalog found for organisation {}", CLASS_NAME, organisationId);
+            Catalog catalog = catalogRepository.findByOrganisationId(organisationId);
+            bundleGroupEntity.setCatalogId(catalog.getId());
+        } else if (!bundleGroupEntity.getPublicCatalog()){
+                throw new IllegalArgumentException("Private Catalog is required for non-public bundle groups");
+        }
+    }
+
+    public void updateMappedBy(BundleGroup toUpdate, BundleGroupController.BundleGroupNoId bundleGroup) {
     	logger.debug("{}: updateMappedBy: Update mappings with bundle group", CLASS_NAME);
         Objects.requireNonNull(toUpdate.getId());
 
@@ -109,10 +124,9 @@ public class BundleGroupService {
 
     //This method is called from deleteBundleGroup() from BundleGroupController. In case if we remove Delete Bundle Group api this method also can be removed.
     @Transactional
-    public void deleteBundleGroup(String bundleGroupId) {
+    public void deleteBundleGroup(Long bundleGroupId) {
     	logger.debug("{}: deleteBundleGroup: Delete a bundle group by id: {}", CLASS_NAME, bundleGroupId);
-        Long id = Long.valueOf(bundleGroupId);
-        Optional<BundleGroup> byId = bundleGroupRepository.findById(id);
+        Optional<BundleGroup> byId = bundleGroupRepository.findById(bundleGroupId);
         byId.ifPresent(bundleGroup -> {
             deleteFromCategories(bundleGroup);
             bundleGroupRepository.delete(bundleGroup);
@@ -120,7 +134,7 @@ public class BundleGroupService {
     }
 
     public void deleteFromCategories(BundleGroup bundleGroup) {
-    	logger.debug("{}: deleteFromCategories: Delete a bundle group from categoris", CLASS_NAME);
+    	logger.debug("{}: deleteFromCategories: Delete a bundle group from categories", CLASS_NAME);
         bundleGroup.getCategories().forEach((category) -> {
             category.getBundleGroups().remove(bundleGroup);
             categoryRepository.save(category);
@@ -130,5 +144,9 @@ public class BundleGroupService {
     public void deleteFromOrganisations(BundleGroup bundleGroup) {
     	logger.debug("{}: deleteFromOrganisations: Delete a bundle group from organisation", CLASS_NAME);
         bundleGroup.getOrganisation().getBundleGroups().remove(bundleGroup);
+    }
+
+    public Boolean existsById(Long bundleGroupId){
+        return bundleGroupRepository.existsById(bundleGroupId);
     }
 }

@@ -1,5 +1,29 @@
 package com.entando.hub.catalog.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import com.entando.hub.catalog.persistence.CatalogRepository;
+import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
@@ -51,6 +75,8 @@ public class BundleGroupServiceTest {
 	BundleGroupRepository bundleGroupRepository;
 	@Mock
 	CategoryRepository categoryRepository;
+	@Mock
+	CatalogRepository catalogRepository;
 	@Mock
 	BundleGroupVersionService bundleGroupVersionService;
 	
@@ -144,7 +170,7 @@ public class BundleGroupServiceTest {
 	public void getBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup();
 		Organisation organisation = bundleGroup.getOrganisation();
-		String organisationId =  String.valueOf(organisation.getId());
+		Long organisationId =  organisation.getId();
 		Optional<BundleGroup> bundleGrouplist = Optional.of(bundleGroup);
 		Mockito.when(bundleGroupRepository.findById(organisation.getId())).thenReturn(bundleGrouplist);
 		Optional<BundleGroup> bundleGroupresult = bundleGroupService.getBundleGroup(organisationId);
@@ -155,10 +181,9 @@ public class BundleGroupServiceTest {
 
 	@Test
 	public void createBundleGroupTest() {
-		BundleGroup bundleGroup = createBundleGroup();
-		BundleGroupDto bundleGroupDto =  bundleGroupMapper.toDto(bundleGroup);
-
-		bundleGroupDto.setVersionDetails(null);
+		BundleGroup bundleGroup = createBundleGroup().setPublicCatalog(true);
+		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		bundleGroupNoId.setVersionDetails(null);
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();
 
@@ -166,7 +191,8 @@ public class BundleGroupServiceTest {
 		Mockito.when(categoryRepository.findByBundleGroupsIs(bundleGroup)).thenReturn(List.of(category));
 		Mockito.when(categoryRepository.findById(Long.valueOf(categoryId))).thenReturn(Optional.of(category));
 		Mockito.when(categoryRepository.save(category)).thenReturn(category);
-		BundleGroup bundleGroupresult = bundleGroupService.createBundleGroup(bundleGroup, bundleGroupDto);
+		Mockito.when(catalogRepository.existsByOrganisationId(bundleGroupNoId.getOrganisationId())).thenReturn(false);
+		BundleGroup bundleGroupresult = bundleGroupService.createBundleGroup(bundleGroup, bundleGroupNoId);
 		assertNotNull(bundleGroupresult);
 		assertEquals(bundleGroup.getId(), bundleGroupresult.getId());
 	}
@@ -202,7 +228,7 @@ public class BundleGroupServiceTest {
 	@Test
 	public void deleteBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup();
-		String bundleGroupId = bundleGroup.getId().toString();
+		Long bundleGroupId = bundleGroup.getId();
 		Mockito.when(bundleGroupRepository.findById(bundleGroup.getId())).thenReturn(Optional.of(bundleGroup));
 		bundleGroupService.deleteBundleGroup(bundleGroupId);
 	}

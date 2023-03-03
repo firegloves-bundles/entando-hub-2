@@ -4,30 +4,23 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * This entity class is for BUNDLE_GROUP table 
  *
  */
 @Entity
-@Data
+@Setter
+@Getter
+@ToString
+@Accessors(chain = true)
 @Table(name = "bundle_group")
 @NamedQuery(name = "BundleGroup.findAll", query = "select b from BundleGroup b order by b.name")
 public class BundleGroup {
@@ -35,6 +28,12 @@ public class BundleGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+
+    @Column(name = "id_catalog")
+    private Long catalogId;
+
+    @Column(name = "public_catalog")
+    private Boolean publicCatalog;
 
     @ManyToOne
     private Organisation organisation;

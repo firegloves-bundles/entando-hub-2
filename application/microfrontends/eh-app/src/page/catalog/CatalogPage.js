@@ -8,7 +8,7 @@ import './catalogPage.scss'
 import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getPortalUserByUsername } from "../../integration/Integration";
+import { getPortalUser } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
@@ -61,39 +61,43 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   }
 
   useEffect(() => {
+    let isMounted = true;
+
     const getCatOrgList = async () => {
-      const data = (await getAllCategories(apiUrl));
+      const data = await getAllCategories(apiUrl);
+
       if (data.isError) {
         setIsError(data.isError)
         setLoading(false)
       }
+  
       setCategories(data.categoryList);
-      const orgData = (await getAllOrganisations(apiUrl)).organisationList;
-      setOrgList(orgData)
-    }
-    getCatOrgList();
-  }, [apiUrl])
 
-  useEffect(() => {
-    let isMounted = true;
+      const { organisationList } = await getAllOrganisations(apiUrl);
+      setOrgList(organisationList);
+    };
+
     (async () => {
+      await getCatOrgList();
       const username = await getUserName();
       if (username) {
-        const portalUserResp = (await getPortalUserByUsername(apiUrl, username));
+        const portalUserResp = await getPortalUser(apiUrl);
         if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
-          setOrgLength(portalUserResp.portalUser.organisations.length);
+          const portalUserOrgs = portalUserResp.portalUser.organisations;
+          setOrgLength(portalUserOrgs.length);
           setPortalUserPresent(true);
-          setCurrentUserOrg(portalUserResp.portalUser.organisations[0]);
+          setCurrentUserOrg(portalUserOrgs[0]);
         } else if (isMounted && portalUserResp && portalUserResp.isError) {
           setOrgLength(0);
           setPortalUserPresent(false);
         }
         setLoading(false);
       }
-    })()
+    })();
+  
     return () => {
       isMounted = false;
-    }
+    };
   }, [apiUrl])
 
   /**

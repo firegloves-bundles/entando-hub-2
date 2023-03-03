@@ -8,7 +8,6 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {}, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class PrivateCatalogApiKeyMapper {
@@ -33,7 +32,8 @@ public abstract class PrivateCatalogApiKeyMapper {
 
     @Named( "removeApiKey" )
     public List<ApiKeyResponseDTO> removeApiKey(List<ApiKeyResponseDTO> privateCatalogApiKey){
-        return privateCatalogApiKey.stream().peek(f-> f.setApiKey(null)).collect(Collectors.toList());
+        privateCatalogApiKey.forEach(f-> f.setApiKey(null));
+        return privateCatalogApiKey;
     }
 
 }

@@ -9,8 +9,6 @@ import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,8 +26,6 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 @Validated
 @RequestMapping("/api/private-catalog-api-key")
 public class PrivateCatalogApiKeyController {
-
-    private final Logger logger = LoggerFactory.getLogger(PrivateCatalogApiKeyController.class);
 
     private final PrivateCatalogApiKeyService privateCatalogApiKeyService;
     private final SecurityHelperService securityHelperService;

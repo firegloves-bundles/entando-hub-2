@@ -9,8 +9,6 @@ import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
 import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +20,6 @@ import java.util.Optional;
 
 @Service
 public class PrivateCatalogApiKeyService {
-
-    private final Logger logger = LoggerFactory.getLogger(PrivateCatalogApiKeyService.class);
     private final PrivateCatalogApiKeyRepository privateCatalogApiKeyRepository;
     private final PortalUserRepository portalUserRepository;
     private final ApiKeyGeneratorHelper apiKeyGeneratorHelper;
@@ -50,11 +46,8 @@ public class PrivateCatalogApiKeyService {
         String generatedApiKey = apiKeyGeneratorHelper.generateApiKey();
         String apiKeySha = apiKeyGeneratorHelper.toSha(generatedApiKey);
         privateCatalogApiKey.setApiKey(apiKeySha);
-        System.out.println("apiKeySha:"+apiKeySha);
-
         PrivateCatalogApiKey apiKeyResult = this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
         apiKeyResult.setApiKey(generatedApiKey);
-        System.out.println("apiKeyResult:"+apiKeyResult);
         return privateCatalogApiKeyMapper.toAddApiKeyDto(apiKeyResult);
     }
     public boolean editLabel(long id, String username, String label) {

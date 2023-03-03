@@ -212,5 +212,16 @@ public class BundleGroupController {
         }
     }
 
-
+    @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
+    public ResponseEntity<String> handleException(Exception exception) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (exception instanceof AccessDeniedException) {
+            status = HttpStatus.FORBIDDEN;
+        } else if (exception instanceof IllegalArgumentException) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof  ConflictException){
+            status = HttpStatus.CONFLICT;
+        }
+        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
+    }
 }

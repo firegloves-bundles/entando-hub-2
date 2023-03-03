@@ -1,14 +1,14 @@
 package com.entando.hub.catalog.response;
 
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class BundleGroupVersionFilteredResponseView {
 	private Long bundleGroupId;
 	private Long bundleGroupVersionId;
@@ -32,6 +32,7 @@ public class BundleGroupVersionFilteredResponseView {
 
 	@Schema(example = "Entando")
 	private String organisationName;
+	private boolean publicCatalog;
 	private List<String> categories;
 	private List<String> children;
 	private List<String> allVersions;

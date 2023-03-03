@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.rest.dto.UserDto;
+import com.entando.hub.catalog.rest.dto.RestUserRepresentation;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
@@ -42,10 +42,10 @@ public class KeycloakUserController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<UserDto> searchUsers(@ParameterObject SearchKeycloackUserRequest request) {
+    public List<RestUserRepresentation> searchUsers(@ParameterObject SearchKeycloackUserRequest request) {
         logger.debug("REST request to get users by filters: {}", request);
         Map<String, String> map = (null != request) ? request.getParams() : new HashMap<>();
-        return this.keycloakService.searchUsers(map).stream().map(UserDto::new).collect(Collectors.toList());
+        return this.keycloakService.searchUsers(map).stream().map(RestUserRepresentation::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Search on keycloak for specific user having provided username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the username")
@@ -55,14 +55,14 @@ public class KeycloakUserController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<UserDto> getUser(@PathVariable String username) {
+    public ResponseEntity<RestUserRepresentation> getUser(@PathVariable String username) {
         logger.debug("REST request to get user by username: {}", username);
         UserRepresentation user = this.keycloakService.getUser(username);
         if (null == user) {
             logger.warn("Requested user '{}' does not exist", username);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(new UserDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(new RestUserRepresentation(user), HttpStatus.OK);
     }
 
 

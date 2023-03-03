@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.entando.hub.catalog.rest.dto.UserDto;
+import com.entando.hub.catalog.rest.dto.RestUserRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,8 +87,8 @@ public class KeycloakUserControllerTest {
 	public void testGetUser() throws Exception {
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
-		UserDto userDto = populateRestUserRepresentation();
-		Mockito.when(keyCloakService.getUser(userDto.getUsername())).thenReturn(user);
+		RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
+		Mockito.when(keyCloakService.getUser(restUserRepresentation.getUsername())).thenReturn(user);
 		mockMvc.perform(MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON_VALUE).content(username))
 	      .andExpect(status().is(HttpStatus.OK.value()))
 	      
@@ -127,20 +127,20 @@ public class KeycloakUserControllerTest {
 		return user;
 	}
 
-	private UserDto populateRestUserRepresentation() {
+	private RestUserRepresentation populateRestUserRepresentation() {
 	   
 		    Set<String> organisationIds = new HashSet<String>();
 	        organisationIds.add(ORGID);
 	        organisationIds.add(ORGID);
-      		UserDto userDto = new UserDto(populateUserRepresentation());
-		    userDto.setId(ID);
-	        userDto.setFirstName(FIRSTNAME);
-	        userDto.setLastName(LASTNAME);
-	        userDto.setUsername(USERNAME);
-	        userDto.setEmail(EMAIL);
-	        userDto.setOrganisationIds(organisationIds);
-	        userDto.setEnabled(true);
-		    return userDto;
+      		RestUserRepresentation restUserRepresentation = new RestUserRepresentation(populateUserRepresentation());
+		    restUserRepresentation.setId(ID);
+	        restUserRepresentation.setFirstName(FIRSTNAME);
+	        restUserRepresentation.setLastName(LASTNAME);
+	        restUserRepresentation.setUsername(USERNAME);
+	        restUserRepresentation.setEmail(EMAIL);
+	        restUserRepresentation.setOrganisationIds(organisationIds);
+	        restUserRepresentation.setEnabled(true);
+		    return restUserRepresentation;
 	}
 	
 	private SearchKeycloackUserRequest populateSearchKeycloackUserRequest() {

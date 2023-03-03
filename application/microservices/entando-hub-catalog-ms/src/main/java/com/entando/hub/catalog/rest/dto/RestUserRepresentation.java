@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-public class UserDto {
+public class RestUserRepresentation {
   @Schema(example = "1d97d896-4761-21fc-8217-17d5d13a104b")
   private String id;
   private Date created;
@@ -31,7 +31,7 @@ public class UserDto {
   private String email;
   private Set<String> organisationIds;
 
-  public UserDto(com.entando.hub.catalog.service.model.UserRepresentation user) {
+  public RestUserRepresentation(com.entando.hub.catalog.service.model.UserRepresentation user) {
     this.id = user.getId();
     this.created = new Date(user.getCreatedTimestamp());
     this.username = user.getUsername();

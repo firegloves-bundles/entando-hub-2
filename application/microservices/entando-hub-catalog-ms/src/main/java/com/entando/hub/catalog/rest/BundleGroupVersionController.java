@@ -167,6 +167,7 @@ public class BundleGroupVersionController {
         	pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses,bundleGroupOptional.get());
             return pagedContent;
         } else {
+            // TODO check the impact on the FE if we return a non null object
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
             return pagedContent;
         }

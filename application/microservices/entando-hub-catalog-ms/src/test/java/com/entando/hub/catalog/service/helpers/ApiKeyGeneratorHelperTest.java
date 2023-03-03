@@ -20,14 +20,14 @@ class ApiKeyGeneratorHelperTest {
 
     @Test
     void testApiKeyGeneration() {
-        String apiKey = apiKeyGeneratorHelper.generateApiKey();
+        String apiKey = this.apiKeyGeneratorHelper.generateApiKey();
         Assertions.assertEquals(UUID.fromString(apiKey).toString(), apiKey);
     }
 
     @Test
     void testApiKeyGenerationSha() {
-        String apiKey = apiKeyGeneratorHelper.generateApiKey();
-        String validSha = apiKeyGeneratorHelper.toSha(apiKey);
+        String apiKey = this.apiKeyGeneratorHelper.generateApiKey();
+        String validSha = this.apiKeyGeneratorHelper.toSha(apiKey);
         Assertions.assertEquals(DigestUtils.sha3_512Hex(apiKey).toString(), validSha);
     }
 }

@@ -2,10 +2,10 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
-import com.entando.hub.catalog.rest.dto.apikey.AddApiKeyRequestDTO;
-import com.entando.hub.catalog.rest.dto.apikey.EditApiKeyRequestDTO;
-import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
+import com.entando.hub.catalog.service.dto.apikey.AddApiKeyRequestDTO;
+import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
+import com.entando.hub.catalog.service.dto.apikey.EditApiKeyRequestDTO;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -71,8 +71,8 @@ class PrivateCatalogApiKeyControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
-    void testGetMyApiKeysAdmin() throws Exception {
-        PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> apiKeyList = getListApiKeyResponseDTO(createPrivateCatalogApiKey());
+    void testGetMyApiKeys() throws Exception {
+        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeyList = getListApiKeyResponseDTO(createPrivateCatalogApiKey());
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
         Mockito.when(privateCatalogApiKeyService.getApiKeysByUsername(ADMIN_USERNAME, PAGE, PAGE_SIZE)).thenReturn(apiKeyList);
         mockMvc.perform(MockMvcRequestBuilders.get(URI)
@@ -82,13 +82,14 @@ class PrivateCatalogApiKeyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.payload.[0].id").value(ADMIN_API_KEY_ID))
-                .andExpect(jsonPath("$.payload.[0].username").value(ADMIN_USERNAME))
                 .andExpect(jsonPath("$.payload.[0].label").value(LABEL))
                 .andExpect(jsonPath("$.metadata.page").value(1))
                 .andExpect(jsonPath("$.metadata.pageSize").value(1))
                 .andExpect(jsonPath("$.metadata.lastPage").value(1))
                 .andExpect(jsonPath("$.metadata.totalItems").value(1));
     }
+
+
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})
     void TestDeleteMyApiKey() throws Exception {
@@ -120,8 +121,11 @@ class PrivateCatalogApiKeyControllerTest {
     void TestRegenerateMyApiKey() throws Exception {
         EditApiKeyRequestDTO request = new EditApiKeyRequestDTO();
         request.setLabel(LABEL);
+        ApiKeyResponseDTO response = new ApiKeyResponseDTO();
+        response.setApiKey(API_KEY);
+        response.setId(ADMIN_API_KEY_ID);
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
-        Mockito.when(privateCatalogApiKeyService.regenerateApiKey(ADMIN_API_KEY_ID, ADMIN_USERNAME)).thenReturn(API_KEY);
+        Mockito.when(privateCatalogApiKeyService.regenerateApiKey(ADMIN_API_KEY_ID, ADMIN_USERNAME)).thenReturn(response);
         mockMvc.perform(MockMvcRequestBuilders.post(REGENERATE_MY_API_KEY_URI, ADMIN_API_KEY_ID)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -134,8 +138,11 @@ class PrivateCatalogApiKeyControllerTest {
     void TestAddMyApiKey() throws Exception {
         AddApiKeyRequestDTO request = new AddApiKeyRequestDTO();
         request.setLabel(LABEL);
+        ApiKeyResponseDTO response = new ApiKeyResponseDTO();
+        response.setApiKey(API_KEY);
+        response.setId(ADMIN_API_KEY_ID);
         Mockito.when(securityHelperService.getContextAuthenticationUsername()).thenReturn(ADMIN_USERNAME);
-        Mockito.when(privateCatalogApiKeyService.addApiKey(ADMIN_USERNAME, LABEL)).thenReturn(API_KEY);
+        Mockito.when(privateCatalogApiKeyService.addApiKey(ADMIN_USERNAME, LABEL)).thenReturn(response);
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -159,15 +166,17 @@ class PrivateCatalogApiKeyControllerTest {
         return privateCatalogApiKey;
     }
 
-    private PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> getListApiKeyResponseDTO(PrivateCatalogApiKey apiKey) {
+    private PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getListApiKeyResponseDTO(PrivateCatalogApiKey apiKey) {
         List<PrivateCatalogApiKey> responseList = new ArrayList<>();
-        List<GetApiKeyResponseDTO> responseDTOList = new ArrayList<>();
+        List<ApiKeyResponseDTO> responseDTOList = new ArrayList<>();
         PrivateCatalogApiKey privateCatalogApiKey = apiKey;
         responseList.add(privateCatalogApiKey);
         Page<PrivateCatalogApiKey> pageObj = new PageImpl<>(responseList);
-        GetApiKeyResponseDTO responseDTO1 = privateCatalogApiKeyMapper.toDto(privateCatalogApiKey);
+
+        ApiKeyResponseDTO responseDTO1 = privateCatalogApiKeyMapper.toApiKeyResponseDTO(privateCatalogApiKey);
         responseDTOList.add(responseDTO1);
-        PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> apiKeyList =
+
+        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeyList =
                 new PagedContent<>(responseDTOList, pageObj);
         return apiKeyList;
     }

@@ -1,43 +1,33 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
-
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
 @RestController
 @RequestMapping("/api/bundlegroups")
@@ -222,16 +212,5 @@ public class BundleGroupController {
         }
     }
 
-    @ExceptionHandler({ AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
-    public ResponseEntity<String> handleException(Exception exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-        } else if (exception instanceof IllegalArgumentException) {
-            status = HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof  ConflictException){
-            status = HttpStatus.CONFLICT;
-        }
-        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
-    }
+
 }

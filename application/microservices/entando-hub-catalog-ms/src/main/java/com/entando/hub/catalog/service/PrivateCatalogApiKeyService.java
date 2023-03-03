@@ -5,8 +5,8 @@ import com.entando.hub.catalog.persistence.PrivateCatalogApiKeyRepository;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
-import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
-import com.entando.hub.catalog.rest.exceptions.BadRequestException;
+import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
+import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
 import org.slf4j.Logger;
@@ -38,8 +38,7 @@ public class PrivateCatalogApiKeyService {
         this.apiKeyGeneratorHelper = apiKeyGeneratorHelper;
         this.privateCatalogApiKeyMapper = privateCatalogApiKeyMapper;
     }
-    public String addApiKey(String username, String label) {
-        logger.debug("Add an api key for the username {} and label {}", username, label);
+    public ApiKeyResponseDTO addApiKey(String username, String label) {
         PortalUser portalUser = this.portalUserRepository.findByUsername(username);
         if (portalUser == null) {
             String errorMessage = "User "+ username +" not found";
@@ -51,11 +50,14 @@ public class PrivateCatalogApiKeyService {
         String generatedApiKey = apiKeyGeneratorHelper.generateApiKey();
         String apiKeySha = apiKeyGeneratorHelper.toSha(generatedApiKey);
         privateCatalogApiKey.setApiKey(apiKeySha);
-        this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
-        return generatedApiKey;
+        System.out.println("apiKeySha:"+apiKeySha);
+
+        PrivateCatalogApiKey apiKeyResult = this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
+        apiKeyResult.setApiKey(generatedApiKey);
+        System.out.println("apiKeyResult:"+apiKeyResult);
+        return privateCatalogApiKeyMapper.toAddApiKeyDto(apiKeyResult);
     }
     public boolean editLabel(long id, String username, String label) {
-        logger.debug("Edit the label api key for the username {} and label {}", username, label);
         Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
         if (apiKeyOptional.isPresent()) {
             PrivateCatalogApiKey privateCatalogApiKey = apiKeyOptional.get();
@@ -68,16 +70,17 @@ public class PrivateCatalogApiKeyService {
         }
     }
 
-    public String regenerateApiKey(long id, String username) {
-        logger.debug("Regenerate the api key for the username {} and id {}", username, id);
+    public ApiKeyResponseDTO regenerateApiKey(long id, String username) {
         Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
         if (apiKeyOptional.isPresent()) {
             PrivateCatalogApiKey privateCatalogApiKey = apiKeyOptional.get();
             String generatedApiKey = apiKeyGeneratorHelper.generateApiKey();
             String apiKeySha = apiKeyGeneratorHelper.toSha(generatedApiKey);
             privateCatalogApiKey.setApiKey(apiKeySha);
-            this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
-            return generatedApiKey;
+            PrivateCatalogApiKey apiKeyResult = this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
+            ApiKeyResponseDTO apiKeyResponseDTO = this.privateCatalogApiKeyMapper.toRefreshApiKeyDto(apiKeyResult);
+            apiKeyResponseDTO.setApiKey(generatedApiKey);
+            return apiKeyResponseDTO;
         } else {
             String errorMessage = "Api key " + id + NOT_FOUND_MSG + username;
             throw new BadRequestException(errorMessage);
@@ -85,7 +88,6 @@ public class PrivateCatalogApiKeyService {
     }
 
     public boolean deleteApiKey(long id, String username) {
-        logger.debug("Delete the api key for the username {} and id {}", username, id);
         Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
         if (apiKeyOptional.isPresent()) {
             privateCatalogApiKeyRepository.delete(apiKeyOptional.get());
@@ -96,13 +98,12 @@ public class PrivateCatalogApiKeyService {
         }
     }
 
-    public PagedContent<GetApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeysByUsername(String username, Integer pageNum, Integer pageSize) {
-        logger.debug("Get api keys by username {}, pageNum {} and pageSize {}",username, pageNum, pageSize);
+    public PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeysByUsername(String username, Integer pageNum, Integer pageSize) {
         Pageable paging = getPageable(pageSize, pageNum - 1);
         Page<PrivateCatalogApiKey> all = this.privateCatalogApiKeyRepository.findByPortalUserUsername(paging, username);
         List<PrivateCatalogApiKey> content = all.getContent();
-        List<GetApiKeyResponseDTO> response = privateCatalogApiKeyMapper.toDto(content);
-        return new PagedContent<>(response, all);
+        List<ApiKeyResponseDTO> response = this.privateCatalogApiKeyMapper.toApiKeyResponseDTO(content);
+        return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), all);
     }
 
     private static Pageable getPageable(Integer pageSize, int pageNum) {

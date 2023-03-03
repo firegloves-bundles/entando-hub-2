@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.rest.dto;
+package com.entando.hub.catalog.rest.handlers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

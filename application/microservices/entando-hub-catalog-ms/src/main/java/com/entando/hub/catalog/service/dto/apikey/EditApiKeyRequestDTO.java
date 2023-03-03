@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.rest.dto.apikey;
+package com.entando.hub.catalog.service.dto.apikey;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

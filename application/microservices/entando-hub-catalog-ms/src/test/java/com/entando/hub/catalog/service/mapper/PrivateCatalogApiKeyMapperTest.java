@@ -1,7 +1,7 @@
 package com.entando.hub.catalog.service.mapper;
 
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
-import com.entando.hub.catalog.rest.dto.apikey.GetApiKeyResponseDTO;
+import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -33,16 +33,15 @@ class PrivateCatalogApiKeyMapperTest {
     @Test
     void testToDto() {
         PrivateCatalogApiKey entity = generatePrivateCatalogApiKeyEntity(API_KEY_ID_1, PORTAL_USER_ID_1);
-        GetApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toDto(entity);
+        ApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toApiKeyResponseDTO(entity);
         assertNotNull(dto);
-        assertEquals(GENERATED_USERNAME_1, dto.getUsername());
         assertEquals(GENERATED_LABEL_1, dto.getLabel());
         assertNotNull(dto.getId());
     }
 
     @Test
     void testToDtoNull() {
-        GetApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toDto((PrivateCatalogApiKey) null);
+        ApiKeyResponseDTO dto = privateCatalogApiKeyMapper.toApiKeyResponseDTO((PrivateCatalogApiKey) null);
         assertNull(dto);
     }
 
@@ -53,20 +52,18 @@ class PrivateCatalogApiKeyMapperTest {
         List<PrivateCatalogApiKey> list = new ArrayList<>();
         list.add(entity1);
         list.add(entity2);
-        List<GetApiKeyResponseDTO> dto = privateCatalogApiKeyMapper.toDto(list);
+        List<ApiKeyResponseDTO> dto = privateCatalogApiKeyMapper.toApiKeyResponseDTO(list);
         assertNotNull(dto);
         assertEquals(2, dto.size());
         assertEquals(API_KEY_ID_1, dto.get(0).getId());
         assertEquals(API_KEY_ID_2, dto.get(1).getId());
         assertEquals(GENERATED_LABEL_1, dto.get(0).getLabel());
         assertEquals(GENERATED_LABEL_2, dto.get(1).getLabel());
-        assertEquals(GENERATED_USERNAME_1, dto.get(0).getUsername());
-        assertEquals(GENERATED_USERNAME_2, dto.get(1).getUsername());
     }
 
     @Test
     void testListToDtoNull() {
-        List<GetApiKeyResponseDTO> dto = privateCatalogApiKeyMapper.toDto((List<PrivateCatalogApiKey>) null);
+        List<ApiKeyResponseDTO> dto = privateCatalogApiKeyMapper.toApiKeyResponseDTO((List<PrivateCatalogApiKey>) null);
         assertNull(dto);
     }
 

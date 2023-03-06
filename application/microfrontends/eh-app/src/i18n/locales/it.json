@@ -142,7 +142,8 @@
     "created": "Creato",
     "updated": "Aggiornato",
     "deleted": "Cancellato",
-    "generated": "Generato"
+    "generated": "Generato",
+    "apiKeyVisibility": "Il codice di questa API key non sarà più visibile dopo questo momento"
   },
   "formValidationMsg": {
     "nameRequired": "Il nome è un campo obbligatorio",

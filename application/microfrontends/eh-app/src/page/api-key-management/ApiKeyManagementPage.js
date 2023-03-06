@@ -11,6 +11,7 @@ import {
   TableToolbar,
   TableToolbarContent,
   Button,
+  InlineNotification,
 } from 'carbon-components-react';
 import {
   Add16 as AddIcon,
@@ -52,6 +53,7 @@ const ApiKeyManagementPage = () => {
     id: null,
     data: null,
   });
+  const [apiKeyToastOpen, setApiKeyToastOpen] = useState(false);
 
   const apiUrl = useApiUrl();
 
@@ -100,6 +102,7 @@ const ApiKeyManagementPage = () => {
       ]);
   
       setApiKeyTextRefs({ ...apiKeyTextRefs, [data.apiKey]: createRef() });
+      setApiKeyToastOpen(true);
       handleModalClose();
     }
   };
@@ -160,6 +163,10 @@ const ApiKeyManagementPage = () => {
     sel.removeAllRanges();
     sel.addRange(range);
     navigator.clipboard.writeText(apiKey);
+  };
+
+  const handleApiKeyToastClose = () => {
+    setApiKeyToastOpen(false);
   };
 
   const rows = [...apiKeys].reverse();
@@ -259,6 +266,16 @@ const ApiKeyManagementPage = () => {
         onConfirm={handleDeleteApiKeyModalSubmit}
         apiKeyData={modal.data}
       />
+      {apiKeyToastOpen && (
+        <InlineNotification
+          className="ApiKeyManagementPage-info-toast"
+          kind="info"
+          title={i18n.t('toasterMessage.apiKeyVisibility')}
+          iconDescription=""
+          lowContrast
+          onClose={handleApiKeyToastClose}
+        />
+      )}
     </>
   )
 };

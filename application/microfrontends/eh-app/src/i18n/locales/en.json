@@ -142,8 +142,9 @@
     "bundleGroup": "Bundle Group",
     "created": "Created",
     "updated": "Updated",
-    "deleted": "Deleted",
-    "generated": "Generated"
+    "deleted": "Deleted", 
+    "generated": "Generated",
+    "apiKeyVisibility": "The code of this API key will no longer be visible after this moment"
   },
   "formValidationMsg": {
     "nameRequired": "Name is a required field",

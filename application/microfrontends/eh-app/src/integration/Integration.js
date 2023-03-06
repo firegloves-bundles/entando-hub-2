@@ -1,4 +1,4 @@
-import { deleteData, getData, postData } from "./Http"
+import { deleteData, getData, postData, putData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
 import { API_RESPONSE_KEY, DELETED_BUNDLE, HTTP_STATUS } from "../helpers/constants";
 import i18n from "../i18n";
@@ -600,6 +600,22 @@ export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
     isError,
     `${i18n.t('toasterMessage.impossibleToGenerateApiKey')}: ${data?.message || ''}`,
     `API Key ${i18n.t('toasterMessage.generated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const updateCatalogApiKey = async (apiUrl, apiKeyData, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await putData(url, apiKeyData, id);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToUpdateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.updated')}`,
   );
 
   return {

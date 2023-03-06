@@ -134,6 +134,7 @@
     "impossibleToLoadBundleGroupVersions": "Impossible to load bundle group versions",
     "impossibleToGenerateApiKey": "Impossible to generate API key",
     "impossibleToLoadApiKeys": "Impossible to load API keys",
+    "impossibleToUpdateApiKey": "Impossible to update API key",
     "impossibleToDeleteApiKey": "Impossible to delete API key",
     "bundleGroupVersion": "Bundle Group Version",
     "user": "User",

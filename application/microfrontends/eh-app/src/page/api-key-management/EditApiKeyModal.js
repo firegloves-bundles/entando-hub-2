@@ -7,7 +7,7 @@ const EditApiKeyModal = ({ open, apiKeyData, onClose, onSubmit }) => {
   const [apiKeyName, setApiKeyName] = useState('');
 
   useEffect(() => {
-    setApiKeyName(apiKeyData?.name || '');
+    setApiKeyName(apiKeyData?.label || '');
   }, [apiKeyData]);
 
   const handleApiKeyNameChange = (e) => {
@@ -15,7 +15,10 @@ const EditApiKeyModal = ({ open, apiKeyData, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    onSubmit({ label: apiKeyName });
+    onSubmit({
+      id: apiKeyData.id,
+      label: apiKeyName,
+    });
   };
 
   return (

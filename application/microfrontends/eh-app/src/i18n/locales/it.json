@@ -133,6 +133,7 @@
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
     "impossibleToGenerateApiKey": "Impossibile generare la API key",
     "impossibleToLoadApiKeys": "Impossibile caricare le API keys",
+    "impossibleToUpdateApiKey": "Impossibile aggiornare la API key",
     "impossibleToDeleteApiKey": "Impossibile eliminare la API key",
     "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",

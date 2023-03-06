@@ -20,7 +20,12 @@ import {
 } from '@carbon/icons-react';
 
 import GenerateApiKeyModal from './GenerateApiKeyModal';
-import { getCatalogApiKeys, generateCatalogApiKey } from '../../integration/Integration';
+import {
+  getCatalogApiKeys,
+  generateCatalogApiKey,
+  updateCatalogApiKey,
+  deleteCatalogApiKey,
+} from '../../integration/Integration';
 import EhBreadcrumb from '../../components/eh-breadcrumb/EhBreadcrumb';
 import './api-key-management-page.scss';
 import i18n from '../../i18n';
@@ -85,20 +90,42 @@ const ApiKeyManagementPage = () => {
   const handleGenerateApiKeyModalSubmit = async (apiKeyData) => {
     const { data, isError } = await generateCatalogApiKey(apiUrl, apiKeyData);
     if (!isError) {
-      setApiKeys([...apiKeys, { label: apiKeyData.label, apiKey: data.apiKey }]);
+      setApiKeys([
+        ...apiKeys,
+        {
+          label: apiKeyData.label,
+          id: `${data.id}`,
+          apiKey: data.apiKey,
+        }
+      ]);
+  
       setApiKeyTextRefs({ ...apiKeyTextRefs, [data.apiKey]: createRef() });
       handleModalClose();
     }
   };
 
   const handleDeleteApiKeyModalSubmit = async () => {
-    // const { isError } = await deleteCatalogApiKey(apiUrl, modal.data.id);
-    console.log('confirmed delete');
+    const { isError } = await deleteCatalogApiKey(apiUrl, modal.data.id);
+    if (!isError) {
+      const updatedApiKeys = apiKeys.filter(({ id }) => id !== modal.data.id);
+      setApiKeys(updatedApiKeys);
+      handleModalClose();
+    }
   };
 
-  const handleEditApiKeyModalSubmit = async (apiKeyData) => {
-    // const { isError } = await updateApiKey(apiUrl, apiKeyData, apiKeyData.id);
-    console.log('updated api key');
+  const handleEditApiKeyModalSubmit = async ({ id, label }) => {
+    const { isError } = await updateCatalogApiKey(apiUrl, { label }, id);
+    if (!isError) {
+      const updatedApiKeys = apiKeys.map(apiKey => (
+        apiKey.id === id ? ({
+          ...apiKey,
+          label,
+        }) : apiKey
+      ));
+
+      setApiKeys(updatedApiKeys);
+      handleModalClose();
+    }
   };
 
   const handleEditClick = (rowData) => {
@@ -106,7 +133,7 @@ const ApiKeyManagementPage = () => {
       id: rowData.id,
       label: rowData.cells[0].value
     };
-    console.log(apiKeyData);
+
     setModal({
       id: 'EditApiKeyModal',
       data: apiKeyData,
@@ -118,7 +145,7 @@ const ApiKeyManagementPage = () => {
       id: rowData.id,
       label: rowData.cells[0].value
     };
-    console.log(apiKeyData);
+    
     setModal({
       id: 'DeleteApiKeyModal',
       data: apiKeyData,
@@ -230,6 +257,7 @@ const ApiKeyManagementPage = () => {
         open={modal.id === 'DeleteApiKeyModal'}
         onClose={handleModalClose}
         onConfirm={handleDeleteApiKeyModalSubmit}
+        apiKeyData={modal.data}
       />
     </>
   )

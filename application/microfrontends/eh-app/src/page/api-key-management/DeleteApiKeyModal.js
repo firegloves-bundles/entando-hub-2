@@ -2,7 +2,7 @@ import { Button, ComposedModal, ModalBody, ModalFooter, ModalHeader } from 'carb
 
 import i18n from '../../i18n';
 
-const DeleteApiKeyModal = ({ open, onClose, onConfirm }) => {
+const DeleteApiKeyModal = ({ open, apiKeyData, onClose, onConfirm }) => {
   return (
     <ComposedModal
       className="DeleteApiKeyModal"
@@ -11,7 +11,7 @@ const DeleteApiKeyModal = ({ open, onClose, onConfirm }) => {
       size="xs"
     >
       <ModalHeader
-        label={i18n.t('component.button.deleteApiKey')}
+        label={`${i18n.t('component.button.deleteApiKey')} ${apiKeyData?.label || ''}`}
         buttonOnClick={onClose}
       />
       <ModalBody>

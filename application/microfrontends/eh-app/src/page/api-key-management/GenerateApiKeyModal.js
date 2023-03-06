@@ -11,7 +11,6 @@ const GenerateApiKeyModal = ({ open, onClose, onSubmit }) => {
   };
 
   const handleClose = () => {
-    console.log('close');
     setApiKeyName('');
     onClose();
   };

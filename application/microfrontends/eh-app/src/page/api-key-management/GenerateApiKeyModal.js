@@ -16,6 +16,7 @@ const GenerateApiKeyModal = ({ open, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
+    setApiKeyName('');
     onSubmit({ label: apiKeyName });
   };
 

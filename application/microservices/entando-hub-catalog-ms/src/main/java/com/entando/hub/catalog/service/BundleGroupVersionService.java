@@ -42,6 +42,7 @@ public class BundleGroupVersionService {
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     private final int MAX_PAGE_SIZE = 50;
+    private static final String ORDER_BY = "bundleGroup.name";
 
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
     final private BundleGroupRepository bundleGroupRepository;
@@ -393,31 +394,22 @@ public class BundleGroupVersionService {
                 "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}, searchText: {}",
                 CLASS_NAME, organisationId, categoryIds, statuses, searchText);
 
-        List<BundleGroup> bundleGroups = this.prepareBundleGroup(searchText, organisationId, categoryIds);
+        List<BundleGroup> bundleGroups = this.getBundleGroups(searchText, organisationId, categoryIds);
 
-        if (pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
-            logger.warn("An unexpected pageSize {} was provided. Setting maximum to {}.", pageSize, MAX_PAGE_SIZE);
-            pageSize = MAX_PAGE_SIZE;
-        }
+        Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
 
-        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC, "bundleGroup.name"))
-                .and(Sort.by("lastUpdated").descending()));
-
-        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf)
-                .collect(Collectors.toSet());
-
-        Page<BundleGroupVersion> page = bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups,
-                statusSet, paging);
+        Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
 
         PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
                 toResponseViewList(page, bundleGroups), page);
+
         logger.debug("{}: getBundleGroupVersions: organisationId {}, number of elements: {}", CLASS_NAME,
                 organisationId, page.getNumberOfElements());
 
         return pagedContent;
     }
 
-    private List<BundleGroup> prepareBundleGroup(String searchText, Long organisationId, String[] categoryIds){
+    private List<BundleGroup> getBundleGroups(String searchText, Long organisationId, String[] categoryIds){
         List<BundleGroup> bundleGroups;
         Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
 
@@ -434,7 +426,44 @@ public class BundleGroupVersionService {
         return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
     }
 
-    private List<BundleGroup>  filterSearchText(List<BundleGroup> bundleGroups, String searchText){
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchPrivateBundleGroupVersions(
+            Integer pageNum, Integer pageSize, Long catalogId, String[] categoryIds, String[] statuses,
+            String searchText) {
+
+        logger.debug(
+                "{}: getBundleGroupVersions: Get bundle group versions paginated by catalog id: {}, categories: {}, statuses: {}, searchText: {}",
+                CLASS_NAME, catalogId, categoryIds, statuses, searchText);
+
+        List<BundleGroup> bundleGroups = this.getPrivateBundleGroups(searchText, catalogId, categoryIds);
+
+        Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
+
+        Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
+
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
+                toResponseViewList(page, bundleGroups), page);
+
+        logger.debug("{}: getBundleGroupVersions: catalogId {}, number of elements: {}", CLASS_NAME,
+                catalogId, page.getNumberOfElements());
+
+        return pagedContent;
+    }
+
+    private List<BundleGroup> getPrivateBundleGroups(String searchText, Long catalogId, String[] categoryIds){
+        List<BundleGroup> bundleGroups;
+        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
+
+        if (categoryIds.length != 0){
+            bundleGroups = bundleGroupRepository.findDistinctByCatalogIdAndCategoriesIn(catalogId, categories);
+        } else {
+            bundleGroups = bundleGroupRepository.findDistinctByCatalogId(catalogId);
+        }
+
+        return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
+    }
+
+
+    private List<BundleGroup> filterSearchText(List<BundleGroup> bundleGroups, String searchText){
         return bundleGroups.stream()
                 .filter(bundleGroup -> {
                     String bg = bundleGroup.getName().toLowerCase();
@@ -446,4 +475,19 @@ public class BundleGroupVersionService {
 
     }
 
+    private Page<BundleGroupVersion> getBundleGroupVersionByStatus(List<BundleGroup> bundleGroups, String[] statuses, Pageable paging){
+        Set<BundleGroupVersion.Status> statusSet = Arrays.stream(statuses).map(BundleGroupVersion.Status::valueOf).collect(Collectors.toSet());
+        return bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups, statusSet, paging);
+    }
+
+    private Pageable getPaging(Integer pageNum, Integer pageSize, String orderBy){
+        if (pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
+            logger.warn("An unexpected pageSize {} was provided. Setting maximum to {}.", pageSize, MAX_PAGE_SIZE);
+            pageSize = MAX_PAGE_SIZE;
+        }
+
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, orderBy)).and(Sort.by("lastUpdated").descending());
+
+        return PageRequest.of(pageNum, pageSize, sort);
+    }
 }

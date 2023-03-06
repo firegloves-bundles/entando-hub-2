@@ -31,6 +31,10 @@ public interface BundleGroupRepository extends JpaRepository<BundleGroup, Long> 
 
     List<BundleGroup> findDistinctByOrganisationId(Long organisationId);
 
+    List<BundleGroup> findDistinctByCatalogId(Long catalogId);
+
+    List<BundleGroup> findDistinctByCatalogIdAndCategoriesIn(Long catalogId, Set<Category> categories);
+
 
     @Override
     @Query

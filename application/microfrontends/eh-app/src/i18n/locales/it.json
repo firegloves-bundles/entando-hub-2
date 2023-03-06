@@ -75,6 +75,7 @@
       "delete": "Elimina",
       "search": "Ricerca",
       "cancel": "Annulla",
+      "confirm": "Confermare",
       "install": "Installare",
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
@@ -135,6 +136,7 @@
     "impossibleToLoadApiKeys": "Impossibile caricare le API keys",
     "impossibleToUpdateApiKey": "Impossibile aggiornare la API key",
     "impossibleToDeleteApiKey": "Impossibile eliminare la API key",
+    "impossibleToRegenerateApiKey": "Impossibile rigenerare la API key",
     "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",
     "bundle": "Bundle",
@@ -143,6 +145,7 @@
     "updated": "Aggiornato",
     "deleted": "Cancellato",
     "generated": "Generato",
+    "regenerated": "Rigenerato",
     "apiKeyVisibility": "Il codice di questa API key non sarà più visibile dopo questo momento"
   },
   "formValidationMsg": {
@@ -177,7 +180,9 @@
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
     "addNewVersion": "Aggiungi nuova versione",
-    "deleteApiKey": "Sei sicuro di voler eliminare questo API key?"
+    "deleteApiKey": "Sei sicuro di voler eliminare questo API key?",
+    "regenerateApiKey": "Sei sicuro di voler rigenerare questa API key?",
+    "regenerateApiKeyTitle": "Rigenerare API Key"
   },
   "navLink": {
     "userManagement": "Gestione utente",

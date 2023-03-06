@@ -16,6 +16,7 @@ import {
 import {
   Add16 as AddIcon,
   Edit16 as EditIcon,
+  Renew16 as RenewIcon,
   TrashCan16 as DeleteIcon,
   Copy16 as CopyIcon,
 } from '@carbon/icons-react';
@@ -25,6 +26,7 @@ import {
   getCatalogApiKeys,
   generateCatalogApiKey,
   updateCatalogApiKey,
+  regenerateCatalogApiKey,
   deleteCatalogApiKey,
 } from '../../integration/Integration';
 import EhBreadcrumb from '../../components/eh-breadcrumb/EhBreadcrumb';
@@ -34,6 +36,7 @@ import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from '../../helpers/constants';
 import { useApiUrl } from '../../contexts/ConfigContext';
 import DeleteApiKeyModal from './DeleteApiKeyModal';
 import EditApiKeyModal from './EditApiKeyModal';
+import RegenerateApiKeyModal from './RegenerateApiKeyModal';
 
 const headers = [
   {
@@ -69,8 +72,6 @@ const ApiKeyManagementPage = () => {
           ...d,
           id: `${d.id}`,
         })));
-
-        setApiKeyTextRefs(data.map(() => createRef()));
       }
       setIsLoading(false);
     })();
@@ -101,17 +102,37 @@ const ApiKeyManagementPage = () => {
         }
       ]);
   
-      setApiKeyTextRefs({ ...apiKeyTextRefs, [data.apiKey]: createRef() });
+      setApiKeyTextRefs({ ...apiKeyTextRefs, [data.id]: createRef() });
       setApiKeyToastOpen(true);
       handleModalClose();
     }
   };
 
-  const handleDeleteApiKeyModalSubmit = async () => {
+  const handleDeleteApiKeyModalConfirm = async () => {
     const { isError } = await deleteCatalogApiKey(apiUrl, modal.data.id);
     if (!isError) {
       const updatedApiKeys = apiKeys.filter(({ id }) => id !== modal.data.id);
       setApiKeys(updatedApiKeys);
+      handleModalClose();
+    }
+  };
+
+  const handleRegenerateApiKeyModalConfirm = async () => {
+    const { data, isError } = await regenerateCatalogApiKey(apiUrl, modal.data.id);
+    if (!isError) {
+      const updatedApiKeys = apiKeys.map(apiKey => (
+        apiKey.id === modal.data.id ? ({
+          ...apiKey,
+          apiKey: data.apiKey,
+        }) : apiKey
+      ));
+
+      if (!apiKeyTextRefs[modal.data.id]) {
+        setApiKeyTextRefs({ ...apiKeyTextRefs, [modal.data.id]: createRef() });
+      }
+
+      setApiKeys(updatedApiKeys);
+      setApiKeyToastOpen(true);
       handleModalClose();
     }
   };
@@ -142,6 +163,18 @@ const ApiKeyManagementPage = () => {
       data: apiKeyData,
     });
   };
+  
+  const handleRegenerateClick = (rowData) => {
+    const apiKeyData = {
+      id: rowData.id,
+      label: rowData.cells[0].value
+    };
+
+    setModal({
+      id: 'RegenerateApiKeyModal',
+      data: apiKeyData,
+    });
+  };
 
   const handleDeleteClick = (rowData) => {
     const apiKeyData = {
@@ -156,9 +189,9 @@ const ApiKeyManagementPage = () => {
   };
 
   // selects the apiKey text and copies the apiKey to the clipboard
-  const handleApiKeyClick = (apiKey) => {
+  const handleApiKeyClick = (apiKey, id) => {
     let range = document.createRange();
-    range.selectNodeContents(apiKeyTextRefs[apiKey].current);
+    range.selectNodeContents(apiKeyTextRefs[id].current);
     let sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
@@ -217,8 +250,8 @@ const ApiKeyManagementPage = () => {
                             </TableCell>
                             <TableCell>
                               {row.cells[1].value && (
-                                <span className="ApiKeyManagementPage-api-key" onClick={() => handleApiKeyClick(row.cells[1].value)}>
-                                  <span ref={apiKeyTextRefs[row.cells[1].value]}>{row.cells[1].value}</span>
+                                <span className="ApiKeyManagementPage-api-key" onClick={() => handleApiKeyClick(row.cells[1].value, row.id)}>
+                                  <span ref={apiKeyTextRefs[row.id]}>{row.cells[1].value}</span>
                                   <CopyIcon />
                                 </span>
                               )}
@@ -229,13 +262,22 @@ const ApiKeyManagementPage = () => {
                                 kind="ghost"
                                 iconDescription="Edit"
                                 onClick={() => handleEditClick(row)}
-                                hasIconOnly />
+                                hasIconOnly
+                              />
+                              <Button
+                                renderIcon={RenewIcon}
+                                kind="ghost"
+                                iconDescription="Regenerate"
+                                onClick={() => handleRegenerateClick(row)}
+                                hasIconOnly
+                              />
                               <Button
                                 renderIcon={DeleteIcon}
                                 kind="ghost"
                                 iconDescription="Delete"
                                 onClick={() => handleDeleteClick(row)}
-                                hasIconOnly />
+                                hasIconOnly
+                              />
                             </TableCell>
                           </TableRow>
                         ))}
@@ -260,10 +302,16 @@ const ApiKeyManagementPage = () => {
         onSubmit={handleEditApiKeyModalSubmit}
         apiKeyData={modal.data}
       />
+      <RegenerateApiKeyModal
+        open={modal.id === 'RegenerateApiKeyModal'}
+        onClose={handleModalClose}
+        onConfirm={handleRegenerateApiKeyModalConfirm}
+        apiKeyData={modal.data}
+      />
       <DeleteApiKeyModal
         open={modal.id === 'DeleteApiKeyModal'}
         onClose={handleModalClose}
-        onConfirm={handleDeleteApiKeyModalSubmit}
+        onConfirm={handleDeleteApiKeyModalConfirm}
         apiKeyData={modal.data}
       />
       {apiKeyToastOpen && (

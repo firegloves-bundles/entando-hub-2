@@ -624,6 +624,22 @@ export const updateCatalogApiKey = async (apiUrl, apiKeyData, id) => {
   };
 };
 
+export const regenerateCatalogApiKey = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}regenerate/`;
+  const { data, isError } = await postData(url, null, id);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToRegenerateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.regenerated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
 export const deleteCatalogApiKey = async (apiUrl, id) => {
   const url = `${apiUrl}${urlCatalogApiKeys}`;
   const { data, isError } = await deleteData(url, id);

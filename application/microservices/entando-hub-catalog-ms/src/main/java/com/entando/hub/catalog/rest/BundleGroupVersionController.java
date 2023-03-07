@@ -115,6 +115,7 @@ public class BundleGroupVersionController {
     }
 
     @Operation(summary = "Get all the private bundle group versions in the hub for the selected catalog, provides filter functionality", description = "Public api, no authentication required. You can provide the catalogId, the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @GetMapping(value = "catalog/{catalogId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")

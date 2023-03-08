@@ -10,7 +10,7 @@ import './catalogPage.scss'
 import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getPortalUserByUsername } from "../../integration/Integration";
+import { getPortalUser } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
@@ -86,7 +86,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     const getPortalUserDetails = async () => {
       const username = await getUserName();
       if (username) {
-        const portalUserResp = (await getPortalUserByUsername(apiUrl, username));
+        const portalUserResp = await getPortalUser(apiUrl);
         if (isMounted && portalUserResp && !portalUserResp.isError && portalUserResp.portalUser && portalUserResp.portalUser.organisations && portalUserResp.portalUser.organisations[0]) {
           const portalUserOrgs = portalUserResp.portalUser.organisations;
           setOrgLength(portalUserOrgs.length);

@@ -133,7 +133,7 @@ public class BundleGroupVersionController {
                 //must exist and the user mat be in it
                 if (bundleGroupVersionEntity.getBundleGroup().getOrganisation() == null || !securityHelperService.userIsInTheOrganisation(bundleGroupVersionEntity.getBundleGroup().getOrganisation().getId())) {
                     logger.warn("Only {} users can update bundle groups for any organisation, the other ones can update bundle groups only for their organisation", ADMIN);
-                    return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 }
             }
             com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.of(bundleGroupVersionId), bundleGroupVersionOptional.get().getBundleGroup()), bundleGroupVersionView);
@@ -197,7 +197,7 @@ public class BundleGroupVersionController {
 
         // If not Authenticated that request a private catalog
         if (null!=catalogId && Boolean.FALSE.equals(isUserAuthenticated))  {
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);

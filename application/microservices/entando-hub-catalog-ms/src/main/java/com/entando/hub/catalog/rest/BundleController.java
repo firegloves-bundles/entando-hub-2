@@ -45,7 +45,7 @@ public class BundleController {
         // If not Authenticated that request a private catalog
         boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
         if (null != catalogId && Boolean.FALSE.equals(isUserAuthenticated)) {
-            return (new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
+            return (new ResponseEntity<>(HttpStatus.FORBIDDEN));
         }
         if (Boolean.TRUE.equals(isUserAuthenticated)) {
             if (null != bundleGroupVersionId) {
@@ -54,6 +54,10 @@ public class BundleController {
                 bundleGroupValidator.validateBundlePrivateCatalogRequest(catalogId);
             }
         }
+        System.out.println("********************************");
+        System.out.println("bundleGroupVersionId " +bundleGroupVersionId);
+        System.out.println("catalogId "+catalogId);
+        System.out.println("********************************");
         List<Bundle> bundles = bundleService.getBundles(bundleGroupVersionId,catalogId).stream().map(BundleController.Bundle::new).collect(Collectors.toList());
         return new ResponseEntity<>(bundles, HttpStatus.OK);
     }

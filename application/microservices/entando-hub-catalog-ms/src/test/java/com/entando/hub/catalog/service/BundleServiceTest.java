@@ -1,11 +1,14 @@
 package com.entando.hub.catalog.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-
-import java.util.*;
-
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
+import com.entando.hub.catalog.persistence.BundleRepository;
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -16,21 +19,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.security.test.context.support.WithMockUser;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
-import com.entando.hub.catalog.persistence.BundleRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import java.util.*;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -44,9 +41,12 @@ public class BundleServiceTest {
 	BundleGroupRepository bundleGroupRepository;
 	@Mock
 	BundleGroupVersionRepository bundleGroupVersionRepository;
-	
-	private final Logger logger = LoggerFactory.getLogger(BundleServiceTest.class);
-	
+
+	@Mock
+	SecurityHelperService securityHelperService;
+	@Mock
+	BundleGroupValidator bundleGroupValidator;
+
 	private static final Long BUNDLE_ID = 1001L; 
 	private static final String BUNDLE_NAME = "Test Bundle Name";
 	private static final String BUNDLE_DESCRIPTION = "Test Bundle Decription";
@@ -107,6 +107,7 @@ public class BundleServiceTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "admin", roles = {ADMIN})
 	public void getBundlesTest() {
 		 List<Bundle> bundleList = new ArrayList<>();
 		 Bundle bundle = createBundle();
@@ -115,18 +116,22 @@ public class BundleServiceTest {
 		 bundleList.add(bundle);
 		 
 		 String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		 Mockito.when(bundleRepository.findByBundleGroupVersions(any(BundleGroupVersion.class), any(Sort.class))).thenReturn(bundleList);
+
+		 Mockito.when(bundleRepository.findByBundleGroupVersionsId(any(), any(Sort.class))).thenReturn(bundleList);
+		 Mockito.when(securityHelperService.isAdmin()).thenReturn(true);
 		 List<Bundle> bundleResult = bundleService.getBundles(Optional.of(bundleGroupVersionId));
 		 assertNotNull(bundleResult);
 		 assertEquals(bundleList.get(0).getId(), bundleResult.get(0).getId());
 	}
 	
 	@Test
+	@WithMockUser(username = "admin", roles = {ADMIN})
 	public void getBundlesTestFails() {
 		 List<Bundle> bundleList = new ArrayList<>();
 		 Bundle bundle = createBundle();
 		 bundleList.add(bundle);
 		 Mockito.when(bundleRepository.findAll()).thenReturn(bundleList);
+		 Mockito.when(securityHelperService.isAdmin()).thenReturn(true);
 		 List<Bundle> bundleResult = bundleService.getBundles(Optional.empty());
 		 assertNotNull(bundleResult);
 		 assertEquals(bundleList.get(0).getId(),bundleResult.get(0).getId());

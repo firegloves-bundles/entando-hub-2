@@ -25,7 +25,7 @@ public class BundleService {
 
     private final SecurityHelperService securityHelperService;
 
-    private  Logger logger = LoggerFactory.getLogger(BundleService.class);
+    private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService) {

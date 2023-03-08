@@ -2,8 +2,12 @@ package com.entando.hub.catalog.service.security;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 
+import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.PortalUserRepository;
+import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
+
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.keycloak.KeycloakPrincipal;
@@ -16,9 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecurityHelperService {
     private final PortalUserRepository portalUserRepository;
+    private final CatalogRepository catalogRepository;
 
-    public SecurityHelperService(PortalUserRepository portalUserRepository) {
+    public SecurityHelperService(PortalUserRepository portalUserRepository, CatalogRepository catalogRepository) {
         this.portalUserRepository = portalUserRepository;
+        this.catalogRepository = catalogRepository;
     }
 
     public Boolean isUserAuthenticated() {
@@ -30,6 +36,20 @@ public class SecurityHelperService {
         String preferredUsername = ((KeycloakPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getKeycloakSecurityContext().getToken().getPreferredUsername();
         PortalUser portalUser = portalUserRepository.findByUsername(preferredUsername);
         return portalUser != null && portalUser.getOrganisations() != null && portalUser.getOrganisations().stream().anyMatch(organisation -> organisation.getId().equals(organisationId));
+    }
+
+    public boolean userCanAccessTheCatalog(Long catalogId) {
+        String preferredUsername = ((KeycloakPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getKeycloakSecurityContext().getToken().getPreferredUsername();
+        PortalUser portalUser = portalUserRepository.findByUsername(preferredUsername);
+        Optional<Catalog> catalog = catalogRepository.findById(catalogId);
+
+        if (!catalog.isPresent()) {
+            return false;
+        } else {
+            Long organisationId = catalog.get().getOrganisation().getId();
+            return portalUser != null && portalUser.getOrganisations() != null && portalUser.getOrganisations().stream().anyMatch(organisation -> organisation.getId().equals(organisationId));
+        }
+
     }
 
     public Set<String> getUserRoles(){

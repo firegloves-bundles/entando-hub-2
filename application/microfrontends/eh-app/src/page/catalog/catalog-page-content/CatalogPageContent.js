@@ -9,6 +9,7 @@ import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'
 import { useApiUrl } from '../../../contexts/ConfigContext'
+import { useParams } from 'react-router-dom'
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -42,7 +43,18 @@ bundleGroupId	string
 }
  */
 
-const CatalogPageContent = ({ reloadToken, statusFilterValue, catList, isError, onAfterSubmit, currentUserOrg, orgList, searchTerm, showFullPage }) => {
+const CatalogPageContent = ({
+    reloadToken,
+    statusFilterValue,
+    catList,
+    isError,
+    onAfterSubmit,
+    currentUserOrg,
+    orgList,
+    searchTerm,
+    showFullPage,
+    catalogId,
+}) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(12)
     const [totalItems, setTotalItems] = useState(12)
@@ -60,7 +72,7 @@ const CatalogPageContent = ({ reloadToken, statusFilterValue, catList, isError, 
 
     const apiUrl = useApiUrl();
 
-    const loadData = useCallback(async ( page, pageSize, statusFilterValue, selectedCategoryIds, statuses) => {
+    const loadData = useCallback(async ( page, pageSize, statusFilterValue, selectedCategoryIds, statuses, catalogId) => {
         const userOrganisation = currentUserOrg;
         const organisationId = !isHubAdmin() && userOrganisation ? userOrganisation.organisationId : undefined
 
@@ -68,7 +80,7 @@ const CatalogPageContent = ({ reloadToken, statusFilterValue, catList, isError, 
          *Get all the bundle groups having categoryIds and statuses
          */
         const getBundleGroupsAndFilterThem = async (apiUrl, organisationId, categoryIds, statuses, searchTerm) => {
-            const data = await getAllBundleGroupsFilteredPaged(apiUrl, page, pageSize, organisationId, categoryIds, statuses, searchTerm)
+            const data = await getAllBundleGroupsFilteredPaged(apiUrl, page, pageSize, organisationId, categoryIds, statuses, searchTerm, catalogId)
             if (data.isError) {
                 setLoading(false)
             }
@@ -116,11 +128,11 @@ const CatalogPageContent = ({ reloadToken, statusFilterValue, catList, isError, 
 
         (async () => {
             setLoading(true)
-            await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses)
+            await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses, catalogId)
             setLoading(false)
 
         })()
-    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage])
+    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage, catalogId])
 
 
     const onFilterChange = (newSelectedCategoryIds) => {

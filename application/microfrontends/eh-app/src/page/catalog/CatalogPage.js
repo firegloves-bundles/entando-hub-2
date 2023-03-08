@@ -3,8 +3,8 @@ import { ChevronDown20 as ChevronIcon } from '@carbon/icons-react';
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import i18n from '../../i18n';
 import './catalogPage.scss'
 import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
@@ -35,8 +35,8 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const [catalogs, setCatalogs] = useState([]);
 
   const apiUrl = useApiUrl();
-
   const history = useHistory();
+  const { catalogId } = useParams();
 
   // worker is a state that handle state of search input when terms comes from versionPage.
   // it helps to handle Api hit on every change Event.
@@ -101,8 +101,10 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     };
 
     const getCatalogs = async () => {
-      const { data } = await getPrivateCatalogs(apiUrl);
-      setCatalogs(data);
+      const { data, isError } = await getPrivateCatalogs(apiUrl);
+      if (!isError) {
+        setCatalogs(data);
+      }
     };
 
     getCatOrgList();
@@ -112,7 +114,16 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     return () => {
       isMounted = false;
     };
-  }, [apiUrl])
+  }, [apiUrl]);
+
+  const catalogMap = useMemo(() => (
+    catalogs.reduce((prev, curr) => ({
+      ...prev,
+      [curr.id]: curr,
+    }), {})
+  ), [catalogs]);
+
+  const selectedCatalog = catalogId ? catalogMap[catalogId] : null;
 
   /**
    * @param {*} e Event object.
@@ -157,8 +168,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   }
 
   const handleCatalogChange = (catalog) => {
-    history.push(`/catalog/${catalog.organisationId}`);
-    console.log(catalog);
+    history.push(`/catalog/${catalog.organisationId}/`);
   };
 
   /**
@@ -192,13 +202,17 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                   {i18n.t('page.catalogPanel.catalogHomePage.categories')}
                 </div>
                 <div className="bx--col-lg-5 CatalogPage-section">
-                  {i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                  {selectedCatalog ? selectedCatalog.name : i18n.t('page.catalogPanel.catalogHomePage.catalog')}
                   <OverflowMenu
                     className="CatalogPage-catalog-menu"
                     menuOptionsClass="CatalogPage-catalog-options"
                     renderIcon={ChevronIcon}
                     flipped
                   >
+                    <OverflowMenuItem
+                      itemText={i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                      onClick={() => history.push('/')}
+                    />
                     {catalogs.map(catalog => (
                       <OverflowMenuItem
                         key={catalog.id}
@@ -241,7 +255,22 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 If I'm an hub user I'll wait for status filter loading
                         */}
                 {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING" && !loading))
-                  && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} />}
+                  && (
+                    <CatalogPageContent
+                      versionSearchTerm={versionSearchTerm}
+                      searchTerm={searchTerm}
+                      isError={isError}
+                      catList={categories}
+                      reloadToken={reloadToken}
+                      statusFilterValue={statusFilterValue}
+                      onAfterSubmit={onAfterSubmit}
+                      orgList={orgList}
+                      currentUserOrg={currentUserOrg}
+                      showFullPage={showFullPage}
+                      catalogId={catalogId}
+                    />
+                  )
+                }
               </div>
             </div>
           </div>

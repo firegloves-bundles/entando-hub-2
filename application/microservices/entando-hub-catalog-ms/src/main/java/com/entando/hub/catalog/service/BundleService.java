@@ -19,13 +19,13 @@ import java.util.*;
 @Service
 public class BundleService {
 
-    final private BundleRepository bundleRepository;
-    final private BundleGroupVersionRepository bundleGroupVersionRepository;
-    final private BundleGroupRepository bundleGroupRepository;
+    private final BundleRepository bundleRepository;
+    private final BundleGroupVersionRepository bundleGroupVersionRepository;
+    private final BundleGroupRepository bundleGroupRepository;
 
-    final private SecurityHelperService securityHelperService;
+    private final SecurityHelperService securityHelperService;
 
-    private final Logger logger = LoggerFactory.getLogger(BundleService.class);
+    private  Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService) {

@@ -42,11 +42,8 @@ public class BundleController {
     @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
     @GetMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<List<Bundle>> getBundles(@RequestParam(required = false) String bundleGroupVersionId, @RequestParam(required = false) Long catalogId) {
-        logger.debug("REST request to get Bundles by bundle group version id: {}", bundleGroupVersionId);
         // If not Authenticated that request a private catalog
-
         boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
-
         if (null != catalogId && Boolean.FALSE.equals(isUserAuthenticated)) {
             return (new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
         }
@@ -66,7 +63,6 @@ public class BundleController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Bundle> getBundle(@PathVariable() String bundleId) {
-        logger.debug("REST request to get Bundle by id: {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (bundleOptional.isPresent()) {
             return new ResponseEntity<>(bundleOptional.map(Bundle::new).get(), HttpStatus.OK);
@@ -83,8 +79,6 @@ public class BundleController {
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<Bundle> createBundle(@RequestBody BundleNoId bundle) {
-        logger.debug("REST request to create new Bundle: {}", bundle);
-
         Optional<String> opt = Objects.nonNull(bundle.getBundleId())
                 ? Optional.of(bundle.getBundleId())
                 : Optional.empty();
@@ -101,7 +95,6 @@ public class BundleController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Bundle> updateBundle(@PathVariable String bundleId, @RequestBody BundleNoId bundle) {
-        logger.debug("REST request to update a Bundle with id {}: {}", bundleId, bundle);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
             logger.warn("Bundle '{}' does not exist", bundleId);
@@ -120,7 +113,6 @@ public class BundleController {
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
     public ResponseEntity<Bundle> deleteBundle(@PathVariable String bundleId) {
-        logger.debug("REST request to delete bundle {}", bundleId);
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
             logger.warn("Bundle '{}' does not exist", bundleId);

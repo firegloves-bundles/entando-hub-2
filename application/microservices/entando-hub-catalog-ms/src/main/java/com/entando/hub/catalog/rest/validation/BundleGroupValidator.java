@@ -16,8 +16,8 @@ import java.util.Optional;
 @Component
 public class BundleGroupValidator {
 
-    private final static String CATALOG_NOT_FOUND_MSG = "Catalog not found";
-    private final static String BUNDLE_GROUP_NOT_FOUND_MSG = "Bundle group not found";
+    private static final String CATALOG_NOT_FOUND_MSG = "Catalog not found";
+    private static final String BUNDLE_GROUP_NOT_FOUND_MSG = "Bundle group not found";
 
     final BundleGroupService bundleGroupService;
 

@@ -6,7 +6,6 @@ import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -53,16 +52,14 @@ public class BundleGroupVersionController {
     private final SecurityHelperService securityHelperService;
 
     private final BundleGroupValidator bundleGroupValidator;
-    private CatalogService catalogService;
 
     public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService,
-                                        BundleGroupValidator bundleGroupValidator, CatalogService catalogService) {
+                                        BundleGroupValidator bundleGroupValidator) {
         this.bundleGroupVersionService = bundleGroupVersionService;
         this.bundleGroupService = bundleGroupService;
         this.categoryService = categoryService;
         this.securityHelperService = securityHelperService;
         this.bundleGroupValidator = bundleGroupValidator;
-        this.catalogService = catalogService;
     }
 
     @Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")

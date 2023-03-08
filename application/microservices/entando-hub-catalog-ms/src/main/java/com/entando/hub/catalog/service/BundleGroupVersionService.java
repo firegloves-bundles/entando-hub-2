@@ -52,8 +52,6 @@ public class BundleGroupVersionService {
     }
 
     public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionIdString) {
-        logger.debug("{}: getBundleGroupVersion: Get a bundle group version by id: {}", CLASS_NAME,
-                bundleGroupVersionIdString);
         try {
             long bundleGroupVersionId = Long.parseLong(bundleGroupVersionIdString);
             return bundleGroupVersionRepository.findById(bundleGroupVersionId);
@@ -65,8 +63,6 @@ public class BundleGroupVersionService {
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity,
             BundleGroupVersionView bundleGroupVersionView) {
-        logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME,
-                bundleGroupVersionView);
         List<Bundle> mappedBundles = Collections.emptyList();
         List<Bundle> savedBundles = bundleService.createBundleEntitiesAndSave(bundleGroupVersionView.getBundles());
         if (Objects.nonNull(savedBundles)) {

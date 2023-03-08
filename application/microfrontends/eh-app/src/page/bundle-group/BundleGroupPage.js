@@ -62,7 +62,7 @@ const BundleGroupPage = () => {
   const apiUrl = useApiUrl();
 
   const categoryId = pageModel.bundleGroup && pageModel.bundleGroup.categories && pageModel.bundleGroup.categories.length ? pageModel.bundleGroup.categories[0] : null;
-  const { id: bundleGroupVersionId } = useParams()
+  const { id: bundleGroupVersionId, catalogId } = useParams();
   const { pathname: url } = useLocation();
 
   const isFromVersionPage = isNavigationFromVersionsPage(url);
@@ -71,7 +71,7 @@ const BundleGroupPage = () => {
   useEffect(() => {
     const getBundleGroupDetail = async (bundleGroupVersionId) => {
       const pageModel = {}
-      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId)).bgVersionDetails
+      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId })).bgVersionDetails
       pageModel["bundleGroup"] = fetchedBundleGroup
       pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
           apiUrl,fetchedBundleGroup.organisationId)).organisation : null
@@ -80,7 +80,7 @@ const BundleGroupPage = () => {
           fetchedBundleGroup.categories[0])).category : null
       pageModel["children"] =
         fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
-          ? (await getAllBundlesForABundleGroup(apiUrl,bundleGroupVersionId)).bundleList
+          ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList
           : []
       return pageModel
     };
@@ -90,7 +90,7 @@ const BundleGroupPage = () => {
       const sanitizedId = bundleGroupVersionId.substring(0, indexOf)
       setPageModel(await getBundleGroupDetail(sanitizedId))
     })()
-  }, [apiUrl, bundleGroupVersionId])
+  }, [apiUrl, bundleGroupVersionId, catalogId])
 
   // checks the contact-us url for discover
   const checkContactUsModal = (url) => {

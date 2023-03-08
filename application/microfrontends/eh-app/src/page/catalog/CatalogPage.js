@@ -168,7 +168,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   }
 
   const handleCatalogChange = (catalog) => {
-    history.push(`/catalog/${catalog.organisationId}/`);
+    history.push(`/catalog/${catalog.id}/`);
   };
 
   /**

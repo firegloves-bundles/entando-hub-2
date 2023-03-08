@@ -54,10 +54,6 @@ public class BundleController {
                 bundleGroupValidator.validateBundlePrivateCatalogRequest(catalogId);
             }
         }
-        System.out.println("********************************");
-        System.out.println("bundleGroupVersionId " +bundleGroupVersionId);
-        System.out.println("catalogId "+catalogId);
-        System.out.println("********************************");
         List<Bundle> bundles = bundleService.getBundles(bundleGroupVersionId,catalogId).stream().map(BundleController.Bundle::new).collect(Collectors.toList());
         return new ResponseEntity<>(bundles, HttpStatus.OK);
     }

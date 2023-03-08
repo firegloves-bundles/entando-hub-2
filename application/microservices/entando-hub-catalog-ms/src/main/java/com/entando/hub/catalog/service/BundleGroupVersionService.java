@@ -4,26 +4,10 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
 import com.entando.hub.catalog.rest.PagedContent;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BundleGroupVersionService {
@@ -62,10 +51,15 @@ public class BundleGroupVersionService {
         this.bundleService = bundleService;
     }
 
-    public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionId) {
+    public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionIdString) {
         logger.debug("{}: getBundleGroupVersion: Get a bundle group version by id: {}", CLASS_NAME,
-                bundleGroupVersionId);
-        return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
+                bundleGroupVersionIdString);
+        try {
+            long bundleGroupVersionId = Long.parseLong(bundleGroupVersionIdString);
+            return bundleGroupVersionRepository.findById(bundleGroupVersionId);
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
     }
 
     @Transactional

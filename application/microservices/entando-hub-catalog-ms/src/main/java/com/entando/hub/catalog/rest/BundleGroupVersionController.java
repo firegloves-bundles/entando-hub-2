@@ -116,7 +116,7 @@ public class BundleGroupVersionController {
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getPrivateBundleGroupsAndFilterThem(@PathVariable Long catalogId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
         logger.debug("REST request to get bundle group versions by catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
 
-        if (!this.securityHelperService.isAdmin() && !this.securityHelperService.userCanAccessToCatalog(catalogId)){
+        if (!this.securityHelperService.isAdmin() && !this.securityHelperService.userCanAccessTheCatalog(catalogId)){
             throw new ForbiddenException(String.format("Only %s users can get bundle groups for any catalog, the other ones can get bundle groups only for their catalog", ADMIN));
         }
 

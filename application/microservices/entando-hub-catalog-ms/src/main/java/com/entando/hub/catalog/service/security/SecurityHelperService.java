@@ -38,7 +38,7 @@ public class SecurityHelperService {
         return portalUser != null && portalUser.getOrganisations() != null && portalUser.getOrganisations().stream().anyMatch(organisation -> organisation.getId().equals(organisationId));
     }
 
-    public boolean userCanAccessToCatalog(Long catalogId) {
+    public boolean userCanAccessTheCatalog(Long catalogId) {
         String preferredUsername = ((KeycloakPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getKeycloakSecurityContext().getToken().getPreferredUsername();
         PortalUser portalUser = portalUserRepository.findByUsername(preferredUsername);
         Optional<Catalog> catalog = catalogRepository.findById(catalogId);

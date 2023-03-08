@@ -74,7 +74,6 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
-        logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()));
         if (bundleGroupOptional.isPresent()) {
             logger.debug("BundleGroup is present with id: {}", bundleGroupOptional.get().getId());
@@ -99,7 +98,6 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
-        logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
@@ -125,7 +123,6 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> updateBundleGroupVersion(@PathVariable String bundleGroupVersionId, @RequestBody BundleGroupVersionView bundleGroupVersionView) {
-        logger.debug("REST request to update BundleGroupVersion with id {}, request object: {}", bundleGroupVersionId, bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
         if (!bundleGroupVersionOptional.isPresent()) {
             logger.warn("BundleGroupVersion '{}' does not exist", bundleGroupVersionId);
@@ -153,7 +150,6 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupVersions(@PathVariable Long bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
-        logger.debug("REST request to get bundle group versions by bundleGroupId: {} and statuses {}", bundleGroupId, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
         PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> pagedContent = null;
@@ -181,7 +177,6 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
     public ResponseEntity<BundleGroupVersionView> deleteBundleGroupVersion(@PathVariable String bundleGroupVersionId) {
-        logger.debug("REST request to delete BundleGroupVersion by id: {}", bundleGroupVersionId);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersionOptional = bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId);
         if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
             bundleGroupVersionOptional.ifPresentOrElse(
@@ -201,10 +196,10 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersionView> getBundleGroupVersion(@PathVariable String bundleGroupVersionId, @RequestParam(required = false) Long catalogId) {
-        logger.debug("REST request to get BundleGroupVersion by Id: {}", bundleGroupVersionId);
+        boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
 
         // If not Authenticated that request a private catalog
-        if (null!=catalogId && !securityHelperService.isUserAuthenticated())  {
+        if (null!=catalogId && Boolean.FALSE.equals(isUserAuthenticated))  {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
@@ -214,7 +209,7 @@ public class BundleGroupVersionController {
             BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(version);
             Boolean isBundleGroupPublicCatalog = version.getBundleGroup().getPublicCatalog();
             // If Authenticated -> return OK after validations
-            if (securityHelperService.isUserAuthenticated()) {
+            if (Boolean.TRUE.equals(isUserAuthenticated)) {
                 bundleGroupValidator.validateBundleGroupVersionPrivateCatalogRequest(catalogId, bundleGroupVersionId);
                 return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
             }

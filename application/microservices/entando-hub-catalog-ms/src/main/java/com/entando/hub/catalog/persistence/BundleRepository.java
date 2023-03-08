@@ -17,13 +17,13 @@ public interface BundleRepository extends JpaRepository<Bundle, Long> {
             List<BundleGroupVersion> bundleGroupVersions, Collection<Bundle.DescriptorVersion> descriptorVersion, Pageable pageable);
     List<Bundle> findByBundleGroupVersions(BundleGroupVersion bundleGroupVersion, Sort sort);
 
-    List<Bundle> findByBundleGroupVersions_IdAndBundleGroupVersions_BundleGroup_PublicCatalogTrue(Long id, Sort sort);
+    List<Bundle> findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(Long id, Sort sort);
 
-    List<Bundle> findByBundleGroupVersions_BundleGroup_CatalogId(Long catalogId);
+    List<Bundle> findByBundleGroupVersionsBundleGroupCatalogId(Long catalogId);
 
-    List<Bundle> findByBundleGroupVersions_BundleGroup_CatalogIdAndBundleGroupVersions_Id(Long catalogId, Long id);
+    List<Bundle> findByBundleGroupVersionsBundleGroupCatalogIdAndBundleGroupVersionsId(Long catalogId, Long id);
 
-    List<Bundle> findByBundleGroupVersions_BundleGroup_PublicCatalogTrue();
+    List<Bundle> findByBundleGroupVersionsBundleGroupPublicCatalogTrue();
 
-    List<Bundle> findByBundleGroupVersions_Id(Long id, Sort sort);
+    List<Bundle> findByBundleGroupVersionsId(Long id, Sort sort);
 }

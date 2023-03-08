@@ -79,25 +79,25 @@ public class BundleService {
 		if (securityHelperService.isAdmin()) {
 			if (bundleGroupVersionId.isPresent()) {
 				Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
-				return bundleRepository.findByBundleGroupVersions_Id(bundleGroupVersionEntityId, Sort.by("id"));
+				return bundleRepository.findByBundleGroupVersionsId(bundleGroupVersionEntityId, Sort.by("id"));
 			}
 			return bundleRepository.findAll();
 		}
 		else{
 			if (bundleGroupVersionId.isPresent()) {
 				Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
-				return bundleRepository.findByBundleGroupVersions_IdAndBundleGroupVersions_BundleGroup_PublicCatalogTrue(bundleGroupVersionEntityId, Sort.by("id"));
+				return bundleRepository.findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(bundleGroupVersionEntityId, Sort.by("id"));
 			}
-			return bundleRepository.findByBundleGroupVersions_BundleGroup_PublicCatalogTrue();
+			return bundleRepository.findByBundleGroupVersionsBundleGroupPublicCatalogTrue();
 		}
     }
 
     public List<Bundle> getBundlesByCatalogId(Long catalogId) {
-        return bundleRepository.findByBundleGroupVersions_BundleGroup_CatalogId(catalogId);
+        return bundleRepository.findByBundleGroupVersionsBundleGroupCatalogId(catalogId);
     }
 
     public List<Bundle> getBundlesByCatalogIdAndBundleGroupVersionId(Long catalogId, Long bundleGroupVersionId) {
-        return bundleRepository.findByBundleGroupVersions_BundleGroup_CatalogIdAndBundleGroupVersions_Id(catalogId, bundleGroupVersionId);
+        return bundleRepository.findByBundleGroupVersionsBundleGroupCatalogIdAndBundleGroupVersionsId(catalogId, bundleGroupVersionId);
     }
 
     public Optional<Bundle> getBundle(String bundleId) {
@@ -157,7 +157,8 @@ public class BundleService {
 
     public List<Bundle> getBundles(String bundleGroupVersionId, Long catalogId) {
         List<Bundle> bundles;
-        if (securityHelperService.isUserAuthenticated()) {
+        Boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
+        if (Boolean.TRUE.equals(isUserAuthenticated)) {
 
             if (null == bundleGroupVersionId && null == catalogId) {
                 return this.getBundles();

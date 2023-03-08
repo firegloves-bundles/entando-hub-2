@@ -44,10 +44,13 @@ public class BundleController {
     public ResponseEntity<List<Bundle>> getBundles(@RequestParam(required = false) String bundleGroupVersionId, @RequestParam(required = false) Long catalogId) {
         logger.debug("REST request to get Bundles by bundle group version id: {}", bundleGroupVersionId);
         // If not Authenticated that request a private catalog
-        if (null != catalogId && !securityHelperService.isUserAuthenticated()) {
+
+        boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
+
+        if (null != catalogId && Boolean.FALSE.equals(isUserAuthenticated)) {
             return (new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
         }
-        if (securityHelperService.isUserAuthenticated()) {
+        if (Boolean.TRUE.equals(isUserAuthenticated)) {
             if (null != bundleGroupVersionId) {
                 bundleGroupValidator.validateBundleGroupVersionPrivateCatalogRequest(catalogId, bundleGroupVersionId);
             } else {

@@ -16,6 +16,9 @@ import java.util.Optional;
 @Component
 public class BundleGroupValidator {
 
+    private final static String CATALOG_NOT_FOUND_MSG = "Catalog not found";
+    private final static String BUNDLE_GROUP_NOT_FOUND_MSG = "Bundle group not found";
+
     final BundleGroupService bundleGroupService;
 
     final BundleGroupVersionService bundleGroupVersionService;
@@ -25,9 +28,6 @@ public class BundleGroupValidator {
     final
     CatalogService catalogService;
 
-    private final static String CATALOG_NOT_FOUND_MSG = "Catalog not found";
-    private final static String BUNDLE_GROUP_NOT_FOUND_MSG = "Bundle group not found";
-
     public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService, SecurityHelperService securityHelperService, CatalogService catalogService) {
         this.bundleGroupService = bundleGroupService;
         this.bundleGroupVersionService = bundleGroupVersionService;
@@ -36,13 +36,10 @@ public class BundleGroupValidator {
     }
 
     public boolean validateBundlePrivateCatalogRequest(Long catalogId) {
-
-        if (null != catalogId) {
-            if (!securityHelperService.isAdmin()) {
+        boolean isAdmin = securityHelperService.isAdmin();
+        if (null != catalogId && Boolean.FALSE.equals(isAdmin)) {
                 checkUserCatalog(catalogId);
             }
-        }
-
         return true;
     }
 

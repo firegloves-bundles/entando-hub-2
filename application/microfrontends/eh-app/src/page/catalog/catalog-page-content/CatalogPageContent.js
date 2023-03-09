@@ -126,12 +126,14 @@ const CatalogPageContent = ({
             }
         }
 
-        (async () => {
-            setLoading(true)
-            await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses, catalogId)
-            setLoading(false)
-
-        })()
+        if (!catalogId || hubUser) {
+          (async () => {
+            setLoading(true);
+            await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses, catalogId);
+            setLoading(false);
+          })()
+        }
+            
     }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage, catalogId])
 
 

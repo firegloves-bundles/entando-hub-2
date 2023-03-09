@@ -109,12 +109,15 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
 
     getCatOrgList();
     getPortalUserDetails();
-    getCatalogs();
+    
+    if (hubUser) {
+      getCatalogs();
+    }
   
     return () => {
       isMounted = false;
     };
-  }, [apiUrl]);
+  }, [apiUrl, hubUser]);
 
   const catalogMap = useMemo(() => (
     catalogs.reduce((prev, curr) => ({

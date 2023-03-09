@@ -379,7 +379,7 @@ public class BundleGroupVersionService {
      * @param searchText
      * @return
      */
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> searchBundleGroupVersions(
             Integer pageNum, Integer pageSize, Long organisationId, String[] categoryIds, String[] statuses,
             String searchText) {
 
@@ -392,9 +392,9 @@ public class BundleGroupVersionService {
         Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
 
         Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
-
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
-                toResponseViewList(page, bundleGroups), page);
+        Page<BundleGroupVersionEntityDto> converted = convertoToDto(page);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(
+                toResponseViewList(converted, bundleGroups), converted);
 
         logger.debug("{}: getBundleGroupVersions: organisationId {}, number of elements: {}", CLASS_NAME,
                 organisationId, page.getNumberOfElements());
@@ -419,7 +419,7 @@ public class BundleGroupVersionService {
         return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
     }
 
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchPrivateBundleGroupVersions(
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> searchPrivateBundleGroupVersions(
             Integer pageNum, Integer pageSize, Long catalogId, String[] categoryIds, String[] statuses,
             String searchText) {
 
@@ -432,9 +432,9 @@ public class BundleGroupVersionService {
         Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
 
         Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
-
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
-                toResponseViewList(page, bundleGroups), page);
+        Page<BundleGroupVersionEntityDto> converted = convertoToDto(page);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(
+                toResponseViewList(converted, bundleGroups), converted);
 
         logger.debug("{}: getBundleGroupVersions: catalogId {}, number of elements: {}", CLASS_NAME,
                 catalogId, page.getNumberOfElements());

@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import javax.persistence.Access;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.commons.collections.CollectionUtils;
@@ -246,7 +245,7 @@ public class BundleGroupVersionController {
             else {
                 // If not Authenticated with e public bundle group and status published -> return OK
                 if (version.getStatus().equals(PUBLISHED)
-                        && isBundleGroupPublicCatalog){
+                        && Boolean.TRUE.equals(isBundleGroupPublicCatalog)){
                     return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);
                 }
                 // If not Authenticated and bundle group not public -> return 404

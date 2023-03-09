@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+import com.entando.hub.catalog.rest.BundleController;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.hamcrest.Matchers;
@@ -43,6 +44,28 @@ public class AssertionHelper {
                     .andExpect(jsonPath("$.payload[" + i + "].canAddNewVersion").value(expected.isCanAddNewVersion()))
                     .andExpect(jsonPath("$.payload[" + i + "].displayContactUrl").value(expected.getDisplayContactUrl()))
                     .andExpect(jsonPath("$.payload[" + i + "].contactUrl").value(expected.getContactUrl()));
+        }
+    }
+
+
+    public static void assertOnBundles(ResultActions resultActions, List<BundleController.Bundle> expectedList) throws Exception {
+
+        int bound = expectedList.size();
+
+        resultActions.andExpect(jsonPath("$", hasSize(bound)));
+
+        for (int i = 0; i < bound; i++) {
+            BundleController.Bundle expected = expectedList.get(i);
+            resultActions
+                    .andExpect(jsonPath("$.[" + i + "].bundleId").value(expected.getBundleId()))
+                    .andExpect(jsonPath("$.[" + i + "].name").value(expected.getName()))
+                    .andExpect(jsonPath("$.[" + i + "].description").value(expected.getDescription()))
+                    .andExpect(jsonPath("$.[" + i + "].descriptionImage").value(expected.getDescriptionImage()))
+                    .andExpect(jsonPath("$.[" + i + "].descriptorVersion").value(expected.getDescriptorVersion()))
+                    .andExpect(jsonPath("$.[" + i + "].gitRepoAddress").value(expected.getGitRepoAddress()))
+                    .andExpect(jsonPath("$.[" + i + "].gitSrcRepoAddress").value(expected.getGitSrcRepoAddress()))
+                    .andExpect(jsonPath("$.[" + i + "].dependencies").value(Matchers.containsInAnyOrder(expected.getDependencies().toArray())))
+                    .andExpect(jsonPath("$.[" + i + "].bundleGroups").value(Matchers.containsInAnyOrder(expected.getBundleGroups().toArray())));
         }
     }
 }

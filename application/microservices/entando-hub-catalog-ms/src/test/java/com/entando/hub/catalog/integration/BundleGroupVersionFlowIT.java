@@ -10,6 +10,7 @@ import com.entando.hub.catalog.testhelper.TestHelper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,18 +22,23 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
 
     private static final String BASE_URL = "/api/bundlegroupversions";
 
+    @BeforeEach
+    public void setUp() {
+        super.setUpBundleGroupVersionFlowData();
+    }
+
     @Test
     void shouldGetTheExpectedFilteredData() throws Exception {
 
         // prepare expected
         BundleGroupVersionFilteredResponseView expected1 = TestHelper.stubBundleGroupVersionFilteredResponseView(
-                        bundleGroup1.getId(), bundleGroupVersion1.getId());
+                        bundleGroup1.getId(), bundleGroupVersion1.getId(), organisation1.getId());
         BundleGroupVersionFilteredResponseView expected2 = TestHelper.stubSecondBundleGroupVersionFilteredResponseView(
-                bundleGroup2.getId(), bundleGroupVersion2.getId());
+                bundleGroup2.getId(), bundleGroupVersion2.getId(), organisation1.getId());
         final List<BundleGroupVersionFilteredResponseView> expectedList = Arrays.asList(expected2, expected1);
 
         // filter by organisationId
-        ResultActions resultActions = executeFilteredRequest("&organisationId=" + organisation.getId());
+        ResultActions resultActions = executeFilteredRequest("&organisationId=" + organisation1.getId());
         AssertionHelper.assertOnBundleGroupVersions(resultActions, expectedList);
 
         // filter by categoryIds
@@ -53,7 +59,7 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
 
         // prepare expected
         BundleGroupVersionFilteredResponseView expected = TestHelper.stubSecondBundleGroupVersionFilteredResponseView(
-                bundleGroup2.getId(), bundleGroupVersion2.getId());
+                bundleGroup2.getId(), bundleGroupVersion2.getId(), organisation1.getId());
 
         // filter by existing bundle group id
         ResultActions resultActions = executeGetRequest(bundleGroup2.getId(), "");

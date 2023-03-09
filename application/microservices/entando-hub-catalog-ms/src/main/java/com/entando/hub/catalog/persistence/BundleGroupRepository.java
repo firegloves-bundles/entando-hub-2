@@ -21,10 +21,20 @@ public interface BundleGroupRepository extends JpaRepository<BundleGroup, Long> 
     Page<BundleGroup> findDistinctByCategoriesIn(Set<Category> categories, Pageable pageable);
 
     Page<BundleGroup> findDistinctByOrganisationAndCategoriesIn(Organisation organisation, Set<Category> categories, Pageable pageable);
-    
+
     List<BundleGroup> findDistinctByOrganisationAndCategoriesIn(Organisation organisation, Set<Category> categories);
     
     List<BundleGroup> findDistinctByCategoriesIn(Set<Category> categories);
+
+
+    List<BundleGroup> findDistinctByOrganisationIdAndCategoriesIn(Long organisationId, Set<Category> categories);
+
+    List<BundleGroup> findDistinctByOrganisationId(Long organisationId);
+
+    List<BundleGroup> findDistinctByCatalogId(Long catalogId);
+
+    List<BundleGroup> findDistinctByCatalogIdAndCategoriesIn(Long catalogId, Set<Category> categories);
+
 
     @Override
     @Query

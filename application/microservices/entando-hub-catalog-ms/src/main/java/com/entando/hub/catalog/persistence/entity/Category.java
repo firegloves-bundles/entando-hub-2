@@ -2,6 +2,7 @@ package com.entando.hub.catalog.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Accessors (chain = true)
 @SequenceGenerator(name = "category_id", sequenceName = "SEQ_CATEGORY_ID", allocationSize = 1)
 public class Category {
     @Id

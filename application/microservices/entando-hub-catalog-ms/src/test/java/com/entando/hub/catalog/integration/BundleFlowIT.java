@@ -1,27 +1,20 @@
 package com.entando.hub.catalog.integration;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.BundleController.Bundle;
 import com.entando.hub.catalog.testhelper.AssertionHelper;
 import com.entando.hub.catalog.testhelper.TestHelper;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
+
+import java.util.List;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class BundleFlowIT extends BaseFlowIT {
@@ -94,10 +87,16 @@ class BundleFlowIT extends BaseFlowIT {
         resultActions = executeOkGetBundlesRequest(bundleGroupVersion1.getId(), null);
         AssertionHelper.assertOnBundles(resultActions, expectedList);
 
+        // filter by bundleGroupVersionId will return anything if no public bundles are available
+        executeGetBundlesRequest(bundleGroupVersion4.getId(), null, StatusResultMatchers::isNotFound);
+
+/*
         // filter by bundleGroupVersionId will not return anything if no public bundles are available
         expectedList = List.of(TestHelper.stubBundleDto(bundle4.getId(), List.of(bundleGroupVersion4)));
         resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
         AssertionHelper.assertOnBundles(resultActions, expectedList);
+*/
+
 
         // filter by CatalogId
         expectedList = List.of(TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
@@ -122,7 +121,7 @@ class BundleFlowIT extends BaseFlowIT {
     }
 
     @Test
-    void anNonLoggedUserShouldBeAbleToAccessTheExpectedBundle() throws Exception {
+    void aNonLoggedUserShouldBeAbleToAccessTheExpectedBundle() throws Exception {
 
         // given I am an admin
         when(securityHelperService.isUserAuthenticated()).thenReturn(false);
@@ -151,9 +150,10 @@ class BundleFlowIT extends BaseFlowIT {
         executeGetBundlesRequest(bundleGroupVersion1.getId(), catalog1.getId(), StatusResultMatchers::isForbidden);
 
         // filter by bundleGroupVersionId and only private bundle group
-        ResultActions resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
+/*        ResultActions resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
         AssertionHelper.assertOnBundles(resultActions, Collections.emptyList());
-
+*/
+        executeGetBundlesRequest(bundleGroupVersion4.getId(), null,StatusResultMatchers::isNotFound);
         // filter by CatalogId
         executeGetBundlesRequest(null, catalog2.getId(), StatusResultMatchers::isForbidden);
     }

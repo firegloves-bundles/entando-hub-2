@@ -56,6 +56,10 @@ public class BundleController {
             } else {
                 bundleGroupValidator.validateBundlePrivateCatalogRequest(catalogId);
             }
+        } else {
+            if (null != bundleGroupVersionId) {
+                bundleGroupValidator.validateBundleGroupVersionPrivateCatalogRequest(catalogId, bundleGroupVersionId);
+            }
         }
         List<Bundle> bundles = bundleService.getBundles(bundleGroupVersionId,catalogId).stream().map(BundleController.Bundle::new).collect(Collectors.toList());
         return new ResponseEntity<>(bundles, HttpStatus.OK);

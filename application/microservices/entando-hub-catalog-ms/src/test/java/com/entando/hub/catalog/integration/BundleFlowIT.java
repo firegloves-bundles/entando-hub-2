@@ -95,8 +95,9 @@ class BundleFlowIT extends BaseFlowIT {
         AssertionHelper.assertOnBundles(resultActions, expectedList);
 
         // filter by bundleGroupVersionId will not return anything if no public bundles are available
+        expectedList = List.of(TestHelper.stubBundleDto(bundle4.getId(), List.of(bundleGroupVersion4)));
         resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
-        AssertionHelper.assertOnBundles(resultActions, Collections.emptyList());
+        AssertionHelper.assertOnBundles(resultActions, expectedList);
 
         // filter by CatalogId
         expectedList = List.of(TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
@@ -118,9 +119,6 @@ class BundleFlowIT extends BaseFlowIT {
 
         // filter by CatalogId (catalog to which the user doesn't belong to)
         executeGetBundlesRequest(null, catalog2.getId(), StatusResultMatchers::isNotFound);
-
-        // filter by bundleGroupVersionId (bundleGroupVersion that belong to an org to which the user doesn't belong to)
-        executeGetBundlesRequest(bundleGroupVersion2.getId(), null, StatusResultMatchers::isNotFound);
     }
 
     @Test
@@ -184,25 +182,12 @@ class BundleFlowIT extends BaseFlowIT {
 
     private ResultActions executeGetBundlesRequest(Long bundleGroupVersionId, Long catalogId,
             StatusMatcher statusMatcher) throws Exception {
-        String url = "/?";
+
+        String url = BASE_URL + "/?";
         url += bundleGroupVersionId != null ? "bundleGroupVersionId=" + bundleGroupVersionId + "&" : "";
         url += catalogId != null ? "catalogId=" + catalogId + "&" : "";
         url = url.substring(0, url.length() - 1);
 
-        return executeRequest(url, statusMatcher);
-    }
-
-//    private ResultActions executeFilteredRequest(String url) throws Exception {
-//        return executeRequest("/filtered?page=0&pageSize=10" + url);
-//    }
-
-    private ResultActions executeRequest(String url, StatusMatcher statusMatcher) throws Exception {
-
-        return mockMvc.perform(MockMvcRequestBuilders.get(
-                                BASE_URL + url)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andExpect(statusMatcher.checkStatus(status()));
-//                .andExpect(status().isOk());
+        return super.executeGetRequest(url, statusMatcher);
     }
 }

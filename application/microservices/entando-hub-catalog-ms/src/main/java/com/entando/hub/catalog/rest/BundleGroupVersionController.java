@@ -7,6 +7,7 @@ import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.ForbiddenException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -14,13 +15,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import javax.persistence.Access;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -272,6 +276,7 @@ public class BundleGroupVersionController {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class BundleGroupVersionView {
         protected String bundleGroupId;
 
@@ -304,6 +309,9 @@ public class BundleGroupVersionController {
 
         @Schema(example = "https://yoursite.com/contact-us")
         protected String contactUrl;
+
+        public BundleGroupVersionView() {
+        }
 
         public BundleGroupVersionView(String bundleGroupId, String description, String descriptionImage, String version) {
             this.bundleGroupId = bundleGroupId;
@@ -352,13 +360,18 @@ public class BundleGroupVersionController {
         }
     }
 
-    @ExceptionHandler({ ForbiddenException.class })
+    @ExceptionHandler({ NotFoundException.class, AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
     public ResponseEntity<String> handleException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (exception instanceof ForbiddenException) {
+        if (exception instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
+        } else if (exception instanceof NotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (exception instanceof IllegalArgumentException) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof  ConflictException){
+            status = HttpStatus.CONFLICT;
         }
         return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
     }
-
 }

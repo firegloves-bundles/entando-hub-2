@@ -70,7 +70,7 @@ public class BundleGroupValidator {
                 throw new NotFoundException(CATALOG_NOT_FOUND_MSG);
             }
         } else {
-            //if user is not an Admin and the bundle group is not in public catalog checks the organization permissions
+            //if user is not an Admin and no catalog has been found checks the organization permissions
             if (!securityHelperService.isAdmin() && Boolean.FALSE.equals(bundleGroup.getPublicCatalog())) {
                     Set<Organisation> userOrganizations = portalUserService.getUserOrganizations();
                     Organisation bundleGroupOrganisation = bundleGroup.getOrganisation();

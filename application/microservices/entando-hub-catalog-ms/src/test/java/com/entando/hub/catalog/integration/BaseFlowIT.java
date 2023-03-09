@@ -1,5 +1,8 @@
 package com.entando.hub.catalog.integration;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
@@ -24,9 +27,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
 
 @AutoConfigureMockMvc
@@ -81,14 +88,29 @@ abstract class BaseFlowIT {
         TestHelper.resetSequenceNumber(this.jdbcTemplate, "SEQ_ORGANISATION_ID");
     }
 
+    /******************************************************************************************
+     * Scope data configuration
+     *****************************************************************************************/
+
     protected void setUpBundleGroupVersionFlowData() {
         createOrganisation1();
+        createOrganisation2();
         createCatalog1();
+        createCatalog2();
+        createNonAdminUser();
         createCategories();
         createBundleGroup1();
         createBundleGroup2();
+        createBundleGroup3();
+        createBundleGroup4();
+        createBundle1();
+        createBundle2();
+        createBundle3();
+        createBundle4();
         createBundleGroupVersion1();
         createBundleGroupVersion2();
+        createBundleGroupVersion3();
+        createBundleGroupVersion4();
     }
 
     protected void setUpBundleFlowData() {
@@ -111,6 +133,10 @@ abstract class BaseFlowIT {
         createBundleGroupVersion3();
         createBundleGroupVersion4();
     }
+
+    /******************************************************************************************
+     * Individual data configuration
+     *****************************************************************************************/
 
     private void createNonAdminUser() {
         portalUser = portalUserRepository.save(TestHelper.stubPortalUser(Collections.singleton((organisation1))));
@@ -195,8 +221,22 @@ abstract class BaseFlowIT {
                 TestHelper.stubBundleGroupVersion(bundleGroup4, bundle4));
     }
 
+    /******************************************************************************************
+     * MockMvc helpers
+     *****************************************************************************************/
+
     @FunctionalInterface
     public interface StatusMatcher {
+
         ResultMatcher checkStatus(StatusResultMatchers statusResultMatchers);
+    }
+
+    protected ResultActions executeGetRequest(String url,
+            StatusMatcher statusMatcher) throws Exception {
+
+        return mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(statusMatcher.checkStatus(status()));
     }
 }

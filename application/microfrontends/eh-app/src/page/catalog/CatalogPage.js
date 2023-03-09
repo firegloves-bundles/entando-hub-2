@@ -195,7 +195,8 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
                   <EhBreadcrumb
                     pathElements={[{
-                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage,
+                      path: selectedCatalog ? selectedCatalog.name : '',
                     }]}
                   />
                 </div>

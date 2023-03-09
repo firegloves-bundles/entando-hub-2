@@ -266,25 +266,28 @@ export const getAllBundleGroups = async (apiUrl, organisationId) => {
  * @returns
  */
 export const getAllBundleGroupsFilteredPaged = async (
-  apiUrl,
-  page,
-  pageSize,
-  organisationId,
-  categoryIds,
-  statuses,
-  searchText = null,
-  catalogId,
+  apiUrl, {
+    page,
+    pageSize,
+    organisationId,
+    categoryIds,
+    statuses,
+    catalogId,
+    searchText = null,
+  },
 ) => {
   let url = `${apiUrl}${urlBundleGroupVersion}`;
   url += catalogId ? `catalog/${catalogId}` : 'filtered';
   url += `?page=${page}&pageSize=${pageSize}`;
 
   if (categoryIds && categoryIds.length > 0) {
-    url += `&${categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join('&')}`;
+    const categoryIdsQueryParams = categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join('&');
+    url += `&${categoryIdsQueryParams}`;
   }
 
   if (statuses && statuses.length > 0) {
-    url += `&${statuses.map((status) => `statuses=${status}`).join('&')}`;
+    const statusesQueryParams = statuses.map((status) => `statuses=${status}`).join('&');
+    url += `&${statusesQueryParams}`;
   }
 
   if (organisationId) {

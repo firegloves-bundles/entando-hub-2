@@ -9,7 +9,6 @@ import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'
 import { useApiUrl } from '../../../contexts/ConfigContext'
-import { useParams } from 'react-router-dom'
 
 /*
 const categories = Array.from(Array(3).keys()).map(index => {
@@ -79,8 +78,8 @@ const CatalogPageContent = ({
         /**
          *Get all the bundle groups having categoryIds and statuses
          */
-        const getBundleGroupsAndFilterThem = async (apiUrl, organisationId, categoryIds, statuses, searchTerm) => {
-            const data = await getAllBundleGroupsFilteredPaged(apiUrl, page, pageSize, organisationId, categoryIds, statuses, searchTerm, catalogId)
+        const getBundleGroupsAndFilterThem = async (apiUrl, organisationId, categoryIds, statuses, searchText) => {
+            const data = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, organisationId, categoryIds, statuses, catalogId, searchText })
             if (data.isError) {
                 setLoading(false)
             }

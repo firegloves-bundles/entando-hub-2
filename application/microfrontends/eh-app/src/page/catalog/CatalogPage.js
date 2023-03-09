@@ -7,10 +7,9 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations, getPrivateCatalogs } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPrivateCatalogs, getPortalUser } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getPortalUser } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";

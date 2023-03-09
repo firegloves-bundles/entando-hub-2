@@ -191,7 +191,6 @@ public class PortalUserService {
             logger.warn("user '{}' does not exist", username);
             return Collections.emptySet();
         }
-        Set<Organisation> organisations = user.getOrganisations();
-        return organisations;
+        return user.getOrganisations();
     }
 }

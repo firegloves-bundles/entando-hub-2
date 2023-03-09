@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.rest.validation;
 
-import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Catalog;
@@ -31,24 +30,22 @@ public class BundleGroupValidator {
 
     final
     CatalogService catalogService;
-    private final PortalUserRepository portalUserRepository;
     private PortalUserService portalUserService;
 
-    public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService, SecurityHelperService securityHelperService, CatalogService catalogService,
-                                PortalUserRepository portalUserRepository, PortalUserService portalUserService) {
+    public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService,
+                                SecurityHelperService securityHelperService, CatalogService catalogService, PortalUserService portalUserService) {
         this.bundleGroupService = bundleGroupService;
         this.bundleGroupVersionService = bundleGroupVersionService;
         this.securityHelperService = securityHelperService;
         this.catalogService = catalogService;
-        this.portalUserRepository = portalUserRepository;
         this.portalUserService = portalUserService;
     }
 
     public boolean validateBundlePrivateCatalogRequest(Long catalogId) {
         boolean isAdmin = securityHelperService.isAdmin();
         if (null != catalogId && Boolean.FALSE.equals(isAdmin)) {
-                checkUserCatalog(catalogId);
-            }
+            checkUserCatalog(catalogId);
+        }
         return true;
     }
 
@@ -73,19 +70,15 @@ public class BundleGroupValidator {
                 throw new NotFoundException(CATALOG_NOT_FOUND_MSG);
             }
         } else {
-            if (!securityHelperService.isAdmin()) {
-                //if the bundle group is not in public catalog checks the organization permissions
-                if (!bundleGroup.getPublicCatalog()) {
+            //if user is not an Admin and the bundle group is not in public catalog checks the organization permissions
+            if (!securityHelperService.isAdmin() && Boolean.FALSE.equals(bundleGroup.getPublicCatalog())) {
                     Set<Organisation> userOrganizations = portalUserService.getUserOrganizations();
                     Organisation bundleGroupOrganisation = bundleGroup.getOrganisation();
                     if (!userOrganizations.contains(bundleGroupOrganisation)) {
                         throw new NotFoundException(BUNDLE_GROUP_NOT_FOUND_MSG);
                     }
                 }
-            }
-
         }
-
         return true;
     }
 

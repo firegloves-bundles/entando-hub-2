@@ -3,7 +3,6 @@ package com.entando.hub.catalog.service;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
-import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -29,16 +28,14 @@ public class BundleService {
 
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
-    private final PortalUserRepository portalUserRepository;
     private PortalUserService portaUserService;
 
-    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService,
-                         PortalUserRepository portalUserRepository, PortalUserService portaUserService) {
+    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
+                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, PortalUserService portaUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
         this.securityHelperService = securityHelperService;
-        this.portalUserRepository = portalUserRepository;
         this.portaUserService = portaUserService;
     }
 
@@ -96,7 +93,6 @@ public class BundleService {
 		else{
             if (bundleGroupVersionId.isPresent()) {
         		Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
-				//return bundleRepository.findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(bundleGroupVersionEntityId, Sort.by("id"));
                 return bundleRepository.findByBundleGroupVersionsId(bundleGroupVersionEntityId, Sort.by("id"));
 			}
             return this.getPublicBundles();

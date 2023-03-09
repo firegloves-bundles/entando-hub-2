@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import {
   getAllBundlesForABundleGroup,
   getBundleGroupDetailsByBundleGroupVersionId,
+  getPrivateCatalog,
   getSingleCategory,
   getSingleOrganisation
 } from "../../integration/Integration"
@@ -18,6 +19,7 @@ import { SLASH_VERSIONS } from "../../helpers/constants"
 import BundlesOfBundleGroup
   from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
 import { useApiUrl } from "../../contexts/ConfigContext";
+import { isHubUser } from "../../helpers/helpers";
 
 /*
 BUNDLEGROUP:
@@ -57,7 +59,9 @@ const BundleGroupPage = () => {
     organisation: null,
     category: null,
     children: []
-  })
+  });
+
+  const [catalog, setCatalog] = useState(null);
 
   const apiUrl = useApiUrl();
 
@@ -90,13 +94,25 @@ const BundleGroupPage = () => {
       const sanitizedId = bundleGroupVersionId.substring(0, indexOf)
       setPageModel(await getBundleGroupDetail(sanitizedId))
     })()
-  }, [apiUrl, bundleGroupVersionId, catalogId])
+
+    const getCatalog = async () => {
+      const { data, isError } = await getPrivateCatalog(apiUrl, catalogId);
+      if (!isError) {
+        setCatalog(data);
+      }
+    };
+
+    if (catalogId && isHubUser()) {
+      getCatalog();
+    }
+  }, [apiUrl, bundleGroupVersionId, catalogId]);
 
   // checks the contact-us url for discover
   const checkContactUsModal = (url) => {
     return url && url.includes("discover.entando.com")
   }
 
+  const baseBreadcrumbPathEls = catalog ? [{ path: catalog.name, href: `/catalog/${catalog.id}` }] : [];
 
   return (
       <>
@@ -107,7 +123,7 @@ const BundleGroupPage = () => {
               <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                 {(isFromVersionPage)
                   // Breadcrumb when navigated from Version page
-                  ? <EhBreadcrumb pathElements={[{
+                  ? <EhBreadcrumb pathElements={[...baseBreadcrumbPathEls, {
                     path: `${i18n.t('breadCrumb.version')}`,
                     href: `${SLASH_VERSIONS}/` + pageModel.bundleGroup.bundleGroupId + `/${categoryId}`
                   }, {
@@ -116,8 +132,8 @@ const BundleGroupPage = () => {
                   }]} />
                   :
                   // Breadcrumb when navigated from home page
-                  <EhBreadcrumb pathElements={[{
-                    path: pageModel.bundleGroup.name,
+                  <EhBreadcrumb pathElements={[...baseBreadcrumbPathEls, {
+                    path: pageModel.bundleGroup?.name,
                     href: window.location.href
                   }]} />}
               </div>
@@ -131,7 +147,7 @@ const BundleGroupPage = () => {
                           alt="BundleGroup Logo" />}
                     </div>
 
-                    {(pageModel.bundleGroup.displayContactUrl)
+                    {(pageModel.bundleGroup?.displayContactUrl)
                     && (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
                         && checkContactUsModal(pageModel.bundleGroup.contactUrl) === false
                         ?
@@ -145,7 +161,7 @@ const BundleGroupPage = () => {
                           <hr/>
                         </>
                         :
-                        (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
+                        (pageModel.bundleGroup?.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
                         ?
                         <>
                           <div className="BundleGroupPage-contact-us">

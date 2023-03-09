@@ -594,3 +594,13 @@ export const getPrivateCatalogs = async (apiUrl) => {
     isError,
   };
 };
+
+export const getPrivateCatalog = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogs}`;
+  const { data, isError } = await getData(url, id);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};

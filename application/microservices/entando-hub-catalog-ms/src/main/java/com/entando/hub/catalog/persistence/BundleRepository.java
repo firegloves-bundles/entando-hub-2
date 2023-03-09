@@ -2,6 +2,7 @@ package com.entando.hub.catalog.persistence;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,4 +27,8 @@ public interface BundleRepository extends JpaRepository<Bundle, Long> {
     List<Bundle> findByBundleGroupVersionsBundleGroupPublicCatalogTrue();
 
     List<Bundle> findByBundleGroupVersionsId(Long id, Sort sort);
+
+    List<Bundle> findByBundleGroupVersionsBundleGroupOrganisation(Organisation organisation);
+
+
 }

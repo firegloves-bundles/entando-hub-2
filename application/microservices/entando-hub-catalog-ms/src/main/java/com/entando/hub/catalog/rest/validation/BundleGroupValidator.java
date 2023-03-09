@@ -1,17 +1,21 @@
 package com.entando.hub.catalog.rest.validation;
 
+import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Catalog;
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.PortalUserService;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class BundleGroupValidator {
@@ -27,12 +31,17 @@ public class BundleGroupValidator {
 
     final
     CatalogService catalogService;
+    private final PortalUserRepository portalUserRepository;
+    private PortalUserService portalUserService;
 
-    public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService, SecurityHelperService securityHelperService, CatalogService catalogService) {
+    public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService, SecurityHelperService securityHelperService, CatalogService catalogService,
+                                PortalUserRepository portalUserRepository, PortalUserService portalUserService) {
         this.bundleGroupService = bundleGroupService;
         this.bundleGroupVersionService = bundleGroupVersionService;
         this.securityHelperService = securityHelperService;
         this.catalogService = catalogService;
+        this.portalUserRepository = portalUserRepository;
+        this.portalUserService = portalUserService;
     }
 
     public boolean validateBundlePrivateCatalogRequest(Long catalogId) {
@@ -63,6 +72,18 @@ public class BundleGroupValidator {
             if (!bundleGroup.getCatalogId().equals(catalogId)) {
                 throw new NotFoundException(CATALOG_NOT_FOUND_MSG);
             }
+        } else {
+            if (!securityHelperService.isAdmin()) {
+                //if the bundle group is not in public catalog checks the organization permissions
+                if (!bundleGroup.getPublicCatalog()) {
+                    Set<Organisation> userOrganizations = portalUserService.getUserOrganizations();
+                    Organisation bundleGroupOrganisation = bundleGroup.getOrganisation();
+                    if (!userOrganizations.contains(bundleGroupOrganisation)) {
+                        throw new NotFoundException(BUNDLE_GROUP_NOT_FOUND_MSG);
+                    }
+                }
+            }
+
         }
 
         return true;

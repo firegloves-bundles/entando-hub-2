@@ -3,9 +3,11 @@ package com.entando.hub.catalog.service;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
+import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.slf4j.Logger;
@@ -27,12 +29,17 @@ public class BundleService {
 
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
+    private final PortalUserRepository portalUserRepository;
+    private PortalUserService portaUserService;
 
-    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService) {
+    public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository, BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService,
+                         PortalUserRepository portalUserRepository, PortalUserService portaUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
         this.securityHelperService = securityHelperService;
+        this.portalUserRepository = portalUserRepository;
+        this.portaUserService = portaUserService;
     }
 
     public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
@@ -73,10 +80,13 @@ public class BundleService {
     public List<Bundle> getBundles() {
         return bundleRepository.findAll();
     }
+    public List<Bundle> getPublicBundles() {
+        return bundleRepository.findByBundleGroupVersionsBundleGroupPublicCatalogTrue();
+    }
 
     public List<Bundle> getBundles(Optional<String> bundleGroupVersionId) {
         logger.debug("{}: getBundles: Get Bundles by bundle group version id: {}", CLASS_NAME, bundleGroupVersionId);
-		if (securityHelperService.isAdmin()) {
+        if (securityHelperService.isAdmin()) {
 			if (bundleGroupVersionId.isPresent()) {
 				Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
 				return bundleRepository.findByBundleGroupVersionsId(bundleGroupVersionEntityId, Sort.by("id"));
@@ -84,11 +94,12 @@ public class BundleService {
 			return bundleRepository.findAll();
 		}
 		else{
-			if (bundleGroupVersionId.isPresent()) {
-				Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
-				return bundleRepository.findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(bundleGroupVersionEntityId, Sort.by("id"));
+            if (bundleGroupVersionId.isPresent()) {
+        		Long bundleGroupVersionEntityId = Long.parseLong(bundleGroupVersionId.get());
+				//return bundleRepository.findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(bundleGroupVersionEntityId, Sort.by("id"));
+                return bundleRepository.findByBundleGroupVersionsId(bundleGroupVersionEntityId, Sort.by("id"));
 			}
-			return bundleRepository.findByBundleGroupVersionsBundleGroupPublicCatalogTrue();
+            return this.getPublicBundles();
 		}
     }
 
@@ -159,9 +170,13 @@ public class BundleService {
         List<Bundle> bundles;
         Boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
         if (Boolean.TRUE.equals(isUserAuthenticated)) {
-
             if (null == bundleGroupVersionId && null == catalogId) {
-                return this.getBundles();
+                if (securityHelperService.isAdmin()) {
+                    return this.getBundles();
+                }
+                bundles = this.getPublicBundles();
+                bundles.addAll(this.getBundlesByUserOrganizations());
+                return bundles;
             }
 
             if (null != catalogId) {
@@ -171,12 +186,21 @@ public class BundleService {
                     bundles = this.getBundlesByCatalogId(catalogId);
                 }
             } else {
-
                 bundles = this.getBundles(Optional.of(bundleGroupVersionId));
             }
         } else {
             bundles = this.getBundles(Optional.ofNullable(bundleGroupVersionId));
         }
+        return bundles;
+    }
+
+    public List<Bundle> getBundlesByUserOrganizations() {
+        Set<Organisation> userOrganizations = portaUserService.getUserOrganizations();
+        List<Bundle> bundles = new ArrayList<>();
+        userOrganizations.forEach (organisation -> {
+            List<Bundle> organisationBundles = bundleRepository.findByBundleGroupVersionsBundleGroupOrganisation(organisation);
+            bundles.addAll(organisationBundles);
+        });
         return bundles;
     }
 }

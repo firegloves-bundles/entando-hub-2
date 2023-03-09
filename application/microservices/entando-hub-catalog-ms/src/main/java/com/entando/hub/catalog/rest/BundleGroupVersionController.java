@@ -212,7 +212,7 @@ public class BundleGroupVersionController {
             }
             // Not Authenticated
             else {
-                // If not Authenticated with e publid bundle group and status published -> return OK
+                // If not Authenticated with e public bundle group and status published -> return OK
                 if (version.getStatus().equals(PUBLISHED)
                         && isBundleGroupPublicCatalog){
                     return new ResponseEntity<>(bundleGroupVersionView, HttpStatus.OK);

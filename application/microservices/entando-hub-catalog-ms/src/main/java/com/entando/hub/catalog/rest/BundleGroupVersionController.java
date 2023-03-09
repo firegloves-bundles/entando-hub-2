@@ -1,37 +1,36 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
-import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CategoryService;
-import com.entando.hub.catalog.service.exception.NotFoundException;
+import com.entando.hub.catalog.service.*;
+import com.entando.hub.catalog.service.exception.ForbiddenException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.*;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
-import static com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED;
 
 /*
  * Controller for Bundle Group Version operations
@@ -51,18 +50,14 @@ public class BundleGroupVersionController {
 
     private final SecurityHelperService securityHelperService;
 
-    private final BundleGroupValidator bundleGroupValidator;
-
-    public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService,
-                                        BundleGroupValidator bundleGroupValidator) {
-        this.bundleGroupVersionService = bundleGroupVersionService;
-        this.bundleGroupService = bundleGroupService;
-        this.categoryService = categoryService;
-        this.securityHelperService = securityHelperService;
-        this.bundleGroupValidator = bundleGroupValidator;
+    public BundleGroupVersionController(BundleGroupVersionService bundleGroupVersionService, BundleGroupService bundleGroupService, CategoryService categoryService, SecurityHelperService securityHelperService) {
+    	this.bundleGroupVersionService = bundleGroupVersionService;
+    	this.bundleGroupService = bundleGroupService;
+    	this.categoryService = categoryService;
+    	this.securityHelperService = securityHelperService;
     }
 
-    @Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
+	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @PostMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
@@ -71,30 +66,32 @@ public class BundleGroupVersionController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersion> createBundleGroupVersion(@RequestBody BundleGroupVersionView bundleGroupVersionView) {
+        logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()));
         if (bundleGroupOptional.isPresent()) {
-            logger.debug("BundleGroup is present with id: {}", bundleGroupOptional.get().getId());
+        	logger.debug("BundleGroup is present with id: {}", bundleGroupOptional.get().getId());
             List<com.entando.hub.catalog.persistence.entity.BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
             if (CollectionUtils.isEmpty(bundleGroupVersions)) {
-                logger.info("Bundle group version list found with size: {}", bundleGroupVersions.size());
-                com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
-                return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.CREATED);
+            	logger.info("Bundle group version list found with size: {}", bundleGroupVersions.size());
+		        com.entando.hub.catalog.persistence.entity.BundleGroupVersion saved = bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroupOptional.get()), bundleGroupVersionView);
+		        return new ResponseEntity<>(new BundleGroupVersion(saved), HttpStatus.CREATED);
             } else {
-                logger.warn("Bundle group version list found with size: {}", bundleGroupVersions.size());
+            	logger.warn("Bundle group version list found with size: {}", bundleGroupVersions.size());
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
         } else {
-            logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId().toString());
+        	logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId().toString());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
-    //PUBLIC
+	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
     @GetMapping(value = "/filtered", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) Long organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+    	logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
         String[] categoryIdFilterValues = categoryIds;
@@ -108,7 +105,33 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, Optional.ofNullable(organisationId), categoryIdFilterValues, statuses, searchText);
+        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, organisationId, categoryIdFilterValues, statuses, searchText);
+    }
+
+    @Operation(summary = "Get all the private bundle group versions in the hub for the selected catalog, provides filter functionality", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the catalogId, the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
+    @GetMapping(value = "catalog/{catalogId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = "200", description = "OK")
+    public PagedContent<BundleGroupVersionFilteredResponseView, com.entando.hub.catalog.persistence.entity.BundleGroupVersion> getPrivateBundleGroupsAndFilterThem(@PathVariable Long catalogId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+        logger.debug("REST request to get bundle group versions by catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
+
+        if (!this.securityHelperService.isAdmin() && !this.securityHelperService.userCanAccessTheCatalog(catalogId)){
+            throw new ForbiddenException(String.format("Only %s users can get bundle groups for any catalog, the other ones can get bundle groups only for their catalog", ADMIN));
+        }
+
+        Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
+
+        if (categoryIds == null) {
+            categoryIds = categoryService.getCategories().stream().map(c -> c.getId().toString()).toArray(String[]::new);
+        }
+
+        if (statuses == null) {
+            statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
+        }
+
+        logger.debug("Catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
+        return bundleGroupVersionService.searchPrivateBundleGroupVersions(sanitizedPageNum, pageSize, catalogId, categoryIds, statuses, searchText);
     }
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
@@ -322,6 +345,15 @@ public class BundleGroupVersionController {
             id.map(Long::valueOf).ifPresent(bundleGroupVersion::setId);
             return bundleGroupVersion;
         }
+    }
+
+    @ExceptionHandler({ ForbiddenException.class })
+    public ResponseEntity<String> handleException(Exception exception) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (exception instanceof ForbiddenException) {
+            status = HttpStatus.FORBIDDEN;
+        }
+        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
     }
 
 }

@@ -164,7 +164,7 @@ public class BundleGroupVersionControllerTest {
 		String[] categoryIds = new String[]{category.getId().toString()};
 		
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
 		Long organisationId = bundleGroupVersion.getBundleGroup().getOrganisation().getId();

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BundleService {
@@ -172,7 +173,7 @@ public class BundleService {
                 }
                 bundles = this.getPublicBundles();
                 bundles.addAll(this.getBundlesByUserOrganizations());
-                return bundles;
+                return bundles.stream().distinct().collect(Collectors.toList());
             }
 
             if (null != catalogId) {

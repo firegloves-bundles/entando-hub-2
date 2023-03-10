@@ -414,11 +414,11 @@ public class BundleGroupVersionService {
         Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
 
         if (organisationId != null && categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesIn(organisationId, categories);
+            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesInAndPublicCatalogIsTrue(organisationId, categories);
         } else if (organisationId != null) {
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationId(organisationId);
+            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndPublicCatalogIsTrue(organisationId);
         } else if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
+            bundleGroups = bundleGroupRepository.findDistinctByCategoriesInAndPublicCatalogIsTrue(categories);
         } else {
             bundleGroups = bundleGroupRepository.findAll();
         }

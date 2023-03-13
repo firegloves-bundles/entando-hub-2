@@ -1,7 +1,6 @@
 import {Content, Tile, Row, Column, Button} from "carbon-components-react"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 
 import {
   getAllBundlesForABundleGroup,
@@ -65,6 +64,8 @@ const BundleGroupPage = () => {
 
   const apiUrl = useApiUrl();
 
+  const history = useHistory();
+
   const categoryId = pageModel.bundleGroup && pageModel.bundleGroup.categories && pageModel.bundleGroup.categories.length ? pageModel.bundleGroup.categories[0] : null;
   const { id: bundleGroupVersionId, catalogId } = useParams();
   const { pathname: url } = useLocation();
@@ -75,17 +76,22 @@ const BundleGroupPage = () => {
   useEffect(() => {
     const getBundleGroupDetail = async (bundleGroupVersionId) => {
       const pageModel = {}
-      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId })).bgVersionDetails
-      pageModel["bundleGroup"] = fetchedBundleGroup
-      pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
-          apiUrl,fetchedBundleGroup.organisationId)).organisation : null
-      pageModel["category"] = fetchedBundleGroup && fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
-        > 0 ? (await getSingleCategory(apiUrl,
-          fetchedBundleGroup.categories[0])).category : null
-      pageModel["children"] =
-        fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
-          ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList
-          : []
+      const { isError, bgVersionDetails: fetchedBundleGroup } = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId }));
+      if (isError) {
+        history.push('/404');
+      } else {
+        pageModel["bundleGroup"] = fetchedBundleGroup
+        pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
+            apiUrl,fetchedBundleGroup.organisationId)).organisation : null
+        pageModel["category"] = fetchedBundleGroup && fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
+          > 0 ? (await getSingleCategory(apiUrl,
+            fetchedBundleGroup.categories[0])).category : null
+        pageModel["children"] =
+          fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
+            ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList
+            : []
+      }
+
       return pageModel
     };
 

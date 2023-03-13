@@ -110,7 +110,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
     assertEquals(bg, entity.getBundleGroup());
   }
 
-  private BundleGroupVersionDto generateBundleGroupVersionDto(String id) {
+  public BundleGroupVersionDto generateBundleGroupVersionDto(String id) {
     BundleGroupVersionDto dto = new BundleGroupVersionDto();
 
     dto.setBundleGroupVersionId(id); // ??? shared between BundleGroupVersionDto AND BundleGroupVersionView
@@ -132,7 +132,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
     return dto;
   }
 
-  private BundleGroupVersion generateBundleGroupVersionEntity(Long id) {
+  public BundleGroupVersion generateBundleGroupVersionEntity(Long id) {
     BundleGroupVersion bgv = new BundleGroupVersion();
     BundleGroup bg = generateBundleGroupEntity(BUNDLE_GROUP_ID);
 
@@ -154,7 +154,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
     return bgv;
   }
 
-  private static final Long BUNDLE_ID = 2381L;
+  public static final Long BUNDLE_ID = 2381L;
 
   public static final Long BUNDLE_GROUP_VERSION_ID = 29876L;
   public static final String BUNDLE_GROUP_VERSION_DOCUMENTATION_URL = "DOC URL";

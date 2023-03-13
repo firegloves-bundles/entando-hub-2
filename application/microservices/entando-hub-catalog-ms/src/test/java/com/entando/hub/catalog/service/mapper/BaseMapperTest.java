@@ -17,9 +17,83 @@ import java.util.stream.Stream;
 
 import static com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperTest.BUNDLE_GROUP_VERSION_ID;
 
+// FIXME refactor to helper class
 public class BaseMapperTest {
 
-  static Bundle generateBundleEntity(Long id) {
+  public static Bundle generateBundleEntityForTest(Long id) {
+    Bundle bundle = new Bundle();
+
+    bundle.setId(id);
+    bundle.setName(BundleMapperTest.BUNDLE_NAME);
+    bundle.setGitRepoAddress(BundleMapperTest.GIT_REPO_ADDRESS);
+    bundle.setGitSrcRepoAddress(BundleMapperTest.GIT_SRC_REPO_ADDRESS);
+    bundle.setDependencies("dep 1,dep 2");
+    bundle.setDescriptorVersion(DescriptorVersion.V5);
+
+    BundleGroupVersion bgv = new BundleGroupVersion();
+
+    bgv.setId(2381L);
+    bgv.setDescription("Bundle group Version description");
+    bgv.setDocumentationUrl("documentation URL");
+    bgv.setVersion("v0.0.1");
+    bgv.setDescriptionImage("description image");
+    bgv.setStatus(BundleGroupVersion.Status.ARCHIVE);
+
+    Set<BundleGroupVersion> versions = Stream.of(bgv, bgv)
+            .collect(Collectors.toSet());
+    bundle.setBundleGroupVersions(versions);
+    bundle.setDescription(BundleMapperTest.BUNDLE_DESCRIPTION);
+
+    return bundle;
+  }
+
+  public static BundleGroup generateBundleGroupEntityForTest(Long id) {
+    BundleGroup bg = new BundleGroup();
+    Organisation org = new Organisation();
+    BundleGroupVersion bgv = new BundleGroupVersion();
+
+
+    org.setId(ORGANIZATION_ID);
+    org.setName(ORGANIZATION_NAME);
+    org.setDescription(ORGANIZATION_DESCRIPTION);
+
+    bg.setOrganisation(org);
+
+    bgv.setId(BUNDLE_GROUP_VERSION_ID);
+    bgv.setDescription("Bundle group Version description");
+    bgv.setDocumentationUrl("documentation URL");
+    bgv.setVersion("v0.0.1");
+    bgv.setDescriptionImage("description image");
+    bgv.setStatus(BundleGroupVersion.Status.ARCHIVE);
+
+    Set<BundleGroupVersion> versions = Stream.of(bgv, bgv)
+            .collect(Collectors.toCollection(HashSet::new));
+    bg.setVersion(versions);
+
+    Category cat1 = new Category();
+
+    cat1.setId(CAT_ID_1);
+    cat1.setName("category name 1");
+    cat1.setDescription("category description 1");
+
+    Category cat2 = new Category();
+
+    cat2.setId(CAT_ID_2);
+    cat2.setName("category name 2");
+    cat2.setDescription("category description 2");
+
+    Set<Category> categories = Stream.of(cat2, cat1).collect(Collectors.toSet());
+
+    bg.setCategories(categories);
+    bg.setName(BUNDLE_GROUP_NAME);
+    bg.setId(id);
+
+    return bg;
+  }
+
+
+  @Deprecated
+  protected Bundle generateBundleEntity(Long id) {
     Bundle bundle = new Bundle();
 
     bundle.setId(id);
@@ -46,6 +120,7 @@ public class BaseMapperTest {
     return bundle;
   }
 
+  @Deprecated
   protected BundleGroup generateBundleGroupEntity(Long id) {
     BundleGroup bg = new BundleGroup();
     Organisation org = new Organisation();
@@ -90,6 +165,7 @@ public class BaseMapperTest {
     return bg;
   }
 
+  @Deprecated
   public BundleGroupDto generateBundleGroupDto(String id) {
     BundleGroupDto dto = new BundleGroupDto();
 

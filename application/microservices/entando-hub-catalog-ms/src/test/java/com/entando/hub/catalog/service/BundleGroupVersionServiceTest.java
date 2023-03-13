@@ -59,11 +59,6 @@ public class BundleGroupVersionServiceTest {
 
 	@Spy
 	BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper = new BundleGroupVersionStandardMapperImpl();
-//	@Spy
-//	BundleGroupVersionMapper bundleGroupVersionMapper = new BundleGroupVersionMapperImpl();
-//	@Spy
-//	BundleGroupVersionMapper bundleGroupVersionMapper = new BundleGroupVersionMapperImpl();
-
 
 	private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
     private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";

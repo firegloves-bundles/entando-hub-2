@@ -4,23 +4,18 @@ import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
+import com.entando.hub.catalog.rest.model.OrganisationResponseView;
+import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.service.model.UserRepresentation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.entando.hub.catalog.rest.model.OrganisationResponseView;
-import com.entando.hub.catalog.rest.model.PortalUserResponseView;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author E.Santoboni
@@ -38,6 +33,9 @@ public class PortalUserService {
 
     @Autowired
     private PortalUserRepository portalUserRepository;
+
+    @Autowired
+    private SecurityHelperService securityHelperService;
 
     public List<UserRepresentation> getUsersByOrganisation(String orgId) {
         Collection<PortalUser> users;
@@ -185,4 +183,14 @@ public class PortalUserService {
 
 		return orgRespViewSet;
 	}
+
+    public Set<Organisation> getUserOrganizations() {
+        String username = securityHelperService.getContextAuthenticationUsername();
+        PortalUser user = portalUserRepository.findByUsername(username);
+        if (null == user) {
+            logger.warn("user '{}' does not exist", username);
+            return Collections.emptySet();
+        }
+        return user.getOrganisations();
+    }
 }

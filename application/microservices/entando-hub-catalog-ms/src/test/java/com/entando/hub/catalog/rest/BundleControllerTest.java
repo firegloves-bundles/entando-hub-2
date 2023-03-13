@@ -2,10 +2,10 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
-import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -26,13 +26,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,7 +53,11 @@ public class BundleControllerTest {
 	
 	@MockBean
 	BundleService bundleService;
-	
+
+	@MockBean
+	BundleGroupValidator bundleGroupValidator;
+	@MockBean
+	SecurityHelperService securityHelperService;
 	private final Long BUNDLE_ID = 1001L;
 	private final String NAME = "Test";
 	private final String DESCRIPTION = "Test Description";
@@ -71,17 +73,18 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testGetBundles() throws Exception {
+	@WithMockUser(username = "admin", roles = {ADMIN})
+	public void testGetAllBundlesAdmin() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
-		String bundleGroupVersionId = bundle.getBundleGroupVersions().iterator().next().getId().toString();
-		Mockito.when(bundleService.getBundles(Optional.of(bundleGroupVersionId))).thenReturn(bundlesList);
-		Mockito.when(bundleService.getBundles(Optional.ofNullable(null))).thenReturn(bundlesList);
-		
+		Mockito.when(bundleService.getBundles(null,null)).thenReturn(bundlesList);
+		Mockito.when(bundleGroupValidator.validateBundlePrivateCatalogRequest(any())).thenReturn(true);
+		Mockito.when(securityHelperService.isUserAuthenticated()).thenReturn(true);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundles/").accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isOk())
 	            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andDo(print())
 	            .andExpect(jsonPath("$.[*].bundleId").value(bundle.getId().toString()))
 	            .andExpect(jsonPath("$.[*].name").value(bundle.getName()))
 	            .andExpect(jsonPath("$.[*].description").value(bundle.getDescription()));

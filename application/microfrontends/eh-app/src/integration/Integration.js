@@ -11,10 +11,7 @@ const urlBundleGroups = '/api/bundlegroups/'
 const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
 const urlKC = '/api/keycloak/'
-
-//Bundle group version urls
 const urlBundleGroupVersion = '/api/bundlegroupversions/'
-const urlBundleGroupsVersionsFilteredPaged = '/api/bundlegroupversions/filtered'
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
@@ -269,29 +266,39 @@ export const getAllBundleGroups = async (apiUrl, organisationId) => {
  * @returns
  */
 export const getAllBundleGroupsFilteredPaged = async (
-  apiUrl,
-  page,
-  pageSize,
-  organisationId,
-  categoryIds,
-  statuses,
-  searchText = null
+  apiUrl, {
+    page,
+    pageSize,
+    organisationId,
+    categoryIds,
+    statuses,
+    catalogId,
+    searchText = null,
+  },
 ) => {
-  let url = `${apiUrl+urlBundleGroupsVersionsFilteredPaged}?page=${page}&pageSize=${pageSize}`
+  let url = `${apiUrl}${urlBundleGroupVersion}`;
+  url += catalogId ? `catalog/${catalogId}` : 'filtered';
+  url += `?page=${page}&pageSize=${pageSize}`;
+
   if (categoryIds && categoryIds.length > 0) {
-    url =
-      url +
-      "&" +
-      categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&")
-  }
-  if (statuses && statuses.length > 0) {
-    statuses.map((status) => `statuses=${status}`).join("&")
-    url = url + "&" + statuses.map((status) => `statuses=${status}`).join("&")
+    const categoryIdsQueryParams = categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join('&');
+    url += `&${categoryIdsQueryParams}`;
   }
 
-  if (organisationId) url = url + "&organisationId=" + organisationId
-  if (searchText) url = url + `&searchText=${searchText}`
-  const { data, isError } = await getData(url)
+  if (statuses && statuses.length > 0) {
+    const statusesQueryParams = statuses.map((status) => `statuses=${status}`).join('&');
+    url += `&${statusesQueryParams}`;
+  }
+
+  if (organisationId) {
+    url += `&organisationId=${organisationId}`;
+  }
+
+  if (searchText) {
+    url += `&searchText=${searchText}`;
+  }
+
+  const { data, isError } = await getData(url);
 
   eventHandler(
     isError,

@@ -7,9 +7,6 @@ import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.PagedContent;
-import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
-import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionEntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,17 +50,18 @@ public class BundleGroupVersionService {
         this.bundleService = bundleService;
     }
 
-    public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionId) {
-        logger.debug("{}: getBundleGroupVersion: Get a bundle group version by id: {}", CLASS_NAME,
-                bundleGroupVersionId);
-        return bundleGroupVersionRepository.findById(Long.parseLong(bundleGroupVersionId));
+    public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionIdString) {
+        try {
+            long bundleGroupVersionId = Long.parseLong(bundleGroupVersionIdString);
+            return bundleGroupVersionRepository.findById(bundleGroupVersionId);
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
     }
 
     @Transactional
     public BundleGroupVersion createBundleGroupVersion(BundleGroupVersion bundleGroupVersionEntity,
-                                                       BundleGroupVersionDto bundleGroupVersionView) {
-        logger.debug("{}: createBundleGroupVersion: Create a bundle group version: {}", CLASS_NAME,
-                bundleGroupVersionView);
+            BundleGroupVersionView bundleGroupVersionView) {
         List<Bundle> mappedBundles = Collections.emptyList();
         List<Bundle> savedBundles = bundleService.createBundleEntitiesAndSave(bundleGroupVersionView.getBundles());
         if (Objects.nonNull(savedBundles)) {
@@ -407,11 +405,11 @@ public class BundleGroupVersionService {
         Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
 
         if (organisationId != null && categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesIn(organisationId, categories);
+            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesInAndPublicCatalogIsTrue(organisationId, categories);
         } else if (organisationId != null) {
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationId(organisationId);
+            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndPublicCatalogIsTrue(organisationId);
         } else if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCategoriesIn(categories);
+            bundleGroups = bundleGroupRepository.findDistinctByCategoriesInAndPublicCatalogIsTrue(categories);
         } else {
             bundleGroups = bundleGroupRepository.findAll();
         }

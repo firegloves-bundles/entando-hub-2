@@ -560,7 +560,7 @@ export const editBundleGroupVersion = async (apiUrl,bundleGroupVersionData, bund
 
   const { data, isError } = await getData(url);
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadBundleGroup')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }

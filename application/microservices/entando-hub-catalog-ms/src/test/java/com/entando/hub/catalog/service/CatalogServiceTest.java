@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,7 +81,7 @@ class CatalogServiceTest {
         Catalog expectedCatalog = stubCatalog();
         when(this.catalogRepository.findById(id)).thenReturn(Optional.ofNullable(expectedCatalog));
 
-        Catalog actualCatalog = catalogService.getCatalogById(id);
+        Catalog actualCatalog = catalogService.getCatalogById(TestHelper.ADMIN_USERNAME, id, true);
 
         assertThat(actualCatalog).usingRecursiveComparison().isEqualTo(expectedCatalog);
     }
@@ -90,7 +92,7 @@ class CatalogServiceTest {
         when(this.catalogRepository.findById(id)).thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            catalogService.getCatalogById(id);
+            catalogService.getCatalogById(TestHelper.ADMIN_USERNAME, id, true);
         });
 
         String expectedMessage = "Catalog not found";

@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
+import lombok.experimental.Accessors;
 
 /**
  * This entity class is for BUNDLE table
@@ -14,6 +15,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
+@Accessors(chain = true)
 public class Bundle {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

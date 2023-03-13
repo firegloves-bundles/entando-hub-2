@@ -1,34 +1,18 @@
 package com.entando.hub.catalog.testhelper;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.Bundle.DescriptorVersion;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Catalog;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.persistence.entity.PortalUser;
+import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleController;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import lombok.experimental.UtilityClass;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import lombok.ToString;
-import lombok.experimental.UtilityClass;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @UtilityClass
 public class TestHelper {
@@ -40,7 +24,7 @@ public class TestHelper {
     public static final String BUNDLE_REPO_ADDRESS = "docker://registry.hub.docker.com/entando/amazing";
     public static final String BUNDLE_REPO_SRC_ADDRESS = "https://github.com/entando/amazing";
     public static final String BUNDLE_DEPENDENCIES = "my-dep";
-    public static final Bundle.DescriptorVersion BUNDLE_DESCRIPTOR_VERSIONS = DescriptorVersion.V5;
+    public static final DescriptorVersion BUNDLE_DESCRIPTOR_VERSIONS = DescriptorVersion.V5;
     public static final Boolean PUBLIC_CATALOG = true;
     public static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
     public static final String BUNDLE_GROUP_VERSION = "1.0.1";
@@ -98,8 +82,8 @@ public class TestHelper {
                 .setDescriptorVersion(BUNDLE_DESCRIPTOR_VERSIONS);
     }
 
-    public static BundleController.Bundle stubBundleDto(Long id, List<BundleGroupVersion> bundleGroupVersion) {
-        return new BundleController.Bundle(
+    public static BundleDto stubBundleDto(Long id, List<BundleGroupVersion> bundleGroupVersion) {
+        return new BundleDto(
                 id + "",
                 BUNDLE_NAME,
                 BUNDLE_DESCRIPTION,
@@ -130,25 +114,28 @@ public class TestHelper {
                 .setBundles(Collections.singleton(bundle));
     }
 
-    public static BundleGroupVersionView stubBundleGroupVersionView(BundleGroupVersion bundleGroupVersion, Bundle bundle, BundleGroupVersion.Status status) {
+    public static BundleGroupVersionDto stubBundleGroupVersionView(BundleGroupVersion bundleGroupVersion,
+                                                                   Bundle bundle,
+                                                                   BundleGroupVersion.Status status) {
 
         final BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 
-        return new BundleGroupVersionView()
-                .setBundleGroupVersionId(bundleGroupVersion.getId() + "")
-                .setBundleGroupId(bundleGroup.getId() + "")
-                .setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION)
-                .setDocumentationUrl(DOCUMENTATION_URL)
-                .setVersion(BUNDLE_GROUP_VERSION)
-                .setDescriptionImage(DESCRIPTION_IMAGE)
-                .setStatus(status)
-                .setOrganisationId(bundleGroup.getOrganisation().getId())
-                .setOrganisationName(bundleGroup.getOrganisation().getName())
-                .setName(BUNDLE_GROUP_NAME)
-                .setCategories(Arrays.asList("1", "2", "3"))
-                .setChildren(List.of(bundle.getId()))
-                .setDisplayContactUrl(true)
-                .setContactUrl(BUNDLE_GROUP_VERSION_CONTACT_URL);
+        return BundleGroupVersionDto.builder()
+                .bundleGroupVersionId(bundleGroupVersion.getId() != null? bundleGroupVersion.getId().toString() : "")
+                .bundleGroupId(bundleGroup.getId() + "")
+                .description(BUNDLE_GROUP_VERSION_DESCRIPTION)
+                .documentationUrl(DOCUMENTATION_URL)
+                .version(BUNDLE_GROUP_VERSION)
+                .descriptionImage(DESCRIPTION_IMAGE)
+                .status(status)
+                .organisationId(bundleGroup.getOrganisation().getId())
+                .organisationName(bundleGroup.getOrganisation().getName())
+                .name(BUNDLE_GROUP_NAME)
+                .categories(Arrays.asList("1", "2", "3"))
+                .children(List.of(bundle.getId()))
+                .displayContactUrl(true)
+                .contactUrl(BUNDLE_GROUP_VERSION_CONTACT_URL)
+                .build();
     }
 
     public static BundleGroupVersionFilteredResponseView stubBundleGroupVersionFilteredResponseView(Long bundleGroupId,

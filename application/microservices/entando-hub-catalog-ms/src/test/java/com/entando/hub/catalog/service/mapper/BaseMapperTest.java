@@ -175,11 +175,12 @@ public class BaseMapperTest {
     dto.setOrganisationName(ORGANIZATION_NAME);
     dto.setCategories(Arrays.asList("cat 1", "cat 2"));
 
-    BundleGroupVersionDto bundleGroupVersion = new BundleGroupVersionDto();
-    bundleGroupVersion.setBundleGroupId("191045");
-    bundleGroupVersion.setDescription("description");
-    bundleGroupVersion.setDescriptionImage("descriptionImage");
-    bundleGroupVersion.setVersion("v123");
+    BundleGroupVersionDto bundleGroupVersion = BundleGroupVersionDto.builder()
+            .bundleGroupId("191045")
+            .description("description")
+            .descriptionImage("descriptionImage")
+            .version("v123")
+            .build();
 
     dto.setVersionDetails(bundleGroupVersion);
     return dto;

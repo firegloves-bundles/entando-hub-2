@@ -186,7 +186,12 @@
                     <source>9</source>
                     <target>9</target>
                     <annotationProcessorPaths>
-                        <!-- First Lombok compile processor... -->
+                        <!-- NOTE: it's  counterintuitive but this is the correct way to go according https://mapstruct.org/documentation/stable/reference/html/#_set_up -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -197,12 +202,7 @@
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>0.2.0</version>
                         </path>
-                        <!-- ...then MapStruct one! -->
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
+
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>

@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.integration;
 
-import com.entando.hub.catalog.rest.BundleController.Bundle;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.testhelper.AssertionHelper;
 import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class BundleFlowIT extends BaseFlowIT {
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         // without filters should get everything
-        List<Bundle> expectedList = List.of(
+        List<BundleDto> expectedList = List.of(
                 TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
                 TestHelper.stubBundleDto(bundle2.getId(), List.of(bundleGroupVersion2)),
                 TestHelper.stubBundleDto(bundle3.getId(), List.of(bundleGroupVersion3)),
@@ -70,7 +70,7 @@ class BundleFlowIT extends BaseFlowIT {
         when(securityHelperService.getContextAuthenticationUsername()).thenReturn(TestHelper.NON_ADMIN_USERNAME);
 
         // without filters should get all (and only) public bundles
-        List<Bundle> expectedList = List.of(
+        List<BundleDto> expectedList = List.of(
                 TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
                 TestHelper.stubBundleDto(bundle2.getId(), List.of(bundleGroupVersion2)),
                 TestHelper.stubBundleDto(bundle3.getId(), List.of(bundleGroupVersion3)));
@@ -127,7 +127,7 @@ class BundleFlowIT extends BaseFlowIT {
         when(securityHelperService.isUserAuthenticated()).thenReturn(false);
 
         // without filters should get every public bundle
-        List<Bundle> expectedList = List.of(
+        List<BundleDto> expectedList = List.of(
                 TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
                 TestHelper.stubBundleDto(bundle2.getId(), List.of(bundleGroupVersion2)),
                 TestHelper.stubBundleDto(bundle3.getId(), List.of(bundleGroupVersion3)));

@@ -111,23 +111,24 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
   }
 
   public BundleGroupVersionDto generateBundleGroupVersionDto(String id) {
-    BundleGroupVersionDto dto = new BundleGroupVersionDto();
+    BundleGroupVersionDto dto = BundleGroupVersionDto.builder()
 
-    dto.setBundleGroupVersionId(id); // ??? shared between BundleGroupVersionDto AND BundleGroupVersionView
-    dto.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
-    dto.setDescriptionImage(BUNDLE_GROUP_VERSION_DESCRIPTION_IMG);
-    dto.setDocumentationUrl(BUNDLE_GROUP_VERSION_DOCUMENTATION_URL);
-    dto.setStatus(BUNDLE_GROUP_VERSION_STATUS);
-    dto.setVersion(BUNDLE_GROUP_VERSION_VERSION);
-    dto.setDisplayContactUrl(BUNDLE_GROUP_VERSION_DISPLAY_CONTACT_URL);
-    dto.setContactUrl(BUNDLE_GROUP_VERSION_CONTACT_URL);
+            .bundleGroupVersionId(id) // ??? shared between BundleGroupVersionDto AND BundleGroupVersionView
+            .description(BUNDLE_GROUP_VERSION_DESCRIPTION)
+            .descriptionImage(BUNDLE_GROUP_VERSION_DESCRIPTION_IMG)
+            .documentationUrl(BUNDLE_GROUP_VERSION_DOCUMENTATION_URL)
+            .status(BUNDLE_GROUP_VERSION_STATUS)
+            .version(BUNDLE_GROUP_VERSION_VERSION)
+            .displayContactUrl(BUNDLE_GROUP_VERSION_DISPLAY_CONTACT_URL)
+            .contactUrl(BUNDLE_GROUP_VERSION_CONTACT_URL)
 
-    dto.setName(BUNDLE_NAME);
-    dto.setBundleGroupId(BUNDLE_GROUP_ID_STR);
-    dto.setLastUpdate(LocalDateTime.now());
-    dto.setCategories(Arrays.asList("cat 1","cat 2"));
-    dto.setChildren(Arrays.asList(26L, 77L));
-    dto.setBundles(Arrays.asList(new BundleDto()));
+            .name(BUNDLE_NAME)
+            .bundleGroupId(BUNDLE_GROUP_ID_STR)
+            .lastUpdate(LocalDateTime.now())
+            .categories(Arrays.asList("cat 1","cat 2"))
+            .children(Arrays.asList(26L, 77L))
+            .bundles(Arrays.asList(new BundleDto()))
+            .build();
 
     return dto;
   }

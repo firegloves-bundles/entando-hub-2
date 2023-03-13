@@ -3,12 +3,15 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CatalogService;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +36,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
@@ -66,6 +70,8 @@ public class BundleGroupVersionControllerTest {
 	BundleGroupValidator bundleGroupValidator;
 	@MockBean
 	CatalogService catalogService;
+	@Autowired
+	private BundleGroupVersionMapper bundleGroupVersionMapper;
 	private static final String CATALOG_ID_PARAM = "catalogId";
 	private final Long BUNDLE_GROUP_VERSION_ID =  2001L;
 	private final Long BUNDLE_GROUPID =  2002L;
@@ -438,14 +444,12 @@ public class BundleGroupVersionControllerTest {
 	}
 
 	private static BundleGroupVersionDto generateBundleGroupVersionView(BundleGroupVersion bundleGroupVersion, String bundleGroupId) {
-		BundleGroupVersionDto bundleGroupVersionView = new BundleGroupVersionDto();
-
-		bundleGroupVersionView.setBundleGroupId(bundleGroupId);
-		bundleGroupVersionView.setDescription(bundleGroupVersion.getDescription());
-		bundleGroupVersionView.setDescriptionImage(bundleGroupVersion.getDescriptionImage());
-		bundleGroupVersionView.setVersion(bundleGroupVersion.getVersion());
-
-		return bundleGroupVersionView;
+		return BundleGroupVersionDto.builder()
+				.bundleGroupId(bundleGroupId)
+				.description(bundleGroupVersion.getDescription())
+				.descriptionImage(bundleGroupVersion.getDescriptionImage())
+				.version(bundleGroupVersion.getVersion())
+				.build();
 	}
 
 	@Test

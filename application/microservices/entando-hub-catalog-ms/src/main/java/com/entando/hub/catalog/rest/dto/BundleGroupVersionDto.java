@@ -1,16 +1,18 @@
 package com.entando.hub.catalog.rest.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @ToString
-@NoArgsConstructor
+@Builder
+@Jacksonized
 public class BundleGroupVersionDto {
 
   private String bundleGroupVersionId;

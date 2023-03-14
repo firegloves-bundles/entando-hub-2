@@ -86,9 +86,9 @@ const BundleGroupPage = () => {
       pageModel["bundleGroup"] = fetchedBundleGroup;
       const { organisationId, categories, children, bundleGroupId } = fetchedBundleGroup || {};
     
-      pageModel["organisation"] = organisationId ? (await getSingleOrganisation(apiUrl, organisationId)).organisation : null;
-      pageModel["category"] = categories && categories.length > 0 ? (await getSingleCategory(apiUrl, categories[0])).category : null;
-      pageModel["children"] = children && children.length > 0 && bundleGroupId ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList : [];
+      pageModel["organisation"] = organisationId && (await getSingleOrganisation(apiUrl, organisationId)).organisation;
+      pageModel["category"] = categories?.length > 0 ? (await getSingleCategory(apiUrl, categories[0])).category : null;
+      pageModel["children"] = children?.length > 0 && bundleGroupId ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList : [];
     
       return pageModel;
     };

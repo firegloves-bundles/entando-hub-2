@@ -85,12 +85,11 @@ public class BundleGroupValidator {
 
     //verify that the current user has access to the catalog (if no => return 404)
     private Catalog checkUserCatalog(Long catalogId) {
-        Catalog catalog = catalogService.getCatalogById(catalogId);
-
         String username = securityHelperService.getContextAuthenticationUsername();
 
         // verify that the current user has access to the catalog (if no => return 404)
         boolean userIsAdmin = securityHelperService.isAdmin();
+        Catalog catalog = catalogService.getCatalogById(username, catalogId, userIsAdmin);
         List<Catalog> userCatalogs = catalogService.getCatalogs(username, userIsAdmin);
         if (!userCatalogs.contains(catalog)) {
             throw new NotFoundException(CATALOG_NOT_FOUND_MSG);

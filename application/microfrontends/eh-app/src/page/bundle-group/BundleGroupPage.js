@@ -75,31 +75,29 @@ const BundleGroupPage = () => {
   // fetches the bundle group
   useEffect(() => {
     const getBundleGroupDetail = async (bundleGroupVersionId) => {
-      const pageModel = {}
-      const { isError, bgVersionDetails: fetchedBundleGroup } = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId }));
+      const pageModel = {};
+      const { isError, bgVersionDetails: fetchedBundleGroup } = await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId });
+    
       if (isError) {
         history.push('/404');
-      } else {
-        pageModel["bundleGroup"] = fetchedBundleGroup
-        pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
-            apiUrl,fetchedBundleGroup.organisationId)).organisation : null
-        pageModel["category"] = fetchedBundleGroup && fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
-          > 0 ? (await getSingleCategory(apiUrl,
-            fetchedBundleGroup.categories[0])).category : null
-        pageModel["children"] =
-          fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
-            ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList
-            : []
+        return pageModel;
       }
-
-      return pageModel
+    
+      pageModel["bundleGroup"] = fetchedBundleGroup;
+      const { organisationId, categories, children, bundleGroupId } = fetchedBundleGroup || {};
+    
+      pageModel["organisation"] = organisationId ? (await getSingleOrganisation(apiUrl, organisationId)).organisation : null;
+      pageModel["category"] = categories && categories.length > 0 ? (await getSingleCategory(apiUrl, categories[0])).category : null;
+      pageModel["children"] = children && children.length > 0 && bundleGroupId ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList : [];
+    
+      return pageModel;
     };
 
-    (async () => {
-      const indexOf = bundleGroupVersionId.indexOf("&") === -1 ? bundleGroupVersionId.length : bundleGroupVersionId.indexOf("&")
-      const sanitizedId = bundleGroupVersionId.substring(0, indexOf)
-      setPageModel(await getBundleGroupDetail(sanitizedId))
-    })()
+    const loadPageModel = async () => {
+      const indexOf = bundleGroupVersionId.indexOf("&") === -1 ? bundleGroupVersionId.length : bundleGroupVersionId.indexOf("&");
+      const sanitizedId = bundleGroupVersionId.substring(0, indexOf);
+      setPageModel(await getBundleGroupDetail(sanitizedId));
+    };
 
     const getCatalog = async () => {
       const { data, isError } = await getPrivateCatalog(apiUrl, catalogId);
@@ -111,7 +109,9 @@ const BundleGroupPage = () => {
     if (catalogId && isHubUser()) {
       getCatalog();
     }
-  }, [apiUrl, bundleGroupVersionId, catalogId]);
+
+    loadPageModel();
+  }, [apiUrl, bundleGroupVersionId, catalogId, history]);
 
   // checks the contact-us url for discover
   const checkContactUsModal = (url) => {
@@ -168,7 +168,7 @@ const BundleGroupPage = () => {
                         </>
                         :
                         (pageModel.bundleGroup?.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
-                        ?
+                        &&
                         <>
                           <div className="BundleGroupPage-contact-us">
                             <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
@@ -177,7 +177,6 @@ const BundleGroupPage = () => {
                           </div>
                           <hr/>
                         </>
-                            : []
                     }
 
                     {(pageModel.children && pageModel.children.length>0) &&

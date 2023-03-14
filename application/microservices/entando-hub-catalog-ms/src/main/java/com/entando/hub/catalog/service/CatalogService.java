@@ -31,14 +31,16 @@ public class CatalogService {
     }
 
 
-    public Catalog getCatalogById(Long id) {
-        Optional<Catalog> catalog = catalogRepository.findById(id);
-        logger.debug("{} catalog details: {} ", CLASS_NAME, catalog);
-        if (catalog.isPresent()){
-            return catalog.get();
+    public Catalog getCatalogById(String username, Long id, boolean userIsAdmin) {
+        Optional<Catalog> catalog;
+        if (userIsAdmin) {
+           catalog = catalogRepository.findById(id);
         } else {
-            throw new NotFoundException("Catalog not found");
+            catalog = catalogRepository.findByOrganisation_PortalUsers_UsernameAndId(username, id);
         }
+
+        logger.debug("{} catalog details: {} ", CLASS_NAME, catalog);
+        return catalog.orElseThrow(() -> new NotFoundException("Catalog not found"));
     }
 
     public Catalog createCatalog(Long organisationId) throws NotFoundException, ConflictException {

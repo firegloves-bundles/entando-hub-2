@@ -19,13 +19,13 @@ jobs:
     - name: SonarQube Scan
       run: |
         versionSuffix=$(echo "${{ github.event.pull_request.title }}" | awk '{print $1}')
-        cd application
         bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
         bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
         ent bundle build --all --stdout --fail-fast
         cd microservices/entando-hub-catalog-ms && mvn sonar:sonar --no-transfer-progress && cd ../..
         cd microfrontends/eh-login && ent npm run sonar && cd ../..
         cd microfrontends/eh-app && ent npm run sonar && cd ../..
+      working-directory: ./application
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
@@ -55,13 +55,13 @@ jobs:
           DOCKER_ORG: entando
         run: |
           versionSuffix=$(echo "${{ github.event.pull_request.title }}" | awk '{print $1}')
-          cd application
           bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
           bash ../.github/functions/utils.sh setComponentVersions -$versionSuffix
           ent --debug bundle pack --org $DOCKER_ORG --stdout --fail-fast
           ent --debug bundle publish
           version=$(bash ../.github/functions/utils.sh getBundleImage)
           echo "VERSION=$version" >> $GITHUB_OUTPUT
+        working-directory: ./application
       - name: Publish artifact version
         uses: thollander/actions-comment-pull-request@v2
         with:
@@ -93,13 +93,13 @@ jobs:
           DOCKER_ORG: entando
         run: |
           versionSuffix=$(echo "${{ github.event.pull_request.title }}" | awk '{print $1}')
-          cd content
           bash ../.github/functions/utils.sh setBundleVersion -$versionSuffix
           sh set-bundle-id.sh $DOCKER_ORG
           ent --debug bundle pack --org $DOCKER_ORG --stdout
           ent --debug bundle publish
           version=$(bash ../.github/functions/utils.sh getBundleImage)
           echo "VERSION=$version" >> $GITHUB_OUTPUT
+        working-directory: ./content
       - name: Publish artifact version
         uses: thollander/actions-comment-pull-request@v2
         with:

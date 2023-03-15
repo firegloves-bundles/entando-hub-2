@@ -51,7 +51,7 @@ public class PrivateCatalogApiKeyService {
         return privateCatalogApiKeyMapper.toAddApiKeyDto(apiKeyResult);
     }
     public boolean editLabel(long id, String username, String label) {
-        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
+        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(id, username);
         if (apiKeyOptional.isPresent()) {
             PrivateCatalogApiKey privateCatalogApiKey = apiKeyOptional.get();
             privateCatalogApiKey.setLabel(label);
@@ -64,7 +64,7 @@ public class PrivateCatalogApiKeyService {
     }
 
     public ApiKeyResponseDTO regenerateApiKey(long id, String username) {
-        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
+        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(id, username);
         if (apiKeyOptional.isPresent()) {
             PrivateCatalogApiKey privateCatalogApiKey = apiKeyOptional.get();
             String generatedApiKey = apiKeyGeneratorHelper.generateApiKey();
@@ -81,7 +81,7 @@ public class PrivateCatalogApiKeyService {
     }
 
     public boolean deleteApiKey(long id, String username) {
-        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(id, username);
+        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(id, username);
         if (apiKeyOptional.isPresent()) {
             privateCatalogApiKeyRepository.delete(apiKeyOptional.get());
             return true;
@@ -93,10 +93,10 @@ public class PrivateCatalogApiKeyService {
 
     public PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeysByUsername(String username, Integer pageNum, Integer pageSize) {
         Pageable paging = getPageable(pageSize, pageNum - 1);
-        Page<PrivateCatalogApiKey> all = this.privateCatalogApiKeyRepository.findByPortalUserUsername(paging, username);
-        List<PrivateCatalogApiKey> content = all.getContent();
+        Page<PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(username, paging);
+        List<PrivateCatalogApiKey> content = apiKeys.getContent();
         List<ApiKeyResponseDTO> response = this.privateCatalogApiKeyMapper.toApiKeyResponseDTO(content);
-        return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), all);
+        return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), apiKeys);
     }
 
     private static Pageable getPageable(Integer pageSize, int pageNum) {

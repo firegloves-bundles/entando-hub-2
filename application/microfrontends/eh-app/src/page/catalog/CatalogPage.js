@@ -1,18 +1,20 @@
-import { Content, Search } from "carbon-components-react";
+import { Content, OverflowMenu, OverflowMenuItem, Search } from "carbon-components-react";
+import { ChevronDown20 as ChevronIcon } from '@carbon/icons-react';
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
 import { ModalAddNewBundleGroup } from "./modal-add-new-bundle-group/ModalAddNewBundleGroup";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPortalUser } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
-import { getPortalUser } from "../../integration/Integration";
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
 import { useApiUrl } from "../../contexts/ConfigContext";
+import { useCatalogs } from "../../contexts/CatalogContext";
 
 /*
 This is the HUB landing page
@@ -22,6 +24,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const hasValidRole = isCurrentUserAssignedAValidRole();
   const isAuthenticated = isCurrentUserAuthenticated();
   const hasPreferredName = isCurrentUserAssignedAPreferredName();
+
   const [categories, setCategories] = useState([])
   const [orgList, setOrgList] = useState([])
   const [loading, setLoading] = useState(true)
@@ -30,7 +33,11 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
 
+  const { catalogs, fetchCatalogs } = useCatalogs();
+
   const apiUrl = useApiUrl();
+  const history = useHistory();
+  const { catalogId } = useParams();
 
   // worker is a state that handle state of search input when terms comes from versionPage.
   // it helps to handle Api hit on every change Event.
@@ -77,8 +84,7 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
       setOrgList(organisationList);
     };
 
-    (async () => {
-      await getCatOrgList();
+    const getPortalUserDetails = async () => {
       const username = await getUserName();
       if (username) {
         const portalUserResp = await getPortalUser(apiUrl);
@@ -93,12 +99,28 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
         }
         setLoading(false);
       }
-    })();
-  
+    };
+
+    getCatOrgList();
+    getPortalUserDetails();
+
+    if (hubUser) {
+      fetchCatalogs();
+    }
+
     return () => {
       isMounted = false;
     };
-  }, [apiUrl])
+  }, [apiUrl, hubUser, fetchCatalogs]);
+
+  const catalogMap = useMemo(() => (
+    catalogs.reduce((prev, curr) => ({
+      ...prev,
+      [curr.id]: curr,
+    }), {})
+  ), [catalogs]);
+
+  const selectedCatalog = catalogId ? catalogMap[catalogId] : null;
 
   /**
    * @param {*} e Event object.
@@ -142,6 +164,10 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
     }
   }
 
+  const handleCatalogChange = (catalog) => {
+    history.push(`/catalog/${catalog.id}/`);
+  };
+
   /**
    * Check to show full page or only public discovery view after login.
    * Show only public discovery view if user is authenticated but does not have an assigned Hub role(eh-admin,eh-manager,eh-author)
@@ -163,7 +189,8 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
                   <EhBreadcrumb
                     pathElements={[{
-                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage,
+                      path: selectedCatalog ? selectedCatalog.name : '',
                     }]}
                   />
                 </div>
@@ -173,14 +200,40 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                   {i18n.t('page.catalogPanel.catalogHomePage.categories')}
                 </div>
                 <div className="bx--col-lg-5 CatalogPage-section">
-                  {i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                  {selectedCatalog ? selectedCatalog.name : i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                  <OverflowMenu
+                    className="CatalogPage-catalog-menu"
+                    menuOptionsClass="CatalogPage-catalog-options"
+                    renderIcon={ChevronIcon}
+                    flipped
+                  >
+                    <OverflowMenuItem
+                      itemText={i18n.t('page.catalogPanel.catalogHomePage.catalog')}
+                      onClick={() => history.push('/')}
+                    />
+                    {catalogs.map(catalog => (
+                      <OverflowMenuItem
+                        key={catalog.id}
+                        itemText={catalog.name}
+                        onClick={() => handleCatalogChange(catalog)}
+                      />
+                    ))}
+                  </OverflowMenu>
                 </div>
                 <div className="bx--col-lg-3 CatalogPage-section">
                   {/*
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && (
+                    <ModalAddNewBundleGroup
+                      isLoading={loading}
+                      orgList={orgList}
+                      catList={categories}
+                      onAfterSubmit={onAfterSubmit}
+                      currentUserOrg={currentUserOrg}
+                    />
+                  )}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
@@ -208,7 +261,22 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 If I'm an hub user I'll wait for status filter loading
                         */}
                 {(!hubUser || !showFullPage || (hubUser && statusFilterValue !== "LOADING" && !loading))
-                  && <CatalogPageContent versionSearchTerm={versionSearchTerm} searchTerm={searchTerm} isError={isError} catList={categories} reloadToken={reloadToken} statusFilterValue={statusFilterValue} onAfterSubmit={onAfterSubmit} orgList={orgList} currentUserOrg={currentUserOrg} showFullPage={showFullPage} />}
+                  && (
+                    <CatalogPageContent
+                      versionSearchTerm={versionSearchTerm}
+                      searchTerm={searchTerm}
+                      isError={isError}
+                      catList={categories}
+                      reloadToken={reloadToken}
+                      statusFilterValue={statusFilterValue}
+                      onAfterSubmit={onAfterSubmit}
+                      orgList={orgList}
+                      currentUserOrg={currentUserOrg}
+                      showFullPage={showFullPage}
+                      catalogId={catalogId}
+                    />
+                  )
+                }
               </div>
             </div>
           </div>

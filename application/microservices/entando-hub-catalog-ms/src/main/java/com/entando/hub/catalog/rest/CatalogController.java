@@ -61,8 +61,8 @@ public class CatalogController {
         return new ResponseEntity<>(catalogsDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get the Catalog by id", description = "Protected api, only eh-admin can access it.")
-    @RolesAllowed({ADMIN})
+    @Operation(summary = "Get the Catalog by id", description = "Protected api, only eh-admin, eh-author and eh-manager can access it.")
+    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
@@ -70,8 +70,11 @@ public class CatalogController {
     @GetMapping(value = "/{catalogId}", produces = {"application/json"})
     public ResponseEntity<CatalogDTO> getCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to get Catalog by id");
+        boolean userIsAdmin = this.securityHelperService.isAdmin();
+        String username = this.securityHelperService.getContextAuthenticationUsername();
+
         try {
-            Catalog response = catalogService.getCatalogById(catalogId);
+            Catalog response = catalogService.getCatalogById(username, catalogId, userIsAdmin);
             return ResponseEntity.ok(mapToDTO(response));
         } catch (NotFoundException notFoundException) {
             return ResponseEntity.notFound().build();

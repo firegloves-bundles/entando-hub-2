@@ -15,6 +15,8 @@ import com.entando.hub.catalog.service.security.SecurityHelperService;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +73,10 @@ class CatalogControllerTest {
         Catalog expectedCatalog = stubCatalog();
         CatalogDTO expectedCatalogDTO = stubCatalogDTO();
         Long catalogId = expectedCatalogDTO.getId();
-        when(catalogService.getCatalogById(catalogId)).thenReturn(expectedCatalog);
+
+        when(this.securityHelperService.isAdmin()).thenReturn(true);
+        when(this.securityHelperService.getContextAuthenticationUsername()).thenReturn(TestHelper.ADMIN_USERNAME);
+        when(catalogService.getCatalogById(TestHelper.ADMIN_USERNAME, catalogId, true)).thenReturn(expectedCatalog);
 
         ResponseEntity<CatalogDTO> responseEntity = catalogController.getCatalog(catalogId);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

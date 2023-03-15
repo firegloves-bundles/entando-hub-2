@@ -1,11 +1,11 @@
 import {Content, Tile, Row, Column, Button} from "carbon-components-react"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 
 import {
   getAllBundlesForABundleGroup,
   getBundleGroupDetailsByBundleGroupVersionId,
+  getPrivateCatalog,
   getSingleCategory,
   getSingleOrganisation
 } from "../../integration/Integration"
@@ -18,6 +18,7 @@ import { SLASH_VERSIONS } from "../../helpers/constants"
 import BundlesOfBundleGroup
   from '../../components/forms/BundleGroupForm/update-bundle-group/bundles-of-bundle-group/BundlesOfBundleGroup';
 import { useApiUrl } from "../../contexts/ConfigContext";
+import { isHubUser } from "../../helpers/helpers";
 
 /*
 BUNDLEGROUP:
@@ -57,12 +58,16 @@ const BundleGroupPage = () => {
     organisation: null,
     category: null,
     children: []
-  })
+  });
+
+  const [catalog, setCatalog] = useState(null);
 
   const apiUrl = useApiUrl();
 
+  const history = useHistory();
+
   const categoryId = pageModel.bundleGroup && pageModel.bundleGroup.categories && pageModel.bundleGroup.categories.length ? pageModel.bundleGroup.categories[0] : null;
-  const { id: bundleGroupVersionId } = useParams()
+  const { id: bundleGroupVersionId, catalogId } = useParams();
   const { pathname: url } = useLocation();
 
   const isFromVersionPage = isNavigationFromVersionsPage(url);
@@ -70,33 +75,50 @@ const BundleGroupPage = () => {
   // fetches the bundle group
   useEffect(() => {
     const getBundleGroupDetail = async (bundleGroupVersionId) => {
-      const pageModel = {}
-      const fetchedBundleGroup = (await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId)).bgVersionDetails
-      pageModel["bundleGroup"] = fetchedBundleGroup
-      pageModel["organisation"] = fetchedBundleGroup && fetchedBundleGroup.organisationId ? (await getSingleOrganisation(
-          apiUrl,fetchedBundleGroup.organisationId)).organisation : null
-      pageModel["category"] = fetchedBundleGroup && fetchedBundleGroup.categories && fetchedBundleGroup.categories.length
-        > 0 ? (await getSingleCategory(apiUrl,
-          fetchedBundleGroup.categories[0])).category : null
-      pageModel["children"] =
-        fetchedBundleGroup && fetchedBundleGroup.children && fetchedBundleGroup.children.length > 0 && fetchedBundleGroup.bundleGroupId
-          ? (await getAllBundlesForABundleGroup(apiUrl,bundleGroupVersionId)).bundleList
-          : []
-      return pageModel
+      const pageModel = {};
+      const { isError, bgVersionDetails: fetchedBundleGroup } = await getBundleGroupDetailsByBundleGroupVersionId(apiUrl, bundleGroupVersionId, { catalogId });
+    
+      if (isError) {
+        history.push('/404');
+        return pageModel;
+      }
+    
+      pageModel["bundleGroup"] = fetchedBundleGroup;
+      const { organisationId, categories, children, bundleGroupId } = fetchedBundleGroup || {};
+    
+      pageModel["organisation"] = organisationId && (await getSingleOrganisation(apiUrl, organisationId)).organisation;
+      pageModel["category"] = categories?.length > 0 ? (await getSingleCategory(apiUrl, categories[0])).category : null;
+      pageModel["children"] = children?.length > 0 && bundleGroupId ? (await getAllBundlesForABundleGroup(apiUrl, bundleGroupVersionId, { catalogId })).bundleList : [];
+    
+      return pageModel;
     };
 
-    (async () => {
-      const indexOf = bundleGroupVersionId.indexOf("&") === -1 ? bundleGroupVersionId.length : bundleGroupVersionId.indexOf("&")
-      const sanitizedId = bundleGroupVersionId.substring(0, indexOf)
-      setPageModel(await getBundleGroupDetail(sanitizedId))
-    })()
-  }, [apiUrl, bundleGroupVersionId])
+    const loadPageModel = async () => {
+      const indexOf = bundleGroupVersionId.indexOf("&") === -1 ? bundleGroupVersionId.length : bundleGroupVersionId.indexOf("&");
+      const sanitizedId = bundleGroupVersionId.substring(0, indexOf);
+      setPageModel(await getBundleGroupDetail(sanitizedId));
+    };
+
+    const getCatalog = async () => {
+      const { data, isError } = await getPrivateCatalog(apiUrl, catalogId);
+      if (!isError) {
+        setCatalog(data);
+      }
+    };
+
+    if (catalogId && isHubUser()) {
+      getCatalog();
+    }
+
+    loadPageModel();
+  }, [apiUrl, bundleGroupVersionId, catalogId, history]);
 
   // checks the contact-us url for discover
   const checkContactUsModal = (url) => {
     return url && url.includes("discover.entando.com")
   }
 
+  const baseBreadcrumbPathEls = catalog ? [{ path: catalog.name, href: `/catalog/${catalog.id}` }] : [];
 
   return (
       <>
@@ -107,7 +129,7 @@ const BundleGroupPage = () => {
               <div className="bx--col-lg-16 BundleGroupPage-breadcrumb">
                 {(isFromVersionPage)
                   // Breadcrumb when navigated from Version page
-                  ? <EhBreadcrumb pathElements={[{
+                  ? <EhBreadcrumb pathElements={[...baseBreadcrumbPathEls, {
                     path: `${i18n.t('breadCrumb.version')}`,
                     href: `${SLASH_VERSIONS}/` + pageModel.bundleGroup.bundleGroupId + `/${categoryId}`
                   }, {
@@ -116,8 +138,8 @@ const BundleGroupPage = () => {
                   }]} />
                   :
                   // Breadcrumb when navigated from home page
-                  <EhBreadcrumb pathElements={[{
-                    path: pageModel.bundleGroup.name,
+                  <EhBreadcrumb pathElements={[...baseBreadcrumbPathEls, {
+                    path: pageModel.bundleGroup?.name,
                     href: window.location.href
                   }]} />}
               </div>
@@ -131,7 +153,7 @@ const BundleGroupPage = () => {
                           alt="BundleGroup Logo" />}
                     </div>
 
-                    {(pageModel.bundleGroup.displayContactUrl)
+                    {(pageModel.bundleGroup?.displayContactUrl)
                     && (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
                         && checkContactUsModal(pageModel.bundleGroup.contactUrl) === false
                         ?
@@ -145,8 +167,8 @@ const BundleGroupPage = () => {
                           <hr/>
                         </>
                         :
-                        (pageModel.bundleGroup.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
-                        ?
+                        (pageModel.bundleGroup?.contactUrl && pageModel.bundleGroup.contactUrl.length > 0)
+                        &&
                         <>
                           <div className="BundleGroupPage-contact-us">
                             <p>{i18n.t('page.bundleGroupInfo.contactUsInfo')}</p>
@@ -155,7 +177,6 @@ const BundleGroupPage = () => {
                           </div>
                           <hr/>
                         </>
-                            : []
                     }
 
                     {(pageModel.children && pageModel.children.length>0) &&

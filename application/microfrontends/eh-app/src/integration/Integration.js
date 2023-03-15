@@ -11,10 +11,7 @@ const urlBundleGroups = '/api/bundlegroups/'
 const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
 const urlKC = '/api/keycloak/'
-
-//Bundle group version urls
 const urlBundleGroupVersion = '/api/bundlegroupversions/'
-const urlBundleGroupsVersionsFilteredPaged = '/api/bundlegroupversions/filtered'
 
 // checks if the input data contain an error and sends back either the error itself or the actual data
 const checkForErrorsAndSendResponse = (data, isError, objectLabel) => {
@@ -194,9 +191,15 @@ export const getAllBundles = async (apiUrl) => {
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
 }
 
-export const getAllBundlesForABundleGroup = async (apiUrl, id) => {
-  const newUrl = `${apiUrl+urlBundles}?bundleGroupVersionId=${id}`
-  const { data, isError } = await getData(newUrl)
+export const getAllBundlesForABundleGroup = async (apiUrl, id, params = {}) => {
+  const { catalogId } = params;
+  let url = `${apiUrl+urlBundles}?bundleGroupVersionId=${id}`;
+
+  if (catalogId) {
+    url += `&catalogId=${catalogId}`;
+  }
+
+  const { data, isError } = await getData(url);
 
   eventHandler(
     isError,
@@ -269,29 +272,39 @@ export const getAllBundleGroups = async (apiUrl, organisationId) => {
  * @returns
  */
 export const getAllBundleGroupsFilteredPaged = async (
-  apiUrl,
-  page,
-  pageSize,
-  organisationId,
-  categoryIds,
-  statuses,
-  searchText = null
+  apiUrl, {
+    page,
+    pageSize,
+    organisationId,
+    categoryIds,
+    statuses,
+    catalogId,
+    searchText = null,
+  },
 ) => {
-  let url = `${apiUrl+urlBundleGroupsVersionsFilteredPaged}?page=${page}&pageSize=${pageSize}`
+  let url = `${apiUrl}${urlBundleGroupVersion}`;
+  url += catalogId ? `catalog/${catalogId}` : 'filtered';
+  url += `?page=${page}&pageSize=${pageSize}`;
+
   if (categoryIds && categoryIds.length > 0) {
-    url =
-      url +
-      "&" +
-      categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&")
-  }
-  if (statuses && statuses.length > 0) {
-    statuses.map((status) => `statuses=${status}`).join("&")
-    url = url + "&" + statuses.map((status) => `statuses=${status}`).join("&")
+    const categoryIdsQueryParams = categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join('&');
+    url += `&${categoryIdsQueryParams}`;
   }
 
-  if (organisationId) url = url + "&organisationId=" + organisationId
-  if (searchText) url = url + `&searchText=${searchText}`
-  const { data, isError } = await getData(url)
+  if (statuses && statuses.length > 0) {
+    const statusesQueryParams = statuses.map((status) => `statuses=${status}`).join('&');
+    url += `&${statusesQueryParams}`;
+  }
+
+  if (organisationId) {
+    url += `&organisationId=${organisationId}`;
+  }
+
+  if (searchText) {
+    url += `&searchText=${searchText}`;
+  }
+
+  const { data, isError } = await getData(url);
 
   eventHandler(
     isError,
@@ -367,7 +380,6 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
   if (type === 'update') {
-    debugger
     eventHandler(isError,
       `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
       `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`
@@ -537,11 +549,17 @@ export const editBundleGroupVersion = async (apiUrl,bundleGroupVersionData, bund
  * @param {*} bundleGroupVersionId
  * @returns
  */
- export const getBundleGroupDetailsByBundleGroupVersionId = async (apiUrl,bundleGroupVersionId) => {
-  let newUrl = `${apiUrl+urlBundleGroupVersion}${bundleGroupVersionId}`;
-  const { data, isError } = await getData(newUrl)
+ export const getBundleGroupDetailsByBundleGroupVersionId = async (apiUrl, bundleGroupVersionId, params = {}) => {
+  const { catalogId } = params;
+  let url = `${apiUrl+urlBundleGroupVersion}${bundleGroupVersionId}`;
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+  if (catalogId) {
+    url += `?catalogId=${catalogId}`;
+  }
+
+  const { data, isError } = await getData(url);
+
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadBundleGroup')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }
@@ -570,6 +588,16 @@ export const getPrivateCatalogs = async (apiUrl) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url);
   eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};
+
+export const getPrivateCatalog = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogs}`;
+  const { data, isError } = await getData(url, id);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.message || ''}`);
   return {
     data,
     isError,

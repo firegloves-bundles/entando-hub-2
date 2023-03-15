@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Tag } from "carbon-components-react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import "./catalog-tile.scss";
 import CatalogTileOverflowMenu from "./overflow-menu/CatalogTileOverflowMenu";
 import { isHubUser } from "../../../helpers/helpers";
@@ -27,6 +27,8 @@ const CatalogTile = ({
   const [categoryName, setCategoryName] = useState("")
   let bundleStatus = status
 
+  const { catalogId } = useParams();
+
   useEffect(() => {
 
     if (categories) {
@@ -42,10 +44,12 @@ const CatalogTile = ({
   const history = useHistory()
 
   const handleClick = () => {
+    const basePath = catalogId ? `/catalog/${catalogId}` : '';
+
     if (isVersionsPage) {
-      history.push(`${VERSIONS_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+      history.push(`${basePath}${VERSIONS_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
     } else {
-      history.push(`${HOME_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
+      history.push(`${basePath}${HOME_TO_BG_PAGE_URL}${bundleGroup && bundleGroup.bundleGroupVersionId}`);
     }
   }
 

@@ -180,3 +180,16 @@ button:focus, button {
 .navigation-bar > :link {
   text-decoration: none;
 }
+
+.CatalogPage-catalog-menu {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+.CatalogPage-catalog-options {
+  width: auto;
+
+  .bx--overflow-menu-options__btn {
+    max-width: none;
+  }
+}

@@ -380,7 +380,6 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
   if (type === 'update') {
-    debugger
     eventHandler(isError,
       `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
       `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`

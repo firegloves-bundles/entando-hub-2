@@ -7,13 +7,14 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import i18n from '../../i18n';
 import './catalogPage.scss'
-import { getAllCategories, getAllOrganisations, getPrivateCatalogs, getPortalUser } from "../../integration/Integration";
+import { getAllCategories, getAllOrganisations, getPortalUser } from "../../integration/Integration";
 import { getUserName, isCurrentUserAssignedAPreferredName, isCurrentUserAssignedAValidRole, isCurrentUserAuthenticated, isHubAdmin, isHubUser } from "../../helpers/helpers";
 import BundleGroupStatusFilter from "./bundle-group-status-filter/BundleGroupStatusFilter"
 import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
 import { useApiUrl } from "../../contexts/ConfigContext";
+import { useCatalogs } from "../../contexts/CatalogContext";
 
 /*
 This is the HUB landing page
@@ -31,7 +32,8 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
   const [currentUserOrg, setCurrentUserOrg] = useState(null);
   const [orgLength, setOrgLength] = useState(0);
   const [portalUserPresent, setPortalUserPresent] = useState(false);
-  const [catalogs, setCatalogs] = useState([]);
+
+  const { catalogs, fetchCatalogs } = useCatalogs();
 
   const apiUrl = useApiUrl();
   const history = useHistory();
@@ -99,24 +101,17 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
       }
     };
 
-    const getCatalogs = async () => {
-      const { data, isError } = await getPrivateCatalogs(apiUrl);
-      if (!isError) {
-        setCatalogs(data);
-      }
-    };
-
     getCatOrgList();
     getPortalUserDetails();
-    
+
     if (hubUser) {
-      getCatalogs();
+      fetchCatalogs();
     }
-  
+
     return () => {
       isMounted = false;
     };
-  }, [apiUrl, hubUser]);
+  }, [apiUrl, hubUser, fetchCatalogs]);
 
   const catalogMap = useMemo(() => (
     catalogs.reduce((prev, curr) => ({
@@ -230,7 +225,15 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
                    */}
-                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && <ModalAddNewBundleGroup isLoading={loading} orgList={orgList} catList={categories} onAfterSubmit={onAfterSubmit} currentUserOrg={currentUserOrg} />}
+                  {showFullPage && hubUser && statusFilterValue !== "LOADING" && (
+                    <ModalAddNewBundleGroup
+                      isLoading={loading}
+                      orgList={orgList}
+                      catList={categories}
+                      onAfterSubmit={onAfterSubmit}
+                      currentUserOrg={currentUserOrg}
+                    />
+                  )}
                 </div>
                 <div className="bx--col-lg-4 CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}

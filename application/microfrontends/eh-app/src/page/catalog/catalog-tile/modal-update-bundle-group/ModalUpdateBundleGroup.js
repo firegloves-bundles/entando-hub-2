@@ -16,6 +16,7 @@ import "./modal-update-bundle-group.scss"
 import i18n from "../../../../i18n"
 import BundleGroupForm from "../../../../components/forms/BundleGroupForm/BundleGroupForm"
 import { useApiUrl } from "../../../../contexts/ConfigContext"
+import { useCatalogs } from "../../../../contexts/CatalogContext"
 
 export const ModalUpdateBundleGroup = ({
   bundleGroupId,
@@ -42,6 +43,8 @@ export const ModalUpdateBundleGroup = ({
   const [minOneBundleError] = useState("")
 
   const apiUrl = useApiUrl();
+
+  const { catalogs } = useCatalogs();
 
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)
@@ -183,6 +186,7 @@ export const ModalUpdateBundleGroup = ({
             validationResult={validationResult}
             minOneBundleError={minOneBundleError}
             orgList={orgList}
+            isPublicOnly={catalogs.length === 0}
           />
         </Modal>
       }

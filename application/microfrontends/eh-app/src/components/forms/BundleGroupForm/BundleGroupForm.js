@@ -46,7 +46,8 @@ const BundleGroupForm = ({
                              minOneBundleError,
                              theBundleStatus,
                              mode,
-                             orgList
+                             orgList,
+                             isPublicOnly,
                          }) => {
 
     const [bundleStatus, setBundleStatus] = useState(theBundleStatus ? theBundleStatus : mode === 'Add' ? BUNDLE_STATUS.NOT_PUBLISHED : "");
@@ -348,7 +349,7 @@ const BundleGroupForm = ({
                     <Row>
                         <Column sm={16} md={8} lg={{ span: 8, offset: 8 }}>
                             <Checkbox
-                                disabled={disabled}
+                                disabled={isPublicOnly || disabled}
                                 id="publicCatalog"
                                 labelText={`${i18n.t('component.bundleModalFields.includeInPublicCatalog')}`}
                                 checked={!!bundleGroup.publicCatalog}

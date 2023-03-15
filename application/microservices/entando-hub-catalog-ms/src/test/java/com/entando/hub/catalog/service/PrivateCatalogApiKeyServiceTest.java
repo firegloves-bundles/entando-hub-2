@@ -23,13 +23,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.*;
+import static com.entando.hub.catalog.service.PrivateCatalogApiKeyService.getPageable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -57,6 +58,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 25;
     private final static Long API_KEY_ID = 1000L;
     private final static Long PORTAL_USER_ID = 2000L;
     public static String API_KEY = "api-key";
@@ -74,9 +76,9 @@ public class PrivateCatalogApiKeyServiceTest {
         apiKeyList.add(privateCatalogApiKey1);
         apiKeyList.add(privateCatalogApiKey2);
         Page<PrivateCatalogApiKey> response = new PageImpl<>(apiKeyList);
-        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), PageRequest.of(1, 20))).thenReturn(response);
-        Integer PAGE_SIZE = 25;
-        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME,PAGE, PAGE_SIZE);
+        Pageable paging = getPageable(PAGE_SIZE, PAGE - 1);
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), eq(paging))).thenReturn(response);
+        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME, PAGE, PAGE_SIZE);
         Assertions.assertNotNull(apiKeys);
         Assertions.assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());
         Assertions.assertEquals(GENERATED_LABEL, apiKeys.getPayload().get(0).getLabel());
@@ -89,7 +91,8 @@ public class PrivateCatalogApiKeyServiceTest {
         apiKeyList.add(privateCatalogApiKey1);
         apiKeyList.add(privateCatalogApiKey2);
         Page<PrivateCatalogApiKey> response = new PageImpl<>(apiKeyList);
-        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), PageRequest.of(1, 20))).thenReturn(response);
+        Pageable paging = getPageable(0, PAGE-1);
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), eq(paging))).thenReturn(response);
         PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME,PAGE, 0);
         Assertions.assertNotNull(apiKeys);
         Assertions.assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());

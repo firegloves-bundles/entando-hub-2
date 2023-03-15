@@ -99,7 +99,7 @@ public class PrivateCatalogApiKeyService {
         return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), apiKeys);
     }
 
-    private static Pageable getPageable(Integer pageSize, int pageNum) {
+    public static Pageable getPageable(Integer pageSize, int pageNum) {
         Pageable paging;
         if (pageSize == 0) {
             paging = Pageable.unpaged();

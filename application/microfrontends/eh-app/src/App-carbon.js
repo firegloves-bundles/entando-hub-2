@@ -12,6 +12,8 @@ import NotificationDispatcher from "./components/notification/NotificationDispat
 import i18n from "./i18n"
 import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 import { useState } from "react"
+import NotFound from "./components/errors/NotFound"
+import { CatalogProvider } from "./contexts/CatalogContext"
 
 function AppCarbon() {
   const [versionSearchTerm, setVersionSearchTerm] = useState('');
@@ -21,19 +23,26 @@ function AppCarbon() {
       <NotificationDispatcher />
       <HashRouter>
         <Switch>
-          <Route path="**/bundlegroup/:id" exact render={(props) => <BundleGroupPage {...props}/>}/>
-          <Route path="**/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props}/>}/>
-          <Route path="**/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} {...props}/>}/>
-          <Route path="**/catalog/:catalogId/" render={(props) => <CatalogPage {...props} />} />
-          <RouteWithGate gateFunction={isHubAdmin} path="**/admin*" component={UserManagementPage} />
-          <RouteWithGate gateFunction={isHubAdmin} path="**/organisations*" component={OrganisationManagementPage} />
-          <RouteWithGate gateFunction={isHubAdmin} path="**/organisation*" component={OrganisationManagementPage} />
-          <RouteWithGate gateFunction={isHubAdmin} path="**/categories*" component={CategoryManagementPage} />
-          <RouteWithGate gateFunction={isHubAdmin} path="**/category*" component={CategoryManagementPage} />
+          <Route path="/bundlegroup/:id" exact render={(props) => <BundleGroupPage {...props}/>}/>
+          <Route path="/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props}/>}/>
+          <Route path="/versions/:id/:categoryId" render={(props) => <BundleGroupVersionsPage setVersionSearchTerm={setVersionSearchTerm} {...props}/>}/>
+          <Route path="/catalog/:catalogId/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props} />} />
+          <Route path="/catalog/:catalogId/bundlegroup/:id" render={(props) => <BundleGroupPage {...props} />} />
+          <RouteWithGate gateFunction={isHubAdmin} path="/admin*" component={UserManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="/organisations*" component={OrganisationManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="/organisation*" component={OrganisationManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="/categories*" component={CategoryManagementPage} />
+          <RouteWithGate gateFunction={isHubAdmin} path="/category*" component={CategoryManagementPage} />
+          <Route path="/404">
+            <NotFound />
+          </Route>
           <Route path="**/unauthorized">
             {i18n.t('page.unauthorized')}
           </Route>
-          <Route path="**/" render={(props) => <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
+          <CatalogProvider>
+            <Route path="/catalog/:catalogId/" render={(props) => <CatalogPage {...props} />} />
+            <Route path="**/" render={(props) => <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
+          </CatalogProvider>
         </Switch>
       </HashRouter>
     </>

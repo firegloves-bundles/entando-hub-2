@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class TestHelper {
 
+    public static final String ADMIN_USERNAME = "eh-admin";
     public static final String NON_ADMIN_USERNAME = "eh-manager";
     public static final String NON_ADMIN_EMAIL = "eh-manager@mail.com";
     public static final String BUNDLE_NAME = "Amazing bundle";

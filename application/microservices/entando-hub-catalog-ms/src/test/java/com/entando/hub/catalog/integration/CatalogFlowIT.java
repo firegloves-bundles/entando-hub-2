@@ -168,6 +168,9 @@ public class CatalogFlowIT {
         List<Catalog> catalogs = this.populateCatalogs("Entando", 1);
         String expectedBody = objectMapper.writeValueAsString(this.mapToDTO(catalogs.get(0)));
 
+        when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
         mockMvc.perform(get("/api/catalog/1")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -184,7 +187,7 @@ public class CatalogFlowIT {
     }
 
     @Test
-    @WithMockUser(roles = {AUTHOR})
+    @WithMockUser(roles = {"no-authorized-role"})
     void shouldReturnForbiddenWhenGettingWithNonAdminRole() throws Exception {
         mockMvc.perform(get("/api/catalog/100")
                         .accept(MediaType.APPLICATION_JSON_VALUE))

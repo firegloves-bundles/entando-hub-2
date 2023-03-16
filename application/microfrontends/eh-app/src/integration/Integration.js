@@ -191,9 +191,15 @@ export const getAllBundles = async (apiUrl) => {
   return checkForErrorsAndSendResponse(data, isError, "bundleList")
 }
 
-export const getAllBundlesForABundleGroup = async (apiUrl, id) => {
-  const newUrl = `${apiUrl+urlBundles}?bundleGroupVersionId=${id}`
-  const { data, isError } = await getData(newUrl)
+export const getAllBundlesForABundleGroup = async (apiUrl, id, params = {}) => {
+  const { catalogId } = params;
+  let url = `${apiUrl+urlBundles}?bundleGroupVersionId=${id}`;
+
+  if (catalogId) {
+    url += `&catalogId=${catalogId}`;
+  }
+
+  const { data, isError } = await getData(url);
 
   eventHandler(
     isError,
@@ -374,7 +380,6 @@ export const createAUserForAnOrganisation = async (
   }
   const { data, isError } = await postData(newUrl, userDataObject)
   if (type === 'update') {
-    debugger
     eventHandler(isError,
       `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
       `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`
@@ -544,11 +549,17 @@ export const editBundleGroupVersion = async (apiUrl,bundleGroupVersionData, bund
  * @param {*} bundleGroupVersionId
  * @returns
  */
- export const getBundleGroupDetailsByBundleGroupVersionId = async (apiUrl,bundleGroupVersionId) => {
-  let newUrl = `${apiUrl+urlBundleGroupVersion}${bundleGroupVersionId}`;
-  const { data, isError } = await getData(newUrl)
+ export const getBundleGroupDetailsByBundleGroupVersionId = async (apiUrl, bundleGroupVersionId, params = {}) => {
+  const { catalogId } = params;
+  let url = `${apiUrl+urlBundleGroupVersion}${bundleGroupVersionId}`;
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+  if (catalogId) {
+    url += `?catalogId=${catalogId}`;
+  }
+
+  const { data, isError } = await getData(url);
+
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadBundleGroup')}`)
 
   return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }
@@ -577,6 +588,16 @@ export const getPrivateCatalogs = async (apiUrl) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url);
   eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};
+
+export const getPrivateCatalog = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogs}`;
+  const { data, isError } = await getData(url, id);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.message || ''}`);
   return {
     data,
     isError,

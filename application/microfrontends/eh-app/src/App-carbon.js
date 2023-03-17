@@ -39,10 +39,22 @@ function AppCarbon() {
           <Route path="**/unauthorized">
             {i18n.t('page.unauthorized')}
           </Route>
-          <CatalogProvider>
-            <Route path="/catalog/:catalogId/" render={(props) => <CatalogPage {...props} />} />
-            <Route path="**/" render={(props) => <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />}/>
-          </CatalogProvider>
+          <Route
+            path="/catalog/:catalogId/"
+            render={(props) =>
+              <CatalogProvider>
+                <CatalogPage {...props} />
+              </CatalogProvider>
+            }
+          />
+          <Route
+            path="**/"
+            render={(props) =>
+              <CatalogProvider>
+                <CatalogPage setVersionSearchTerm={setVersionSearchTerm} versionSearchTerm={versionSearchTerm} {...props} />
+              </CatalogProvider>
+            }
+          />
         </Switch>
       </HashRouter>
     </>

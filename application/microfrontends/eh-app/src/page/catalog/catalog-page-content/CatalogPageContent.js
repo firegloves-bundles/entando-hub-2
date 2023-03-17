@@ -136,9 +136,11 @@ const CatalogPageContent = ({
             await loadData(page, pageSize, localStatusFilterValue, selectedCategoryIds, statuses, catalogId);
             setLoading(false);
           })()
+        } else {
+            history.push('/404');
         }
             
-    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage, catalogId])
+    }, [reloadToken, page, pageSize, selectedCategoryIds, localStatusFilterValue, loadData, showFullPage, catalogId, history])
 
 
     const onFilterChange = (newSelectedCategoryIds) => {

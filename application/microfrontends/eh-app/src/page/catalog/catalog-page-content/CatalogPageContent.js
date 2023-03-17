@@ -85,19 +85,19 @@ const CatalogPageContent = ({
             const { isError, bundleGroupList } = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, organisationId, categoryIds, statuses, catalogId, searchText })
 
             if (isError && catalogId) {
-                history.pushState('/404');
+                history.push('/404');
+            } else {
+                let filtered = null;
+                let metadata = null;
+                if (bundleGroupList) {
+                    filtered = bundleGroupList.payload;
+                    metadata = bundleGroupList.metadata
+                    setPage(metadata.page)
+                    setPageSize(metadata.pageSize)
+                    setTotalItems(metadata.totalItems)
+                }
+                return filtered
             }
-
-            let filtered = null;
-            let metadata = null;
-            if (bundleGroupList) {
-                filtered = bundleGroupList.payload;
-                metadata = bundleGroupList.metadata
-                setPage(metadata.page)
-                setPageSize(metadata.pageSize)
-                setTotalItems(metadata.totalItems)
-            }
-            return filtered
         }
 
         const initBGs = async (apiUrl, organisationId, statuses) => {

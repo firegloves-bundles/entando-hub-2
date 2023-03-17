@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
+import { useHistory } from 'react-router-dom'
 import CatalogFilterTile from "../catalog-filter-tile/CatalogFilterTile"
 import CatalogTiles from "../catalog-tiles/CatalogTiles"
 import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
@@ -71,6 +72,8 @@ const CatalogPageContent = ({
 
     const apiUrl = useApiUrl();
 
+    const history = useHistory();
+
     const loadData = useCallback(async ( page, pageSize, statusFilterValue, selectedCategoryIds, statuses, catalogId) => {
         const userOrganisation = currentUserOrg;
         const organisationId = !isHubAdmin() && userOrganisation ? userOrganisation.organisationId : undefined
@@ -79,15 +82,17 @@ const CatalogPageContent = ({
          *Get all the bundle groups having categoryIds and statuses
          */
         const getBundleGroupsAndFilterThem = async (apiUrl, organisationId, categoryIds, statuses, searchText) => {
-            const data = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, organisationId, categoryIds, statuses, catalogId, searchText })
-            if (data.isError) {
-                setLoading(false)
+            const { isError, bundleGroupList } = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, organisationId, categoryIds, statuses, catalogId, searchText })
+
+            if (isError && catalogId) {
+                history.pushState('/404');
             }
+
             let filtered = null;
             let metadata = null;
-            if (data.bundleGroupList) {
-                filtered = data.bundleGroupList.payload;
-                metadata = data.bundleGroupList.metadata
+            if (bundleGroupList) {
+                filtered = bundleGroupList.payload;
+                metadata = bundleGroupList.metadata
                 setPage(metadata.page)
                 setPageSize(metadata.pageSize)
                 setTotalItems(metadata.totalItems)
@@ -103,7 +108,7 @@ const CatalogPageContent = ({
             setFilteredBundleGroups(filtered)
         }
         return Promise.all([initBGs(apiUrl, organisationId, statuses)])
-    }, [apiUrl, currentUserOrg, searchTerm])
+    }, [apiUrl, currentUserOrg, searchTerm, history])
 
     useEffect(() => {
         if (isError) {

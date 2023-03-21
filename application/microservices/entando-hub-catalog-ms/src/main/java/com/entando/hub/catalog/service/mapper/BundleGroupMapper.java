@@ -5,6 +5,7 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface BundleGroupMapper extends BaseStandardMapper<BundleGroup, BundleGroupDto> {
+public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDto> {
 
   // NOTE: the categories are not converted
   @Mapping(source = "bundleGroupId", target = "id", qualifiedByName = "toEntityId")

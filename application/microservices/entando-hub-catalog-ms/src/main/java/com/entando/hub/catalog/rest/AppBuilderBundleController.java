@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;

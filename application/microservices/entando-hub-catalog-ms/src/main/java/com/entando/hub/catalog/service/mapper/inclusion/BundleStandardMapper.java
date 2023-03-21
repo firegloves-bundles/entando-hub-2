@@ -1,10 +1,11 @@
-package com.entando.hub.catalog.service.mapper;
+package com.entando.hub.catalog.service.mapper.inclusion;
 
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface BundleStandardMapper extends BaseStandardMapper<Bundle, BundleDto> {
+public interface BundleStandardMapper extends BaseMapper<Bundle, BundleDto> {
 
 
   @Mapping(source = "bundleGroups", target = "bundleGroupVersions", qualifiedByName = "toEntityGroups")

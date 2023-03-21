@@ -6,7 +6,7 @@ import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

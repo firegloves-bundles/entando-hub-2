@@ -3,6 +3,7 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 

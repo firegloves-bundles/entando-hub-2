@@ -6,7 +6,7 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.*;
 
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,12 +2,11 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

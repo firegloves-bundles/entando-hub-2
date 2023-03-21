@@ -1,10 +1,10 @@
-package com.entando.hub.catalog.service.mapper;
+package com.entando.hub.catalog.service.mapper.inclusion;
 
 import com.entando.hub.catalog.service.mapper.inclusion.BaseMapperMethods;
 
 import java.util.List;
 
-public interface BaseStandardMapper<E, D> extends BaseMapperMethods {
+public interface BaseMapper<E, D> extends BaseMapperMethods {
 
   E toEntity(D dto);
   D toDto(E entity);

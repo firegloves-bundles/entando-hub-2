@@ -1,19 +1,14 @@
 package com.entando.hub.catalog.rest;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
-import com.entando.hub.catalog.service.mapper.BundleStandardMapperImpl;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +28,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.BundleService;
+import java.util.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleController.class)

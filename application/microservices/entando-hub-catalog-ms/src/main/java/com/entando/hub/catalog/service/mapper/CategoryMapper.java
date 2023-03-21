@@ -3,6 +3,7 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.dto.CategoryDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BaseMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface CategoryMapper extends BaseStandardMapper<Category, CategoryDto> {
+public interface CategoryMapper extends BaseMapper<Category, CategoryDto> {
 
   @Mapping(source = "categoryId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "bundleGroups", expression = "java(toEntityBundleGroups(dto.getBundleGroups()))")

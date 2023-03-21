@@ -12,7 +12,7 @@ import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,6 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.rest.BundleGroupController;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 
 @Service

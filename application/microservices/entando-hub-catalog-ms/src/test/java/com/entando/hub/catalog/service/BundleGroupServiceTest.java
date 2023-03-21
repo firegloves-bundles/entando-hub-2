@@ -35,25 +35,10 @@ import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
-import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapper;
-import com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion.BundleGroupVersionStandardMapperImpl;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapperImpl;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

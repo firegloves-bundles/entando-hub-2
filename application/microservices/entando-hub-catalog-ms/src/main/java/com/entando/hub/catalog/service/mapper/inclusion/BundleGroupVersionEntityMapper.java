@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.service.mapper.bundleGroupVersionInclusion;
+package com.entando.hub.catalog.service.mapper.inclusion;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;

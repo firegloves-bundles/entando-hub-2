@@ -1,7 +1,7 @@
 package com.entando.hub.catalog.service.mapper.inclusion;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.service.dto.BundleEntityDto;
+import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

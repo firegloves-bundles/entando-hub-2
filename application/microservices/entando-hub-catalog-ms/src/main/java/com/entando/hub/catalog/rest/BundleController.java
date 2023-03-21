@@ -4,6 +4,7 @@ import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
@@ -118,15 +119,15 @@ public class BundleController {
         }
     }
 
-    @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundlegId")
+    @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundleId")
     @RolesAllowed({ADMIN})
     @DeleteMapping(value = "/{bundleId}", produces = {"application/json"})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @Transactional
-    public ResponseEntity<Bundle> deleteBundle(@PathVariable String bundleId) {
-        Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
+    public ResponseEntity<BundleEntityDto> deleteBundle(@PathVariable String bundleId) {
+        Optional<Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (!bundleOptional.isPresent()) {
             logger.warn("Bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

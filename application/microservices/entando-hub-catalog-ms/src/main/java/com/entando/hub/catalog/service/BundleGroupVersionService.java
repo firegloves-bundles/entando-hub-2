@@ -490,8 +490,8 @@ public class BundleGroupVersionService {
         return new PageImpl<>(page.getContent()
                 .stream()
                 .map(e -> entityMapper.toDto(e))
-                .collect(Collectors.toList())
-                , page.getPageable(), page.getNumberOfElements());
+                .collect(Collectors.toList()),
+                page.getPageable(), page.getNumberOfElements());
     }
 
 }

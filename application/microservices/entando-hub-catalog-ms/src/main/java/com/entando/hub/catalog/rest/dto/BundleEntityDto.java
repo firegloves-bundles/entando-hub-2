@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.service.dto;
+package com.entando.hub.catalog.rest.dto;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;

@@ -1,17 +1,17 @@
 package com.entando.hub.catalog.rest;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.*;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
+import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
+import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
+import com.entando.hub.catalog.service.BundleGroupService;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.security.SecurityHelperService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,26 +31,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
-import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
-import com.entando.hub.catalog.service.BundleGroupService;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.CategoryService;
-import com.entando.hub.catalog.service.security.SecurityHelperService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BundleGroupVersionController.class)
 @WithMockUser(username="admin",roles={ADMIN})
 public class BundleGroupVersionControllerTest {
-	
+
 	@Autowired
 	WebApplicationContext webApplicationContext;
 	@Autowired
@@ -65,7 +60,11 @@ public class BundleGroupVersionControllerTest {
 	CategoryService categoryService;
 	@MockBean
 	SecurityHelperService securityHelperService;
-	
+	@MockBean
+	BundleGroupValidator bundleGroupValidator;
+	@MockBean
+	CatalogService catalogService;
+	private static final String CATALOG_ID_PARAM = "catalogId";
 	private final Long BUNDLE_GROUP_VERSION_ID =  2001L;
 	private final Long BUNDLE_GROUPID =  2002L;
 	private final Long CATEGORY_ID =  2003L;
@@ -87,7 +86,7 @@ public class BundleGroupVersionControllerTest {
 	@Test
 	public void testGetBundleGroupVersions() throws Exception {
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();		
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersionsList.add(bundleGroupVersion);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
@@ -111,7 +110,6 @@ public class BundleGroupVersionControllerTest {
 		//Case 1: bundle group exists
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(eq(page), eq(pageSize), eq(statuses), any(BundleGroup.class))).thenReturn(pagedContent);
-		System.out.println(pagedContent);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/versions/"+bundleGroupId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
@@ -166,10 +164,10 @@ public class BundleGroupVersionControllerTest {
 		String[] categoryIds = new String[]{category.getId().toString()};
 		
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		Long bundleGroupId = bundleGroupVersion.getBundleGroup().getId();
-		String organisationId = bundleGroupVersion.getBundleGroup().getOrganisation().getId().toString();
+		Long organisationId = bundleGroupVersion.getBundleGroup().getOrganisation().getId();
 		Integer page = 0;
 		Integer pageSize = 89;
 		String[] statuses = new String[]{BundleGroupVersion.Status.PUBLISHED.toString()};
@@ -189,16 +187,15 @@ public class BundleGroupVersionControllerTest {
 		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
 		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(list, response);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));		//Mockito.when(bundleGroupVersionService.getBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, Optional.empty())).thenReturn(pagedContent);
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, null)).thenReturn(pagedContent);
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, Optional.ofNullable(organisationId), categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
 		
-		System.out.println(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, null));
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/filtered")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
 				.param("pageSize", inputJsonPageSize)
-				.param("organisationId", organisationId)
+				.param("organisationId", String.valueOf(organisationId))
 				.param("categoryIds", categoryIds)
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
@@ -212,7 +209,7 @@ public class BundleGroupVersionControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
 				.param("pageSize", inputJsonPageSize)
-				.param("organisationId", organisationId)
+				.param("organisationId", String.valueOf(organisationId))
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
@@ -221,12 +218,12 @@ public class BundleGroupVersionControllerTest {
 		//Case 3: when statuses list is null
 		statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/filtered")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
 				.param("pageSize", inputJsonPageSize)
-				.param("organisationId", organisationId)
+				.param("organisationId", String.valueOf(organisationId))
 				.param("categoryIds", categoryIds))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
@@ -240,7 +237,7 @@ public class BundleGroupVersionControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
 				.param("pageSize", inputJsonPageSize)
-				.param("organisationId", organisationId)
+				.param("organisationId", String.valueOf(organisationId))
 				.param("categoryIds", categoryIds)
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
@@ -250,7 +247,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testGetBundleGroupVersion() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
 		
@@ -261,7 +258,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testGetBundleGroupVersionFails() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(null)).thenReturn(Optional.empty());
 		
@@ -272,7 +269,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testCreateBundleGroupVersion() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
 		Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = Optional.of(bundleGroup);
@@ -285,10 +282,55 @@ public class BundleGroupVersionControllerTest {
 				.content(inputJson))
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 	}
-	
+
+	@Test
+	public void testGetBundleGroupVersionPrivateCatalog() throws Exception {
+		//Not authenticated user require to get a private catalog
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
+		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
+		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+				.thenReturn(Optional.of(bundleGroupVersion));
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/{bundleGroupVersionId}", bundleGroupVersionId)
+				.param(CATALOG_ID_PARAM, "1")
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+
+
+	@Test
+	public void testGetBundleGroupVersionPrivateCatalogAdmin() throws Exception {
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
+		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
+		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+				.thenReturn(Optional.of(bundleGroupVersion));
+		Mockito.when(securityHelperService.isUserAuthenticated()).thenReturn(true);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/{bundleGroupVersionId}", bundleGroupVersionId)
+						.param(CATALOG_ID_PARAM, "1")
+						.accept(MediaType.APPLICATION_JSON_VALUE)).andDo(print())
+				.andExpect(status().is(HttpStatus.OK.value()));
+	}
+
+
+	@Test
+	@WithMockUser(username = "MANAGER", roles = {MANAGER})
+	public void testGetBundleGroupVersionPrivateCatalogManager() throws Exception {
+		//Not authenticated user require to get a private catalog
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
+		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
+		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+				.thenReturn(Optional.of(bundleGroupVersion));
+		Mockito.when(securityHelperService.isUserAuthenticated()).thenReturn(true);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/{bundleGroupVersionId}", bundleGroupVersionId)
+						.param(CATALOG_ID_PARAM, "1")
+						.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().is(HttpStatus.OK.value()));
+	}
 	@Test
 	public void testCreateBundleGroupVersionFails() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
 		
@@ -314,7 +356,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testUpdateBundleGroupVersion() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		String bundleGroupId = bundleGroup.getId().toString();
 		bundleGroupVersion.setBundleGroup(bundleGroup);
@@ -333,7 +375,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testUpdateBundleGroupVersionFails() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		String bundleGroupId = bundleGroup.getId().toString();
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
@@ -382,7 +424,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testDeleteBundleGroupVersion() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersion.setStatus(Status.DELETE_REQ);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
@@ -393,7 +435,7 @@ public class BundleGroupVersionControllerTest {
 	
 	@Test
 	public void testDeleteBundleGroupVersionFails() throws Exception {
-		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersion.setStatus(Status.DELETE_REQ);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		
@@ -425,7 +467,7 @@ public class BundleGroupVersionControllerTest {
 		return objectMapper.writeValueAsString(obj);
 	}
 	
-	private BundleGroupVersion createBundleGroupVersion() {
+	private BundleGroupVersion createBundleGroupVersion(boolean publicCatalog ) {
 		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
 		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
 		bundleGroupVersion.setDescription(DESCRIPTION);
@@ -433,7 +475,8 @@ public class BundleGroupVersionControllerTest {
 		bundleGroupVersion.setDocumentationUrl(DOCUMENTATION_URL);
 		bundleGroupVersion.setVersion(VERSION);
 		bundleGroupVersion.setStatus(Status.PUBLISHED);
-		BundleGroup bundleGroup = createBundleGroup();
+
+		BundleGroup bundleGroup = createBundleGroup(publicCatalog);
 		bundleGroupVersion.setBundleGroup(bundleGroup);
 		Bundle bundle = createBundle();
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
@@ -441,10 +484,11 @@ public class BundleGroupVersionControllerTest {
 		return bundleGroupVersion;
 	}
 	
-	private BundleGroup createBundleGroup() {
+	private BundleGroup createBundleGroup(boolean publicCatalog) {
 		BundleGroup bundleGroup = new BundleGroup();
 		bundleGroup.setId(BUNDLE_GROUPID);
 		bundleGroup.setName(NAME);
+		bundleGroup.setPublicCatalog(publicCatalog);
 		Organisation organisation = createOrganisation();
 		bundleGroup.setOrganisation(organisation);
 		return bundleGroup;

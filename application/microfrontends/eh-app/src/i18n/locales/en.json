@@ -130,6 +130,7 @@
     "impossibleToRemoveUser": "Impossible to remove user.",
     "impossibleToLoadPrivateCatalogs": "Impossible to load private catalogs",
     "impossibleToCreatePrivateCatalog": "Impossible to create private catalog",
+    "impossibleToLoadPrivateCatalog": "Impossible to load private catalog",
     "userRemovedFromTheOrganisation": "User removed from the organisation",
     "unableToAddBundleGroupVersion": "Unable to add bundle group version.",
     "impossibleToLoadBundleGroupVersions": "Impossible to load bundle group versions",

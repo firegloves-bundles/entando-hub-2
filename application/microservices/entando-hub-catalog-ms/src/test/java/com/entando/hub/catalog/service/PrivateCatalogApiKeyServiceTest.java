@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.*;
+import static com.entando.hub.catalog.service.PrivateCatalogApiKeyService.getPageable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -57,6 +58,7 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 25;
     private final static Long API_KEY_ID = 1000L;
     private final static Long PORTAL_USER_ID = 2000L;
     public static String API_KEY = "api-key";
@@ -74,9 +76,9 @@ public class PrivateCatalogApiKeyServiceTest {
         apiKeyList.add(privateCatalogApiKey1);
         apiKeyList.add(privateCatalogApiKey2);
         Page<PrivateCatalogApiKey> response = new PageImpl<>(apiKeyList);
-        Mockito.when(this.privateCatalogApiKeyRepository.findByPortalUserUsername(any(Pageable.class), eq(GENERATED_USERNAME))).thenReturn(response);
-        Integer PAGE_SIZE = 25;
-        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME,PAGE, PAGE_SIZE);
+        Pageable paging = getPageable(PAGE_SIZE, PAGE - 1);
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), eq(paging))).thenReturn(response);
+        PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME, PAGE, PAGE_SIZE);
         Assertions.assertNotNull(apiKeys);
         Assertions.assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());
         Assertions.assertEquals(GENERATED_LABEL, apiKeys.getPayload().get(0).getLabel());
@@ -89,7 +91,8 @@ public class PrivateCatalogApiKeyServiceTest {
         apiKeyList.add(privateCatalogApiKey1);
         apiKeyList.add(privateCatalogApiKey2);
         Page<PrivateCatalogApiKey> response = new PageImpl<>(apiKeyList);
-        Mockito.when(this.privateCatalogApiKeyRepository.findByPortalUserUsername(any(Pageable.class), eq(GENERATED_USERNAME))).thenReturn(response);
+        Pageable paging = getPageable(0, PAGE-1);
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKeys(eq(GENERATED_USERNAME), eq(paging))).thenReturn(response);
         PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(GENERATED_USERNAME,PAGE, 0);
         Assertions.assertNotNull(apiKeys);
         Assertions.assertEquals(API_KEY_ID, apiKeys.getPayload().get(0).getId());
@@ -125,7 +128,7 @@ public class PrivateCatalogApiKeyServiceTest {
     void editLabelTest() {
         //Edit an api key that exists should return true as result
         PrivateCatalogApiKey privateCatalogApiKey = createPrivateCatalogApiKey1();
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
         Boolean result = this.privateCatalogApiKeyService.editLabel(API_KEY_ID, GENERATED_USERNAME, GENERATED_LABEL);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(true, result);
@@ -134,7 +137,7 @@ public class PrivateCatalogApiKeyServiceTest {
     @Test
     void editLabelNotExistTest() {
         //Edit an api key that don't exist should throw a BadRequestException
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {
             privateCatalogApiKeyService.editLabel(API_KEY_ID, GENERATED_USERNAME, GENERATED_LABEL);
         } catch (Exception e) {
@@ -146,7 +149,7 @@ public class PrivateCatalogApiKeyServiceTest {
     void deleteApiKeyTest() {
         //Delete an api key that exists should return true as result
         PrivateCatalogApiKey privateCatalogApiKey = createPrivateCatalogApiKey1();
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
         Boolean result = this.privateCatalogApiKeyService.deleteApiKey(API_KEY_ID, GENERATED_USERNAME);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(true, result);
@@ -155,7 +158,7 @@ public class PrivateCatalogApiKeyServiceTest {
     @Test
     void deleteApiKeyNotExistTest() {
         //Delete an Api key that don't exist should throw a BadRequestException
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {
             this.privateCatalogApiKeyService.deleteApiKey(API_KEY_ID, GENERATED_USERNAME);
         } catch (Exception e) {
@@ -167,7 +170,7 @@ public class PrivateCatalogApiKeyServiceTest {
     void regenerateApiKeyTest() {
         //Regenerate an api key that exists should return a String as result
         PrivateCatalogApiKey privateCatalogApiKey = generatePrivateCatalogApiKeyEntity(API_KEY_ID,PORTAL_USER_ID );
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.of(privateCatalogApiKey));
         Mockito.when(this.privateCatalogApiKeyRepository.save(any())).thenReturn(privateCatalogApiKey);
         Mockito.when(this.apiKeyGeneratorHelper.generateApiKey()).thenReturn(API_KEY);
         Mockito.when(this.apiKeyGeneratorHelper.toSha(API_KEY)).thenReturn(API_KEY_SHA);
@@ -179,7 +182,7 @@ public class PrivateCatalogApiKeyServiceTest {
     @Test
     void regenerateMyApiKeyNotExistTest() {
         //Regenerate an api key that don't exist should throw a BadRequestException
-        Mockito.when(this.privateCatalogApiKeyRepository.findByIdAndPortalUserUsername(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
+        Mockito.when(this.privateCatalogApiKeyRepository.getPrivateCatalogApiKey(API_KEY_ID, GENERATED_USERNAME)).thenReturn(Optional.empty());
         try {
             this.privateCatalogApiKeyService.regenerateApiKey(API_KEY_ID, GENERATED_USERNAME);
         } catch (Exception e) {

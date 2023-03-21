@@ -13,12 +13,17 @@ import values from "../../../config/common-configuration";
 import { DEFAULT_CATEGORY, BUNDLE_STATUS } from "../../../helpers/constants";
 import i18n from "../../../i18n"
 import { useApiUrl } from "../../../contexts/ConfigContext"
+import { useCatalogs } from "../../../contexts/CatalogContext"
 
 /*
     This component manages the modal for adding a new bundle group
 */
 export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, currentUserOrg}) => {
     const apiUrl = useApiUrl();
+
+    const { catalogs } = useCatalogs();
+
+    const isPublicOnly = catalogs.length === 0;
 
     const ModalStateManager = ({
         renderLauncher: LauncherContent,
@@ -63,6 +68,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     name: "",
                     categories: [defaultCategoryId],
                     organisationId,
+                    publicCatalog: isPublicOnly,
                     versionDetails: {
                         bundleGroupVersionId: null,
                         description: "",
@@ -101,6 +107,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                     localAllowedOrganisations = orgList
                 }
                 const selectStatusValues = getProfiledNewSelectStatusInfo(getHigherRole())
+
                 if (isMounted) {
                     setCategories(categoryList)
                     setSelectStatusValues(selectStatusValues)
@@ -122,7 +129,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         name: "",
                         categories: [defaultCategoryId],
                         organisationId,
-                        publicCatalog: false,
+                        publicCatalog: isPublicOnly,
                         versionDetails: {
                             bundleGroupVersionId: null,
                             description: "",
@@ -201,6 +208,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             minOneBundleError={minOneBundleError}
                             reqOnWay={reqOnWay}
                             orgList={orgList}
+                            isPublicOnly={isPublicOnly}
                         />,
                         document.body
                     )}
@@ -233,7 +241,8 @@ const ModalContent = ({
     loading,
     minOneBundleError,
     reqOnWay,
-    orgList
+    orgList,
+    isPublicOnly,
 }) => {
     return (
         <>
@@ -246,9 +255,19 @@ const ModalContent = ({
                 >
                     <ModalHeader label={i18n.t('component.button.add')} />
                     <ModalBody>
-                        <BundleGroupForm mode="Add" key={elemKey} allowedOrganisations={allowedOrganisations} bundleGroup={bundleGroup}
-                            categories={categories} selectStatusValues={selectStatusValues}
-                            onDataChange={onDataChange} validationResult={validationResult} minOneBundleError={minOneBundleError} orgList={orgList}/>
+                    <BundleGroupForm
+                        mode="Add"
+                        key={elemKey}
+                        allowedOrganisations={allowedOrganisations}
+                        bundleGroup={bundleGroup}
+                        categories={categories}
+                        selectStatusValues={selectStatusValues}
+                        onDataChange={onDataChange}
+                        validationResult={validationResult}
+                        minOneBundleError={minOneBundleError}
+                        orgList={orgList}
+                        isPublicOnly={isPublicOnly}
+                    />
                     </ModalBody>
                     <ModalFooter>
                         <Button

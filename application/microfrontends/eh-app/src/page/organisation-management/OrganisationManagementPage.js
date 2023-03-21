@@ -160,7 +160,10 @@ const OrganisationManagementPage = () => {
                       <TableHead>
                         <TableRow>
                           {headers.map((header) => (
-                            <TableHeader {...getHeaderProps({ header })}>
+                            <TableHeader
+                              {...getHeaderProps({ header })}
+                              style={header.key === 'privateCatalog' ? { textAlign: 'center' } : {}}
+                            >
                               {header.header ? i18n.t(`component.bundleModalFields.${header.key}`) : ''}
                             </TableHeader>
                           ))}

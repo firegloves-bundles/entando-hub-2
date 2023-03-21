@@ -129,6 +129,7 @@
     "impossibleToRemoveUser": "Impossibile rimuovere l'utente.",
     "impossibleToLoadPrivateCatalogs": "Impossibile caricare cataloghi privati",
     "impossibleToCreatePrivateCatalog": "Impossibile creare un catalogo privato",
+    "impossibleToLoadPrivateCatalog": "Impossibile caricare il catalogo privato",
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
     "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",

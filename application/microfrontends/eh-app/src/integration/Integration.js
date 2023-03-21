@@ -677,4 +677,9 @@ export const deleteCatalogApiKey = async (apiUrl, id) => {
     `${i18n.t('toasterMessage.impossibleToDeleteApiKey')}: ${data?.message || ''}`,
     `API Key ${i18n.t('toasterMessage.deleted')}`,
   );
+
+  return {
+    data,
+    isError,
+  };
 };

@@ -3,6 +3,8 @@ package com.entando.hub.catalog.service.mapper;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.dto.BundleEntityDto;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapper;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
@@ -14,6 +16,8 @@ import static junit.framework.TestCase.*;
 public class BundleMapperTest extends BaseMapperTest {
 
   private BundleStandardMapper bundleStandardMapper = Mappers.getMapper(BundleStandardMapper.class);
+
+  private BundleEntityMapper bundleEntityMapper = Mappers.getMapper(BundleEntityMapper.class);
 
   @Test
   public void toEntity() {
@@ -74,6 +78,22 @@ public class BundleMapperTest extends BaseMapperTest {
     assertEquals(2, dto.getDependencies().size());
     assertEquals("dep 2", dto.getDependencies().get(1));
     assertEquals("dep 1", dto.getDependencies().get(0));
+  }
+
+  @Test
+  public void toEntityDto() {
+    Bundle entity = generateBundleEntity(2677L);
+
+    BundleEntityDto dto = bundleEntityMapper.toDto(entity);
+    assertNotNull(dto);
+    assertNotNull(dto.getId());
+    assertEquals((Long)2677L, dto.getId());
+    assertEquals(BUNDLE_NAME, dto.getName());
+    assertEquals(BUNDLE_DESCRIPTION, dto.getDescription());
+    assertEquals(GIT_REPO_ADDRESS, dto.getGitRepoAddress());
+    assertEquals(GIT_SRC_REPO_ADDRESS, dto.getGitSrcRepoAddress());
+    assertNotNull(dto.getDependencies());
+    assertEquals("dep 1,dep 2", dto.getDependencies());
   }
 
   @Test

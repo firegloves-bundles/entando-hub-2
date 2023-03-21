@@ -23,6 +23,7 @@ import "./organisation-managment-page.scss"
 import i18n from "../../i18n"
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE } from "../../helpers/constants"
 import { useApiUrl } from "../../contexts/ConfigContext"
+import { useHistory } from "react-router-dom"
 
 /*
 [
@@ -83,6 +84,8 @@ const OrganisationManagementPage = () => {
 
   const apiUrl = useApiUrl();
 
+  const history = useHistory();
+
   // fetches the users to show
   useEffect(() => {
     (async () => {
@@ -90,15 +93,15 @@ const OrganisationManagementPage = () => {
       const { organisationList } = await getAllOrganisations(apiUrl);
 
       const { data: privateCatalogs } = await getPrivateCatalogs(apiUrl);
-      const privateCatalogMap = privateCatalogs.reduce((m, { organisationId }) => ({
-        [organisationId]: true,
+      const orgPrivateCatalogMap = privateCatalogs.reduce((m, { id, organisationId }) => ({
+        [organisationId]: id,
         ...m,
       }), {});
       
       setOrganisations(organisationList.map(organisation=>{
         return {
           id: organisation.organisationId,
-          privateCatalog: !!privateCatalogMap[organisation.organisationId],
+          privateCatalog: orgPrivateCatalogMap[organisation.organisationId],
           ...organisation
         }
       }))
@@ -118,11 +121,15 @@ const OrganisationManagementPage = () => {
     if (!isError) {
       setOrganisations(organisations.map(org => ({
         ...org,
-        privateCatalog: +org.organisationId === data.organisationId || org.privateCatalog,
+        privateCatalog: +org.organisationId === data.organisationId ? data.id : org.privateCatalog,
       })));
     }
       
     setIsLoading(false);
+  };
+
+  const handleNavigatePrivateCatalog = (catalogId) => {
+    history.push(`/catalog/${catalogId}/`);
   };
 
   return (
@@ -186,7 +193,7 @@ const OrganisationManagementPage = () => {
                                       onAfterSubmit={onAfterSubmit}
                                       setReloadToken={setReloadToken}
                                       onCreatePrivateCatalog={() => handleCreatePrivateCatalog(row.id)}
-                                      onNavigatePrivateCatalog={() => {}}
+                                      onNavigatePrivateCatalog={() => handleNavigatePrivateCatalog(row.cells[2].value)}
                                     />
                                   </TableCell>
                                 )

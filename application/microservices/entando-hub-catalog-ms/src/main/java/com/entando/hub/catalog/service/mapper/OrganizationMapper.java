@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface OrganizationMapper extends BaseMapper<Organisation, OrganisationDto> {
+public interface OrganizationMapper extends BaseStandardMapper<Organisation, OrganisationDto> {
 
   @Mapping(source = "organisationId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "bundleGroups", ignore = true)

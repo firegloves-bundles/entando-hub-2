@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDto> {
+public interface BundleGroupMapper extends BaseStandardMapper<BundleGroup, BundleGroupDto> {
 
   // NOTE: the categories are not converted
   @Mapping(source = "bundleGroupId", target = "id", qualifiedByName = "toEntityId")

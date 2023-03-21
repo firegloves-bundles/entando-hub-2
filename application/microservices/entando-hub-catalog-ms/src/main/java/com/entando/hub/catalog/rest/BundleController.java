@@ -6,7 +6,7 @@ import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
 
@@ -37,13 +35,13 @@ public class BundleController {
     private BundleGroupValidator bundleGroupValidator;
     private final SecurityHelperService securityHelperService;
 
-    final private BundleMapper bundleMapper;
+    final private BundleStandardMapper bundleStandardMapper;
 
-    public BundleController(BundleService bundleService, BundleGroupValidator bundleGroupValidator, SecurityHelperService securityHelperService, BundleMapper bundleMapper) {
+    public BundleController(BundleService bundleService, BundleGroupValidator bundleGroupValidator, SecurityHelperService securityHelperService, BundleStandardMapper bundleStandardMapper) {
         this.bundleService = bundleService;
         this.bundleGroupValidator = bundleGroupValidator;
         this.securityHelperService = securityHelperService;
-        this.bundleMapper = bundleMapper;
+        this.bundleStandardMapper = bundleStandardMapper;
     }
 
     @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
@@ -65,7 +63,7 @@ public class BundleController {
                 bundleGroupValidator.validateBundleGroupVersionPrivateCatalogRequest(catalogId, bundleGroupVersionId);
             }
         }
-        List<BundleDto> bundles = bundleMapper.toDto(bundleService.getBundles(bundleGroupVersionId,catalogId));
+        List<BundleDto> bundles = bundleStandardMapper.toDto(bundleService.getBundles(bundleGroupVersionId,catalogId));
         return new ResponseEntity<>(bundles, HttpStatus.OK);
     }
 
@@ -77,7 +75,7 @@ public class BundleController {
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (bundleOptional.isPresent()) {
 //            return new ResponseEntity<>(bundleOptional.map(Bundle::new).get(), HttpStatus.OK);
-            return new ResponseEntity<>(bundleMapper.toDto(bundleOptional.get()), HttpStatus.OK);
+            return new ResponseEntity<>(bundleStandardMapper.toDto(bundleOptional.get()), HttpStatus.OK);
         } else {
             logger.warn("Requested bundle '{}' does not exist", bundleId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -94,9 +92,9 @@ public class BundleController {
         logger.debug("REST request to create new Bundle: {}", bundleDto);
 
 
-        com.entando.hub.catalog.persistence.entity.Bundle eBundle = bundleMapper.toEntity(bundleDto);
+        com.entando.hub.catalog.persistence.entity.Bundle eBundle = bundleStandardMapper.toEntity(bundleDto);
         com.entando.hub.catalog.persistence.entity.Bundle entity = bundleService.createBundle(eBundle);
-        return new ResponseEntity<>(bundleMapper.toDto(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(bundleStandardMapper.toDto(entity), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleId identifying the bundle")
@@ -114,9 +112,9 @@ public class BundleController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             bundleDto.setBundleId(bundleId);
-            Bundle eBundle = bundleMapper.toEntity(bundleDto);
+            Bundle eBundle = bundleStandardMapper.toEntity(bundleDto);
             Bundle entity = bundleService.createBundle(eBundle);
-            return new ResponseEntity<>(bundleMapper.toDto(entity), HttpStatus.OK);
+            return new ResponseEntity<>(bundleStandardMapper.toDto(entity), HttpStatus.OK);
         }
     }
 

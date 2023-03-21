@@ -6,7 +6,7 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.*;
 
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +26,14 @@ public class BundleService {
 
     private final SecurityHelperService securityHelperService;
 
-	final private BundleMapper bundlemapper;
+	final private BundleStandardMapper bundlemapper;
 
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
     private PortalUserService portaUserService;
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
-                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, BundleMapper bundlemapper, PortalUserService portaUserService) {
+                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, BundleStandardMapper bundlemapper, PortalUserService portaUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;

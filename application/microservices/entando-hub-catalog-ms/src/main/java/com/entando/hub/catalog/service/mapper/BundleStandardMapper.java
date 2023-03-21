@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface BundleMapper  extends BaseMapper<Bundle, BundleDto> {
+public interface BundleStandardMapper extends BaseStandardMapper<Bundle, BundleDto> {
 
 
   @Mapping(source = "bundleGroups", target = "bundleGroupVersions", qualifiedByName = "toEntityGroups")

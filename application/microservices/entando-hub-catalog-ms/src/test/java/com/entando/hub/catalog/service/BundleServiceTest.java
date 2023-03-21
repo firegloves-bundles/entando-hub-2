@@ -10,8 +10,8 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
-import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +37,14 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
-@ComponentScan(basePackageClasses = {BundleMapper.class, BundleMapperImpl.class})
+@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class})
 public class BundleServiceTest {
 
 
 	@InjectMocks
 	BundleService bundleService;
 	@Mock
-	BundleMapper bundleMapper;
+    BundleStandardMapper bundleStandardMapper;
 	@Mock
 	BundleRepository bundleRepository;
 	@Mock
@@ -186,13 +186,13 @@ public class BundleServiceTest {
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
-		 BundleDto bundleDto = bundleMapper.toDto(bundle);
+		 BundleDto bundleDto = bundleStandardMapper.toDto(bundle);
 		 List<BundleDto> bundleNoIdsList = new ArrayList<>();
 		 bundleNoIdsList.add(bundleDto);
 
 
 		 Mockito.when(bundleRepository.saveAll(bundlesList)).thenReturn(bundlesList);
-			Mockito.when(bundleMapper.toEntity(bundleDto)).thenReturn(bundle);
+			Mockito.when(bundleStandardMapper.toEntity(bundleDto)).thenReturn(bundle);
 		 
 		 //Case 1: bundleRequest given
 		 List<Bundle> bundleResult = bundleService.createBundleEntitiesAndSave(bundleNoIdsList);

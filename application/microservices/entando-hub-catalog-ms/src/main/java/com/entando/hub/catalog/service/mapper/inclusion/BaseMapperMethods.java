@@ -1,4 +1,4 @@
-package com.entando.hub.catalog.service.mapper;
+package com.entando.hub.catalog.service.mapper.inclusion;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import org.apache.commons.lang3.StringUtils;

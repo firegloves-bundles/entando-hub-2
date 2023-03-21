@@ -12,8 +12,8 @@ import java.util.Set;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
-import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +41,11 @@ import com.entando.hub.catalog.service.BundleService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleController.class)
-@ComponentScan(basePackageClasses = {BundleMapper.class, BundleMapperImpl.class})
+@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class})
 public class AppBuilderBundleControllerTest {
 
 	@Spy
-	private BundleMapper bundleMapper = new BundleMapperImpl();
+	private BundleStandardMapper bundleStandardMapper = new BundleStandardMapperImpl();
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -99,7 +99,7 @@ public class AppBuilderBundleControllerTest {
 		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
-		BundleDto bundleC = bundleMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
+		BundleDto bundleC = bundleStandardMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
 		List<BundleDto> bundlesCList = new ArrayList<>();
 		bundlesCList.add(bundleC);
 		

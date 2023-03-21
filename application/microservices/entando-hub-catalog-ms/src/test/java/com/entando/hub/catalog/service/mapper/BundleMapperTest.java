@@ -7,19 +7,17 @@ import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.*;
 
 public class BundleMapperTest extends BaseMapperTest {
 
-  private BundleMapper bundleMapper = Mappers.getMapper(BundleMapper.class);
+  private BundleStandardMapper bundleStandardMapper = Mappers.getMapper(BundleStandardMapper.class);
 
   @Test
   public void toEntity() {
     BundleDto dto = generateBundleDto("2677");
-    Bundle bundle = bundleMapper.toEntity(dto);
+    Bundle bundle = bundleStandardMapper.toEntity(dto);
     assertNotNull(bundle);
 
     assertEquals((Long)2677L, bundle.getId());
@@ -38,7 +36,7 @@ public class BundleMapperTest extends BaseMapperTest {
   public void toEntityNoId() {
     BundleDto dto = generateBundleDto(null);
 
-    Bundle bundle = bundleMapper.toEntity(dto);
+    Bundle bundle = bundleStandardMapper.toEntity(dto);
     assertNotNull(bundle);
 
     assertNull(bundle.getId());
@@ -62,7 +60,7 @@ public class BundleMapperTest extends BaseMapperTest {
   public void toDto() {
     Bundle entity = generateBundleEntity(2677L);
 
-    BundleDto dto = bundleMapper.toDto(entity);
+    BundleDto dto = bundleStandardMapper.toDto(entity);
     assertNotNull(dto);
     assertNotNull(dto.getBundleId());
     assertEquals("2677", dto.getBundleId());
@@ -81,7 +79,7 @@ public class BundleMapperTest extends BaseMapperTest {
   public void toDtoNoId() {
     Bundle entity = generateBundleEntity(null);
 
-    BundleDto dto = bundleMapper.toDto(entity);
+    BundleDto dto = bundleStandardMapper.toDto(entity);
     assertNotNull(dto);
     assertNull(dto.getBundleId());
     assertEquals(BUNDLE_NAME, dto.getName());

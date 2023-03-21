@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleStandardMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,15 +30,15 @@ public class AppBuilderBundleController {
 
 	private final BundleService bundleService;
 	private final BundleGroupVersionService bundleGroupVersionService;
-	private final BundleMapper bundleMapper;
+	private final BundleStandardMapper bundleStandardMapper;
 
 	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
-	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper) {
+	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleStandardMapper bundleStandardMapper) {
 		this.bundleService = bundleService;
 		this.bundleGroupVersionService = bundleGroupVersionService;
-		this.bundleMapper = bundleMapper;
+		this.bundleStandardMapper = bundleStandardMapper;
 	}
 
 	static Set<DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
@@ -72,7 +72,7 @@ public class AppBuilderBundleController {
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 
 		PagedContent<BundleDto, Bundle> pagedContent = new PagedContent<>(
-				bundlesPage.getContent().stream().map(bundleMapper::toDto).peek(bundle -> {
+				bundlesPage.getContent().stream().map(bundleStandardMapper::toDto).peek(bundle -> {
 					// add the bundle group image as bundle image
 					List<String> bundleGroupVersions = bundle.getBundleGroups();
 					if (bundleGroupVersions != null && bundleGroupVersions.size() > 0) {

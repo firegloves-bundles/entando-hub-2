@@ -46,6 +46,15 @@ export const ModalUpdateBundleGroup = ({
 
   const { catalogs } = useCatalogs();
 
+  const isPublicOnly = catalogs.length === 0 || catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
+
+  useEffect(() => {
+    setBundleGroup(prevBundleGroup => ({
+      ...prevBundleGroup,
+      publicCatalog: isPublicOnly
+    }));
+  }, [isPublicOnly]);
+
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)
   }, [])
@@ -186,7 +195,7 @@ export const ModalUpdateBundleGroup = ({
             validationResult={validationResult}
             minOneBundleError={minOneBundleError}
             orgList={orgList}
-            isPublicOnly={catalogs.length === 0}
+            isPublicOnly={isPublicOnly}
           />
         </Modal>
       }

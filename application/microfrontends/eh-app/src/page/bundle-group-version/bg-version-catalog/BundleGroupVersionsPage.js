@@ -12,6 +12,8 @@ import CatalogFilterTile from "../../catalog/catalog-filter-tile/CatalogFilterTi
 import BundleGroupStatusFilter from "../../catalog/bundle-group-status-filter/BundleGroupStatusFilter";
 import { INIT_PAGE, ITEMS_PER_PAGE } from "../../../helpers/constants";
 import { useApiUrl } from "../../../contexts/ConfigContext";
+import { useCatalogs } from "../../../contexts/CatalogContext";
+import { isHubUser } from "../../../helpers/helpers";
 
 let page_ = INIT_PAGE
 let pageSizes = ITEMS_PER_PAGE
@@ -28,6 +30,8 @@ const BundleGroupVersionsPage = ({ setVersionSearchTerm }) => {
   const history = useHistory()
   //signals the reloading need of the right side
   const [reloadToken, setReloadToken] = useState(((new Date()).getTime()).toString())
+
+  const { fetchCatalogs } = useCatalogs();
 
   const apiUrl = useApiUrl();
 
@@ -81,7 +85,11 @@ const BundleGroupVersionsPage = ({ setVersionSearchTerm }) => {
       setLoading(false);
     }
     getVersionList();
-  }, [apiUrl, reloadToken, bundleGroupId, history]);
+
+    if (isHubUser()) {
+      fetchCatalogs();
+    }
+  }, [apiUrl, reloadToken, bundleGroupId, history, fetchCatalogs]);
 
   useEffect(() => {
     const getCategories = async () => {

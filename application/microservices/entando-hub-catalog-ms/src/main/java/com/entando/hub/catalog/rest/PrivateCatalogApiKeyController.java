@@ -67,7 +67,7 @@ public class PrivateCatalogApiKeyController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    public ResponseEntity<Map<String, Boolean>> editMyLabel(@PathVariable @NotNull Long id, @Valid @RequestBody EditApiKeyRequestDTO request) {
+    public ResponseEntity<Void> editMyLabel(@PathVariable @NotNull Long id, @Valid @RequestBody EditApiKeyRequestDTO request) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         this.privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
         return new ResponseEntity<>(HttpStatus.OK);
@@ -80,7 +80,7 @@ public class PrivateCatalogApiKeyController {
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    public ResponseEntity<Map<String, Boolean>> deleteMyApiKey(@PathVariable @NotNull Long id) {
+    public ResponseEntity<Void> deleteMyApiKey(@PathVariable @NotNull Long id) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         this.privateCatalogApiKeyService.deleteApiKey(id, username);
         return new ResponseEntity<>(HttpStatus.OK);

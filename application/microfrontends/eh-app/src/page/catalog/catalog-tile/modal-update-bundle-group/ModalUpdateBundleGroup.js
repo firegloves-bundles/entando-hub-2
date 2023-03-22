@@ -46,7 +46,7 @@ export const ModalUpdateBundleGroup = ({
 
   const { catalogs } = useCatalogs();
 
-  const isPublicOnly = catalogs.length === 0 || catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
+  const isPublicOnly = catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
 
   useEffect(() => {
     setBundleGroup(prevBundleGroup => ({

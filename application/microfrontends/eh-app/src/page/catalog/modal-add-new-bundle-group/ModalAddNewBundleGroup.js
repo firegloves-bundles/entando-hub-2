@@ -42,7 +42,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [minOneBundleError, setMinOneBundleError] = useState("")
         const [reqOnWay, setReqOnWay] = useState(false)
 
-        const isPublicOnly = catalogs.length === 0 || catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
+        const isPublicOnly = catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
 
         useEffect(() => {
           setBundleGroup(prevBundleGroup => ({
@@ -136,7 +136,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         name: "",
                         categories: [defaultCategoryId],
                         organisationId,
-                        publicCatalog: catalogs.length === 0 || catalogs.every(({ organisationId: catOrgId }) => catOrgId !== +organisationId),
+                        publicCatalog: catalogs.every(({ organisationId: catOrgId }) => catOrgId !== +organisationId),
                         versionDetails: {
                             bundleGroupVersionId: null,
                             description: "",

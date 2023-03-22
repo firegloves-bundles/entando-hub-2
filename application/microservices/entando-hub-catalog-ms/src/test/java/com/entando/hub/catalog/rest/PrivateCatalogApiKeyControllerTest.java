@@ -96,8 +96,7 @@ class PrivateCatalogApiKeyControllerTest {
         Mockito.when(privateCatalogApiKeyService.deleteApiKey(ADMIN_API_KEY_ID, ADMIN_USERNAME)).thenReturn(Boolean.TRUE);
         mockMvc.perform(MockMvcRequestBuilders.delete(ID_URI, ADMIN_API_KEY_ID)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -112,8 +111,7 @@ class PrivateCatalogApiKeyControllerTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .characterEncoding("UTF-8")
                         .content(asJsonString(request)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+                .andExpect(status().isOk());
     }
 
     @Test

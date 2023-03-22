@@ -69,10 +69,8 @@ public class PrivateCatalogApiKeyController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<Map<String, Boolean>> editMyLabel(@PathVariable @NotNull Long id, @Valid @RequestBody EditApiKeyRequestDTO request) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
-        boolean result = this.privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
-        Map<String, Boolean> mapResult = new HashMap<>();
-        mapResult.put("result", result);
-        return new ResponseEntity<>(mapResult, HttpStatus.OK);
+        this.privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Delete an api key for the logged user")
@@ -84,10 +82,8 @@ public class PrivateCatalogApiKeyController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<Map<String, Boolean>> deleteMyApiKey(@PathVariable @NotNull Long id) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
-        boolean result = this.privateCatalogApiKeyService.deleteApiKey(id, username);
-        Map<String, Boolean> mapResult = new HashMap<>();
-        mapResult.put("result", result);
-        return new ResponseEntity<>(mapResult, HttpStatus.OK);
+        this.privateCatalogApiKeyService.deleteApiKey(id, username);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Regenerate an api key for the logged user")

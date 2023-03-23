@@ -180,9 +180,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 if (validationError) {
                     console.info("Form validation error(s)", validationError)
                     setValidationResult(validationError)
-                    if (validationError['versionDetails.bundles']) {
-                      setBundleErrorMsg(validationError['versionDetails.bundles'][0]);
-                    }
                     return //don't send the form
                 }
                 setReqOnWay(true);

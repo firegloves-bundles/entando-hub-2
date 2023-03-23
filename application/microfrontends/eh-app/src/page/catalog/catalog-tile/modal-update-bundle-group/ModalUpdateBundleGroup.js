@@ -40,7 +40,6 @@ export const ModalUpdateBundleGroup = ({
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
-  const [minOneBundleError] = useState("")
 
   const apiUrl = useApiUrl();
 
@@ -184,7 +183,6 @@ export const ModalUpdateBundleGroup = ({
             theBundleStatus={bundleStatus}
             selectStatusValues={selectStatusValues}
             validationResult={validationResult}
-            minOneBundleError={minOneBundleError}
             orgList={orgList}
             isPublicOnly={catalogs.length === 0}
           />

@@ -3,7 +3,7 @@
     "microfrontends": [],
     "svc": [],
     "name": "entando-hub-content",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "The Entando Hub content components",
     "type": "bundle"
 }

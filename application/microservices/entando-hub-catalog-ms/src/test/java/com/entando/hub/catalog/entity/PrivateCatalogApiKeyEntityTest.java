@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.generatePrivateCatalogApiKeyEntity;
 
-@SpringBootTest
 class PrivateCatalogApiKeyEntityTest {
     private Long API_KEY_ID =1000L;
     private Long PORTAL_USER_ID= 2000L;

@@ -32,7 +32,7 @@ public abstract class PrivateCatalogApiKeyMapper {
 
     @Named( "removeApiKey" )
     public List<ApiKeyResponseDTO> removeApiKey(List<ApiKeyResponseDTO> privateCatalogApiKey){
-        privateCatalogApiKey.forEach(f-> {System.out.println("f -> "+f.toString());f.setApiKey(null);});
+        privateCatalogApiKey.forEach(f-> f.setApiKey(null));
         return privateCatalogApiKey;
     }
 

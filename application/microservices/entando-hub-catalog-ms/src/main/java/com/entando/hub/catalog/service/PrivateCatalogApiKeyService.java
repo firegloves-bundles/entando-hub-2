@@ -24,6 +24,7 @@ public class PrivateCatalogApiKeyService {
     private final PortalUserRepository portalUserRepository;
     private final ApiKeyGeneratorHelper apiKeyGeneratorHelper;
     private final PrivateCatalogApiKeyMapper privateCatalogApiKeyMapper;
+    public static final String API_KEY_MSG = "Api key ";
     private static final String NOT_FOUND_MSG = " not found for user ";
     public PrivateCatalogApiKeyService(PrivateCatalogApiKeyRepository privateCatalogApiKeyRepository,
                                        PortalUserRepository portalUserRepository,
@@ -58,7 +59,7 @@ public class PrivateCatalogApiKeyService {
             this.privateCatalogApiKeyRepository.save(privateCatalogApiKey);
             return true;
         } else {
-            String errorMessage = "Api key " + id + NOT_FOUND_MSG + username;
+            String errorMessage = API_KEY_MSG + id + NOT_FOUND_MSG + username;
             throw new BadRequestException(errorMessage);
         }
     }
@@ -75,7 +76,7 @@ public class PrivateCatalogApiKeyService {
             apiKeyResponseDTO.setApiKey(generatedApiKey);
             return apiKeyResponseDTO;
         } else {
-            String errorMessage = "Api key " + id + NOT_FOUND_MSG + username;
+            String errorMessage = API_KEY_MSG + id + NOT_FOUND_MSG + username;
             throw new BadRequestException(errorMessage);
         }
     }
@@ -86,7 +87,7 @@ public class PrivateCatalogApiKeyService {
             privateCatalogApiKeyRepository.delete(apiKeyOptional.get());
             return true;
         } else {
-            String errorMessage = "Api key " + id + NOT_FOUND_MSG + username;
+            String errorMessage = API_KEY_MSG + id + NOT_FOUND_MSG + username;
             throw new BadRequestException(errorMessage);
         }
     }

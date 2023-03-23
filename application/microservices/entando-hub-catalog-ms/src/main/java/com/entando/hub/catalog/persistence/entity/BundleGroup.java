@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.persistence.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -22,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Table(name = "bundle_group")
 @NamedQuery(name = "BundleGroup.findAll", query = "select b from BundleGroup b order by b.name")
-public class BundleGroup {
+public class BundleGroup implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

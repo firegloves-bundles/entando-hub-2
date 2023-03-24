@@ -2,11 +2,12 @@ package com.entando.hub.catalog.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import lombok.experimental.Accessors;
 
 /**
  * This entity class is for BUNDLE table
@@ -16,7 +17,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class Bundle {
+public class Bundle implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

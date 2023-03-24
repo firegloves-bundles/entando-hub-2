@@ -38,8 +38,8 @@ public class PortalUserController {
     private final Logger logger = LoggerFactory.getLogger(PortalUserController.class);
 
 
-    @Operation(summary = "Get all the portal users", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the organisationId to filter the results")
-    @RolesAllowed({ADMIN, AUTHOR, MANAGER})
+    @Operation(summary = "Get all the portal users", description = "Protected api, only eh-admin can access it. You can provide the organisationId to filter the results")
+    @RolesAllowed({ADMIN})
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)

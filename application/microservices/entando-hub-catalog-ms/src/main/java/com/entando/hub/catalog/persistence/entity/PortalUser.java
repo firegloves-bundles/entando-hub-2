@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.persistence.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class PortalUser {
+public class PortalUser implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

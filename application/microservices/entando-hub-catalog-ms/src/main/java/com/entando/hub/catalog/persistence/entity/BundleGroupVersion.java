@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.persistence.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +38,7 @@ import lombok.Setter;
 @Getter
 @Accessors(chain = true)
 @Table(uniqueConstraints = { @UniqueConstraint(name = "bundle_group_version_unique_key",columnNames = { "BUNDLE_GROUP_ID", "VERSION" }) })
-public class BundleGroupVersion {
+public class BundleGroupVersion implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)

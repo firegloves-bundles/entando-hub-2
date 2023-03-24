@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.persistence.*;
 import java.util.Set;
 
 @Data

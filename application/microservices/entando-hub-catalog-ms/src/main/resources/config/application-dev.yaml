@@ -24,6 +24,12 @@ spring:
     username: hubApp
     password: password
 
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    com.entando.hub: DEBUG
+
 keycloak:
   auth-url: http://localhost:9080/auth
   client-id: internal

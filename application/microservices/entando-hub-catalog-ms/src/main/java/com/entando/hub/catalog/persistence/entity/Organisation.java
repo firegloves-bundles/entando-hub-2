@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 @SequenceGenerator(name = "organisation_id", sequenceName = "SEQ_ORGANISATION_ID", allocationSize = 1)
-public class Organisation {
+public class Organisation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "organisation_id")
     private Long id;

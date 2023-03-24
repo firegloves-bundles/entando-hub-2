@@ -22,6 +22,7 @@
         <liquibase.version>3.7.0</liquibase.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
+        <jpamodelgen.version>5.6.15.Final</jpamodelgen.version>
         <!-- SONAR -->
         <github.organization>entando-samples</github.organization>
         <sonar.organization>${github.organization}</sonar.organization>
@@ -156,6 +157,11 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${jpamodelgen.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
@@ -206,6 +212,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.18</version>
+                        </path>
+                        <path>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${jpamodelgen.version}</version>
                         </path>
                         <path>
                             <groupId>org.projectlombok</groupId>

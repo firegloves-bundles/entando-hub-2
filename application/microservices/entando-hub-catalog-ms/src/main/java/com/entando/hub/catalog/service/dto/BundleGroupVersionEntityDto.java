@@ -12,8 +12,7 @@ import java.util.Set;
 
 /**
  *
- * This is the exact match of com.entando.hub.catalog.persistence.entity.BundleGroupVersion.
- * TODO find usage in the FE and and possibly use the proper dto
+ * This is the exact match of com.entando.hub.catalog.persistence.entity.BundleGroupVersion
  */
 @Data
 @NoArgsConstructor

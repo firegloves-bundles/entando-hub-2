@@ -11,6 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,7 +54,7 @@ public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDt
   }
 
   static Set<Category> toCategories(List<String> value) {
-    return null;
+    return new HashSet<>();
   }
 
   static List<String> fromCategories(Set<Category> categories) {
@@ -60,7 +62,7 @@ public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDt
       return categories.stream().map(c -> c.getId().toString()).filter(i -> StringUtils.isNotBlank(i))
         .collect(Collectors.toList());
     }
-    return null;
+    return new ArrayList<>();
   }
 
 }

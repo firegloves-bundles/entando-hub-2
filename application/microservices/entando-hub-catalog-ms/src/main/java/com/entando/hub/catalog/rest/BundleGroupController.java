@@ -67,7 +67,7 @@ public class BundleGroupController {
     public ResponseEntity<BundleGroupDto> getBundleGroup(@PathVariable Long bundleGroupId) {
         logger.debug("REST request to get BundleGroup by Id: {}", bundleGroupId);
         return bundleGroupService.getBundleGroup(bundleGroupId)
-                .map(entity -> bundleGroupMapper.toDto(entity))
+                .map(bundleGroupMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

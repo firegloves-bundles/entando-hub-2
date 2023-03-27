@@ -152,7 +152,7 @@ public class BundleService {
         try {
             List<Bundle> bundles = new ArrayList<Bundle>();
             if (!CollectionUtils.isEmpty(bundleRequest)) {
-                bundleRequest.forEach((element) -> bundles.add(bundlemapper.toEntity(element)));
+                bundleRequest.forEach(element -> bundles.add(bundlemapper.toEntity(element)));
                 return createBundles(bundles);
             }
         } catch (Exception e) {

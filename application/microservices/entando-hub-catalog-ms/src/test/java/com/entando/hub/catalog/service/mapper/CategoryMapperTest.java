@@ -9,11 +9,12 @@ import org.mapstruct.factory.Mappers;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID;
 import static junit.framework.TestCase.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 
-public class CategoryMapperTest extends BaseMapperTest {
+public class CategoryMapperTest {
 
   private CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
@@ -52,8 +53,8 @@ public class CategoryMapperTest extends BaseMapperTest {
 
   protected CategoryDto generateCategoryDto(String id) {
     CategoryDto dto = new CategoryDto();
-    BundleGroup bg1 = generateBundleGroupEntity(BUNDLE_GROUP_ID);
-    BundleGroup bg2 = generateBundleGroupEntity(BUNDLE_GROUP_ID + 1);
+    BundleGroup bg1 = MapperGeneratorHelper.generateBundleGroupEntity(BUNDLE_GROUP_ID);
+    BundleGroup bg2 = MapperGeneratorHelper.generateBundleGroupEntity(BUNDLE_GROUP_ID + 1);
 
     dto.setCategoryId(id);
     dto.setCategoryId(CATEGORY_ID.toString());
@@ -65,8 +66,8 @@ public class CategoryMapperTest extends BaseMapperTest {
 
   protected Category generateCategoryEntity(Long id) {
     Category category = new Category();
-    BundleGroup bg1 = generateBundleGroupEntity(789L);
-    BundleGroup bg2 = generateBundleGroupEntity(654L);
+    BundleGroup bg1 = MapperGeneratorHelper.generateBundleGroupEntity(789L);
+    BundleGroup bg2 = MapperGeneratorHelper.generateBundleGroupEntity(654L);
 
     category.setId(id);
     category.setName(CATEGORY_NAME);

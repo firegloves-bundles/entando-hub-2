@@ -66,7 +66,6 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto category) {
         logger.debug("REST request to create CategoryDto: {}", category);
-//        com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
         Category entity = categoryMapper.toEntity(category);
         entity = categoryService.createCategory(entity);
         return new ResponseEntity<>(categoryMapper.toDto(entity), HttpStatus.CREATED);
@@ -86,7 +85,6 @@ public class CategoryController {
             logger.warn("CategoryDto '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-//            com.entando.hub.catalog.persistence.entity.Category savedEntity = categoryService.createCategory(category.createEntity(Optional.of(categoryId)));
             Category entity = categoryMapper.toEntity(category);
             entity.setId(categoryId);
             Category savedEntity = categoryService.createCategory(entity);

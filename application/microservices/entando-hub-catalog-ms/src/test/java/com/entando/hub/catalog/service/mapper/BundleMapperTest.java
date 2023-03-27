@@ -11,9 +11,13 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_DESCRIPTION;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.GIT_REPO_ADDRESS;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.GIT_SRC_REPO_ADDRESS;
 import static junit.framework.TestCase.*;
 
-public class BundleMapperTest extends BaseMapperTest {
+public class BundleMapperTest {
 
   private BundleStandardMapper bundleStandardMapper = Mappers.getMapper(BundleStandardMapper.class);
 
@@ -63,7 +67,7 @@ public class BundleMapperTest extends BaseMapperTest {
 
   @Test
   public void toDto() {
-    Bundle entity = generateBundleEntity(2677L);
+    Bundle entity = MapperGeneratorHelper.generateBundleEntity(2677L);
 
     BundleDto dto = bundleStandardMapper.toDto(entity);
     assertNotNull(dto);
@@ -82,7 +86,7 @@ public class BundleMapperTest extends BaseMapperTest {
 
   @Test
   public void toEntityDto() {
-    Bundle entity = generateBundleEntity(2677L);
+    Bundle entity = MapperGeneratorHelper.generateBundleEntity(2677L);
 
     BundleEntityDto dto = bundleEntityMapper.toDto(entity);
     assertNotNull(dto);
@@ -98,7 +102,7 @@ public class BundleMapperTest extends BaseMapperTest {
 
   @Test
   public void toDtoNoId() {
-    Bundle entity = generateBundleEntity(null);
+    Bundle entity = MapperGeneratorHelper.generateBundleEntity(null);
 
     BundleDto dto = bundleStandardMapper.toDto(entity);
     assertNotNull(dto);

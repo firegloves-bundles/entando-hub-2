@@ -8,17 +8,24 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID_STR;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_1;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_2;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_ID;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
-public class BundleGroupMapperTest extends BaseMapperTest {
+public class BundleGroupMapperTest {
 
   private BundleGroupMapper bundleGroupMapper = Mappers.getMapper(BundleGroupMapper.class);
 
   @Test
   public void toDto() {
-    BundleGroupDto dto = generateBundleGroupDto("2381");
+    BundleGroupDto dto = MapperGeneratorHelper.generateBundleGroupDto("2381");
 
     BundleGroup bge = bundleGroupMapper.toEntity(dto);
     assertNotNull(bge);
@@ -28,13 +35,14 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     assertNotNull(bge.getId());
     assertEquals((Long)ORGANIZATION_ID, bge.getOrganisation().getId());
     assertEquals(ORGANIZATION_NAME, bge.getOrganisation().getName());
-    assertNull(bge.getCategories());
+    assertNotNull(bge.getCategories());
+    assertTrue(bge.getCategories().isEmpty());
     // versiondetails ignored
   }
 
   @Test
   public void toDtoNoId() {
-    BundleGroupDto dto = generateBundleGroupDto(null);
+    BundleGroupDto dto = MapperGeneratorHelper.generateBundleGroupDto(null);
 
     BundleGroup bge = bundleGroupMapper.toEntity(dto);
     assertNotNull(bge);
@@ -44,13 +52,14 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     assertNull(bge.getId());
     assertEquals((Long) ORGANIZATION_ID, bge.getOrganisation().getId());
     assertEquals(ORGANIZATION_NAME, bge.getOrganisation().getName());
-    assertNull(bge.getCategories());
+    assertNotNull(bge.getCategories());
+    assertTrue(bge.getCategories().isEmpty());
     // versiondetails ignored
   }
 
   @Test
   public void toEntity() {
-    BundleGroup dto = generateBundleGroupEntity(BUNDLE_GROUP_ID);
+    BundleGroup dto = MapperGeneratorHelper.generateBundleGroupEntity(BUNDLE_GROUP_ID);
 
     BundleGroupDto bundleGroup = bundleGroupMapper.toDto(dto);
     assertNotNull(bundleGroup);
@@ -61,7 +70,7 @@ public class BundleGroupMapperTest extends BaseMapperTest {
 
   @Test
   public void toEntityNoId() {
-    BundleGroup dto = generateBundleGroupEntity(null);
+    BundleGroup dto = MapperGeneratorHelper.generateBundleGroupEntity(null);
 
     BundleGroupDto bundleGroup = bundleGroupMapper.toDto(dto);
     assertNotNull(bundleGroup);
@@ -76,7 +85,8 @@ public class BundleGroupMapperTest extends BaseMapperTest {
     BundleGroupDto dto = bundleGroupMapper.toDto(entity);
     assertNotNull(dto);
     assertNull(dto.getBundleGroupId());
-    assertNull(dto.getCategories());
+    assertNotNull(dto.getCategories());
+    assertTrue(dto.getCategories().isEmpty());
     assertNull(dto.getName());
     assertNull(dto.getOrganisationId());
     assertNull(dto.getOrganisationName());

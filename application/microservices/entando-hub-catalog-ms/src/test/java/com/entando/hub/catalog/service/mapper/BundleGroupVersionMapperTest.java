@@ -16,11 +16,23 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static junit.framework.TestCase.*;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID_STR;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_1;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_2;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_ID;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 
-public class BundleGroupVersionMapperTest extends BaseMapperTest {
+public class BundleGroupVersionMapperTest {
 
 
   private BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper = Mappers.getMapper(BundleGroupVersionStandardMapper.class);
@@ -30,7 +42,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
   @Test
   public void testToEntity() {
     BundleGroupVersionDto dto = generateBundleGroupVersionDto("2381");
-    BundleGroup bg = generateBundleGroupEntity(2382L);
+    BundleGroup bg = MapperGeneratorHelper.generateBundleGroupEntity(2382L);
 
     BundleGroupVersion entity = bundleGroupVersionStandardMapper.toEntity(dto, bg);
     assertNotNull(entity);
@@ -42,7 +54,7 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
   @Test
   public void testToEntityNoId() {
     BundleGroupVersionDto dto = generateBundleGroupVersionDto(null);
-    BundleGroup bg = generateBundleGroupEntity(2382L);
+    BundleGroup bg = MapperGeneratorHelper.generateBundleGroupEntity(2382L);
 
     BundleGroupVersion entity = bundleGroupVersionStandardMapper.toEntity(dto, bg);
     assertNotNull(entity);
@@ -135,10 +147,10 @@ public class BundleGroupVersionMapperTest extends BaseMapperTest {
 
   public BundleGroupVersion generateBundleGroupVersionEntity(Long id) {
     BundleGroupVersion bgv = new BundleGroupVersion();
-    BundleGroup bg = generateBundleGroupEntity(BUNDLE_GROUP_ID);
+    BundleGroup bg = MapperGeneratorHelper.generateBundleGroupEntity(BUNDLE_GROUP_ID);
 
-    Bundle bundle_1 = generateBundleEntity(BUNDLE_ID);
-    Bundle bundle_2 = generateBundleEntity(BUNDLE_ID + 1);
+    Bundle bundle_1 = MapperGeneratorHelper.generateBundleEntity(BUNDLE_ID);
+    Bundle bundle_2 = MapperGeneratorHelper.generateBundleEntity(BUNDLE_ID + 1);
 
     bgv.setId(id);
     bgv.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);

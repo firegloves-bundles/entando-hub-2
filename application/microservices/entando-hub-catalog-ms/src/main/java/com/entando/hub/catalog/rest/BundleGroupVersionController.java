@@ -96,7 +96,7 @@ public class BundleGroupVersionController {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
         } else {
-        	logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId());
+        	logger.warn(REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST, bundleGroupVersionView.getBundleGroupId());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -220,7 +220,7 @@ public class BundleGroupVersionController {
         if (!bundleGroupVersionOptional.isPresent() || !bundleGroupVersionOptional.get().getStatus().equals(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.DELETE_REQ)) {
             bundleGroupVersionOptional.ifPresentOrElse(
                     bundleGroupVersion -> logger.warn("Requested BundleGroupVersionDto '{}' is not in DELETE_REQ status: {}", bundleGroupVersionId, bundleGroupVersion.getStatus()),
-                    () -> logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionId)
+                    () -> logger.warn(REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST, bundleGroupVersionId)
             );
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
@@ -266,7 +266,7 @@ public class BundleGroupVersionController {
                 }
             }
         } else {
-            logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionOptional);
+            logger.warn(REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST, bundleGroupVersionOptional);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -285,4 +285,7 @@ public class BundleGroupVersionController {
         }
         return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
     }
+
+
+    public static final String REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST = "Requested bundleGroupVersion '{}' does not exist";
 }

@@ -32,6 +32,10 @@ public abstract class BundleGroupVersionMapper {
         return bundleGroupVersionStandardMapper.toEntity(dto, bundleGroup);
     }
 
+    public BundleGroupVersion toNewEntity(BundleGroupVersionDto dto, BundleGroup bundleGroup) {
+        return bundleGroupVersionStandardMapper.toEntity(dto, bundleGroup).setId(null);
+    }
+
     public BundleGroupVersionDto toViewDto(BundleGroupVersion entity) {
         return bundleGroupVersionStandardMapper.toViewDto(entity);
     }

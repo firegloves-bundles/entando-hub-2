@@ -77,6 +77,7 @@ public class BundleGroupVersionController {
     public ResponseEntity<BundleGroupVersionDto> createBundleGroupVersion(@RequestBody BundleGroupVersionDto bundleGroupVersionView) {
         logger.debug("REST request to create BundleGroupVersion: {}", bundleGroupVersionView);
         Optional<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()));
+
         if (bundleGroupOptional.isPresent()) {
         	logger.debug("BundleGroupDto is present with id: {}", bundleGroupOptional.get().getId());
             List<BundleGroupVersion> bundleGroupVersions = bundleGroupVersionService.getBundleGroupVersions(bundleGroupOptional.get(), bundleGroupVersionView.getVersion());
@@ -95,7 +96,7 @@ public class BundleGroupVersionController {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
         } else {
-        	logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId().toString());
+        	logger.warn("Requested bundleGroupVersion '{}' does not exist", bundleGroupVersionView.getBundleGroupId());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }

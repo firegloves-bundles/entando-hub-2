@@ -36,7 +36,7 @@ public class BundleController {
     private BundleGroupValidator bundleGroupValidator;
     private final SecurityHelperService securityHelperService;
 
-    final private BundleStandardMapper bundleStandardMapper;
+    private final BundleStandardMapper bundleStandardMapper;
 
     public BundleController(BundleService bundleService, BundleGroupValidator bundleGroupValidator, SecurityHelperService securityHelperService, BundleStandardMapper bundleStandardMapper) {
         this.bundleService = bundleService;
@@ -75,7 +75,6 @@ public class BundleController {
     public ResponseEntity<BundleDto> getBundle(@PathVariable() String bundleId) {
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (bundleOptional.isPresent()) {
-//            return new ResponseEntity<>(bundleOptional.map(Bundle::new).get(), HttpStatus.OK);
             return new ResponseEntity<>(bundleStandardMapper.toDto(bundleOptional.get()), HttpStatus.OK);
         } else {
             logger.warn("Requested bundle '{}' does not exist", bundleId);

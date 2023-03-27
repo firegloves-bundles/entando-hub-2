@@ -35,7 +35,7 @@ public class AppBuilderBundleController {
 	private final BundleMapper bundleMapper;
 
 	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
-    private final String CLASS_NAME = this.getClass().getSimpleName();
+	private final String CLASS_NAME = this.getClass().getSimpleName();
 
 	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper) {
 		this.bundleService = bundleService;
@@ -73,8 +73,10 @@ public class AppBuilderBundleController {
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 		Page<BundleEntityDto> converted = convertoToDto(bundlesPage);
-		PagedContent<BundleDto, BundleEntityDto> pagedContent = new PagedContent<>(
-				bundlesPage.getContent().stream().map(bundleMapper::toDto).peek(bundle -> {
+
+		return new PagedContent<>(bundlesPage.getContent().stream()
+				.map(bundleMapper::toDto)
+				.map(bundle -> {
 					// add the bundle group image as bundle image
 					List<String> bundleGroupVersions = bundle.getBundleGroups();
 					if (bundleGroupVersions != null && bundleGroupVersions.size() > 0) {
@@ -84,14 +86,15 @@ public class AppBuilderBundleController {
 							bundle.setDescription(group.getDescription());
 						});
 					}
-				}).collect(Collectors.toList()), converted);
-		return pagedContent;
+					return bundle;
+				})
+				.collect(Collectors.toList()), converted);
 	}
 
 	protected Page<BundleEntityDto> convertoToDto(Page<Bundle> page) {
 		return new PageImpl<>(page.getContent()
 				.stream()
-				.map(e -> bundleMapper.toEntityDto(e))
+				.map(bundleMapper::toEntityDto)
 				.collect(Collectors.toList()),
 				page.getPageable(), page.getNumberOfElements());
 	}

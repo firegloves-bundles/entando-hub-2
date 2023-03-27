@@ -65,9 +65,6 @@ public class OrganisationController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<OrganisationDto> createOrganisation(@RequestBody OrganisationDto organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
-//        com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.empty()), organisation);
-
-
         Organisation entity = organisationService.createOrganisation(organizationMapper.toEntity(organisation), organisation);
         return new ResponseEntity<>(new OrganisationDto(entity), HttpStatus.CREATED);
     }

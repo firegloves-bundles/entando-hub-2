@@ -1,7 +1,6 @@
 package com.entando.hub.catalog.persistence.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;

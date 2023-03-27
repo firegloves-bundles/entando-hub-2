@@ -54,7 +54,7 @@ public class BundleGroupController {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         List<BundleGroupDto> bundleGroupList = bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId))
                 .stream()
-                .map(entity -> bundleGroupMapper.toDto(entity))
+                .map(bundleGroupMapper::toDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(bundleGroupList, HttpStatus.OK);
     }
@@ -81,12 +81,10 @@ public class BundleGroupController {
     public ResponseEntity<BundleGroupDto> createBundleGroup(@RequestBody BundleGroupDto bundleGroup) {
         logger.debug("REST request to create BundleGroup: {}", bundleGroup);
         this.validateRequest(bundleGroup);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.empty());
-        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
-        entity.setId(null); // FIXME creare metodo temporaneo nel mapper
+        BundleGroup entity = bundleGroupMapper.toNewEntity(bundleGroup);
         BundleGroup saved = bundleGroupService.createBundleGroup(entity, bundleGroup);
-        BundleGroupDto BundleGroupDto = bundleGroupMapper.toDto(saved);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BundleGroupDto);
+        BundleGroupDto bundleGroupDto = bundleGroupMapper.toDto(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bundleGroupDto);
     }
 
     protected void validateRequest(BundleGroupDto bundleGroup) {

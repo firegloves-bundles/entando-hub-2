@@ -9,6 +9,7 @@ import com.entando.hub.catalog.service.mapper.inclusion.BaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,12 @@ public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDt
   @Mapping(target = "organisationId", expression = "java(fromOrganizationId(entity.getOrganisation()))")
   @Mapping(target = "organisationName", expression = "java(fromOrganizationName(entity.getOrganisation()))")
   BundleGroupDto toDto(BundleGroup entity);
+
+
+  @Named("refactorHelper1")
+  default BundleGroup toNewEntity(BundleGroupDto dto) {
+    return toEntity(dto).setId(null);
+  }
 
   default Organisation toOrganization(String name, Long id) {
     Organisation org = new Organisation();

@@ -23,16 +23,5 @@ public class BundleGroupDto  {
   private List<String> categories;
   private BundleGroupVersionDto versionDetails;
 
-//  public BundleGroupDto(String bundleGroupId, String name, String organizationId) {
-//    super(name, organizationId);
-//    this.bundleGroupId = bundleGroupId;
-//  }
-
-  /*
-  public BundleGroupDto(com.entando.hub.catalog.persistence.entity.BundleGroup entity) {
-    super(entity);
-    this.bundleGroupId = entity.getId().toString();
-  }
-  */
 
 }

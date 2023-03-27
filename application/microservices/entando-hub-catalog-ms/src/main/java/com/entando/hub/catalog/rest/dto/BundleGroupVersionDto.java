@@ -42,7 +42,7 @@ public class BundleGroupVersionDto {
   protected LocalDateTime lastUpdate;
   protected List<String> categories;
   protected List<Long> children;
-//  protected String bundleGroupVersionId;
+
   protected List<BundleDto> bundles;
   protected Boolean displayContactUrl;
 

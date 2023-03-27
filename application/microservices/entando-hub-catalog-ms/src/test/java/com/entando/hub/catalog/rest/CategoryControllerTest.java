@@ -136,7 +136,7 @@ public class CategoryControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	public void testUpdateCategory() throws Exception {
 	Category category = getCategoryObj();
-	CategoryDto categoryNoId = new CategoryDto(category);
+	CategoryDto categoryNoId = categoryMapper.toDto(category);
 	String categoryId = Long.toString(category.getId());
 	Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
 	Mockito.when(categoryService.createCategory(category)).thenReturn(category);
@@ -155,7 +155,7 @@ public class CategoryControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	public void testUpdateCategoryFails() throws Exception {
 		Category category = getCategoryObj();
-		CategoryDto categoryNoId = new CategoryDto(category);
+		CategoryDto categoryNoId = categoryMapper.toDto(category);
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.empty());
 		Mockito.when(categoryService.createCategory(category)).thenReturn(category);

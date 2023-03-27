@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.rest.dto.RestUserRepresentation;
+import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
@@ -43,14 +43,14 @@ class PortalUserControllerTest {
     @Test
     void shouldGetCatalogs(){
         List<UserRepresentation> expectedUsers = List.of(this.getMockUserRepresentation(), this.getMockUserRepresentation());
-        List<RestUserRepresentation> expectedUsersDTO = this.getMockRestUserRepresentationByUsers(expectedUsers);
+        List<RestUserRepresentationDto> expectedUsersDTO = this.getMockRestUserRepresentationByUsers(expectedUsers);
 
         when(portalUserService.getUsersByOrganisation(null)).thenReturn(expectedUsers);
 
-        ResponseEntity<List<RestUserRepresentation>> responseEntity = portalUserController.getUsers(null);
+        ResponseEntity<List<RestUserRepresentationDto>> responseEntity = portalUserController.getUsers(null);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<RestUserRepresentation> actualUsersDTO = responseEntity.getBody();
+        List<RestUserRepresentationDto> actualUsersDTO = responseEntity.getBody();
         assertThat(actualUsersDTO).usingRecursiveComparison().isEqualTo(expectedUsersDTO);
     }
 
@@ -157,10 +157,10 @@ class PortalUserControllerTest {
         return userRepresentation;
     }
 
-    private List<RestUserRepresentation> getMockRestUserRepresentationByUsers(List<UserRepresentation> users){
-        List <RestUserRepresentation> expectedRestUserRepresentations = new ArrayList<>();
+    private List<RestUserRepresentationDto> getMockRestUserRepresentationByUsers(List<UserRepresentation> users){
+        List <RestUserRepresentationDto> expectedRestUserRepresentations = new ArrayList<>();
         for ( UserRepresentation user : users ){
-            expectedRestUserRepresentations.add(new RestUserRepresentation(user));
+            expectedRestUserRepresentations.add(new RestUserRepresentationDto(user));
         }
         return expectedRestUserRepresentations;
     }

@@ -133,7 +133,14 @@ public class BundleControllerTest {
 				.andExpect(status().is(HttpStatus.CREATED.value()));
 		
 		//Case 2: bundleId is null
-		BundleDto bundleDto2 = new BundleDto(null, bundle.getName(), bundle.getDescription(), bundle.getGitRepoAddress(), bundle.getGitSrcRepoAddress(), new ArrayList<>(), new ArrayList<>(), null);
+		BundleDto bundleDto2 = BundleDto.builder()
+				.name(bundle.getName())
+				.description(bundle.getDescription())
+				.gitRepoAddress(bundle.getGitRepoAddress())
+				.gitSrcRepoAddress(bundle.getGitSrcRepoAddress())
+				.dependencies(new ArrayList<>())
+				.bundleGroups(new ArrayList<>())
+				.build();
 //		Mockito.when(bundleService.createBundle(bundleDto2.createEntity(Optional.empty()))).thenReturn(bundle);
 		Mockito.when(bundleService.createBundle(bundleStandardMapper.toEntity(bundleDto2))).thenReturn(bundle);
 		inputJson = mapToJson(bundleDto2);

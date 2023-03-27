@@ -84,15 +84,16 @@ public class TestHelper {
     }
 
     public static BundleDto stubBundleDto(Long id, List<BundleGroupVersion> bundleGroupVersion) {
-        return new BundleDto(
-                id + "",
-                BUNDLE_NAME,
-                BUNDLE_DESCRIPTION,
-                BUNDLE_REPO_ADDRESS,
-                BUNDLE_REPO_SRC_ADDRESS,
-                List.of(BUNDLE_DEPENDENCIES),
-                bundleGroupVersion.stream().map(bgv -> bgv.getId() + "").collect(Collectors.toList()),
-                BUNDLE_DESCRIPTOR_VERSIONS.name());
+        return BundleDto.builder()
+                .bundleId(id + "")
+                .name(BUNDLE_NAME)
+                .description(BUNDLE_DESCRIPTION)
+                .gitRepoAddress(BUNDLE_REPO_ADDRESS)
+                .gitSrcRepoAddress(BUNDLE_REPO_SRC_ADDRESS)
+                .dependencies(List.of(BUNDLE_DEPENDENCIES))
+                .bundleGroups(bundleGroupVersion.stream().map(bgv -> bgv.getId() + "").collect(Collectors.toList()))
+                .descriptorVersion(BUNDLE_DESCRIPTOR_VERSIONS.name())
+                .build();
     }
 
     public static BundleGroup stubBundleGroup(Organisation organisation, Long catalogId, Set<Category> categorySet) {

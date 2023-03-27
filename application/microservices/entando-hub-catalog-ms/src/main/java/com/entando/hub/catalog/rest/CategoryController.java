@@ -38,7 +38,9 @@ public class CategoryController {
     @GetMapping(value = "/", produces = {"application/json"})
     public List<CategoryDto> getCategories() {
         logger.debug("REST request to get Categories");
-        return categoryService.getCategories().stream().map(CategoryDto::new).collect(Collectors.toList());
+        return categoryService.getCategories().stream()
+                .map(categoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")
@@ -49,7 +51,7 @@ public class CategoryController {
         logger.debug("REST request to get CategoryDto Id: {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (categoryOptional.isPresent()) {
-            return new ResponseEntity<>(categoryOptional.map(CategoryDto::new).get(), HttpStatus.OK);
+            return new ResponseEntity<>(categoryOptional.map(categoryMapper::toDto).get(), HttpStatus.OK);
         } else {
             logger.warn("Requested category '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -88,7 +90,7 @@ public class CategoryController {
             Category entity = categoryMapper.toEntity(category);
             entity.setId(categoryId);
             Category savedEntity = categoryService.createCategory(entity);
-            return new ResponseEntity<>(new CategoryDto(savedEntity), HttpStatus.OK);
+            return new ResponseEntity<>(categoryMapper.toDto(savedEntity), HttpStatus.OK);
         }
     }
 

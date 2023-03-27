@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 import static com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperTest.BUNDLE_GROUP_VERSION_ID;
 
-// FIXME refactor to helper class
+// TODO refactor to helper class
 public class BaseMapperTest {
 
   public static Bundle generateBundleEntityForTest(Long id) {

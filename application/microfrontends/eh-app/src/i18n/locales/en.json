@@ -157,7 +157,7 @@
     "minDescription": "The description must contain at least 3 characters",
     "maxDescription": "The description must not exceed 4000 characters",
     "categoryRequired": "Category is a required field",
-    "atleastOneUrl": "Please add at least one bundle before publishing this bundle group.",
+    "atleastOneUrl": "Please add at least one bundle to the bundle group before publishing. Don't forget to press the 'Add' button on the right.",
     "description": "Description must not exceed 100 characters"
   },
   "modalMsg": {

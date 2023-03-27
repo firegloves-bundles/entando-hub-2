@@ -157,7 +157,7 @@
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 4000 caratteri",
     "categoryRequired": "La categoria è un campo obbligatorio",
-    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group.",
+    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group. Non dimenticare di premere il pulsante 'Aggiungi' sulla destra.",
     "description": "La descrizione non deve superare i 100 caratteri"
   },
   "modalMsg": {

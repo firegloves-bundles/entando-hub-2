@@ -181,7 +181,7 @@
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
     "addNewVersion": "Aggiungi nuova versione",
-    "deleteApiKey": "Sei sicuro di voler eliminare questo API key?",
+    "deleteApiKey": "Sei sicuro di voler eliminare questa API key?",
     "regenerateApiKey": "Sei sicuro di voler rigenerare questa API key?",
     "regenerateApiKeyTitle": "Rigenerare API Key"
   },
@@ -189,7 +189,7 @@
     "userManagement": "Gestione utente",
     "categoryManagement": "Gestione delle categorie",
     "organisationManagement": "Gestione dell'organizzazione",
-    "apiKeyManagement": "Gestione dei API key"
+    "apiKeyManagement": "Gestione delle API key"
   },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",

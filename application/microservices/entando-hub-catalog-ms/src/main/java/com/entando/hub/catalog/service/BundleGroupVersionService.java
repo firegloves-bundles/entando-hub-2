@@ -16,13 +16,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
+import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class BundleGroupVersionService {
@@ -377,14 +380,17 @@ public class BundleGroupVersionService {
      * @return
      */
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(
-            Integer pageNum, Integer pageSize, Long organisationId, String[] categoryIds, String[] statuses,
-            String searchText) {
+            Integer pageNum, Integer pageSize, Long organisationId, Long catalogId, String[] categoryIds, String[] statuses,
+            String searchText, Boolean publicCatalog) {
 
         logger.debug(
-                "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}, searchText: {}",
-                CLASS_NAME, organisationId, categoryIds, statuses, searchText);
+                "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, catalogId: {}, categories: {}, statuses: {}, searchText: {}",
+                CLASS_NAME, organisationId, catalogId, categoryIds, statuses, searchText);
 
-        List<BundleGroup> bundleGroups = this.getBundleGroups(searchText, organisationId, categoryIds);
+        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
+        List<BundleGroup> bundleGroups = this.getBundleGroup(organisationId, catalogId, categories, publicCatalog);
+
+        bundleGroups = searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
 
         Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
 
@@ -399,59 +405,72 @@ public class BundleGroupVersionService {
         return pagedContent;
     }
 
-    private List<BundleGroup> getBundleGroups(String searchText, Long organisationId, String[] categoryIds){
-        List<BundleGroup> bundleGroups;
-        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
+    public List<BundleGroup> getBundleGroup(Long organisationId, Long catalogId, Set<Category> categories, Boolean publicCatalog){
+        List<Specification<BundleGroup>> filters = new ArrayList<>();
 
-        if (organisationId != null && categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesInAndPublicCatalogIsTrue(organisationId, categories);
-        } else if (organisationId != null) {
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndPublicCatalogIsTrue(organisationId);
-        } else if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCategoriesInAndPublicCatalogIsTrue(categories);
-        } else {
-            bundleGroups = bundleGroupRepository.findAll();
+        if(catalogId != null) {
+            logger.debug("{}: adding filter by catalogId with value {}", CLASS_NAME, catalogId);
+            filters.add(hasCatalogId(catalogId));
         }
-
-        return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
-    }
-
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchPrivateBundleGroupVersions(
-            Integer pageNum, Integer pageSize, Long catalogId, String[] categoryIds, String[] statuses,
-            String searchText) {
-
-        logger.debug(
-                "{}: getBundleGroupVersions: Get bundle group versions paginated by catalog id: {}, categories: {}, statuses: {}, searchText: {}",
-                CLASS_NAME, catalogId, categoryIds, statuses, searchText);
-
-        List<BundleGroup> bundleGroups = this.getPrivateBundleGroups(searchText, catalogId, categoryIds);
-
-        Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
-
-        Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
-
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
-                toResponseViewList(page, bundleGroups), page);
-
-        logger.debug("{}: getBundleGroupVersions: catalogId {}, number of elements: {}", CLASS_NAME,
-                catalogId, page.getNumberOfElements());
-
-        return pagedContent;
-    }
-
-    private List<BundleGroup> getPrivateBundleGroups(String searchText, Long catalogId, String[] categoryIds){
-        List<BundleGroup> bundleGroups;
-        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
-
-        if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCatalogIdAndCategoriesIn(catalogId, categories);
-        } else {
-            bundleGroups = bundleGroupRepository.findDistinctByCatalogId(catalogId);
+        if(organisationId != null) {
+            logger.debug("{}: adding filter by organisationId with value {}", CLASS_NAME, organisationId);
+            filters.add(hasOrganisationId(organisationId));
         }
-
-        return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
+        if(categories !=null) {
+            logger.debug("{}: adding filter by categories {}", CLASS_NAME, categories);
+            filters.add(belongsToCategory(categories));
+        }
+        if(publicCatalog != null) {
+           logger.debug("{}: adding filter by publicCatalog", CLASS_NAME);
+           filters.add(publicCatalogSpec(publicCatalog));
+        }
+        return this.getQueryResult(filters);
     }
 
+    private Specification<BundleGroup> hasCatalogId(Long catalogId){
+        return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            return criteriaBuilder.equal(root.get(BundleGroup_.CATALOG_ID), catalogId);
+        };
+    }
+
+    private Specification<BundleGroup> hasOrganisationId(Long organisationId){
+        return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            return criteriaBuilder.equal(root.get(BundleGroup_.organisation).get(Organisation_.ID), organisationId);
+        };
+    }
+
+    private Specification<BundleGroup> publicCatalogSpec(boolean publicCatalog){
+        return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            return criteriaBuilder.equal(root.get(BundleGroup_.PUBLIC_CATALOG), publicCatalog);
+        };
+    }
+
+    private Specification<BundleGroup> belongsToCategory(Set<Category> categories) {
+        return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            SetJoin<BundleGroup, Category> join = root.joinSet(BundleGroup_.CATEGORIES);
+            return join.in(categories.stream().map(Category::getId).collect(Collectors.toSet()));
+        };
+    }
+
+    public List<BundleGroup> getQueryResult(List<Specification<BundleGroup>> filters){
+        if(!filters.isEmpty()) {
+            return bundleGroupRepository.findAll(getSpecificationFromFilters(filters));
+        }else {
+            return bundleGroupRepository.findAll();
+        }
+    }
+
+    private Specification<BundleGroup> getSpecificationFromFilters(List<Specification<BundleGroup>> filter) {
+        Specification<BundleGroup> specification = where(filter.remove(0));
+        for (Specification<BundleGroup> input : filter) {
+            specification = specification.and(input);
+        }
+        return specification;
+    }
 
     private List<BundleGroup> filterSearchText(List<BundleGroup> bundleGroups, String searchText){
         return bundleGroups.stream()

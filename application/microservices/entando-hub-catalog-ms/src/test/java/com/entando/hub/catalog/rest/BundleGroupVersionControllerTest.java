@@ -187,8 +187,8 @@ public class BundleGroupVersionControllerTest {
 		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
 		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(list, response);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));		//Mockito.when(bundleGroupVersionService.getBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, Optional.empty())).thenReturn(pagedContent);
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, null, categoryIds, statuses, null, true)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, null, categoryIds, statuses, null, true)).thenReturn(pagedContent);
 		
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/filtered")
@@ -218,7 +218,7 @@ public class BundleGroupVersionControllerTest {
 		//Case 3: when statuses list is null
 		statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
-		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
+		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, null, categoryIds, statuses, null, true)).thenReturn(pagedContent);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/filtered")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)

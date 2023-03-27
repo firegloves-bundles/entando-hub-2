@@ -184,12 +184,11 @@ public class MapperGeneratorHelper {
 
     public static final Long BUNDLE_GROUP_ID = 2677L;
     public static final String BUNDLE_GROUP_ID_STR = "2677";
+
     public final static String BUNDLE_GROUP_NAME = "bundleGroupName";
     public final static String ORGANIZATION_NAME = "Organization2677Name";
     public final static String ORGANIZATION_DESCRIPTION = "organisation description";
     public  static final Long ORGANIZATION_ID = 27147L;
-    public  static final String ORGANIZATION_ID_STR = "27147";
-
     public static final String BUNDLE_NAME = "bundle name";
     public static final String BUNDLE_DESCRIPTION = "description";
     public static final String GIT_REPO_ADDRESS = "repo address";

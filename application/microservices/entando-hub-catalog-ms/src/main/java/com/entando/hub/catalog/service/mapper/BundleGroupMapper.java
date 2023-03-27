@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = {})
 public interface BundleGroupMapper extends BaseMapper<BundleGroup, BundleGroupDto> {
 
-  // NOTE: the categories are not converted
+  // NOTE: the categories are not converted, but we cannot use MapStuct exclusion mechanism for we need an empty, not null, category set
   @Mapping(source = "bundleGroupId", target = "id", qualifiedByName = "toEntityId")
   @Mapping(target = "organisation", expression = "java(toOrganization(dto.getOrganisationName(), dto.getOrganisationId()))")
   BundleGroup toEntity(BundleGroupDto dto);

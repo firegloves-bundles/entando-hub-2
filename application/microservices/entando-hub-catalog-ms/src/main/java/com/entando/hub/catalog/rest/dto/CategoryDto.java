@@ -23,5 +23,5 @@ public class CategoryDto {
   @Schema(example = "a brief description")
   private String description;
   protected List<String> bundleGroups;
-  
+
 }

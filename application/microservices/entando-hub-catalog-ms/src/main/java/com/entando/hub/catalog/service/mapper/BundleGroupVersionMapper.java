@@ -10,8 +10,7 @@ import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * This acts as a container for the two mapper that handle the same entity (gosh!)
- * TODO: refactor to only ONE dto if possible
+ * This acts as a container for the two mappers that handle the same entity (gosh!)
  */
 @Mapper(componentModel = "spring", uses={BundleGroupVersionEntityMapper.class, BundleGroupVersionStandardMapper.class})
 public abstract class BundleGroupVersionMapper {

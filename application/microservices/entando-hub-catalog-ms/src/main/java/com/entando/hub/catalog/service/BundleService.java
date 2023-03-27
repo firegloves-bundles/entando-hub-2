@@ -26,7 +26,7 @@ public class BundleService {
 
     private final SecurityHelperService securityHelperService;
 
-	final private BundleStandardMapper bundlemapper;
+	private final BundleStandardMapper bundlemapper;
 
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
@@ -152,9 +152,7 @@ public class BundleService {
         try {
             List<Bundle> bundles = new ArrayList<Bundle>();
             if (!CollectionUtils.isEmpty(bundleRequest)) {
-                bundleRequest.forEach((element) -> {
-                    bundles.add(bundlemapper.toEntity(element));
-                });
+                bundleRequest.forEach((element) -> bundles.add(bundlemapper.toEntity(element)));
                 return createBundles(bundles);
             }
         } catch (Exception e) {

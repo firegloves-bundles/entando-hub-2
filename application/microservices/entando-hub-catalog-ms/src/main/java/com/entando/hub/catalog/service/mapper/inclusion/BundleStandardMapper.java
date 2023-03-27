@@ -5,7 +5,6 @@ import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.service.mapper.inclusion.BaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -54,8 +53,8 @@ public interface BundleStandardMapper extends BaseMapper<Bundle, BundleDto> {
   static Set<BundleGroupVersion> toEntityGroups(List<String> groups) {
     if (groups != null && !CollectionUtils.isEmpty(groups)) {
       return groups.stream()
-              .filter(id -> StringUtils.isNotBlank(id))
-              .map((bundleGroupVersionId) -> {
+              .filter(StringUtils::isNotBlank)
+              .map(bundleGroupVersionId -> {
                 BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
 
                 bundleGroupVersion.setId(Long.valueOf(bundleGroupVersionId));

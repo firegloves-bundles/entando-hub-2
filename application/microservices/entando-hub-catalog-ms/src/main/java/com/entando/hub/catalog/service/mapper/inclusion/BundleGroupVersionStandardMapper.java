@@ -84,7 +84,7 @@ public interface BundleGroupVersionStandardMapper extends BaseMapperMethods {
 
   default List<String> toDtoCategories(BundleGroup group) {
     return (group != null && group.getCategories() != null && !group.getCategories().isEmpty()) ?
-      group.getCategories().stream().map((category) -> category.getId().toString()).collect(Collectors.toList()) :
+      group.getCategories().stream().map(category -> category.getId().toString()).collect(Collectors.toList()) :
       null;
   }
 

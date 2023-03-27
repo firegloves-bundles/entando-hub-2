@@ -1,7 +1,5 @@
 package com.entando.hub.catalog.service.mapper.inclusion;
 
-import com.entando.hub.catalog.service.mapper.inclusion.BaseMapperMethods;
-
 import java.util.List;
 
 public interface BaseMapper<E, D> extends BaseMapperMethods {

@@ -205,9 +205,8 @@ public class BundleGroupVersionService {
 
         List<BundleGroup> bundleGroups = Collections.singletonList(bundleGroup);
         Page<BundleGroupVersionEntityDto> converted = convertoToDto(page);
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(
+        return new PagedContent<>(
                 new ArrayList<>(toResponseViewList(converted, bundleGroups)), converted);
-        return pagedContent;
     }
 
     @Transactional

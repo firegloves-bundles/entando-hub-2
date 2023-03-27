@@ -1,4 +1,4 @@
-import { Content, OverflowMenu, OverflowMenuItem, Search } from "carbon-components-react";
+import { Column, Content, Row, OverflowMenu, OverflowMenuItem, Search } from "carbon-components-react";
 import { ChevronDown20 as ChevronIcon } from '@carbon/icons-react';
 import CatalogPageContent from "./catalog-page-content/CatalogPageContent";
 import EhBreadcrumb from "../../components/eh-breadcrumb/EhBreadcrumb";
@@ -14,6 +14,7 @@ import './catalogPage.scss';
 import { SHOW_NAVBAR_ON_MOUNTED_PAGE, BUNDLE_STATUS } from "../../helpers/constants";
 import ScrollToTop from "../../helpers/scrollToTop";
 import { useApiUrl } from "../../contexts/ConfigContext";
+import SettingsOverflowMenu from "./SettingsOverflowMenu";
 import { useCatalogs } from "../../contexts/CatalogContext";
 
 /*
@@ -189,17 +190,17 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                 <div className="bx--col-lg-16 CatalogPage-breadcrumb">
                   <EhBreadcrumb
                     pathElements={[{
-                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.isCatalogPage,
+                      page: SHOW_NAVBAR_ON_MOUNTED_PAGE.catalogPage,
                       path: selectedCatalog ? selectedCatalog.name : '',
                     }]}
                   />
                 </div>
               </div>
-              <div className="bx--row">
-                <div className="bx--col-lg-4 CatalogPage-section">
+              <Row>
+                <Column lg={4} className="CatalogPage-section">
                   {i18n.t('page.catalogPanel.catalogHomePage.categories')}
-                </div>
-                <div className="bx--col-lg-5 CatalogPage-section">
+                </Column>
+                <Column lg={5} className="CatalogPage-section">
                   {selectedCatalog ? selectedCatalog.name : i18n.t('page.catalogPanel.catalogHomePage.catalog')}
                   <OverflowMenu
                     className="CatalogPage-catalog-menu"
@@ -219,12 +220,12 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                       />
                     ))}
                   </OverflowMenu>
-                </div>
-                <div className="bx--col-lg-3 CatalogPage-section">
+                </Column>
+                <Column lg={2} className="CatalogPage-section">
                   {/*
                     Manage the Add (New Bundle Group) button
                     I will wait fe status filter loading, to avoid double rendering (and use effect) call
-                   */}
+                  */}
                   {showFullPage && hubUser && statusFilterValue !== "LOADING" && (
                     <ModalAddNewBundleGroup
                       isLoading={loading}
@@ -234,13 +235,16 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                       currentUserOrg={currentUserOrg}
                     />
                   )}
-                </div>
-                <div className="bx--col-lg-4 CatalogPage-section">
+                </Column>
+                <Column lg={1} className="CatalogPage-section">
+                  {showFullPage && hubUser && <SettingsOverflowMenu />}
+                </Column>
+                <Column lg={4} className="CatalogPage-section">
                   {/*{i18n.t('component.button.search')}*/}
                   {versionSearchTerm && <Search value={worker} placeholder={i18n.t('component.bundleModalFields.search')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
                   {!versionSearchTerm && <Search placeholder={i18n.t('component.bundleModalFields.search')} onKeyDown={searchTermHandler} onChange={onClearHandler} labelText={'Search'} size="xl" id="search-1" />}
-                </div>
-              </div>
+                </Column>
+              </Row>
               {/*  If the user is an HUB authenticated one (has HUB roles)
                         can see the status filter
                 */}

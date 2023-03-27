@@ -123,7 +123,7 @@ const BundlesOfBundleGroup = ({
     onAddOrRemoveBundleFromList,
     initialBundleList,
     disabled = false,
-    minOneBundleError,
+    errorMsg,
     bundleStatus,
     mode,
     operation,
@@ -176,10 +176,9 @@ const BundlesOfBundleGroup = ({
                 })
                 if (validationError) {
                     value.trim().length === 0 && delete validationError.gitRepo;
-                    if (value.trim().length && (bundleStatus === BUNDLE_STATUS.NOT_PUBLISHED || bundleStatus === BUNDLE_STATUS.DELETE_REQ)) {
-                        validationError.gitRepo = [`${i18n.t('formValidationMsg.bundleUrlFormat')}`];
-                    }
                     setValidationResult(validationError)
+                } else {
+                  setValidationResult({});
                 }
             })()
     }
@@ -245,20 +244,19 @@ const BundlesOfBundleGroup = ({
         bundleUrlErrorResult = (validationResult && validationResult.gitRepo && validationResult.gitRepo.length) ? `${i18n.t('formValidationMsg.bundleUrlFormat')}` : minOneBundle
     } else if (
         !displayContactUrl &&
-        minOneBundleError === minOneBundle &&
+        errorMsg === minOneBundle &&
         Object.keys(validationResult).length === 0 &&
         initialBundleList.length < 1
         && (bundleStatus === BUNDLE_STATUS.PUBLISHED || bundleStatus === BUNDLE_STATUS.PUBLISH_REQ)
     ) {
             bundleUrlErrorResult = minOneBundle;
+    } else if (!isUrlBundleRexValid) {
+      bundleUrlErrorResult = validationResult["gitRepo"] &&
+        validationResult["gitRepo"].join("; ")
     } else {
-        if (!isUrlBundleRexValid) {
-            bundleUrlErrorResult = validationResult["gitRepo"] &&
-                validationResult["gitRepo"].join("; ")
-        } else {
-            bundleUrlErrorResult = null;
-        }
+      bundleUrlErrorResult = null;
     }
+  
     if(showBundleUrlCharLimitErrMsg) {
         bundleUrlErrorResult = i18n.t('formValidationMsg.maxBundleUrl255Char');
     }
@@ -291,6 +289,9 @@ const BundlesOfBundleGroup = ({
         };
     }, []);
 
+    let invalid = (!isUrlReqValid && (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult))
+        || (bundleList.length === 0 && !!bundleUrlErrorResult) || (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg);
+
     return (
         <>
             <Row>
@@ -301,7 +302,7 @@ const BundlesOfBundleGroup = ({
                                onChange={onChangeHandler}
                                {...textInputProps}
                                maxLength={CHAR_LENGTH_255}
-                               invalid={(!isUrlReqValid) ? (!!validationResult[GIT_REPO] || !!bundleUrlErrorResult) : (!isUrlBundleRexValid ? !!validationResult[GIT_REPO] : showBundleUrlCharLimitErrMsg)}
+                               invalid={invalid}
                                invalidText={bundleUrlErrorResult}
                                autoComplete={"false"}
                                onKeyPress={keyPressHandler}

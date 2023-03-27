@@ -23,8 +23,6 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
 
     const { catalogs } = useCatalogs();
 
-    const isPublicOnly = catalogs.length === 0;
-
     const ModalStateManager = ({
         renderLauncher: LauncherContent,
         children: ModalContent,
@@ -41,8 +39,17 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [minOneBundleError, setMinOneBundleError] = useState("")
+        const [bundleErrorMsg, setBundleErrorMsg] = useState("")
         const [reqOnWay, setReqOnWay] = useState(false)
+
+        const isPublicOnly = catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
+
+        useEffect(() => {
+          setBundleGroup(prevBundleGroup => ({
+            ...prevBundleGroup,
+            publicCatalog: isPublicOnly
+          }));
+        }, [isPublicOnly]);
 
         const onDataChange = useCallback((bundleGroup) => {
             setBundleGroup(bundleGroup)
@@ -129,7 +136,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                         name: "",
                         categories: [defaultCategoryId],
                         organisationId,
-                        publicCatalog: isPublicOnly,
+                        publicCatalog: catalogs.every(({ organisationId: catOrgId }) => catOrgId !== +organisationId),
                         versionDetails: {
                             bundleGroupVersionId: null,
                             description: "",
@@ -175,7 +182,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 if (details.bundles && details.bundles.length === 0 &&
                     (details.displayContactUrl !== true) &&
                     details.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
-                    validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
+                    validationError && setBundleErrorMsg(validationError['versionDetails.bundles'][0]);
                 }
                 if (validationError) {
                     console.info("Form validation error(s)", validationError)
@@ -205,7 +212,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             selectStatusValues={selectStatusValues}
                             bundleGroup={bundleGroup}
                             loading={loading}
-                            minOneBundleError={minOneBundleError}
+                            bundleErrorMsg={bundleErrorMsg}
                             reqOnWay={reqOnWay}
                             orgList={orgList}
                             isPublicOnly={isPublicOnly}
@@ -239,7 +246,7 @@ const ModalContent = ({
     allowedOrganisations,
     categories,
     loading,
-    minOneBundleError,
+    bundleErrorMsg,
     reqOnWay,
     orgList,
     isPublicOnly,
@@ -264,7 +271,7 @@ const ModalContent = ({
                         selectStatusValues={selectStatusValues}
                         onDataChange={onDataChange}
                         validationResult={validationResult}
-                        minOneBundleError={minOneBundleError}
+                        bundleErrorMsg={bundleErrorMsg}
                         orgList={orgList}
                         isPublicOnly={isPublicOnly}
                     />

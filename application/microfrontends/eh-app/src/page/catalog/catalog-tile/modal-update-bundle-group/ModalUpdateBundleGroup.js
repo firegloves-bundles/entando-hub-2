@@ -40,11 +40,19 @@ export const ModalUpdateBundleGroup = ({
 
   const [selectStatusValues, setSelectStatusValues] = useState([])
   const [validationResult, setValidationResult] = useState({})
-  const [minOneBundleError] = useState("")
 
   const apiUrl = useApiUrl();
 
   const { catalogs } = useCatalogs();
+
+  const isPublicOnly = catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
+
+  useEffect(() => {
+    setBundleGroup(prevBundleGroup => ({
+      ...prevBundleGroup,
+      publicCatalog: isPublicOnly
+    }));
+  }, [isPublicOnly]);
 
   const onDataChange = useCallback((bundleGroup) => {
     setBundleGroup(bundleGroup)
@@ -184,9 +192,8 @@ export const ModalUpdateBundleGroup = ({
             theBundleStatus={bundleStatus}
             selectStatusValues={selectStatusValues}
             validationResult={validationResult}
-            minOneBundleError={minOneBundleError}
             orgList={orgList}
-            isPublicOnly={catalogs.length === 0}
+            isPublicOnly={isPublicOnly}
           />
         </Modal>
       }

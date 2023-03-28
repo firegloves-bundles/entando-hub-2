@@ -374,9 +374,11 @@ public class BundleGroupVersionService {
      * @param pageNum
      * @param pageSize
      * @param organisationId
+     * @param catalogId
      * @param categoryIds
      * @param statuses
      * @param searchText
+     * @param publicCatalog
      * @return
      */
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> searchBundleGroupVersions(
@@ -433,7 +435,6 @@ public class BundleGroupVersionService {
             return criteriaBuilder.equal(root.get(BundleGroup_.CATALOG_ID), catalogId);
         };
     }
-
     private Specification<BundleGroup> hasOrganisationId(Long organisationId){
         return (root, query, criteriaBuilder) -> {
             query.distinct(true);

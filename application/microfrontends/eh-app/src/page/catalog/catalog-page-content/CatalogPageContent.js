@@ -5,7 +5,7 @@ import CatalogTiles from "../catalog-tiles/CatalogTiles"
 import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
-import {getHigherRole, isHubAdmin, isHubUser} from "../../../helpers/helpers"
+import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'

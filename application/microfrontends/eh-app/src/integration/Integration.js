@@ -1,4 +1,4 @@
-import { deleteData, getData, postData } from "./Http"
+import { deleteData, getData, postData, putData } from "./Http"
 import { fireEvent, SUCCESS, FAIL } from "../helpers/eventDispatcher"
 import { API_RESPONSE_KEY, DELETED_BUNDLE, HTTP_STATUS } from "../helpers/constants";
 import i18n from "../i18n";
@@ -10,6 +10,7 @@ const urlBundles = '/api/bundles/'
 const urlBundleGroups = '/api/bundlegroups/'
 const urlCatalogs = '/api/catalog/'
 const urlUsers = '/api/users/'
+const urlCatalogApiKeys = '/api/private-catalog-api-key/'
 const urlKC = '/api/keycloak/'
 const urlBundleGroupVersion = '/api/bundlegroupversions/'
 
@@ -598,6 +599,85 @@ export const getPrivateCatalog = async (apiUrl, id) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url, id);
   eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.message || ''}`);
+  return {
+    data,
+    isError,
+  };
+};
+
+/*******************************
+ * Private Catalog API KEYS ****
+ *******************************/
+
+export const getCatalogApiKeys = async (apiUrl, { page = 0, pageSize = 0 } = {}) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}?page=${page}&pageSize=${pageSize}`;
+  const { data, isError } = await getData(url);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.message || ''}`);
+
+  return {
+    data: data.payload,
+    isError,
+  };
+};
+
+export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await postData(url, apiKeyData);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToGenerateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.generated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const updateCatalogApiKey = async (apiUrl, apiKeyData, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await putData(url, apiKeyData, id);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToUpdateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.updated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const regenerateCatalogApiKey = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}regenerate/`;
+  const { data, isError } = await postData(url, null, id);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToRegenerateApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.regenerated')}`,
+  );
+
+  return {
+    data,
+    isError,
+  };
+};
+
+export const deleteCatalogApiKey = async (apiUrl, id) => {
+  const url = `${apiUrl}${urlCatalogApiKeys}`;
+  const { data, isError } = await deleteData(url, id);
+
+  eventHandler(
+    isError,
+    `${i18n.t('toasterMessage.impossibleToDeleteApiKey')}: ${data?.message || ''}`,
+    `API Key ${i18n.t('toasterMessage.deleted')}`,
+  );
+
   return {
     data,
     isError,

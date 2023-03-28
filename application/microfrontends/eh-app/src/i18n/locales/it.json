@@ -41,6 +41,9 @@
       "categoryManagement": "Gestione delle categorie",
       "organisationsManagement": "Gestione delle organizzazioni"
     },
+    "apiKeys": {
+      "empty": "Ancora nessuna chiave API"
+    },
     "unauthorized": "NON AUTORIZZATO"
   },
   "component": {
@@ -72,6 +75,7 @@
       "delete": "Elimina",
       "search": "Ricerca",
       "cancel": "Annulla",
+      "confirm": "Confermare",
       "install": "Installare",
       "addCategory": "Aggiungi Categoria",
       "addOrganisation": "Aggiungi Organizzazione",
@@ -81,7 +85,10 @@
       "viewVersions": "Visualizza versioni",
       "submit": "Invia",
       "createPrivateCatalog": "Crea catalogo privato",
-      "navigatePrivateCatalog": "Vai al catalogo privato"
+      "navigatePrivateCatalog": "Vai al catalogo privato",
+      "generateApiKey": "Generare API Key",
+      "deleteApiKey": "Eliminare API Key",
+      "editApiKey": "Modifica API Key"
     },
     "pagination": {
       "page": "pagina",
@@ -126,13 +133,21 @@
     "userRemovedFromTheOrganisation": "Utente rimosso dall'organizzazione.",
     "unableToAddBundleGroupVersion": "Impossibile aggiungere la versione del gruppo di bundle.",
     "impossibleToLoadBundleGroupVersions": "Impossibile caricare le versioni dei gruppi di bundle",
+    "impossibleToGenerateApiKey": "Impossibile generare la API key",
+    "impossibleToLoadApiKeys": "Impossibile caricare le API keys",
+    "impossibleToUpdateApiKey": "Impossibile aggiornare la API key",
+    "impossibleToDeleteApiKey": "Impossibile eliminare la API key",
+    "impossibleToRegenerateApiKey": "Impossibile rigenerare la API key",
     "bundleGroupVersion": "Versione gruppo bundle",
     "user": "Utente",
     "bundle": "Bundle",
     "bundleGroup": "Bundle Group",
     "created": "Creato",
     "updated": "Aggiornato",
-    "deleted": "Cancellato"
+    "deleted": "Cancellato",
+    "generated": "Generato",
+    "regenerated": "Rigenerato",
+    "apiKeyVisibility": "Il codice di questa API key non sarà più visibile dopo questo momento"
   },
   "formValidationMsg": {
     "nameRequired": "Il nome è un campo obbligatorio",
@@ -157,7 +172,7 @@
     "minDescription": "La descrizione deve contenere almeno 3 caratteri",
     "maxDescription": "La descrizione non deve superare i 4000 caratteri",
     "categoryRequired": "La categoria è un campo obbligatorio",
-    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group.",
+    "atleastOneUrl": "Aggiungi almeno un bundle prima di pubblicare questo bundle group. Non dimenticare di premere il pulsante 'Aggiungi' sulla destra.",
     "description": "La descrizione non deve superare i 100 caratteri"
   },
   "modalMsg": {
@@ -165,12 +180,16 @@
     "removeUserFromOrgMsg": "Sei sicuro di voler rimuovere questo utente dall'organizzazione?",
     "impossibleToRemoveCat": "Questa categoria è già in uso.",
     "deleteCat": "Sei sicuro di voler eliminare questa categoria?",
-    "addNewVersion": "Aggiungi nuova versione"
+    "addNewVersion": "Aggiungi nuova versione",
+    "deleteApiKey": "Sei sicuro di voler eliminare questa API key?",
+    "regenerateApiKey": "Sei sicuro di voler rigenerare questa API key?",
+    "regenerateApiKeyTitle": "Rigenerare API Key"
   },
   "navLink": {
     "userManagement": "Gestione utente",
     "categoryManagement": "Gestione delle categorie",
-    "organisationManagement": "Gestione dell'organizzazione"
+    "organisationManagement": "Gestione dell'organizzazione",
+    "apiKeyManagement": "Gestione delle API key"
   },
   "Draft": "Non pubblicato",
   "Publication Request": "Richiesta di pubblicazione",

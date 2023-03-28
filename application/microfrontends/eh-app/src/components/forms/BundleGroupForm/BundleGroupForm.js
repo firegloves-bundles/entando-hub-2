@@ -43,7 +43,7 @@ const BundleGroupForm = ({
                              onDataChange,
                              selectStatusValues,
                              validationResult,
-                             minOneBundleError,
+                             bundleErrorMsg,
                              theBundleStatus,
                              mode,
                              orgList,
@@ -445,7 +445,7 @@ const BundleGroupForm = ({
                                 onAddOrRemoveBundleFromList={onAddOrRemoveBundleFromList}
                                 initialBundleList={versionDetails.bundles}
                                 disabled={disabled}
-                                minOneBundleError={minOneBundleError}
+                                errorMsg={bundleErrorMsg}
                                 displayContactUrl={versionDetails.displayContactUrl}
                                 bundleStatus={bundleStatus}
                                 mode={mode}

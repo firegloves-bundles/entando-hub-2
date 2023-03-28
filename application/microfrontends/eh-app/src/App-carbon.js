@@ -12,6 +12,7 @@ import NotificationDispatcher from "./components/notification/NotificationDispat
 import i18n from "./i18n"
 import BundleGroupVersionsPage from "./page/bundle-group-version/bg-version-catalog/BundleGroupVersionsPage"
 import { useState } from "react"
+import ApiKeyManagementPage from "./page/api-key-management/ApiKeyManagementPage"
 import NotFound from "./components/errors/NotFound"
 import { CatalogProvider } from "./contexts/CatalogContext"
 
@@ -35,6 +36,7 @@ function AppCarbon() {
           />
           <Route path="/catalog/:catalogId/bundlegroup/versions/:id" render={(props) => <BundleGroupPage {...props} />} />
           <Route path="/catalog/:catalogId/bundlegroup/:id" render={(props) => <BundleGroupPage {...props} />} />
+          <Route path="/apikeys" render={(props) => <ApiKeyManagementPage {...props} />} />
           <RouteWithGate gateFunction={isHubAdmin} path="/admin*" component={UserManagementPage} />
           <RouteWithGate gateFunction={isHubAdmin} path="/organisations*" component={OrganisationManagementPage} />
           <RouteWithGate gateFunction={isHubAdmin} path="/organisation*" component={OrganisationManagementPage} />

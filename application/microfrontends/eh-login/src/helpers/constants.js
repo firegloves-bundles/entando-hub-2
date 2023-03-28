@@ -112,10 +112,10 @@ export const DROPDOWN_OPTIONS = {
 
 // To show Nav-Bar on given pages.
 export const SHOW_NAVBAR_ON_MOUNTED_PAGE = {
-    isCatalogPage: "catalogPage",
-    isCategoryManagementPage: "categoryManagementPage",
-    isUserManagementPage: "userManagementPage",
-    isOrganisationManagementPage: "organisationManagementPage",
+    catalogPage: "catalogPage",
+    categoryManagementPage: "categoryManagementPage",
+    userManagementPage: "userManagementPage",
+    organisationManagementPage: "organisationManagementPage",
 }
 
 // Git Repo Address

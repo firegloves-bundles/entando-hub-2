@@ -275,7 +275,6 @@ const CatalogPage = ({ versionSearchTerm, setVersionSearchTerm }) => {
                       statusFilterValue={statusFilterValue}
                       onAfterSubmit={onAfterSubmit}
                       orgList={orgList}
-                      currentUserOrg={currentUserOrg}
                       showFullPage={showFullPage}
                       catalogId={catalogId}
                     />

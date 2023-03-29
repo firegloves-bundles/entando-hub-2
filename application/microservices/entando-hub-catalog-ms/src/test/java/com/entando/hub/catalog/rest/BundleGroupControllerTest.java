@@ -1,36 +1,43 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupDTO;
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.OrganisationService;
 import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ComponentScan(basePackageClasses = {BundleGroupMapper.class, BundleGroupMapperImpl.class})
 class BundleGroupControllerTest {
 
+    @Spy
+    private BundleGroupMapper bundleGroupMapper = new BundleGroupMapperImpl();
     @Mock
     private  BundleGroupService bundleGroupService;
     @Mock
@@ -44,19 +51,22 @@ class BundleGroupControllerTest {
     private BundleGroupController bundleGroupController;
     @BeforeEach
     void setUp() {
-        this.bundleGroupController = new BundleGroupController(bundleGroupService, securityHelperService, bundleGroupVersionService, organisationService);
+        this.bundleGroupController = new BundleGroupController(bundleGroupService, securityHelperService, bundleGroupVersionService, organisationService, bundleGroupMapper);
     }
 
     @Test
     void shouldGetBundleGroupListByOrganisationId() {
         long organisationId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        List<BundleGroup> listBundleGroup = Arrays.asList(bundleGroup.createEntity(Optional.of(1L)));
-        List<BundleGroupDTO> expectedListBundleGroupDTO = Arrays.asList(stubBundleGroupDTO(bundleGroup.createEntity(Optional.of(1L))));
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        List<BundleGroup> listBundleGroup = Arrays.asList(bundleGroup.createEntity(Optional.of(1L)));
+        bundleGroup.setBundleGroupId("1"); // FIXME shouldn't be necessary
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        List<BundleGroup> listBundleGroup = Arrays.asList(entity);
+        List<BundleGroupDto> expectedListBundleGroupDTO = Arrays.asList(stubBundleGroupDTO(entity));
 
         when(bundleGroupService.getBundleGroups(Optional.of(Long.toString(organisationId)))).thenReturn(listBundleGroup);
 
-        ResponseEntity<List<BundleGroupDTO>> response = bundleGroupController.getBundleGroupsByOrganisationId(Long.toString(organisationId));
+        ResponseEntity<List<BundleGroupDto>> response = bundleGroupController.getBundleGroupsByOrganisationId(Long.toString(organisationId));
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedListBundleGroupDTO);
     }
@@ -64,13 +74,15 @@ class BundleGroupControllerTest {
     @Test
     void shouldGetBundleGroupById(){
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
-        BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
+        bundleGroup.setBundleGroupId(bundleGroupId.toString());
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
         when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(entity));
 
-        ResponseEntity<BundleGroupDTO> response = bundleGroupController.getBundleGroup(bundleGroupId);
+        ResponseEntity<BundleGroupDto> response = bundleGroupController.getBundleGroup(bundleGroupId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -80,13 +92,15 @@ class BundleGroupControllerTest {
     @Test
     void shouldReturnNotFoundWhenBundleGroupNotExists(){
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
-        BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
+        bundleGroup.setBundleGroupId(bundleGroupId.toString());
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
         when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.empty());
 
-        ResponseEntity<BundleGroupDTO> response = bundleGroupController.getBundleGroup(bundleGroupId);
+        ResponseEntity<BundleGroupDto> response = bundleGroupController.getBundleGroup(bundleGroupId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
@@ -94,21 +108,23 @@ class BundleGroupControllerTest {
 
     @Test
     void shouldCreateBundleGroup() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
-        BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
+        bundleGroup.setBundleGroupId("1");
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
-        when(bundleGroupService.createBundleGroup(any(BundleGroup.class), any(BundleGroupNoId.class))).thenReturn(entity);
+        when(bundleGroupService.createBundleGroup(any(BundleGroup.class), any(BundleGroupDto.class))).thenReturn(entity);
 
-        ResponseEntity<BundleGroupDTO> response = bundleGroupController.createBundleGroup(bundleGroup);
+        ResponseEntity<BundleGroupDto> response = bundleGroupController.createBundleGroup(bundleGroup);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedBundleGroupDTO);
     }
 
     @Test
     void shouldThrowNotFoundExceptionWhenCreateBundleGroupWithInvalidOrganisationId() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(false);
 
@@ -124,7 +140,7 @@ class BundleGroupControllerTest {
 
     @Test
     void shouldThrowAccessDeniedExceptionWhenCreateBundleGroupWithInvalidUser() {
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(securityHelperService.userIsNotAdminAndDoesntBelongToOrg(bundleGroup.getOrganisationId())).thenReturn(true);
@@ -143,17 +159,19 @@ class BundleGroupControllerTest {
     @Test
     void shouldUpdateBundleGroup() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
-        BundleGroupDTO expectedBundleGroupDTO = stubBundleGroupDTO(entity);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
+        bundleGroup.setBundleGroupId(bundleGroupId.toString());
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
+        BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
-        when(bundleGroupService.createBundleGroup(any(BundleGroup.class), any(BundleGroupNoId.class))).thenReturn(entity);
+        when(bundleGroupService.createBundleGroup(any(BundleGroup.class), any(BundleGroupDto.class))).thenReturn(entity);
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(true);
         when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(entity));
         when(bundleGroupVersionService.isBundleGroupEditable(entity)).thenReturn(true);
 
-        ResponseEntity<BundleGroupDTO> response = bundleGroupController.updateBundleGroup(bundleGroupId, bundleGroup);
+        ResponseEntity<BundleGroupDto> response = bundleGroupController.updateBundleGroup(bundleGroupId, bundleGroup);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedBundleGroupDTO);
     }
@@ -161,7 +179,7 @@ class BundleGroupControllerTest {
     @Test
     void shouldThrowNotFoundExceptionWhenUpdateBundleGroupWithBundleGroupNotExisting() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(false);
@@ -179,8 +197,10 @@ class BundleGroupControllerTest {
     @Test
     void shouldThrowConflictExceptionWhenUpdateBundleGroupNotEditable() {
         Long bundleGroupId = 1L;
-        BundleGroupNoId bundleGroup = new BundleGroupNoId("test group", 1L, true);
-        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
+        BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
+//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
+        bundleGroup.setBundleGroupId(bundleGroupId.toString());
+        BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
 
         when(organisationService.existsById(bundleGroup.getOrganisationId())).thenReturn(true);
         when(bundleGroupService.existsById(bundleGroupId)).thenReturn(true);
@@ -218,8 +238,16 @@ class BundleGroupControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    private BundleGroupDTO stubBundleGroupDTO(BundleGroup bundleGroup){
-        return new BundleGroupDTO(bundleGroup);
+    private BundleGroupDto stubBundleGroupDTO(BundleGroup bundleGroup){
+        return bundleGroupMapper.toDto(bundleGroup);
     }
 
+    private BundleGroupDto stubBundleGroupCreate(String name, long organisationId, boolean isPublic) {
+        BundleGroupDto dto = new BundleGroupDto();
+        
+        dto.setName(name);
+        dto.setOrganisationId(organisationId);
+        dto.setPublicCatalog(isPublic);
+        return  dto;
+    }
 }

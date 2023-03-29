@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.CatalogService;
-import com.entando.hub.catalog.service.dto.CatalogDTO;
+import com.entando.hub.catalog.service.dto.CatalogDto;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -43,15 +43,15 @@ class CatalogControllerTest {
     @Test
     void shouldGetCatalogs() {
         List<Catalog> expectedCatalogs = Arrays.asList(stubCatalog(), stubCatalog());
-        List<CatalogDTO> expectedCatalogsDTO = Arrays.asList(stubCatalogDTO(), stubCatalogDTO());
+        List<CatalogDto> expectedCatalogsDTO = Arrays.asList(stubCatalogDTO(), stubCatalogDTO());
         when(catalogService.getCatalogs(anyString(), anyBoolean())).thenReturn(expectedCatalogs);
         when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        ResponseEntity<List<CatalogDTO>> responseEntity = catalogController.getCatalogs();
+        ResponseEntity<List<CatalogDto>> responseEntity = catalogController.getCatalogs();
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<CatalogDTO> actualCatalogsDTO = responseEntity.getBody();
+        List<CatalogDto> actualCatalogsDTO = responseEntity.getBody();
         assertThat(actualCatalogsDTO).usingRecursiveComparison().isEqualTo(expectedCatalogsDTO);
     }
 
@@ -62,7 +62,7 @@ class CatalogControllerTest {
         when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        ResponseEntity<List<CatalogDTO>> responseEntity = catalogController.getCatalogs();
+        ResponseEntity<List<CatalogDto>> responseEntity = catalogController.getCatalogs();
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isEmpty();
@@ -71,31 +71,31 @@ class CatalogControllerTest {
     @Test
     void shouldGetCatalogById() throws NotFoundException {
         Catalog expectedCatalog = stubCatalog();
-        CatalogDTO expectedCatalogDTO = stubCatalogDTO();
+        CatalogDto expectedCatalogDTO = stubCatalogDTO();
         Long catalogId = expectedCatalogDTO.getId();
 
         when(this.securityHelperService.isAdmin()).thenReturn(true);
         when(this.securityHelperService.getContextAuthenticationUsername()).thenReturn(TestHelper.ADMIN_USERNAME);
         when(catalogService.getCatalogById(TestHelper.ADMIN_USERNAME, catalogId, true)).thenReturn(expectedCatalog);
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.getCatalog(catalogId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.getCatalog(catalogId);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        CatalogDTO actualCatalogDTO = responseEntity.getBody();
+        CatalogDto actualCatalogDTO = responseEntity.getBody();
         assertThat(actualCatalogDTO).usingRecursiveComparison().isEqualTo(expectedCatalogDTO);
     }
 
 
     @Test
     void shouldCreateCatalog() throws Exception {
-        CatalogDTO expectedCatalogDTO = stubCatalogDTO();
+        CatalogDto expectedCatalogDTO = stubCatalogDTO();
         Long organisationId = expectedCatalogDTO.getOrganisationId();
 
         when(catalogService.createCatalog(organisationId)).thenReturn(stubCatalog());
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.createCatalog(organisationId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.createCatalog(organisationId);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        CatalogDTO actualCatalogDTO = responseEntity.getBody();
+        CatalogDto actualCatalogDTO = responseEntity.getBody();
         assertThat(actualCatalogDTO).usingRecursiveComparison().isEqualTo(expectedCatalogDTO);
     }
 
@@ -105,7 +105,7 @@ class CatalogControllerTest {
 
         when(catalogService.createCatalog(organisationId)).thenThrow(ConflictException.class);
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.createCatalog(organisationId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.createCatalog(organisationId);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
@@ -117,7 +117,7 @@ class CatalogControllerTest {
 
         when(catalogService.createCatalog(organisationId)).thenThrow(NotFoundException.class);
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.createCatalog(organisationId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.createCatalog(organisationId);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -127,15 +127,15 @@ class CatalogControllerTest {
     @Test
     void shouldDeleteCatalog() throws Exception {
         Catalog catalog = stubCatalog();
-        CatalogDTO expectedCatalogDTO = stubCatalogDTO();
+        CatalogDto expectedCatalogDTO = stubCatalogDTO();
         Long catalogId = expectedCatalogDTO.getId();
 
         when(catalogService.deleteCatalog(catalogId)).thenReturn(catalog);
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.deleteCatalog(catalogId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.deleteCatalog(catalogId);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        CatalogDTO actualCatalogDTO = responseEntity.getBody();
+        CatalogDto actualCatalogDTO = responseEntity.getBody();
         assertThat(actualCatalogDTO).usingRecursiveComparison().isEqualTo(expectedCatalogDTO);
 
     }
@@ -146,7 +146,7 @@ class CatalogControllerTest {
 
         when(catalogService.deleteCatalog(catalogId)).thenThrow(NotFoundException.class);
 
-        ResponseEntity<CatalogDTO> responseEntity = catalogController.deleteCatalog(catalogId);
+        ResponseEntity<CatalogDto> responseEntity = catalogController.deleteCatalog(catalogId);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
@@ -154,8 +154,8 @@ class CatalogControllerTest {
 
 
 
-    private CatalogDTO stubCatalogDTO(){
-        return new CatalogDTO(1L, 2L, "Entando private catalog");
+    private CatalogDto stubCatalogDTO(){
+        return new CatalogDto(1L, 2L, "Entando private catalog");
     }
     private Catalog stubCatalog(){
         return new Catalog().setId(1L).setName("Entando private catalog").setOrganisation(new Organisation().setId(2L));

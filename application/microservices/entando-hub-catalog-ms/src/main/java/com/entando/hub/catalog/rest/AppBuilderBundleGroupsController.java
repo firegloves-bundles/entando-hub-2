@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class AppBuilderBundleGroupsController {
     @GetMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
     	logger.debug("REST request to get bundle group versions and filter them by descriptorVersions {}", descriptorVersions);
 
         String[] statuses = {BundleGroupVersion.Status.PUBLISHED.toString()};

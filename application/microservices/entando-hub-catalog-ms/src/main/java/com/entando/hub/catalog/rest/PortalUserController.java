@@ -1,6 +1,6 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
+import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
@@ -44,14 +44,14 @@ public class PortalUserController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<List<RestUserRepresentation>> getUsers(@RequestParam(required = false) String organisationId) {
+    public ResponseEntity<List<RestUserRepresentationDto>> getUsers(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get users by organisation id: {}", organisationId);
         List<UserRepresentation> users;
         users = portalUserService.getUsersByOrganisation(organisationId);
         if (null == users) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(users.stream().map(RestUserRepresentation::new).collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(users.stream().map(RestUserRepresentationDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
     @Operation(summary = "Add a Keycloak user to an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId")
     @RolesAllowed({ADMIN})

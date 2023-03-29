@@ -1,23 +1,28 @@
 package com.entando.hub.catalog.rest;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
+import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -27,15 +32,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.BundleService;
+import java.util.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleController.class)
+@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class,
+		BundleEntityMapper.class, BundleEntityMapperImpl.class, BundleMapper.class, BundleMapperImpl.class})
 public class AppBuilderBundleControllerTest {
+
+	@Autowired
+	private BundleMapper bundleMapper = new BundleMapperImpl();
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -89,14 +97,14 @@ public class AppBuilderBundleControllerTest {
 		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
-		BundleController.Bundle bundleC = new BundleController.Bundle(bundle);
-		List<BundleController.Bundle> bundlesCList = new ArrayList<>();
+		BundleDto bundleC = bundleMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
+		List<BundleDto> bundlesCList = new ArrayList<>();
 		bundlesCList.add(bundleC);
 		
 		Page<Bundle> response = new PageImpl<>(bundlesList);
 
-		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
-		versions.add(Bundle.DescriptorVersion.V1);
+		Set<DescriptorVersion> versions = new HashSet<>();
+		versions.add(DescriptorVersion.V1);
 
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
 		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
@@ -146,7 +154,7 @@ public class AppBuilderBundleControllerTest {
 				.andExpect(status().isOk());
 
 		//Case 5: provide one more good descriptorVersion as well as a bad one (which should be excluded.
-		versions.add(Bundle.DescriptorVersion.V5);
+		versions.add(DescriptorVersion.V5);
 		page = 1;
 
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));

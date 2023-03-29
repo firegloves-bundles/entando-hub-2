@@ -29,12 +29,12 @@ public class CatalogService {
         if (userIsAdmin) {
             return catalogRepository.findAll();
         } else {
-            return catalogRepository.findByOrganisation_PortalUsers_Username(username);
+            return catalogRepository.findByUsername(username);
         }
     }
 
     public Catalog getCatalogByApiKey(String apiKey){
-        String username = privateCatalogApiKeyService.getUserByApiKey(apiKey);
+        String username = privateCatalogApiKeyService.getUsernameByApiKey(apiKey);
         List<Catalog> catalogs = this.getCatalogs(username, false);
         return catalogs.stream().findFirst().orElseThrow(()-> new NotFoundException("Private catalog not found"));
     }

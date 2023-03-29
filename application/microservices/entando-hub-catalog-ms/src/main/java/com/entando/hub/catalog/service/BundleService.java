@@ -24,22 +24,21 @@ public class BundleService {
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
     private final BundleGroupRepository bundleGroupRepository;
 
-    private final PrivateCatalogApiKeyService privateCatalogApiKeyService;
     private final SecurityHelperService securityHelperService;
     private final CatalogService catalogService;
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
-    private PortalUserService portaUserService;
+    private final PortalUserService portalUserService;
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
-                         BundleGroupRepository bundleGroupRepository, PrivateCatalogApiKeyService privateCatalogApiKeyService, SecurityHelperService securityHelperService, CatalogService catalogService, PortalUserService portaUserService) {
+                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService,
+                         CatalogService catalogService, PortalUserService portalUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
-        this.privateCatalogApiKeyService = privateCatalogApiKeyService;
         this.securityHelperService = securityHelperService;
         this.catalogService = catalogService;
-        this.portaUserService = portaUserService;
+        this.portalUserService = portalUserService;
     }
 
     public Page<Bundle> getBundles(String apiKey, Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
@@ -210,7 +209,7 @@ public class BundleService {
     }
 
     public List<Bundle> getBundlesByAuthenticatedUserOrganizations() {
-        Set<Organisation> userOrganizations = portaUserService.getAuthenticatedUserOrganizations();
+        Set<Organisation> userOrganizations = portalUserService.getAuthenticatedUserOrganizations();
         List<Bundle> bundles = new ArrayList<>();
         userOrganizations.forEach (organisation -> {
             List<Bundle> organisationBundles = bundleRepository.findByBundleGroupVersionsBundleGroupOrganisation(organisation);

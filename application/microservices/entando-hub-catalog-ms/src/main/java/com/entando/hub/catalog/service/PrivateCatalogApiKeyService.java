@@ -101,7 +101,7 @@ public class PrivateCatalogApiKeyService {
         return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), apiKeys);
     }
 
-    public String getUserByApiKey(String apiKey) {
+    public String getUsernameByApiKey(String apiKey) {
         Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByApiKey(apiKeyGeneratorHelper.toSha(apiKey));
         if (apiKeyOptional.isPresent()) {
             return apiKeyOptional.get().getPortalUser().getUsername();

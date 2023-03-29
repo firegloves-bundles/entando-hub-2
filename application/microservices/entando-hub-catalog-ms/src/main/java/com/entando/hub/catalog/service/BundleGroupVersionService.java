@@ -66,7 +66,7 @@ public class BundleGroupVersionService {
         List<Bundle> mappedBundles = Collections.emptyList();
         List<Bundle> savedBundles = bundleService.createBundleEntitiesAndSave(bundleGroupVersionView.getBundles());
         if (Objects.nonNull(savedBundles)) {
-            List<Long> savedBundleIds = savedBundles.stream().map(c -> c.getId()).collect(Collectors.toList());
+            List<Long> savedBundleIds = savedBundles.stream().map(Bundle::getId).collect(Collectors.toList());
             bundleGroupVersionView.setChildren(savedBundleIds);
         }
 
@@ -87,7 +87,7 @@ public class BundleGroupVersionService {
 
         try {
             if (bundleGroupVersionView.getChildren() != null) {
-                List<Long> mappedBundleIds = mappedBundles.stream().map(e -> e.getId()).collect(Collectors.toList());
+                List<Long> mappedBundleIds = mappedBundles.stream().map(Bundle::getId).collect(Collectors.toList());
                 mappedBundles.stream().forEach(bundle -> {
                     bundle.getBundleGroupVersions().remove(entity);
                     bundleRepository.save(bundle);
@@ -308,7 +308,8 @@ public class BundleGroupVersionService {
      * @param page
      * @return
      */
-    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page ,  List<BundleGroup> bundleGroups) {
+    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page,
+            List<BundleGroup> bundleGroups) {
         logger.debug("{}: toResponseViewList: Convert Bundle Group Version list to response view list", CLASS_NAME);
 
         // create a map to enhance performances
@@ -317,7 +318,7 @@ public class BundleGroupVersionService {
                 .stream()
                 .collect(Collectors.toMap(BundleGroup::getId, bundleGroup -> bundleGroup));
 
-        List<BundleGroupVersionFilteredResponseView> list = new ArrayList<BundleGroupVersionFilteredResponseView>();
+        List<BundleGroupVersionFilteredResponseView> list = new ArrayList<>();
         page.getContent().forEach((entity) -> {
             BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
             viewObj.setBundleGroupVersionId(entity.getId());
@@ -339,12 +340,14 @@ public class BundleGroupVersionService {
             if (Objects.nonNull(entity.getBundleGroup())) {
                 viewObj.setName(entity.getBundleGroup().getName());
                 viewObj.setBundleGroupId(entity.getBundleGroup().getId());
-
-				viewObj.setPublicCatalog(
-						Optional.ofNullable(bundleGroupMap.get(viewObj.getBundleGroupId()))
-								.map(BundleGroup::getPublicCatalog)
-								.orElse(false));
-
+                if (null == bundleGroups) {
+                    viewObj.setPublicCatalog(
+                            Optional.ofNullable(bundleGroupMap.get(viewObj.getBundleGroupId()))
+                                    .map(BundleGroup::getPublicCatalog)
+                                    .orElse(false));
+                } else {
+                    viewObj.setPublicCatalog(entity.getBundleGroup().getPublicCatalog());
+                }
                 viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
                 viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
                 if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
@@ -353,7 +356,7 @@ public class BundleGroupVersionService {
                 }
                 if (!CollectionUtils.isEmpty(entity.getBundleGroup().getCategories())) {
                     viewObj.setCategories(entity.getBundleGroup().getCategories().stream()
-                            .map((category) -> category.getId().toString()).collect(Collectors.toList()));
+                            .map(category -> category.getId().toString()).collect(Collectors.toList()));
                 }
                 if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
                     viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
@@ -367,51 +370,7 @@ public class BundleGroupVersionService {
 
 
     private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page) {
-        logger.debug("{}: toResponseViewList: Convert Bundle Group Version list to response view list", CLASS_NAME);
-
-        List<BundleGroupVersionFilteredResponseView> list = new ArrayList<BundleGroupVersionFilteredResponseView>();
-        page.getContent().forEach((entity) -> {
-            BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
-            viewObj.setBundleGroupVersionId(entity.getId());
-            viewObj.setDescription(entity.getDescription());
-            viewObj.setDescriptionImage(entity.getDescriptionImage());
-            viewObj.setStatus(entity.getStatus());
-            viewObj.setDocumentationUrl(entity.getDocumentationUrl());
-            viewObj.setVersion(entity.getVersion());
-            viewObj.setBundleGroupUrl(getBundleGroupUrl(entity.getId()));
-            viewObj.setLastUpdate(entity.getLastUpdated());
-            viewObj.setDisplayContactUrl(entity.getDisplayContactUrl());
-            viewObj.setContactUrl(entity.getContactUrl());
-
-            if (!CollectionUtils.isEmpty(entity.getBundles())) {
-                viewObj.setChildren(entity.getBundles().stream()
-                        .map(child -> child.getId().toString()).collect(Collectors.toList()));
-            }
-
-            if (Objects.nonNull(entity.getBundleGroup())) {
-                viewObj.setName(entity.getBundleGroup().getName());
-                viewObj.setBundleGroupId(entity.getBundleGroup().getId());
-
-                viewObj.setPublicCatalog(entity.getBundleGroup().getPublicCatalog());
-
-                viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
-                viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
-                if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
-                    viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
-                    viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());
-                }
-                if (!CollectionUtils.isEmpty(entity.getBundleGroup().getCategories())) {
-                    viewObj.setCategories(entity.getBundleGroup().getCategories().stream()
-                            .map((category) -> category.getId().toString()).collect(Collectors.toList()));
-                }
-                if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
-                    viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
-                            .map(version -> version.getVersion().toString()).collect(Collectors.toList()));
-                }
-            }
-            list.add(viewObj);
-        });
-        return list;
+       return this.toResponseViewList(page, null);
     }
 
     /**
@@ -525,18 +484,14 @@ public class BundleGroupVersionService {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
         Pageable paging = getPaging(pageNum, pageSize, sort);
         Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPrivateCatalogPublished(userCatalogId, paging);
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
-                toResponseViewList(page), page);
-        return pagedContent;
+        return new PagedContent<>(toResponseViewList(page), page);
     }
 
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getPublicCatalogPublishedBundleGroupVersions(Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
         Pageable paging = getPaging(pageNum, pageSize, sort);
         Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPublicCatalogPublished(paging);
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
-                toResponseViewList(page), page);
-        return pagedContent;
+        return new PagedContent<>(toResponseViewList(page), page);
     }
 
     private Pageable getPaging(Integer pageNum, Integer pageSize, Sort sort){

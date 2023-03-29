@@ -6,10 +6,14 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
+import com.entando.hub.catalog.service.exception.BadRequestException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,6 +37,8 @@ import static org.mockito.ArgumentMatchers.any;
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BundleServiceTest {
+
+
 	@InjectMocks
 	BundleService bundleService;
 	@Mock
@@ -47,6 +53,11 @@ public class BundleServiceTest {
 	@Mock
 	BundleGroupValidator bundleGroupValidator;
 
+	@Mock
+	private CatalogService catalogService;
+	private static final Long CATALOG_ID = 1L;
+	private static final Long CATALOG_ID_2 = 2L;
+	private static final String API_KEY = "api-key";
 	private static final Long BUNDLE_ID = 1001L; 
 	private static final String BUNDLE_NAME = "Test Bundle Name";
 	private static final String BUNDLE_DESCRIPTION = "Test Bundle Decription";
@@ -94,16 +105,45 @@ public class BundleServiceTest {
 		 //Case 2: bundle group id is not present, pageSize = 0
 		 pageSize = 0;
 		 paging = Pageable.unpaged();
-		Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
+		 Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
 		 Page<Bundle> bundleResult2 = bundleService.getBundles(pageNum, pageSize, Optional.empty(), versions);
 		 assertNotNull(bundleResult2);
 		 assertEquals(response.getSize(), bundleResult2.getSize());
 		 
-		//Case 3: bundle group entity is empty
-		 Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.empty());
-		 Page<Bundle> bundleResult3 = bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
-		 assertNotNull(bundleResult3);
-		 assertEquals(0, bundleResult3.getSize());
+		//Case 3: bundle group entity not exists
+		try {
+			bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
+		} catch (Exception e) {
+			Assertions.assertTrue(e instanceof NotFoundException);
+		}
+
+		// Case 4: Valid api key and bundleGroupId not set
+		Catalog catalog = new Catalog();
+		catalog.setId(CATALOG_ID);
+		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
+		Mockito.when(bundleRepository.getPrivateCatalogBundlesPublished(CATALOG_ID, versions ,paging)).thenReturn(response);
+		bundleResult = bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.empty(), versions);
+		assertNotNull(bundleResult);
+		assertEquals(response.getSize(), bundleResult.getSize());
+
+		//Case 5: Invalid Api key and bundleGroupId returns BadRequestException
+		try {
+			Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
+			bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null);
+		} catch (Exception e ){
+			Assertions.assertTrue(e instanceof BadRequestException);
+		}
+
+		//Case 6: Invalid Api key and bundleGroupId returns BadRequestException
+		Catalog catalog2 = new Catalog();
+		catalog.setId(CATALOG_ID_2);
+		try {
+			Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog2);
+			bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null);
+		} catch (Exception e ){
+			Assertions.assertTrue(e instanceof BadRequestException);
+		}
+
 	}
 	
 	@Test
@@ -214,6 +254,7 @@ public class BundleServiceTest {
 		bundle.setDescription(BUNDLE_DESCRIPTION);
 		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
 		bundle.setDependencies(BUNDLE_DEPENDENCIES);
+
 		return bundle;
 	}
 
@@ -221,6 +262,7 @@ public class BundleServiceTest {
 		BundleGroup bundleGroup = new BundleGroup();
 		bundleGroup.setId(BUNDLE_GROUP_ID);
 		bundleGroup.setName(BUNDLE_GROUP_NAME);
+		bundleGroup.setCatalogId(CATALOG_ID);
 		return bundleGroup;
 	}
 
@@ -230,6 +272,7 @@ public class BundleServiceTest {
 		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
 		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
 		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+
 		return bundleGroupVersion;
 	}
 }

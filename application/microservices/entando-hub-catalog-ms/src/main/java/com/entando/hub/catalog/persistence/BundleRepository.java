@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,5 +32,12 @@ public interface BundleRepository extends JpaRepository<Bundle, Long> {
 
     List<Bundle> findByBundleGroupVersionsBundleGroupOrganisation(Organisation organisation);
 
+    @Query("select b from Bundle b inner join b.bundleGroupVersions bgv" +
+            " where bgv.bundleGroup.catalogId = :catalogId " +
+            " and bgv.status = 'PUBLISHED'"+
+            " and b.descriptorVersion in (:descriptorVersion)")
+    Page<Bundle> getPrivateCatalogBundlesPublished(@Param("catalogId") Long catalogId,
+                                                   @Param("descriptorVersion") Collection<Bundle.DescriptorVersion> descriptorVersion,
+                                                   Pageable pageable);
 
 }

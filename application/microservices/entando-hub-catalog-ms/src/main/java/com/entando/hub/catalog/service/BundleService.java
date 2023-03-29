@@ -3,11 +3,10 @@ package com.entando.hub.catalog.service;
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.service.exception.BadRequestException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,22 +24,26 @@ public class BundleService {
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
     private final BundleGroupRepository bundleGroupRepository;
 
+    private final PrivateCatalogApiKeyService privateCatalogApiKeyService;
     private final SecurityHelperService securityHelperService;
-
+    private final CatalogService catalogService;
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
     private PortalUserService portaUserService;
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
-                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, PortalUserService portaUserService) {
+                         BundleGroupRepository bundleGroupRepository, PrivateCatalogApiKeyService privateCatalogApiKeyService, SecurityHelperService securityHelperService, CatalogService catalogService, PortalUserService portaUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
+        this.privateCatalogApiKeyService = privateCatalogApiKeyService;
         this.securityHelperService = securityHelperService;
+        this.catalogService = catalogService;
         this.portaUserService = portaUserService;
     }
 
-    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+    public Page<Bundle> getBundles(String apiKey, Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+
         logger.debug("{}: getBundles: Get bundles paginated by bundle group  id: {}, descriptorVersions: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
         Pageable paging;
         if (pageSize == 0) {
@@ -48,33 +51,47 @@ public class BundleService {
         } else {
             paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
         }
-
         //Controllers can override but default to all versions otherwise.
         if (descriptorVersions == null) {
             descriptorVersions = new HashSet<>();
             Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
         }
-
         Page<Bundle> response = new PageImpl<>(new ArrayList<>());
-        if (bundleGroupId.isPresent()) {
-            Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
-            Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
-            if (bundleGroupEntity.isPresent()) {
-                BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
-                if (publishedVersion != null)
-                    response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
-                            publishedVersion, descriptorVersions, paging);
-            } else {
-                logger.warn("{}: getBundles: bundle group does not exist: {}", CLASS_NAME, bundleGroupEntityId);
-            }
-        } else {
-            logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
-            List<BundleGroupVersion> bundlegroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
-            response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundlegroupsVersion, descriptorVersions, paging);
+        Catalog userCatalog = null;
+        if (null != apiKey) {
+            userCatalog = catalogService.getCatalogByApiKey(apiKey);
         }
+        if (bundleGroupId.isPresent()) {
+                Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
+                Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
+                if (bundleGroupEntity.isPresent()) {
+                     if (null!=apiKey
+                            && !Objects.equals(bundleGroupEntity.get().getCatalogId(), userCatalog.getId())) {
+                         throw new BadRequestException("Invalid api key and bundleGroupId");
+                    }
+                    BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
+                    if (publishedVersion != null) {
+                         response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
+                                publishedVersion, descriptorVersions, paging);
+                    }
+                } else {
+                    throw new NotFoundException("Bundle Group " +bundleGroupEntityId+ " not found");
+                }
+            } else {
+                if (null != apiKey){
+                    response = bundleRepository.getPrivateCatalogBundlesPublished(userCatalog.getId(),descriptorVersions, paging);
+                } else {
+                    logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
+                    List<BundleGroupVersion> bundleGroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
+                    response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupsVersion, descriptorVersions, paging);
+                }
+            }
         return response;
     }
 
+    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+        return getBundles(null, pageNum, pageSize, bundleGroupId,  descriptorVersions);
+    }
     public List<Bundle> getBundles() {
         return bundleRepository.findAll();
     }
@@ -100,6 +117,7 @@ public class BundleService {
 		}
     }
 
+    //Get Private Catalog bundles
     public List<Bundle> getBundlesByCatalogId(Long catalogId) {
         return bundleRepository.findByBundleGroupVersionsBundleGroupCatalogId(catalogId);
     }
@@ -172,7 +190,7 @@ public class BundleService {
                     return this.getBundles();
                 }
                 bundles = this.getPublicBundles();
-                bundles.addAll(this.getBundlesByUserOrganizations());
+                bundles.addAll(this.getBundlesByAuthenticatedUserOrganizations());
                 return bundles.stream().distinct().collect(Collectors.toList());
             }
 
@@ -191,8 +209,8 @@ public class BundleService {
         return bundles;
     }
 
-    public List<Bundle> getBundlesByUserOrganizations() {
-        Set<Organisation> userOrganizations = portaUserService.getUserOrganizations();
+    public List<Bundle> getBundlesByAuthenticatedUserOrganizations() {
+        Set<Organisation> userOrganizations = portaUserService.getAuthenticatedUserOrganizations();
         List<Bundle> bundles = new ArrayList<>();
         userOrganizations.forEach (organisation -> {
             List<Bundle> organisationBundles = bundleRepository.findByBundleGroupVersionsBundleGroupOrganisation(organisation);
@@ -200,4 +218,5 @@ public class BundleService {
         });
         return bundles;
     }
+
 }

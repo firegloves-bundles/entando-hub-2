@@ -31,8 +31,7 @@ public class BundleGroupVersionService {
     private final String CLASS_NAME = this.getClass().getSimpleName();
 
     private final int MAX_PAGE_SIZE = 50;
-    private static final String ORDER_BY = "bundleGroup.name";
-
+    private static final String ORDER_BY_NAME = "bundleGroup.name";
     private final BundleGroupVersionRepository bundleGroupVersionRepository;
     final private BundleGroupRepository bundleGroupRepository;
     final private BundleRepository bundleRepository;
@@ -309,8 +308,7 @@ public class BundleGroupVersionService {
      * @param page
      * @return
      */
-    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page,
-            List<BundleGroup> bundleGroups) {
+    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page ,  List<BundleGroup> bundleGroups) {
         logger.debug("{}: toResponseViewList: Convert Bundle Group Version list to response view list", CLASS_NAME);
 
         // create a map to enhance performances
@@ -341,10 +339,61 @@ public class BundleGroupVersionService {
             if (Objects.nonNull(entity.getBundleGroup())) {
                 viewObj.setName(entity.getBundleGroup().getName());
                 viewObj.setBundleGroupId(entity.getBundleGroup().getId());
+
 				viewObj.setPublicCatalog(
 						Optional.ofNullable(bundleGroupMap.get(viewObj.getBundleGroupId()))
 								.map(BundleGroup::getPublicCatalog)
 								.orElse(false));
+
+                viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
+                viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
+                if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
+                    viewObj.setOrganisationId(entity.getBundleGroup().getOrganisation().getId());
+                    viewObj.setOrganisationName(entity.getBundleGroup().getOrganisation().getName());
+                }
+                if (!CollectionUtils.isEmpty(entity.getBundleGroup().getCategories())) {
+                    viewObj.setCategories(entity.getBundleGroup().getCategories().stream()
+                            .map((category) -> category.getId().toString()).collect(Collectors.toList()));
+                }
+                if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
+                    viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
+                            .map(version -> version.getVersion().toString()).collect(Collectors.toList()));
+                }
+            }
+            list.add(viewObj);
+        });
+        return list;
+    }
+
+
+    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page) {
+        logger.debug("{}: toResponseViewList: Convert Bundle Group Version list to response view list", CLASS_NAME);
+
+        List<BundleGroupVersionFilteredResponseView> list = new ArrayList<BundleGroupVersionFilteredResponseView>();
+        page.getContent().forEach((entity) -> {
+            BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
+            viewObj.setBundleGroupVersionId(entity.getId());
+            viewObj.setDescription(entity.getDescription());
+            viewObj.setDescriptionImage(entity.getDescriptionImage());
+            viewObj.setStatus(entity.getStatus());
+            viewObj.setDocumentationUrl(entity.getDocumentationUrl());
+            viewObj.setVersion(entity.getVersion());
+            viewObj.setBundleGroupUrl(getBundleGroupUrl(entity.getId()));
+            viewObj.setLastUpdate(entity.getLastUpdated());
+            viewObj.setDisplayContactUrl(entity.getDisplayContactUrl());
+            viewObj.setContactUrl(entity.getContactUrl());
+
+            if (!CollectionUtils.isEmpty(entity.getBundles())) {
+                viewObj.setChildren(entity.getBundles().stream()
+                        .map(child -> child.getId().toString()).collect(Collectors.toList()));
+            }
+
+            if (Objects.nonNull(entity.getBundleGroup())) {
+                viewObj.setName(entity.getBundleGroup().getName());
+                viewObj.setBundleGroupId(entity.getBundleGroup().getId());
+
+                viewObj.setPublicCatalog(entity.getBundleGroup().getPublicCatalog());
+
                 viewObj.setIsEditable(isBundleGroupEditable(entity.getBundleGroup()));
                 viewObj.setCanAddNewVersion(canAddNewVersion(entity.getBundleGroup()));
                 if (Objects.nonNull(entity.getBundleGroup().getOrganisation())) {
@@ -385,8 +434,9 @@ public class BundleGroupVersionService {
                 CLASS_NAME, organisationId, categoryIds, statuses, searchText);
 
         List<BundleGroup> bundleGroups = this.getBundleGroups(searchText, organisationId, categoryIds);
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, ORDER_BY_NAME)).and(Sort.by("lastUpdated").descending());
 
-        Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
+        Pageable paging = this.getPaging(pageNum, pageSize, sort);
 
         Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
 
@@ -425,8 +475,9 @@ public class BundleGroupVersionService {
                 CLASS_NAME, catalogId, categoryIds, statuses, searchText);
 
         List<BundleGroup> bundleGroups = this.getPrivateBundleGroups(searchText, catalogId, categoryIds);
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, ORDER_BY_NAME)).and(Sort.by("lastUpdated").descending());
 
-        Pageable paging = this.getPaging(pageNum, pageSize, ORDER_BY);
+        Pageable paging = this.getPaging(pageNum, pageSize, sort);
 
         Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
 
@@ -470,14 +521,29 @@ public class BundleGroupVersionService {
         return bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups, statusSet, paging);
     }
 
-    private Pageable getPaging(Integer pageNum, Integer pageSize, String orderBy){
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getPrivateCatalogPublishedBundleGroupVersions(Long userCatalogId, Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
+        Pageable paging = getPaging(pageNum, pageSize, sort);
+        Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPrivateCatalogPublished(userCatalogId, paging);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
+                toResponseViewList(page), page);
+        return pagedContent;
+    }
+
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getPublicCatalogPublishedBundleGroupVersions(Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
+        Pageable paging = getPaging(pageNum, pageSize, sort);
+        Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPublicCatalogPublished(paging);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(
+                toResponseViewList(page), page);
+        return pagedContent;
+    }
+
+    private Pageable getPaging(Integer pageNum, Integer pageSize, Sort sort){
         if (pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
             logger.warn("An unexpected pageSize {} was provided. Setting maximum to {}.", pageSize, MAX_PAGE_SIZE);
             pageSize = MAX_PAGE_SIZE;
         }
-
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, orderBy)).and(Sort.by("lastUpdated").descending());
-
         return PageRequest.of(pageNum, pageSize, sort);
     }
 }

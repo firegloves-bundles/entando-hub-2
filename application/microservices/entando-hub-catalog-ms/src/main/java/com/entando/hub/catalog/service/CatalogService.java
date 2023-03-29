@@ -5,11 +5,12 @@ import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CatalogService {
@@ -17,10 +18,12 @@ public class CatalogService {
     private final String CLASS_NAME = this.getClass().getSimpleName();
     private final CatalogRepository catalogRepository;
     private final OrganisationService organisationService;
-
-    public CatalogService(CatalogRepository catalogRepository, OrganisationService organisationService) {
+    private final PrivateCatalogApiKeyService privateCatalogApiKeyService;
+    public CatalogService(CatalogRepository catalogRepository, OrganisationService organisationService,
+                          PrivateCatalogApiKeyService privateCatalogApiKeyService) {
         this.catalogRepository = catalogRepository;
         this.organisationService = organisationService;
+        this.privateCatalogApiKeyService = privateCatalogApiKeyService;
     }
     public List<Catalog> getCatalogs(String username, boolean userIsAdmin) {
         if (userIsAdmin) {
@@ -30,6 +33,11 @@ public class CatalogService {
         }
     }
 
+    public Catalog getCatalogByApiKey(String apiKey){
+        String username = privateCatalogApiKeyService.getUserByApiKey(apiKey);
+        List<Catalog> catalogs = this.getCatalogs(username, false);
+        return catalogs.stream().findFirst().orElseThrow(()-> new NotFoundException("Private catalog not found"));
+    }
 
     public Catalog getCatalogById(String username, Long id, boolean userIsAdmin) {
         Optional<Catalog> catalog;

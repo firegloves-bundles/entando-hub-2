@@ -1,32 +1,15 @@
 package com.entando.hub.catalog.integration;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.OrganisationRepository;
 import com.entando.hub.catalog.persistence.PortalUserRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.persistence.entity.PortalUser;
-import com.entando.hub.catalog.service.dto.CatalogDTO;
+import com.entando.hub.catalog.service.dto.CatalogDto;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.entando.hub.catalog.testhelper.TestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,6 +22,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @AutoConfigureMockMvc
@@ -79,7 +75,7 @@ public class CatalogFlowIT {
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final List<Catalog> catalogs = populateCatalogs("OrgName", 3);
-        List<CatalogDTO> catalogsDTO = catalogs.stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<CatalogDto> catalogsDTO = catalogs.stream().map(this::mapToDTO).collect(Collectors.toList());
 
         String expectedBody = objectMapper.writeValueAsString(catalogsDTO);
 
@@ -101,7 +97,7 @@ public class CatalogFlowIT {
         String orgName = "OrgName";
         String catalogName = orgName + "1 private catalog";
         final List<Catalog> catalogs = populateCatalogs(orgName, 3);
-        List<CatalogDTO> catalogsDTO = catalogs.stream().filter(c -> c.getName().equals(catalogName))
+        List<CatalogDto> catalogsDTO = catalogs.stream().filter(c -> c.getName().equals(catalogName))
                 .map(this::mapToDTO).collect(Collectors.toList());
 
         String expectedBody = objectMapper.writeValueAsString(catalogsDTO);
@@ -144,7 +140,7 @@ public class CatalogFlowIT {
         when(securityHelperService.getContextAuthenticationUsername()).thenReturn("admin");
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        List<CatalogDTO> catalogsDTO = Collections.emptyList();
+        List<CatalogDto> catalogsDTO = Collections.emptyList();
 
         String expectedBody = objectMapper.writeValueAsString(catalogsDTO);
 
@@ -212,7 +208,7 @@ public class CatalogFlowIT {
                 .andReturn();
 
         String responseString = response.getResponse().getContentAsString();
-        CatalogDTO catalogDTO = this.objectMapper.readValue(responseString, CatalogDTO.class);
+        CatalogDto catalogDTO = this.objectMapper.readValue(responseString, CatalogDto.class);
         Assertions.assertEquals(1L, catalogDTO.getId());
         Assertions.assertEquals(1L, catalogDTO.getOrganisationId());
         Assertions.assertEquals("Entando1 private catalog", catalogDTO.getName());
@@ -256,7 +252,7 @@ public class CatalogFlowIT {
                 .andReturn();
 
         String responseString = response.getResponse().getContentAsString();
-        CatalogDTO catalogDTO = this.objectMapper.readValue(responseString, CatalogDTO.class);
+        CatalogDto catalogDTO = this.objectMapper.readValue(responseString, CatalogDto.class);
         Assertions.assertEquals(1L, catalogDTO.getId());
         Assertions.assertEquals(1L, catalogDTO.getOrganisationId());
         Assertions.assertEquals("Entando1 private catalog", catalogDTO.getName());
@@ -326,8 +322,8 @@ public class CatalogFlowIT {
                 .collect(Collectors.toList());
     }
 
-    public CatalogDTO mapToDTO(Catalog catalog) {
-        return new CatalogDTO(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());
+    public CatalogDto mapToDTO(Catalog catalog) {
+        return new CatalogDto(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());
     }
 
 }

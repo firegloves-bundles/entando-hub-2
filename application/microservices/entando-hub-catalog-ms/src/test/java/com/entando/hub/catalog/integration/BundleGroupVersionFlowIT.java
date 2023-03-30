@@ -1,25 +1,24 @@
 package com.entando.hub.catalog.integration;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.testhelper.AssertionHelper;
 import com.entando.hub.catalog.testhelper.TestHelper;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 class BundleGroupVersionFlowIT extends BaseFlowIT {
@@ -91,7 +90,7 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
         when(securityHelperService.isUserAuthenticated()).thenReturn(true);
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        final BundleGroupVersionView bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
+        final BundleGroupVersionDto bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
                 bundleGroupVersion1,
                 bundle1, Status.PUBLISHED);
 
@@ -113,13 +112,13 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
         when(securityHelperService.isAdmin()).thenReturn(false);
         when(securityHelperService.getContextAuthenticationUsername()).thenReturn(TestHelper.NON_ADMIN_USERNAME);
 
-        final BundleGroupVersionView bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
+        final BundleGroupVersionDto bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
                 bundleGroupVersion1,
                 bundle1, Status.PUBLISHED);
-        final BundleGroupVersionView bundleGroupVersionView3 = TestHelper.stubBundleGroupVersionView(
+        final BundleGroupVersionDto bundleGroupVersionView3 = TestHelper.stubBundleGroupVersionView(
                 bundleGroupVersion3,
-                bundle3, Status.PUBLISHED)
-                .setVersion(TestHelper.BUNDLE_GROUP_VERSION_2);
+                bundle3, Status.PUBLISHED);
+                bundleGroupVersionView3.setVersion(TestHelper.BUNDLE_GROUP_VERSION_2);
 
         // with a bundleGroupVersionId that does belong to the user org
         ResultActions resultActions = executeOkGetBundleGroupVersionsRequest(bundleGroupVersion1.getId(), null);
@@ -172,7 +171,7 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
         // given I am an admin
         when(securityHelperService.isUserAuthenticated()).thenReturn(false);
 
-        final BundleGroupVersionView bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
+        final BundleGroupVersionDto bundleGroupVersionView1 = TestHelper.stubBundleGroupVersionView(
                 bundleGroupVersion1,
                 bundle1, Status.PUBLISHED);
 

@@ -1,6 +1,5 @@
 package com.entando.hub.catalog.rest;
 
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
@@ -8,7 +7,10 @@ import com.entando.hub.catalog.service.CatalogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundlegroups")
@@ -27,7 +29,8 @@ public class AppBuilderBundleGroupsController {
     @GetMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getBundleGroupVersions(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
+    	logger.debug("REST request to get bundle group versions");
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         Catalog userCatalog;
         if (null != apiKey) {
@@ -36,4 +39,5 @@ public class AppBuilderBundleGroupsController {
         }
         return bundleGroupVersionService.getPublicCatalogPublishedBundleGroupVersions(sanitizedPageNum, pageSize);
     }
+
 }

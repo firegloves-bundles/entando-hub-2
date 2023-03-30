@@ -5,6 +5,9 @@ import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -15,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -28,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,8 +41,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleGroupsController.class)
 @WithMockUser(username = "admin", roles = { ADMIN })
+@ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class})
 public class AppBuilderBundleGroupsControllerTest {
-	
+
+	@Autowired
+	private BundleGroupVersionMapper bundleGroupVersionMapper;
+
 	@Autowired
 	WebApplicationContext webApplicationContext;
 
@@ -49,8 +58,10 @@ public class AppBuilderBundleGroupsControllerTest {
 
 	@MockBean
 	BundleGroupVersionService bundleGroupVersionService;
+
 	@MockBean
 	CatalogService catalogService;
+
 	private final Long BUNDLE_GROUP_VERSION_ID =  2001L;
 	private final Long BUNDLE_GROUPID =  2002L;
 	private final Long CATEGORY_ID =  2003L;
@@ -92,7 +103,8 @@ public class AppBuilderBundleGroupsControllerTest {
 		String inputJsonPageSize = mapToJson(pageSize);
 		
 		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
-		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> pagedContent = new PagedContent<>(list, response);
+		PageImpl<BundleGroupVersionEntityDto> responseDto = convertoToDto(response);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(list, responseDto);
 		
 		//Case 1: api key is not passed as parameter
 		Mockito.when(bundleGroupVersionService.getPublicCatalogPublishedBundleGroupVersions(page, pageSize)).thenReturn(pagedContent);
@@ -177,4 +189,14 @@ public class AppBuilderBundleGroupsControllerTest {
 		category.setBundleGroups(null);
 		return category;
 	}
+
+
+	private PageImpl<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
+		return new PageImpl<>(page.getContent()
+				.stream()
+				.map(e -> bundleGroupVersionMapper.toEntityDto(e))
+				.collect(Collectors.toList()),
+				page.getPageable(), page.getNumberOfElements());
+	}
+
 }

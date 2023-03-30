@@ -1,14 +1,12 @@
 package com.entando.hub.catalog.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.OrganisationRepository;
+import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.rest.OrganisationController;
+import com.entando.hub.catalog.rest.dto.OrganisationDto;
+import com.entando.hub.catalog.service.mapper.OrganizationMapper;
+import com.entando.hub.catalog.service.mapper.OrganizationMapperImpl;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -19,16 +17,18 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Sort;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.OrganisationRepository;
-import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.OrganisationController;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
+@ComponentScan(basePackageClasses = {OrganizationMapper.class, OrganizationMapperImpl.class})
 public class OrganisationServiceTest {
 	@InjectMocks
 	OrganisationService organisationService;
@@ -36,6 +36,8 @@ public class OrganisationServiceTest {
 	OrganisationRepository organisationRepository;
 	@Mock
 	BundleGroupRepository bundleGroupRepository;
+	@Mock
+	OrganizationMapper organizationMapper;
 	
 	private static final Long ORG_ID = 2000L;
     private static final String ORG_NAME = "Test Org Name";
@@ -50,7 +52,7 @@ public class OrganisationServiceTest {
 		Set<com.entando.hub.catalog.persistence.entity.BundleGroup> bundleGroups = new HashSet<>();
 		bundleGroups.add(bundleGroup);
 		organisation.setBundleGroups(bundleGroups);
-		OrganisationController.OrganisationNoId OrganisationNoId = new OrganisationController.OrganisationNoId(organisation) ;
+		OrganisationDto OrganisationNoId = new OrganisationDto(organisation) ;
 		bundleGroupRepository.findByOrganisationId(organisation.getId());
 		bundleGroup.setOrganisation(null); //this is the mappedBy field
 	    bundleGroupRepository.save(bundleGroup);
@@ -91,8 +93,8 @@ public class OrganisationServiceTest {
 	@Test
 	public void createOrganisationTest() {
 		Organisation organisation = createOrganisation();
-		OrganisationController OrganisationController = new OrganisationController(organisationService);
-		OrganisationController.OrganisationNoId OrganisationNoId = new OrganisationController.OrganisationNoId(organisation) ;
+		OrganisationController OrganisationController = new OrganisationController(organizationMapper, organisationService);
+		OrganisationDto OrganisationNoId = new OrganisationDto(organisation) ;
 		Mockito.when(organisationRepository.save(organisation)).thenReturn(organisation);
 		organisationService.updateMappedBy(organisation, OrganisationNoId);
 		Organisation organisationResult = organisationService.createOrganisation(organisation ,OrganisationNoId);

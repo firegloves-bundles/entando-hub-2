@@ -4,9 +4,9 @@ import com.entando.hub.catalog.persistence.*;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Catalog;
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.AfterEach;
@@ -21,11 +21,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.*;
+import java.util.Optional;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -46,6 +45,9 @@ class BundleGroupFlowIT {
     SecurityHelperService securityHelperService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private BundleGroupMapper bundleGroupMapper;
+
     private static final String URI = "/api/bundlegroups/";
     private static final Long BUNDLE_GROUP_ID = 1L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
@@ -121,7 +123,8 @@ class BundleGroupFlowIT {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
 
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+//        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +144,7 @@ class BundleGroupFlowIT {
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
 
         BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.empty());
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -160,7 +163,7 @@ class BundleGroupFlowIT {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
 
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +183,7 @@ class BundleGroupFlowIT {
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
 
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -199,7 +202,7 @@ class BundleGroupFlowIT {
         Organisation organisationSaved = organisationRepository.save(new Organisation().setName(ORG_NAME).setDescription(ORG_DESCRIPTION));
 
         BundleGroup stubBundleGroup = getStubBundleGroup(false, organisationSaved, Optional.empty());
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -217,7 +220,7 @@ class BundleGroupFlowIT {
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroup savedBundleGroup = bundleGroupRepository.save(stubBundleGroup);
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI + savedBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -236,7 +239,7 @@ class BundleGroupFlowIT {
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
 
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         mockMvc.perform(MockMvcRequestBuilders.post(URI + stubBundleGroup.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -252,7 +255,7 @@ class BundleGroupFlowIT {
         catalogRepository.save(new Catalog().setName(CAT_NAME).setOrganisation(organisationSaved));
         BundleGroup stubBundleGroup = getStubBundleGroup(true, organisationSaved, Optional.empty());
         BundleGroup savedStubBundleGroup = bundleGroupRepository.saveAndFlush(stubBundleGroup);
-        BundleGroupNoId bundleGroupNoId = new BundleGroupController.BundleGroupNoId(stubBundleGroup);
+        BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(stubBundleGroup);
 
         BundleGroupVersion bgv1 = new BundleGroupVersion()
                 .setBundleGroup(savedStubBundleGroup)

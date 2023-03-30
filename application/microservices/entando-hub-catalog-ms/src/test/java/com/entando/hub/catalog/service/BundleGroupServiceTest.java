@@ -1,43 +1,51 @@
 package com.entando.hub.catalog.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import com.entando.hub.catalog.persistence.CatalogRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.CategoryRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController.BundleGroupNoId;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
+import com.entando.hub.catalog.rest.dto.BundleGroupDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
+import com.entando.hub.catalog.service.mapper.BundleGroupMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapperImpl;
+import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
+@ComponentScan(basePackageClasses = {BundleGroupMapper.class, BundleGroupMapperImpl.class, BundleGroupVersionStandardMapper.class, BundleGroupVersionStandardMapperImpl.class})
 public class BundleGroupServiceTest {
+
+	@Spy
+	private BundleGroupMapper bundleGroupMapper = new BundleGroupMapperImpl();
+	@Spy
+	private BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper = new BundleGroupVersionStandardMapperImpl();
+
 	@InjectMocks
 	BundleGroupService bundleGroupService;
 	@Mock
@@ -146,14 +154,17 @@ public class BundleGroupServiceTest {
 		assertNotNull(bundleGroupresult);
 		assertEquals(bundleGrouplist.get().getId(), bundleGroupresult.get().getId());
 	}
-	
+
+
 	@Test
 	public void createBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup().setPublicCatalog(true);
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+//		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		BundleGroupDto bundleGroupNoId = bundleGroupMapper.toDto(bundleGroup);
 		bundleGroupNoId.setVersionDetails(null);
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();
+
 		Mockito.when(bundleGroupRepository.save(bundleGroup)).thenReturn(bundleGroup);
 		Mockito.when(categoryRepository.findByBundleGroupsIs(bundleGroup)).thenReturn(List.of(category));
 		Mockito.when(categoryRepository.findById(Long.valueOf(categoryId))).thenReturn(Optional.of(category));
@@ -163,15 +174,16 @@ public class BundleGroupServiceTest {
 		assertNotNull(bundleGroupresult);
 		assertEquals(bundleGroup.getId(), bundleGroupresult.getId());
 	}
-	
+
 	@Test
 	public void updateMappedByTest() {
 		BundleGroup bundleGroup = createBundleGroup();
-		BundleGroupNoId bundleGroupNoId = new BundleGroupNoId(bundleGroup);
+		BundleGroupDto bundleGroupDto = bundleGroupMapper.toDto(bundleGroup);
+
 		Category category = bundleGroup.getCategories().iterator().next();
 		String categoryId = category.getId().toString();
 		BundleGroupVersion bundleGroupVersion = bundleGroup.getVersion().iterator().next();
-		BundleGroupVersionView bundleGroupVersionView = new BundleGroupVersionView(bundleGroupVersion);
+		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionStandardMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
 		
 		Mockito.when(bundleGroupRepository.save(bundleGroup)).thenReturn(bundleGroup);
 		Mockito.when(categoryRepository.findByBundleGroupsIs(bundleGroup)).thenReturn(List.of(category));
@@ -180,17 +192,17 @@ public class BundleGroupServiceTest {
 		
 		//Case 1: bundleGroup has version details
 		bundleGroupVersionView.setBundleGroupVersionId(bundleGroupVersion.getId().toString());
-		bundleGroupNoId.setVersionDetails(bundleGroupVersionView);
-		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupNoId);
+		bundleGroupDto.setVersionDetails(bundleGroupVersionView);
+		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupDto);
 		
 		//Case 2: versionId is null
 		bundleGroupVersion.setId(null);
-		BundleGroupVersionView bundleGroupVersionView2 = new BundleGroupVersionView(bundleGroupVersion);
-		bundleGroupNoId.setVersionDetails(bundleGroupVersionView2);
-		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupNoId);
-	
+		BundleGroupVersionDto bundleGroupVersionView2 = bundleGroupVersionStandardMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
+		bundleGroupDto.setVersionDetails(bundleGroupVersionView2);
+		bundleGroupService.updateMappedBy(bundleGroup, bundleGroupDto);
+
 	}
-	
+
 	@Test
 	public void deleteBundleGroupTest() {
 		BundleGroup bundleGroup = createBundleGroup();

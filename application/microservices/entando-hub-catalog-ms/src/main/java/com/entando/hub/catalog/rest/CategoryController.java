@@ -1,13 +1,13 @@
 package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.config.ApplicationConstants;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
+import com.entando.hub.catalog.rest.dto.CategoryDto;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.mapper.CategoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,29 +26,32 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 public class CategoryController {
     
     private final Logger logger = LoggerFactory.getLogger(CategoryController.class);
-    
+    private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
     
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryMapper categoryMapper, CategoryService categoryService) {
+        this.categoryMapper = categoryMapper;
         this.categoryService = categoryService;
     }
 
     @Operation(summary = "Get all the categories", description = "Public api, no authentication required.")
     @GetMapping(value = "/", produces = {"application/json"})
-    public List<Category> getCategories() {
+    public List<CategoryDto> getCategories() {
         logger.debug("REST request to get Categories");
-        return categoryService.getCategories().stream().map(Category::new).collect(Collectors.toList());
+        return categoryService.getCategories().stream()
+                .map(categoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")
     @GetMapping(value = "/{categoryId}", produces = {"application/json"})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
-        logger.debug("REST request to get Category Id: {}", categoryId);
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable String categoryId) {
+        logger.debug("REST request to get CategoryDto Id: {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (categoryOptional.isPresent()) {
-            return new ResponseEntity<>(categoryOptional.map(Category::new).get(), HttpStatus.OK);
+            return new ResponseEntity<>(categoryOptional.map(categoryMapper::toDto).get(), HttpStatus.OK);
         } else {
             logger.warn("Requested category '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -61,10 +64,11 @@ public class CategoryController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryNoId category) {
-        logger.debug("REST request to create Category: {}", category);
-        com.entando.hub.catalog.persistence.entity.Category entity = categoryService.createCategory(category.createEntity(Optional.empty()));
-        return new ResponseEntity<>(new Category(entity), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto category) {
+        logger.debug("REST request to create CategoryDto: {}", category);
+        Category entity = categoryMapper.toEntity(category);
+        entity = categoryService.createCategory(entity);
+        return new ResponseEntity<>(categoryMapper.toDto(entity), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a category", description = "Protected api, only eh-admin can access it. You have to provide the categoryId identifying the category")
@@ -74,15 +78,17 @@ public class CategoryController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<Category> updateCategory(@PathVariable String categoryId, @RequestBody CategoryNoId category) {
-        logger.debug("REST request to update Category {}: {}", categoryId, category);
-        Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDto category) {
+        logger.debug("REST request to update CategoryDto {}: {}", categoryId, category);
+        Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId.toString());
         if (!categoryOptional.isPresent()) {
-            logger.warn("Category '{}' does not exist", categoryId);
+            logger.warn("CategoryDto '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            com.entando.hub.catalog.persistence.entity.Category savedEntity = categoryService.createCategory(category.createEntity(Optional.of(categoryId)));
-            return new ResponseEntity<>(new Category(savedEntity), HttpStatus.OK);
+            Category entity = categoryMapper.toEntity(category);
+            entity.setId(categoryId);
+            Category savedEntity = categoryService.createCategory(entity);
+            return new ResponseEntity<>(categoryMapper.toDto(savedEntity), HttpStatus.OK);
         }
     }
 
@@ -110,70 +116,6 @@ public class CategoryController {
             }
         }
     }
-
-
-
-    @Getter
-    @Setter
-    @ToString
-    @EqualsAndHashCode(callSuper = false)
-    public static class Category extends CategoryNoId {
-        private final String categoryId;
-
-        public Category(com.entando.hub.catalog.persistence.entity.Category entity) {
-            super(entity);
-            this.categoryId = entity.getId().toString();
-        }
-
-        public Category(String organisationId, String name, String description) {
-            super(name, description);
-            this.categoryId = organisationId;
-        }
-
-
-    }
-
-    @Data
-    public static class CategoryNoId {
-
-        @Schema(example = "Solution Template")
-        protected final String name;
-
-        @Schema(example = "a brief description")
-        protected final String description;
-        protected List<String> bundleGroups;
-
-        public CategoryNoId(String name, String description) {
-            this.name = name;
-            this.description = description;
-
-        }
-
-        public CategoryNoId(com.entando.hub.catalog.persistence.entity.Category entity) {
-            this.name = entity.getName();
-            this.description = entity.getDescription();
-            if (entity.getBundleGroups() != null) {
-                this.bundleGroups = entity.getBundleGroups().stream().map(bundleGroup -> bundleGroup.getId().toString()).collect(Collectors.toList());
-            }
-        }
-
-        public com.entando.hub.catalog.persistence.entity.Category createEntity(Optional<String> id) {
-            com.entando.hub.catalog.persistence.entity.Category ret = new com.entando.hub.catalog.persistence.entity.Category();
-            ret.setDescription(this.getDescription());
-            ret.setName(this.getName());
-            if (this.getBundleGroups() != null) {
-                ret.setBundleGroups(this.getBundleGroups().stream().map(bundleGroupId -> {
-                    BundleGroup bundleGroup = new BundleGroup();
-                    bundleGroup.setId(Long.valueOf(bundleGroupId));
-                    return bundleGroup;
-                }).collect(Collectors.toSet()));
-            }
-            id.map(Long::valueOf).ifPresent(ret::setId);
-            return ret;
-        }
-
-    }
-
 
 
 }

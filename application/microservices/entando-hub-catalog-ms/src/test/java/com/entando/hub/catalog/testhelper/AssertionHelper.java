@@ -1,15 +1,16 @@
 package com.entando.hub.catalog.testhelper;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
-import com.entando.hub.catalog.rest.BundleController;
-import com.entando.hub.catalog.rest.BundleGroupVersionController.BundleGroupVersionView;
-import java.util.List;
+import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import lombok.experimental.UtilityClass;
 import org.hamcrest.Matchers;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @UtilityClass
 public class AssertionHelper {
@@ -53,7 +54,7 @@ public class AssertionHelper {
     }
 
 
-    public static void assertOnBundleGroupVersion(ResultActions resultActions, BundleGroupVersionView expected)
+    public static void assertOnBundleGroupVersion(ResultActions resultActions, BundleGroupVersionDto expected)
             throws Exception {
 
         resultActions
@@ -71,7 +72,7 @@ public class AssertionHelper {
     }
 
 
-    public static void assertOnBundles(ResultActions resultActions, List<BundleController.Bundle> expectedList)
+    public static void assertOnBundles(ResultActions resultActions, List<BundleDto> expectedList)
             throws Exception {
 
         int bound = expectedList.size();
@@ -79,7 +80,7 @@ public class AssertionHelper {
         resultActions.andExpect(jsonPath("$", hasSize(bound)));
 
         for (int i = 0; i < bound; i++) {
-            BundleController.Bundle expected = expectedList.get(i);
+            BundleDto expected = expectedList.get(i);
             resultActions
                     .andExpect(jsonPath("$.[" + i + "].bundleId").value(expected.getBundleId()))
                     .andExpect(jsonPath("$.[" + i + "].name").value(expected.getName()))

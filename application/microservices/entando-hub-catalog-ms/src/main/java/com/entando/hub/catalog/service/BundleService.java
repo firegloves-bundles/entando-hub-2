@@ -4,9 +4,10 @@ import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.*;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +26,28 @@ public class BundleService {
     private final BundleGroupRepository bundleGroupRepository;
 
     private final SecurityHelperService securityHelperService;
+
+	private final BundleStandardMapper bundlemapper;
+
     private final CatalogService catalogService;
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
     private final String CLASS_NAME = this.getClass().getSimpleName();
     private final PortalUserService portalUserService;
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
+                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, BundleStandardMapper bundlemapper, PortalUserService portaUserService) {
                          BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService,
                          CatalogService catalogService, PortalUserService portalUserService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
         this.securityHelperService = securityHelperService;
+        this.bundlemapper = bundlemapper;
+        this.portaUserService = portaUserService;
         this.catalogService = catalogService;
-        this.portalUserService = portalUserService;
     }
 
-    public Page<Bundle> getBundles(String apiKey, Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+    public Page<Bundle> getBundles(String apiKey, Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<DescriptorVersion> descriptorVersions) {
 
         logger.debug("{}: getBundles: Get bundles paginated by bundle group  id: {}, descriptorVersions: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
         Pageable paging;
@@ -53,7 +59,7 @@ public class BundleService {
         //Controllers can override but default to all versions otherwise.
         if (descriptorVersions == null) {
             descriptorVersions = new HashSet<>();
-            Collections.addAll(descriptorVersions, Bundle.DescriptorVersion.values());
+            Collections.addAll(descriptorVersions, DescriptorVersion.values());
         }
         Page<Bundle> response = new PageImpl<>(new ArrayList<>());
         Catalog userCatalog = null;
@@ -116,7 +122,6 @@ public class BundleService {
 		}
     }
 
-    //Get Private Catalog bundles
     public List<Bundle> getBundlesByCatalogId(Long catalogId) {
         return bundleRepository.findByBundleGroupVersionsBundleGroupCatalogId(catalogId);
     }
@@ -162,16 +167,12 @@ public class BundleService {
      * @param bundleRequest
      * @return list of saved bundles or empty list
      */
-    public List<Bundle> createBundleEntitiesAndSave(List<BundleNoId> bundleRequest) {
+    public List<Bundle> createBundleEntitiesAndSave(List<BundleDto> bundleRequest) {
         logger.debug("{}: createBundleEntitiesAndSave: Create bundles: {}", CLASS_NAME, bundleRequest);
         try {
             List<Bundle> bundles = new ArrayList<Bundle>();
             if (!CollectionUtils.isEmpty(bundleRequest)) {
-                bundleRequest.forEach((element) -> {
-                    Optional<String> opt = Objects.nonNull(element.getBundleId()) ? Optional.of(element.getBundleId())
-                            : Optional.empty();
-                    bundles.add(element.createEntity(opt));
-                });
+                bundleRequest.forEach(element -> bundles.add(bundlemapper.toEntity(element)));
                 return createBundles(bundles);
             }
         } catch (Exception e) {

@@ -2,12 +2,12 @@ package com.entando.hub.catalog.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import lombok.experimental.Accessors;
 
 /**
  * This entity class is for BUNDLE table
@@ -56,10 +56,6 @@ public class Bundle implements Serializable {
                 ", gitRepoAddress='" + gitRepoAddress + '\'' +
                 ", dependencies='" + dependencies + '\'' +
                 '}';
-    }
-
-    public enum DescriptorVersion {
-        V1, V5
     }
 
 }

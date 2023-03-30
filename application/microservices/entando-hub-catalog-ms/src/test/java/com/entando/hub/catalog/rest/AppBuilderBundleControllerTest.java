@@ -3,8 +3,16 @@ package com.entando.hub.catalog.rest;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +21,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -24,12 +33,16 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(AppBuilderBundleController.class)
+@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class,
+		BundleEntityMapper.class, BundleEntityMapperImpl.class, BundleMapper.class, BundleMapperImpl.class})
 public class AppBuilderBundleControllerTest {
+
+	@Autowired
+	private BundleMapper bundleMapper = new BundleMapperImpl();
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -83,14 +96,14 @@ public class AppBuilderBundleControllerTest {
 		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
-		BundleController.Bundle bundleC = new BundleController.Bundle(bundle);
-		List<BundleController.Bundle> bundlesCList = new ArrayList<>();
+		BundleDto bundleC = bundleMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
+		List<BundleDto> bundlesCList = new ArrayList<>();
 		bundlesCList.add(bundleC);
 		
 		Page<Bundle> response = new PageImpl<>(bundlesList);
 
-		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
-		versions.add(Bundle.DescriptorVersion.V1);
+		Set<DescriptorVersion> versions = new HashSet<>();
+		versions.add(DescriptorVersion.V1);
 
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
 
@@ -99,12 +112,11 @@ public class AppBuilderBundleControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
 		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andDo(print())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.payload").exists())
 				.andExpect(jsonPath("$.metadata").exists())
 				.andExpect(status().isOk());
-
+		
 		//Case 2: bundle has a version
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
@@ -113,7 +125,6 @@ public class AppBuilderBundleControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
 		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andDo(print())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.payload").exists())
 				.andExpect(jsonPath("$.metadata").exists())
@@ -143,7 +154,7 @@ public class AppBuilderBundleControllerTest {
 				.andExpect(status().isOk());
 
 		//Case 5: provide one more good descriptorVersion as well as a bad one (which should be excluded.
-		versions.add(Bundle.DescriptorVersion.V5);
+		versions.add(DescriptorVersion.V5);
 		page = 1;
 
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));

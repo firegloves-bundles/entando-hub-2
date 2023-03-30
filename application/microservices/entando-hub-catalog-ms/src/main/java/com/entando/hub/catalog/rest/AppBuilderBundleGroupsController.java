@@ -31,7 +31,7 @@ public class AppBuilderBundleGroupsController {
     @GetMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersionsAndFilterThem(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize) {
 
         logger.debug("REST request to get bundle group versions");
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;

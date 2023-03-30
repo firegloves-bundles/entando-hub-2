@@ -372,7 +372,7 @@ public class BundleGroupVersionService {
     }
 
 
-    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersion> page) {
+    private List<BundleGroupVersionFilteredResponseView> toResponseViewList(Page<BundleGroupVersionEntityDto> page) {
        return this.toResponseViewList(page, null);
     }
 
@@ -483,17 +483,17 @@ public class BundleGroupVersionService {
         return bundleGroupVersionRepository.findByBundleGroupInAndStatusIn(bundleGroups, statusSet, paging);
     }
 
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getPrivateCatalogPublishedBundleGroupVersions(Long userCatalogId, Integer pageNum, Integer pageSize) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getPrivateCatalogPublishedBundleGroupVersions(Long userCatalogId, Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
         Pageable paging = getPaging(pageNum, pageSize, sort);
-        Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPrivateCatalogPublished(userCatalogId, paging);
+        Page<BundleGroupVersionEntityDto> page = convertoToDto(bundleGroupVersionRepository.getPrivateCatalogPublished(userCatalogId, paging));
         return new PagedContent<>(toResponseViewList(page), page);
     }
 
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersion> getPublicCatalogPublishedBundleGroupVersions(Integer pageNum, Integer pageSize) {
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getPublicCatalogPublishedBundleGroupVersions(Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "last_updated"));
         Pageable paging = getPaging(pageNum, pageSize, sort);
-        Page<BundleGroupVersion> page = bundleGroupVersionRepository.getPublicCatalogPublished(paging);
+        Page<BundleGroupVersionEntityDto> page = convertoToDto(bundleGroupVersionRepository.getPublicCatalogPublished(paging));
         return new PagedContent<>(toResponseViewList(page), page);
     }
 

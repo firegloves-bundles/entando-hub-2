@@ -27,7 +27,7 @@ public class BundleService {
 
     private final SecurityHelperService securityHelperService;
 
-	private final BundleStandardMapper bundlemapper;
+	private final BundleStandardMapper bundleMapper;
 
     private final CatalogService catalogService;
     private final Logger logger = LoggerFactory.getLogger(BundleService.class);
@@ -35,15 +35,15 @@ public class BundleService {
     private final PortalUserService portalUserService;
 
     public BundleService(BundleRepository bundleRepository, BundleGroupVersionRepository bundleGroupVersionRepository,
-                         BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService, BundleStandardMapper bundlemapper, PortalUserService portaUserService) {
                          BundleGroupRepository bundleGroupRepository, SecurityHelperService securityHelperService,
-                         CatalogService catalogService, PortalUserService portalUserService) {
+                         BundleStandardMapper bundleMapper, PortalUserService portalUserService,
+                         CatalogService catalogService) {
         this.bundleRepository = bundleRepository;
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
         this.securityHelperService = securityHelperService;
-        this.bundlemapper = bundlemapper;
-        this.portaUserService = portaUserService;
+        this.bundleMapper = bundleMapper;
+        this.portalUserService = portalUserService;
         this.catalogService = catalogService;
     }
 
@@ -94,7 +94,7 @@ public class BundleService {
         return response;
     }
 
-    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<Bundle.DescriptorVersion> descriptorVersions) {
+    public Page<Bundle> getBundles(Integer pageNum, Integer pageSize, Optional<String> bundleGroupId, Set<DescriptorVersion> descriptorVersions) {
         return getBundles(null, pageNum, pageSize, bundleGroupId,  descriptorVersions);
     }
     public List<Bundle> getBundles() {
@@ -172,7 +172,7 @@ public class BundleService {
         try {
             List<Bundle> bundles = new ArrayList<Bundle>();
             if (!CollectionUtils.isEmpty(bundleRequest)) {
-                bundleRequest.forEach(element -> bundles.add(bundlemapper.toEntity(element)));
+                bundleRequest.forEach(element -> bundles.add(bundleMapper.toEntity(element)));
                 return createBundles(bundles);
             }
         } catch (Exception e) {

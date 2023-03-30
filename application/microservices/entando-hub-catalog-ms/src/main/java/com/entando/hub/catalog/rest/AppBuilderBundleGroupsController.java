@@ -4,18 +4,20 @@ import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundlegroups")
 public class AppBuilderBundleGroupsController {
     private final BundleGroupVersionService bundleGroupVersionService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleGroupsController.class);
 
     private final CatalogService catalogService;
 
@@ -29,8 +31,9 @@ public class AppBuilderBundleGroupsController {
     @GetMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersionsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] descriptorVersions) {
-    	logger.debug("REST request to get bundle group versions");
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersionsAndFilterThem(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize) {
+
+        logger.debug("REST request to get bundle group versions");
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         Catalog userCatalog;
         if (null != apiKey) {

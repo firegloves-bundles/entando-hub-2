@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +65,7 @@ public class AppBuilderBundleController {
 	@GetMapping(value = "/", produces = {"application/json"})
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
 	@ApiResponse(responseCode = "200", description = "OK")
-	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
+	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
 
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;

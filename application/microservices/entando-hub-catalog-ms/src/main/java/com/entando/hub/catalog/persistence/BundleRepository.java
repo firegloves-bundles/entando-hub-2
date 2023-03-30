@@ -38,7 +38,7 @@ public interface BundleRepository extends JpaRepository<Bundle, Long> {
             " and bgv.status = 'PUBLISHED'"+
             " and b.descriptorVersion in (:descriptorVersion)")
     Page<Bundle> getPrivateCatalogBundlesPublished(@Param("catalogId") Long catalogId,
-                                                   @Param("descriptorVersion") Collection<Bundle.DescriptorVersion> descriptorVersion,
+                                                   @Param("descriptorVersion") Collection<DescriptorVersion> descriptorVersion,
                                                    Pageable pageable);
 
 }

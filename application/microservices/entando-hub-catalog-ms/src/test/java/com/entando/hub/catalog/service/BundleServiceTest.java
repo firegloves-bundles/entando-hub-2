@@ -81,9 +81,9 @@ public class BundleServiceTest {
 		 Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "name"));
 		 List<Bundle> bundleList = new ArrayList<>();
 		 Bundle bundle = createBundle();
-		 BundleGroup bundleGroup = createBundleGroup();
+		 BundleGroup bundleGroup = createBundleGroup(false);
 		 List<BundleGroupVersion> bundleGroupVersionList = new ArrayList<>();
-		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 bundleList.add(bundle);
 		 bundleGroupVersionList.add(bundleGroupVersion);
@@ -94,10 +94,10 @@ public class BundleServiceTest {
 		Set<DescriptorVersion> versions = new HashSet<>();
 		versions.add(DescriptorVersion.V1);
 
-		Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
+		 Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 	     Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
 	     Mockito.when(bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(bundleGroupVersion, versions, paging)).thenReturn(response);
-	     Mockito.when(bundleGroupVersionRepository.getPublishedBundleGroups(versions)).thenReturn(bundleGroupVersionList);
+	     Mockito.when(bundleGroupVersionRepository.getPublicCatalogPublishedBundleGroups(versions)).thenReturn(bundleGroupVersionList);
 	     Mockito.when(bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupVersionList, versions, paging)).thenReturn(response);
 
 	     //Case 1: bundle group id is present, pageSize > 0
@@ -154,7 +154,7 @@ public class BundleServiceTest {
 	public void getBundlesTest() {
 		 List<Bundle> bundleList = new ArrayList<>();
 		 Bundle bundle = createBundle();
-		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 bundleList.add(bundle);
 		 
@@ -215,7 +215,7 @@ public class BundleServiceTest {
 	  @Test
 	  public void createBundleEntitiesAndSaveTest() {
 		 Bundle bundle = createBundle();
-		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
@@ -244,7 +244,7 @@ public class BundleServiceTest {
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
 		 
-		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		 BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		 bundleGroupVersion.setBundles(new HashSet<>(bundlesList));
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));	
 		 
@@ -263,20 +263,23 @@ public class BundleServiceTest {
 		return bundle;
 	}
 
-	private BundleGroup createBundleGroup() {
+	private BundleGroup createBundleGroup(Boolean publicCatalog) {
 		BundleGroup bundleGroup = new BundleGroup();
 		bundleGroup.setId(BUNDLE_GROUP_ID);
 		bundleGroup.setName(BUNDLE_GROUP_NAME);
 		bundleGroup.setCatalogId(CATALOG_ID);
+		bundleGroup.setPublicCatalog(publicCatalog);
 		return bundleGroup;
 	}
 
-	private BundleGroupVersion createBundleGroupVersion() {
+	private BundleGroupVersion createBundleGroupVersion(Boolean publicCatalog) {
+		BundleGroup bundleGroup = createBundleGroup(publicCatalog);
 		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
 		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
 		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
 		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
 		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+		bundleGroupVersion.setBundleGroup(bundleGroup);
 		return bundleGroupVersion;
 	}
 }

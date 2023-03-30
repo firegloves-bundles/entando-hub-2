@@ -21,10 +21,12 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	@Query(value = "select distinct bgv " +
 			"from BundleGroupVersion bgv " +
 			"	join bgv.bundles b " +
+			"   join bgv.bundleGroup bg "+
 			"where bgv.status = 'PUBLISHED' " +
+			"  and bg.publicCatalog = true"+
 			"  and b.descriptorVersion in(:descriptorVersions)" +
 			"  and b.gitRepoAddress is not null")
-	List<BundleGroupVersion> getPublishedBundleGroups(@Param("descriptorVersions") Set<DescriptorVersion> descriptorVersions);
+	List<BundleGroupVersion> getPublicCatalogPublishedBundleGroups(@Param("descriptorVersions") Set<DescriptorVersion> descriptorVersions);
 
 	Page<BundleGroupVersion> findByBundleGroupAndStatusIn(BundleGroup bundleGroup, Set<BundleGroupVersion.Status> statuses, Pageable pageable);
 	
@@ -73,7 +75,6 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 			"  and bv.bundle_id = b.id"+
 			"  and bg.id=bgv.bundle_group_id"+
 			"  and bgv.status = 'PUBLISHED'"+
-			"  and bg.public_catalog = false"+
 			"  and b.git_repo_address is not null",
 			nativeQuery = true)
 	Page<BundleGroupVersion> getPrivateCatalogPublished(@Param("catalogId") Long catalogId,

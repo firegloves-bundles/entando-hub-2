@@ -343,7 +343,7 @@ public class BundleGroupVersionService {
             if (Objects.nonNull(entity.getBundleGroup())) {
                 viewObj.setName(entity.getBundleGroup().getName());
                 viewObj.setBundleGroupId(entity.getBundleGroup().getId());
-                if (null == bundleGroups) {
+                if (null != bundleGroups) {
                     viewObj.setPublicCatalog(
                             Optional.ofNullable(bundleGroupMap.get(viewObj.getBundleGroupId()))
                                     .map(BundleGroup::getPublicCatalog)

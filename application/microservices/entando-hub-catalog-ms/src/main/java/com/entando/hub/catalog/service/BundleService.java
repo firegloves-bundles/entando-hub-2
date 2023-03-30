@@ -67,30 +67,30 @@ public class BundleService {
             userCatalog = catalogService.getCatalogByApiKey(apiKey);
         }
         if (bundleGroupId.isPresent()) {
-                Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
-                Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
-                if (bundleGroupEntity.isPresent()) {
-                     if (null!=apiKey
-                            && !Objects.equals(bundleGroupEntity.get().getCatalogId(), userCatalog.getId())) {
-                         throw new BadRequestException("Invalid api key and bundleGroupId");
-                    }
-                    BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
-                    if (publishedVersion != null) {
-                         response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
-                                publishedVersion, descriptorVersions, paging);
-                    }
-                } else {
-                    throw new NotFoundException("Bundle Group " +bundleGroupEntityId+ " not found");
+            Long bundleGroupEntityId = Long.parseLong(bundleGroupId.get());
+            Optional<BundleGroup> bundleGroupEntity = bundleGroupRepository.findById(bundleGroupEntityId);
+            if (bundleGroupEntity.isPresent()) {
+                 if (null!=apiKey
+                        && !Objects.equals(bundleGroupEntity.get().getCatalogId(), userCatalog.getId())) {
+                     throw new BadRequestException("Invalid api key and bundleGroupId");
+                }
+                BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
+                if (publishedVersion != null) {
+                     response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
+                            publishedVersion, descriptorVersions, paging);
                 }
             } else {
-                if (null != apiKey){
-                    response = bundleRepository.getPrivateCatalogBundlesPublished(userCatalog.getId(),descriptorVersions, paging);
-                } else {
-                    logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
-                    List<BundleGroupVersion> bundleGroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
-                    response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupsVersion, descriptorVersions, paging);
-                }
+                throw new NotFoundException("Bundle Group " +bundleGroupEntityId+ " not found");
             }
+        } else {
+            if (null != apiKey){
+                response = bundleRepository.getPrivateCatalogBundlesPublished(userCatalog.getId(),descriptorVersions, paging);
+            } else {
+                logger.debug("{}: getBundles: bundle group id is not present: {}, descriptorVersion: {}", CLASS_NAME, bundleGroupId, descriptorVersions);
+                List<BundleGroupVersion> bundleGroupsVersion = bundleGroupVersionRepository.getPublishedBundleGroups(descriptorVersions);
+                response = bundleRepository.findByBundleGroupVersionsInAndDescriptorVersionIn(bundleGroupsVersion, descriptorVersions, paging);
+            }
+        }
         return response;
     }
 

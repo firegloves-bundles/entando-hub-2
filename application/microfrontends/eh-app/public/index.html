@@ -23,7 +23,7 @@
 
     <script src="%REACT_APP_KEYCLOAK_URL%/js/keycloak.js"></script>
     <script>
-      const onLoad = (function() {
+      const onLoad = async function() {
         function createKcDispatcher(payload) {
           return () => window.dispatchEvent(new CustomEvent('keycloak', { detail: payload }));
         }
@@ -61,8 +61,10 @@
             .success(onInit);
 
         }
-        return initKeycloak;
-      })();
+
+        await injectConfigIntoMfe();
+        initKeycloak();
+      };
     </script>
     <style>
       .home-localhost .entando-eh-login {
@@ -89,15 +91,11 @@
     -->
   </body>
   <script>
-    function injectConfigIntoMfe() {
-      fetch('%PUBLIC_URL%/mfe-config.json').then(async response => {
-        const config = await response.text()
-        const mfeEl = document.getElementsByTagName('x-eh-app')[0]
-        mfeEl.setAttribute('config', config)
-      })
+    async function injectConfigIntoMfe() {
+      const response = await fetch('%PUBLIC_URL%/mfe-config.json');
+      const config = await response.text();
+      const mfeEl = await document.getElementsByTagName('x-eh-app')[0];
+      await mfeEl.setAttribute('config', config);
     }
-
-    injectConfigIntoMfe()
   </script>
-
 </html>

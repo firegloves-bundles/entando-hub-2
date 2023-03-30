@@ -19,8 +19,7 @@ This project is ent-enabled so you can use the Entando CLI (ent) to perform the 
 
 1. Start all the services (postgresql, keycloak): `ent bundle svc start --all`
 2. Run the microservice: `ent bundle run entando-hub-catalog-ms`
-3. Configure the parameters of microfrontends. You can use `.env.template` file like an example and put it in `.env` file
-4. Run the microfrontends: `ent bundle run --all-mfe`
+3. Run the microfrontends: `ent bundle run --all-mfe`
 
 ## Swagger UI
 The swagger portal ui is provided by the microservice and is available by default.

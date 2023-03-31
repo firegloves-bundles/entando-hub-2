@@ -39,7 +39,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
         const [loading, setLoading] = useState(true)
         const [selectStatusValues, setSelectStatusValues] = useState([])
         const [validationResult, setValidationResult] = useState({})
-        const [minOneBundleError, setMinOneBundleError] = useState("")
+        const [bundleErrorMsg, setBundleErrorMsg] = useState("")
         const [reqOnWay, setReqOnWay] = useState(false)
 
         const isPublicOnly = catalogs.every(({ organisationId }) => organisationId !== +bundleGroup.organisationId);
@@ -182,7 +182,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                 if (details.bundles && details.bundles.length === 0 &&
                     (details.displayContactUrl !== true) &&
                     details.status !== BUNDLE_STATUS.NOT_PUBLISHED) {
-                    validationError && setMinOneBundleError(validationError['versionDetails.bundles'][0]);
+                    validationError && setBundleErrorMsg(validationError['versionDetails.bundles'][0]);
                 }
                 if (validationError) {
                     console.info("Form validation error(s)", validationError)
@@ -212,7 +212,7 @@ export const ModalAddNewBundleGroup = ({ onAfterSubmit, catList, orgList, curren
                             selectStatusValues={selectStatusValues}
                             bundleGroup={bundleGroup}
                             loading={loading}
-                            minOneBundleError={minOneBundleError}
+                            bundleErrorMsg={bundleErrorMsg}
                             reqOnWay={reqOnWay}
                             orgList={orgList}
                             isPublicOnly={isPublicOnly}
@@ -246,7 +246,7 @@ const ModalContent = ({
     allowedOrganisations,
     categories,
     loading,
-    minOneBundleError,
+    bundleErrorMsg,
     reqOnWay,
     orgList,
     isPublicOnly,
@@ -271,7 +271,7 @@ const ModalContent = ({
                         selectStatusValues={selectStatusValues}
                         onDataChange={onDataChange}
                         validationResult={validationResult}
-                        minOneBundleError={minOneBundleError}
+                        bundleErrorMsg={bundleErrorMsg}
                         orgList={orgList}
                         isPublicOnly={isPublicOnly}
                     />

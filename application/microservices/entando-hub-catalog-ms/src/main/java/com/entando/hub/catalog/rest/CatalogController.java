@@ -6,7 +6,7 @@ import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
 
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.service.CatalogService;
-import com.entando.hub.catalog.service.dto.CatalogDTO;
+import com.entando.hub.catalog.service.dto.CatalogDto;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -47,13 +47,13 @@ public class CatalogController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<CatalogDTO>> getCatalogs() {
+    public ResponseEntity<List<CatalogDto>> getCatalogs() {
         logger.debug("REST request to get Catalogs");
 
         boolean userIsAdmin = this.securityHelperService.isAdmin();
         String username = this.securityHelperService.getContextAuthenticationUsername();
 
-        List<CatalogDTO> catalogsDTO = catalogService.getCatalogs(username, userIsAdmin)
+        List<CatalogDto> catalogsDTO = catalogService.getCatalogs(username, userIsAdmin)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/{catalogId}", produces = {"application/json"})
-    public ResponseEntity<CatalogDTO> getCatalog(@PathVariable Long catalogId) {
+    public ResponseEntity<CatalogDto> getCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to get Catalog by id");
         boolean userIsAdmin = this.securityHelperService.isAdmin();
         String username = this.securityHelperService.getContextAuthenticationUsername();
@@ -89,7 +89,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(value = "/{organisationId}", produces = {"application/json"})
-    public ResponseEntity<CatalogDTO> createCatalog(@PathVariable Long organisationId) {
+    public ResponseEntity<CatalogDto> createCatalog(@PathVariable Long organisationId) {
         logger.debug("REST request to create Catalog for organisation: {}", organisationId);
         try {
             Catalog response = catalogService.createCatalog(organisationId);
@@ -108,7 +108,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<CatalogDTO> deleteCatalog(@PathVariable Long catalogId) {
+    public ResponseEntity<CatalogDto> deleteCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to delete catalog {}", catalogId);
         try {
             Catalog response = this.catalogService.deleteCatalog(catalogId);
@@ -118,8 +118,8 @@ public class CatalogController {
         }
     }
 
-    public CatalogDTO mapToDTO(Catalog catalog) {
-        return new CatalogDTO(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());
+    public CatalogDto mapToDTO(Catalog catalog) {
+        return new CatalogDto(catalog.getId(), catalog.getOrganisation().getId(), catalog.getName());
     }
 
 }

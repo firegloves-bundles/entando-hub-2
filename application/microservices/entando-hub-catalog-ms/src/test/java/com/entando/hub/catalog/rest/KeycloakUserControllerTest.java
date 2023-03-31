@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
@@ -87,7 +87,7 @@ public class KeycloakUserControllerTest {
 	public void testGetUser() throws Exception {
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
-		RestUserRepresentation restUserRepresentation = populateRestUserRepresentation();
+		RestUserRepresentationDto restUserRepresentation = populateRestUserRepresentation();
 		Mockito.when(keyCloakService.getUser(restUserRepresentation.getUsername())).thenReturn(user);
 		mockMvc.perform(MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON_VALUE).content(username))
 	      .andExpect(status().is(HttpStatus.OK.value()))
@@ -127,12 +127,12 @@ public class KeycloakUserControllerTest {
 		return user;
 	}
 
-	private RestUserRepresentation populateRestUserRepresentation() {
+	private RestUserRepresentationDto populateRestUserRepresentation() {
 	   
 		    Set<String> organisationIds = new HashSet<String>();
 	        organisationIds.add(ORGID);
 	        organisationIds.add(ORGID);
-      		RestUserRepresentation restUserRepresentation = new RestUserRepresentation(populateUserRepresentation());
+      		RestUserRepresentationDto restUserRepresentation = new RestUserRepresentationDto(populateUserRepresentation());
 		    restUserRepresentation.setId(ID);
 	        restUserRepresentation.setFirstName(FIRSTNAME);
 	        restUserRepresentation.setLastName(LASTNAME);

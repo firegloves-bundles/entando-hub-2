@@ -5,7 +5,7 @@ import CatalogTiles from "../catalog-tiles/CatalogTiles"
 import {getAllBundleGroupsFilteredPaged} from "../../../integration/Integration"
 
 import "./catalog-page-content.scss"
-import {getHigherRole, isHubAdmin, isHubUser} from "../../../helpers/helpers"
+import {getHigherRole, isHubUser} from "../../../helpers/helpers"
 import {getProfiledStatusSelectAllValues} from "../../../helpers/profiling"
 import {Loading, Pagination} from "carbon-components-react";
 import i18n from '../../../i18n'
@@ -49,7 +49,6 @@ const CatalogPageContent = ({
     catList,
     isError,
     onAfterSubmit,
-    currentUserOrg,
     orgList,
     searchTerm,
     showFullPage,
@@ -75,14 +74,11 @@ const CatalogPageContent = ({
     const history = useHistory();
 
     const loadData = useCallback(async ( page, pageSize, statusFilterValue, selectedCategoryIds, statuses, catalogId) => {
-        const userOrganisation = currentUserOrg;
-        const organisationId = !isHubAdmin() && userOrganisation ? userOrganisation.organisationId : undefined
-
         /**
          *Get all the bundle groups having categoryIds and statuses
          */
-        const getBundleGroupsAndFilterThem = async (apiUrl, organisationId, categoryIds, statuses, searchText) => {
-            const { isError, bundleGroupList } = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, organisationId, categoryIds, statuses, catalogId, searchText })
+        const getBundleGroupsAndFilterThem = async (apiUrl, categoryIds, statuses, searchText) => {
+            const { isError, bundleGroupList } = await getAllBundleGroupsFilteredPaged(apiUrl, { page, pageSize, categoryIds, statuses, catalogId, searchText })
 
             if (isError && catalogId) {
                 history.push('/404');
@@ -100,15 +96,15 @@ const CatalogPageContent = ({
             }
         }
 
-        const initBGs = async (apiUrl, organisationId, statuses) => {
+        const initBGs = async (apiUrl, statuses) => {
             //get the selected categories if -1 no filtering at all on them
             const categoryIds = (selectedCategoryIds && selectedCategoryIds.length > 0 && selectedCategoryIds[0] !== "-1") ? selectedCategoryIds : undefined
 
-            const filtered = await getBundleGroupsAndFilterThem(apiUrl, organisationId, categoryIds, statuses, searchTerm)
+            const filtered = await getBundleGroupsAndFilterThem(apiUrl, categoryIds, statuses, searchTerm)
             setFilteredBundleGroups(filtered)
         }
-        return Promise.all([initBGs(apiUrl, organisationId, statuses)])
-    }, [apiUrl, currentUserOrg, searchTerm, history])
+        return Promise.all([initBGs(apiUrl, statuses)])
+    }, [apiUrl, searchTerm, history])
 
     useEffect(() => {
         if (isError) {

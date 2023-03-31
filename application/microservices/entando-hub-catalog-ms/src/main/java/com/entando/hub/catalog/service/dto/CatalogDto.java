@@ -10,13 +10,13 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class CatalogDTO {
+public class CatalogDto {
     protected Long id;
     protected Long organisationId;
     @Schema(example = "Entando Catalog")
     protected String name;
 
-    public CatalogDTO(Long id, Long organisationId, String name) {
+    public CatalogDto(Long id, Long organisationId, String name) {
         this.id = id;
         this.organisationId = organisationId;
         this.name = name;

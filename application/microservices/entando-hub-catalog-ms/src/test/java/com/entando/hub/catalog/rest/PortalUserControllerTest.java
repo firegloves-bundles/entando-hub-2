@@ -1,24 +1,25 @@
 package com.entando.hub.catalog.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
+import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
 import com.entando.hub.catalog.service.PortalUserService;
+import com.entando.hub.catalog.service.model.UserRepresentation;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.entando.hub.catalog.service.model.UserRepresentation;
-import com.entando.hub.catalog.rest.KeycloakUserController.RestUserRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PortalUserControllerTest {
@@ -42,14 +43,14 @@ class PortalUserControllerTest {
     @Test
     void shouldGetCatalogs(){
         List<UserRepresentation> expectedUsers = List.of(this.getMockUserRepresentation(), this.getMockUserRepresentation());
-        List<RestUserRepresentation> expectedUsersDTO = this.getMockRestUserRepresentationByUsers(expectedUsers);
+        List<RestUserRepresentationDto> expectedUsersDTO = this.getMockRestUserRepresentationByUsers(expectedUsers);
 
         when(portalUserService.getUsersByOrganisation(null)).thenReturn(expectedUsers);
 
-        ResponseEntity<List<RestUserRepresentation>> responseEntity = portalUserController.getUsers(null);
+        ResponseEntity<List<RestUserRepresentationDto>> responseEntity = portalUserController.getUsers(null);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<RestUserRepresentation> actualUsersDTO = responseEntity.getBody();
+        List<RestUserRepresentationDto> actualUsersDTO = responseEntity.getBody();
         assertThat(actualUsersDTO).usingRecursiveComparison().isEqualTo(expectedUsersDTO);
     }
 
@@ -156,10 +157,10 @@ class PortalUserControllerTest {
         return userRepresentation;
     }
 
-    private List<RestUserRepresentation> getMockRestUserRepresentationByUsers(List<UserRepresentation> users){
-        List <RestUserRepresentation> expectedRestUserRepresentations = new ArrayList<>();
+    private List<RestUserRepresentationDto> getMockRestUserRepresentationByUsers(List<UserRepresentation> users){
+        List <RestUserRepresentationDto> expectedRestUserRepresentations = new ArrayList<>();
         for ( UserRepresentation user : users ){
-            expectedRestUserRepresentations.add(new RestUserRepresentation(user));
+            expectedRestUserRepresentations.add(new RestUserRepresentationDto(user));
         }
         return expectedRestUserRepresentations;
     }

@@ -6,8 +6,11 @@ import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.rest.BundleController.BundleNoId;
+import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
+import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -32,9 +36,14 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
+@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class})
 public class BundleServiceTest {
+
+
 	@InjectMocks
 	BundleService bundleService;
+	@Mock
+	BundleStandardMapper bundleStandardMapper;
 	@Mock
 	BundleRepository bundleRepository;
 	@Mock
@@ -77,8 +86,8 @@ public class BundleServiceTest {
 		 
 	     Page<Bundle> response = new PageImpl<>(bundleList);
 
-		Set<Bundle.DescriptorVersion> versions = new HashSet<>();
-		versions.add(Bundle.DescriptorVersion.V1);
+		Set<DescriptorVersion> versions = new HashSet<>();
+		versions.add(DescriptorVersion.V1);
 
 		Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
 	     Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(bundleGroupVersion);
@@ -176,11 +185,13 @@ public class BundleServiceTest {
 		 bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));		
 		 List<Bundle> bundlesList = new ArrayList<>();
 		 bundlesList.add(bundle);	
-		 BundleNoId bundleNoId = new BundleNoId(bundle);
-		 List<BundleNoId> bundleNoIdsList = new ArrayList<>();
-		 bundleNoIdsList.add(bundleNoId);	
-		 
+		 BundleDto bundleDto = bundleStandardMapper.toDto(bundle);
+		 List<BundleDto> bundleNoIdsList = new ArrayList<>();
+		 bundleNoIdsList.add(bundleDto);
+
+
 		 Mockito.when(bundleRepository.saveAll(bundlesList)).thenReturn(bundlesList);
+			Mockito.when(bundleStandardMapper.toEntity(bundleDto)).thenReturn(bundle);
 		 
 		 //Case 1: bundleRequest given
 		 List<Bundle> bundleResult = bundleService.createBundleEntitiesAndSave(bundleNoIdsList);

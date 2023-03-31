@@ -106,7 +106,6 @@ public class BundleServiceTest {
 
 		//Valid api key and bundleGroupId not set
 		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
-		System.out.println("bundleGroupVersion:" + bundleGroupVersion.getId());
 		Mockito.when(bundleRepository.getPrivateCatalogBundlesPublished(catalog.getId(), versions, paging)).thenReturn(response);
 		Page<Bundle> bundleResult = bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.empty(), versions);
 

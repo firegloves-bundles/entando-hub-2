@@ -19,13 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class BundleGroupVersionService {
@@ -390,7 +387,7 @@ public class BundleGroupVersionService {
                 CLASS_NAME, organisationId, catalogId, categoryIds, statuses, searchText);
 
         Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
-        List<BundleGroup> bundleGroups = this.getBundleGroup(organisationId, catalogId, categories, publicCatalog);
+        List<BundleGroup> bundleGroups = this.getBundleGroups(organisationId, catalogId, categories, publicCatalog);
 
         bundleGroups = searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
 
@@ -407,70 +404,39 @@ public class BundleGroupVersionService {
         return pagedContent;
     }
 
-    public List<BundleGroup> getBundleGroup(Long organisationId, Long catalogId, Set<Category> categories, Boolean publicCatalog){
+    public List<BundleGroup> getBundleGroups(Long organisationId, Long catalogId, Set<Category> categories, Boolean publicCatalog){
         List<Specification<BundleGroup>> filters = new ArrayList<>();
+
+        if(catalogId != null && organisationId != null){
+            throw new IllegalArgumentException("the catalogId and organisationId filters cannot coexist");
+        }
 
         if(catalogId != null) {
             logger.debug("{}: adding filter by catalogId with value {}", CLASS_NAME, catalogId);
-            filters.add(hasCatalogId(catalogId));
+            filters.add(BundleGroupQueryManager.hasCatalogId(catalogId));
         }
         if(organisationId != null) {
             logger.debug("{}: adding filter by organisationId with value {}", CLASS_NAME, organisationId);
-            filters.add(hasOrganisationId(organisationId));
+            filters.add(BundleGroupQueryManager.hasOrganisationId(organisationId));
         }
         if(categories !=null) {
             logger.debug("{}: adding filter by categories {}", CLASS_NAME, categories);
-            filters.add(belongsToCategory(categories));
+            filters.add(BundleGroupQueryManager.belongsToCategories(categories));
         }
         if(publicCatalog != null) {
            logger.debug("{}: adding filter by publicCatalog", CLASS_NAME);
-           filters.add(publicCatalogSpec(publicCatalog));
+           filters.add(BundleGroupQueryManager.isInPublicCatalog(publicCatalog));
         }
-        return this.getQueryResult(filters);
+        return this.findAllBundleGroups(filters);
     }
 
-    private Specification<BundleGroup> hasCatalogId(Long catalogId){
-        return (root, query, criteriaBuilder) -> {
-            query.distinct(true);
-            return criteriaBuilder.equal(root.get(BundleGroup_.CATALOG_ID), catalogId);
-        };
-    }
-    private Specification<BundleGroup> hasOrganisationId(Long organisationId){
-        return (root, query, criteriaBuilder) -> {
-            query.distinct(true);
-            return criteriaBuilder.equal(root.get(BundleGroup_.organisation).get(Organisation_.ID), organisationId);
-        };
-    }
 
-    private Specification<BundleGroup> publicCatalogSpec(boolean publicCatalog){
-        return (root, query, criteriaBuilder) -> {
-            query.distinct(true);
-            return criteriaBuilder.equal(root.get(BundleGroup_.PUBLIC_CATALOG), publicCatalog);
-        };
-    }
-
-    private Specification<BundleGroup> belongsToCategory(Set<Category> categories) {
-        return (root, query, criteriaBuilder) -> {
-            query.distinct(true);
-            SetJoin<BundleGroup, Category> join = root.joinSet(BundleGroup_.CATEGORIES);
-            return join.in(categories.stream().map(Category::getId).collect(Collectors.toSet()));
-        };
-    }
-
-    public List<BundleGroup> getQueryResult(List<Specification<BundleGroup>> filters){
+    public List<BundleGroup> findAllBundleGroups(List<Specification<BundleGroup>> filters){
         if(!filters.isEmpty()) {
-            return bundleGroupRepository.findAll(getSpecificationFromFilters(filters));
+            return bundleGroupRepository.findAll(BundleGroupQueryManager.getSpecificationFromFilters(filters));
         }else {
             return bundleGroupRepository.findAll();
         }
-    }
-
-    private Specification<BundleGroup> getSpecificationFromFilters(List<Specification<BundleGroup>> filter) {
-        Specification<BundleGroup> specification = where(filter.remove(0));
-        for (Specification<BundleGroup> input : filter) {
-            specification = specification.and(input);
-        }
-        return specification;
     }
 
     private List<BundleGroup> filterSearchText(List<BundleGroup> bundleGroups, String searchText){

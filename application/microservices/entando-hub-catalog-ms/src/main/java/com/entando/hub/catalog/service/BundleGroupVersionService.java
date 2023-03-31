@@ -12,7 +12,6 @@ import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionEntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -37,19 +36,19 @@ public class BundleGroupVersionService {
     final private CategoryRepository categoryRepository;
     private final BundleService bundleService;
 
-    @Autowired
-    private Environment environment;
-    @Autowired
-    private BundleGroupVersionEntityMapper entityMapper;
+    private final Environment environment;
+    private final BundleGroupVersionEntityMapper entityMapper;
 
     public BundleGroupVersionService(BundleGroupVersionRepository bundleGroupVersionRepository,
                                      BundleGroupRepository bundleGroupRepository, BundleRepository bundleRepository,
-                                     CategoryRepository categoryRepository, BundleService bundleService) {
+                                     CategoryRepository categoryRepository, BundleService bundleService, BundleGroupVersionEntityMapper entityMapper, Environment environment) {
         this.bundleGroupVersionRepository = bundleGroupVersionRepository;
         this.bundleGroupRepository = bundleGroupRepository;
         this.bundleRepository = bundleRepository;
         this.categoryRepository = categoryRepository;
         this.bundleService = bundleService;
+        this.entityMapper = entityMapper;
+        this.environment = environment;
     }
 
     public Optional<BundleGroupVersion> getBundleGroupVersion(String bundleGroupVersionIdString) {

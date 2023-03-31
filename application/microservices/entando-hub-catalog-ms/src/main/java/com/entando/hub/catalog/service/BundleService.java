@@ -75,8 +75,11 @@ public class BundleService {
                      throw new BadRequestException("Invalid api key and bundleGroupId");
                 }
                 BundleGroupVersion publishedVersion = bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroupEntity.get(), BundleGroupVersion.Status.PUBLISHED);
-                Boolean isPublicCatalog = publishedVersion.getBundleGroup().getPublicCatalog();
-                if ((publishedVersion != null && Boolean.TRUE.equals(isPublicCatalog))
+                Boolean isPublicCatalog= false;
+                 if (publishedVersion != null) {
+                    isPublicCatalog = publishedVersion.getBundleGroup().getPublicCatalog();
+                }
+                if ((Boolean.TRUE.equals(isPublicCatalog))
                     || (null!=userCatalog && Objects.equals(bundleGroupEntity.get().getCatalogId(), userCatalog.getId()))) {
                      response = bundleRepository.findByBundleGroupVersionsIsAndDescriptorVersionIn(
                             publishedVersion, descriptorVersions, paging);

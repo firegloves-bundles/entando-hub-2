@@ -5,7 +5,6 @@ import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.BundleRepository;
 import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.rest.dto.BundleDto;
-import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
@@ -52,8 +51,6 @@ public class BundleServiceTest {
 
     @Mock
     SecurityHelperService securityHelperService;
-    @Mock
-    BundleGroupValidator bundleGroupValidator;
 
     @Mock
     private CatalogService catalogService;
@@ -127,9 +124,7 @@ public class BundleServiceTest {
 
         //bundle group entity not exists
         Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.empty());
-        NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
-            bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions);
-        });
+        NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> bundleService.getBundles(pageNum, pageSize, Optional.of(bundleGroupId.toString()), versions));
         String actualMessage = notFoundException.getMessage();
         Assertions.assertTrue(actualMessage.contains(BUNDLE_GROUP_NOT_FOUND_MSG));
 
@@ -138,9 +133,7 @@ public class BundleServiceTest {
         catalog2.setId(CATALOG_ID_2);
         Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
         Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog2);
-        BadRequestException badRequestException = Assertions.assertThrows(BadRequestException.class, () -> {
-            bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null);
-        });
+        BadRequestException badRequestException = Assertions.assertThrows(BadRequestException.class, () -> bundleService.getBundles(API_KEY, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null));
 
         String expectedMessage = "Invalid api key and bundleGroupId";
         actualMessage = badRequestException.getMessage();
@@ -149,18 +142,14 @@ public class BundleServiceTest {
 
         //BundleGroupId not present returns BadRequestException
         Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.empty());
-        notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
-            bundleService.getBundles(null, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null);
-        });
+        notFoundException = Assertions.assertThrows(NotFoundException.class, () -> bundleService.getBundles(null, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null));
         actualMessage = notFoundException.getMessage();
         Assertions.assertTrue(actualMessage.contains(BUNDLE_GROUP_NOT_FOUND_MSG));
 
         //NotFoundException on private catalog
         Mockito.when(bundleGroupVersionRepository.findByBundleGroupAndStatus(bundleGroup, BundleGroupVersion.Status.PUBLISHED)).thenReturn(privateBundleGroupVersion);
         Mockito.when(bundleGroupRepository.findById(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
-        notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
-            bundleService.getBundles(null, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null);
-        });
+        notFoundException = Assertions.assertThrows(NotFoundException.class, () -> bundleService.getBundles(null, pageNum, pageSize, Optional.of(bundleGroupId.toString()), null));
         actualMessage = notFoundException.getMessage();
         Assertions.assertTrue(actualMessage.contains(BUNDLE_GROUP_NOT_FOUND_MSG));
     }
@@ -204,7 +193,7 @@ public class BundleServiceTest {
         Mockito.when(bundleRepository.findById(bundle.getId())).thenReturn(bundleList);
         Optional<Bundle> bundleResult = bundleService.getBundle(bundleId);
         assertNotNull(bundleResult);
-        assertEquals(bundleList.get().getId(), bundleResult.get().getId());
+        bundleResult.ifPresent(value -> assertEquals(bundleList.get().getId(), value.getId()));
     }
 
     @Test

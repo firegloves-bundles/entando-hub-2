@@ -508,7 +508,7 @@ public class BundleGroupVersionService {
     protected Page<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
         return new PageImpl<>(page.getContent()
                 .stream()
-                .map(e -> entityMapper.toDto(e))
+                .map(entityMapper::toDto)
                 .collect(Collectors.toList()),
                 page.getPageable(), page.getNumberOfElements());
     }

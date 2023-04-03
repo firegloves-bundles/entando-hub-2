@@ -9,10 +9,10 @@
     <changeSet id="20230329-private-catalog-api-key" author="admin">
         <addUniqueConstraint columnNames="username" tableName="portal_user" constraintName="username_portal_user_unique_key"/>
         <createTable tableName="private_catalog_api_key">
-            <column name="id" type="int" >
+            <column name="id" type="bigint" >
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="api_key" type="varchar(128)">
+            <column name="api_key" type="varchar(255)">
                 <constraints unique="true" uniqueConstraintName="unique_api_key"/>
             </column>
             <column name="label" type="varchar(128)"/>

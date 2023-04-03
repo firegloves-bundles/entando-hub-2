@@ -12,7 +12,7 @@
             <column name="id" type="bigint" >
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="api_key" type="varchar(255)">
+            <column name="api_key" type="varchar(128)">
                 <constraints unique="true" uniqueConstraintName="unique_api_key"/>
             </column>
             <column name="label" type="varchar(128)"/>

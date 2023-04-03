@@ -11,10 +11,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_DESCRIPTION;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_NAME;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.GIT_REPO_ADDRESS;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.GIT_SRC_REPO_ADDRESS;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.*;
 import static junit.framework.TestCase.*;
 
 public class BundleMapperTest {

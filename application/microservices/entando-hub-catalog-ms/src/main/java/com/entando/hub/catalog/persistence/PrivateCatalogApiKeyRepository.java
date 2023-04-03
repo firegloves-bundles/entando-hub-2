@@ -17,4 +17,8 @@ public interface PrivateCatalogApiKeyRepository extends JpaRepository<PrivateCat
 
     @Query("select p from PrivateCatalogApiKey p where p.id = :id and p.portalUser.username = :username")
     Optional<PrivateCatalogApiKey> getPrivateCatalogApiKey(@Param("id") long id, @Param("username") String username);
+
+    @Query("select p from PrivateCatalogApiKey p where p.apiKey = :apiKey")
+    Optional<PrivateCatalogApiKey> findByApiKey(@Param("apiKey") String apiKey);
+
 }

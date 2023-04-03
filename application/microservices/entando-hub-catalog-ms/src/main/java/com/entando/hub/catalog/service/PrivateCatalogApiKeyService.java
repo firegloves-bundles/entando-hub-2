@@ -7,6 +7,7 @@ import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
 import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
 import com.entando.hub.catalog.service.exception.BadRequestException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
 import org.springframework.data.domain.Page;
@@ -98,6 +99,16 @@ public class PrivateCatalogApiKeyService {
         List<PrivateCatalogApiKey> content = apiKeys.getContent();
         List<ApiKeyResponseDTO> response = this.privateCatalogApiKeyMapper.toApiKeyResponseDTO(content);
         return new PagedContent<>( this.privateCatalogApiKeyMapper.removeApiKey(response), apiKeys);
+    }
+
+    public String getUsernameByApiKey(String apiKey) {
+        Optional<PrivateCatalogApiKey> apiKeyOptional = this.privateCatalogApiKeyRepository.findByApiKey(apiKeyGeneratorHelper.toSha(apiKey));
+        if (apiKeyOptional.isPresent()) {
+            return apiKeyOptional.get().getPortalUser().getUsername();
+        } else {
+            String errorMessage = "Invalid Api key";
+            throw new NotFoundException(errorMessage);
+        }
     }
 
     public static Pageable getPageable(Integer pageSize, int pageNum) {

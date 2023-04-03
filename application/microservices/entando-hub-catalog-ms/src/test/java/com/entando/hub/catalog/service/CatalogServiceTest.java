@@ -1,23 +1,10 @@
 package com.entando.hub.catalog.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.entando.hub.catalog.persistence.CatalogRepository;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import com.entando.hub.catalog.testhelper.TestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +12,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +31,13 @@ class CatalogServiceTest {
     private CatalogRepository catalogRepository;
     @Mock
     private OrganisationService organisationService;
-
+    @Mock
+    private PrivateCatalogApiKeyService privateCatalogApiKeyService;
     private CatalogService catalogService;
 
     @BeforeEach
     void setUp() {
-            this.catalogService = new CatalogService(catalogRepository, organisationService);
+            this.catalogService = new CatalogService(catalogRepository, organisationService, privateCatalogApiKeyService);
     }
 
     @Test
@@ -51,13 +49,13 @@ class CatalogServiceTest {
 
         assertThat(actualCatalogs).hasSize(expectedCatalogs.size());
         assertThat(actualCatalogs).usingRecursiveComparison().isEqualTo(expectedCatalogs);
-        verify(this.catalogRepository, never()).findByOrganisation_PortalUsers_Username(anyString());
+        verify(this.catalogRepository, never()).findByUsername(anyString());
     }
 
     @Test
     void shouldReturnCatalogsBelongingToTheReceivedUserWhileNONAdmin() {
         List<Catalog> expectedCatalogs = Arrays.asList(stubCatalog());
-        when(this.catalogRepository.findByOrganisation_PortalUsers_Username(anyString())).thenReturn(expectedCatalogs);
+        when(this.catalogRepository.findByUsername(anyString())).thenReturn(expectedCatalogs);
 
         List<Catalog> actualCatalogs = catalogService.getCatalogs("my-username", false);
 
@@ -182,6 +180,33 @@ class CatalogServiceTest {
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    @Test
+    void getCatalogByApiKeyTest(){
+        String username = "username";
+        String apiKey = "api-key";
+        List<Catalog> catalogList = new ArrayList<>();
+        Catalog catalog = new Catalog();
+        catalogList.add(catalog);
+        when(privateCatalogApiKeyService.getUsernameByApiKey(apiKey)).thenReturn(username);
+        when(catalogRepository.findByUsername(username)).thenReturn(catalogList);
+        Catalog catalogByApiKey =catalogService.getCatalogByApiKey(apiKey);
+        Assertions.assertNotNull(catalogByApiKey);
+
+    }
+    @Test
+    void getCatalogByApiKeyNotFoundTest(){
+        String username = "username";
+        String apiKey = "api-key";
+        List<Catalog> catalogList = new ArrayList<>();
+        when(privateCatalogApiKeyService.getUsernameByApiKey(apiKey)).thenReturn(username);
+        when(catalogRepository.findByUsername(username)).thenReturn(catalogList);
+        NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
+            catalogService.getCatalogByApiKey(apiKey);
+        });
+        String expectedMessage = "Private catalog not found";
+        String actualMessage = notFoundException.getMessage();
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+    }
 
     private Catalog stubCatalog(){
         return new Catalog().setId(1L).setName("Entando private catalog").setOrganisation(new Organisation().setId(2L));

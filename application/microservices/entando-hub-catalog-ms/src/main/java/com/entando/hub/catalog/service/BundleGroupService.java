@@ -1,15 +1,12 @@
 package com.entando.hub.catalog.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
 import com.entando.hub.catalog.persistence.CatalogRepository;
+import com.entando.hub.catalog.persistence.CategoryRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
+import com.entando.hub.catalog.persistence.entity.Catalog;
+import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
@@ -19,11 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.CategoryRepository;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.Catalog;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BundleGroupService {

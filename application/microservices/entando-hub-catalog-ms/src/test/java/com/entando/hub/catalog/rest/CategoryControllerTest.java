@@ -1,19 +1,13 @@
 package com.entando.hub.catalog.rest;
 
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.dto.CategoryDto;
+import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.mapper.CategoryMapper;
 import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +26,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.service.CategoryService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(CategoryController.class)

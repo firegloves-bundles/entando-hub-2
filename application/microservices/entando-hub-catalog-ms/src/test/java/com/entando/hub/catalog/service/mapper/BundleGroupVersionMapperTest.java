@@ -16,19 +16,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID_STR;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_NAME;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_NAME;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_1;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_2;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_NAME;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_ID;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.*;
+import static junit.framework.TestCase.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 

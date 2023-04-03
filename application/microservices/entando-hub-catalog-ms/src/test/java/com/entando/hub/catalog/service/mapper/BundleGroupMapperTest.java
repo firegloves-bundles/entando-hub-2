@@ -8,13 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_ID_STR;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.BUNDLE_GROUP_NAME;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_1;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.CAT_ID_2;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_ID;
-import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.ORGANIZATION_NAME;
+import static com.entando.hub.catalog.service.mapper.MapperGeneratorHelper.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;

@@ -3,6 +3,7 @@ package com.entando.hub.catalog.config;
 
 import com.entando.hub.catalog.config.filter.ApiKeyFilter;
 import com.entando.hub.catalog.service.CategoryService;
+import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -74,9 +75,9 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter(CategoryService categoryService) {
+    public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter(PrivateCatalogApiKeyService apiKeyService) {
         FilterRegistrationBean<ApiKeyFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new ApiKeyFilter(categoryService));
+        registrationBean.setFilter(new ApiKeyFilter(apiKeyService));
         registrationBean.addUrlPatterns("/ent/api/*", "/appbuilder/api/*");
         return registrationBean;
     }

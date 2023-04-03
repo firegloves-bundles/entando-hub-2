@@ -24,7 +24,7 @@ public class PrivateCatalogApiKey {
     @Column(nullable = false, length = 128)
     private String label;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 128)
     private String apiKey;
 
     @Column(nullable = false)

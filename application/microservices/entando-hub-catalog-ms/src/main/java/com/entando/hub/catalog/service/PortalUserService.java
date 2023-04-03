@@ -184,7 +184,7 @@ public class PortalUserService {
 		return orgRespViewSet;
 	}
 
-    public Set<Organisation> getUserOrganizations() {
+    public Set<Organisation> getAuthenticatedUserOrganizations() {
         String username = securityHelperService.getContextAuthenticationUsername();
         PortalUser user = portalUserRepository.findByUsername(username);
         if (null == user) {

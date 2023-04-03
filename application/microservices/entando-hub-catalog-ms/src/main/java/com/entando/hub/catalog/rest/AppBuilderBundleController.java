@@ -1,12 +1,14 @@
 package com.entando.hub.catalog.rest;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.entando.hub.catalog.persistence.entity.Bundle;
+import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.dto.BundleEntityDto;
+import com.entando.hub.catalog.service.BundleGroupVersionService;
+import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.ArrayUtils;
@@ -14,17 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.service.BundleGroupVersionService;
-import com.entando.hub.catalog.service.BundleService;
-
-import io.swagger.v3.oas.annotations.Operation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/appbuilder/api/bundles/")
@@ -67,11 +65,12 @@ public class AppBuilderBundleController {
 	@GetMapping(value = "/", produces = {"application/json"})
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
 	@ApiResponse(responseCode = "200", description = "OK")
-	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions) {
+	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestHeader(name = "Entando-hub-api-key", required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
+
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
-		Page<Bundle> bundlesPage = bundleService.getBundles(sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
+		Page<Bundle> bundlesPage = bundleService.getBundles(apiKey, sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
 		Page<BundleEntityDto> converted = convertoToDto(bundlesPage);
 
 		return new PagedContent<>(bundlesPage.getContent().stream()
@@ -98,5 +97,4 @@ public class AppBuilderBundleController {
 				.collect(Collectors.toList()),
 				page.getPageable(), page.getNumberOfElements());
 	}
-
 }

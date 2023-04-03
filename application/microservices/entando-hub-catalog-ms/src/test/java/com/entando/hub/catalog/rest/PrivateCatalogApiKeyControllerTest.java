@@ -149,7 +149,6 @@ class PrivateCatalogApiKeyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("apiKey").value(API_KEY));
-        ;
     }
 
     private PrivateCatalogApiKey createPrivateCatalogApiKey() {

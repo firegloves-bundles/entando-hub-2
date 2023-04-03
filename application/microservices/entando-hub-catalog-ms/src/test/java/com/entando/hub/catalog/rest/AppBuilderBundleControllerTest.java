@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -107,7 +106,8 @@ public class AppBuilderBundleControllerTest {
 		versions.add(DescriptorVersion.V1);
 
 		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
-		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
+
+		Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
 
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())
@@ -120,7 +120,7 @@ public class AppBuilderBundleControllerTest {
 		//Case 2: bundle has a version
 		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
-		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
+		Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get(URI)
 				.param(PAGE_PARAM, page.toString())

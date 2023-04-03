@@ -7,6 +7,7 @@ import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.rest.PagedContent;
 import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
 import com.entando.hub.catalog.service.exception.BadRequestException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
@@ -32,7 +33,6 @@ import java.util.Optional;
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.*;
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyService.getPageable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -187,6 +187,23 @@ public class PrivateCatalogApiKeyServiceTest {
             this.privateCatalogApiKeyService.regenerateApiKey(API_KEY_ID, GENERATED_USERNAME);
         } catch (Exception e) {
             Assert.assertTrue(e instanceof BadRequestException);
+        }
+    }
+    @Test
+    void getUsernameByApiKeyTest(){
+        PrivateCatalogApiKey privateCatalogApiKey1 = createPrivateCatalogApiKey1();
+        Mockito.when(this.privateCatalogApiKeyRepository.findByApiKey(apiKeyGeneratorHelper.toSha(API_KEY))).thenReturn(Optional.of(privateCatalogApiKey1));
+        String usernameByApiKey = this.privateCatalogApiKeyService.getUsernameByApiKey(API_KEY);
+        Assertions.assertNotNull(usernameByApiKey);
+    }
+
+    @Test
+    void getUsernameByInvalidApiKeyTest(){
+        Mockito.when(this.privateCatalogApiKeyRepository.findByApiKey(apiKeyGeneratorHelper.toSha(API_KEY))).thenReturn(Optional.empty());
+        try {
+            this.privateCatalogApiKeyService.getUsernameByApiKey(API_KEY);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NotFoundException);
         }
     }
 

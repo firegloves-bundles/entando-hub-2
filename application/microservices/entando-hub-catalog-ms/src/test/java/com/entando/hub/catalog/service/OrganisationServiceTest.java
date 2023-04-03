@@ -20,11 +20,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

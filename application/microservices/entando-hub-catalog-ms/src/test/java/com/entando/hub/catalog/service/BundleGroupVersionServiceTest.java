@@ -11,6 +11,8 @@ import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapperImpl;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionEntityMapper;
+import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionEntityMapperImpl;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapper;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleGroupVersionStandardMapperImpl;
 import org.junit.Ignore;
@@ -34,12 +36,15 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @RunWith(MockitoJUnitRunner.Silent.class)
 @ComponentScan(basePackageClasses = {BundleGroupVersionMapper.class, BundleGroupVersionMapperImpl.class,
-		BundleGroupVersionStandardMapper.class, BundleGroupVersionStandardMapperImpl.class})
+		BundleGroupVersionStandardMapper.class, BundleGroupVersionStandardMapperImpl.class,
+		BundleGroupVersionEntityMapper.class, BundleGroupVersionEntityMapperImpl.class })
 public class BundleGroupVersionServiceTest {
 
 	@InjectMocks
@@ -59,6 +64,10 @@ public class BundleGroupVersionServiceTest {
 
 	@Spy
 	BundleGroupVersionStandardMapper bundleGroupVersionStandardMapper = new BundleGroupVersionStandardMapperImpl();
+
+	@Spy
+	private BundleGroupVersionEntityMapper bundleGroupVersionEntityMapper = new BundleGroupVersionEntityMapperImpl();
+
 
 	private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
     private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";
@@ -421,7 +430,33 @@ public class BundleGroupVersionServiceTest {
 		assertNotNull(bundleGroupVersionResult7);
 		assertEquals(bundleGroupVersionResult7.getPayload().get(0).getBundleGroupVersionId(), bundleGroupVersionsList.get(0).getId());
 	}
-	
+
+	@Test
+	public void getPrivateCatalogPublishedBundleGroupVersionsTest(){
+		Long userCatalogId =1L;
+		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroup bundleGroup = createPrivateCatalogBundleGroup();
+		bundleGroupVersion.setBundleGroup(bundleGroup);
+		bundleGroupVersionsList.add(bundleGroupVersion);
+		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
+		Mockito.when(bundleGroupVersionRepository.getPrivateCatalogPublished(eq(userCatalogId), any())).thenReturn(response);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> privateCatalogPublishedBundleGroupVersions = bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalogId, 1, 25);
+		assertNotNull(privateCatalogPublishedBundleGroupVersions);
+	}
+	@Test
+	public void getPublicCatalogPublishedBundleGroupVersions(){
+		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
+		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();
+		BundleGroup bundleGroup = createBundleGroup();
+		bundleGroupVersion.setBundleGroup(bundleGroup);
+		bundleGroupVersionsList.add(bundleGroupVersion);
+		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
+		Mockito.when(bundleGroupVersionRepository.getPublicCatalogPublished(any())).thenReturn(response);
+		PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> privateCatalogPublishedBundleGroupVersions = bundleGroupVersionService.getPublicCatalogPublishedBundleGroupVersions(1, 25);
+		assertNotNull(privateCatalogPublishedBundleGroupVersions);
+	}
+
 	private BundleGroupVersion createBundleGroupVersion() {
 		BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
 		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
@@ -437,9 +472,18 @@ public class BundleGroupVersionServiceTest {
 		BundleGroup bundleGroup = new BundleGroup();
 		bundleGroup.setId(BUNDLE_GROUP_ID);
 		bundleGroup.setName(BUNDLE_GROUP_NAME);
+		bundleGroup.setPublicCatalog(true);
 		return bundleGroup;
 	}
-	
+	private BundleGroup createPrivateCatalogBundleGroup() {
+		BundleGroup bundleGroup = new BundleGroup();
+		bundleGroup.setId(BUNDLE_GROUP_ID);
+		bundleGroup.setName(BUNDLE_GROUP_NAME);
+		bundleGroup.setPublicCatalog(false);
+		return bundleGroup;
+	}
+
+
 	private Bundle createBundle() {
 		Bundle bundle = new Bundle();
 		bundle.setId(BUNDLE_ID);
@@ -465,4 +509,8 @@ public class BundleGroupVersionServiceTest {
 		organisation.setDescription(ORG_DESCRIOPTION);
 		return organisation;
 	}
+
+
+
+
 }

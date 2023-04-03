@@ -1,12 +1,7 @@
 package com.entando.hub.catalog.service.mapper;
 
 
-import com.entando.hub.catalog.persistence.entity.Bundle;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
-import com.entando.hub.catalog.persistence.entity.Category;
-import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
-import com.entando.hub.catalog.persistence.entity.Organisation;
+import com.entando.hub.catalog.persistence.entity.*;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 

@@ -1,23 +1,21 @@
 package com.entando.hub.catalog.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
+import com.entando.hub.catalog.persistence.BundleGroupRepository;
+import com.entando.hub.catalog.persistence.OrganisationRepository;
+import com.entando.hub.catalog.persistence.entity.BundleGroup;
+import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.entando.hub.catalog.persistence.BundleGroupRepository;
-import com.entando.hub.catalog.persistence.OrganisationRepository;
-import com.entando.hub.catalog.persistence.entity.BundleGroup;
-import com.entando.hub.catalog.persistence.entity.Organisation;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrganisationService {

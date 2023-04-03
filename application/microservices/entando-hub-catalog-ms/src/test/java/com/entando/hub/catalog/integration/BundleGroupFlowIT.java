@@ -5,7 +5,6 @@ import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.persistence.entity.Organisation;
-import com.entando.hub.catalog.rest.BundleGroupController;
 import com.entando.hub.catalog.rest.dto.BundleGroupDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
@@ -22,11 +21,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.*;
+import java.util.Optional;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @AutoConfigureMockMvc
 @SpringBootTest

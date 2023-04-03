@@ -2,9 +2,9 @@ package com.entando.hub.catalog.rest;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.rest.dto.BundleDto;
+import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
-import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;

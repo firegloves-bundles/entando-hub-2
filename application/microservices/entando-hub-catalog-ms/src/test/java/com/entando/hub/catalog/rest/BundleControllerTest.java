@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username="admin", roles={ADMIN})
-public class BundleControllerTest {
+class BundleControllerTest {
 
 	@Autowired
 	private BundleStandardMapper bundleStandardMapper;
@@ -62,7 +62,7 @@ public class BundleControllerTest {
 
 	@Test
 	@WithMockUser(username = "admin", roles = {ADMIN})
-	public void testGetAllBundlesAdmin() throws Exception {
+	void testGetAllBundlesAdmin() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -80,7 +80,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testGetBundle() throws Exception {
+	void testGetBundle() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -93,7 +93,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testGetBundleFails() throws Exception {
+	void testGetBundleFails() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -105,7 +105,7 @@ public class BundleControllerTest {
 	}
 
 	@Test
-	public void testCreateBundle() throws Exception {
+	void testCreateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		//Case 1: bundleId is not null
@@ -137,7 +137,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundle() throws Exception {
+	void testUpdateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle); // new BundleDto(bundle);
@@ -154,7 +154,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundleFails() throws Exception {
+	void testUpdateBundleFails() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle);// new BundleDto(bundle);
@@ -172,7 +172,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testDeleteBundle() throws Exception {
+	void testDeleteBundle() throws Exception {
 		Bundle bundle =populateBundle();
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
@@ -183,7 +183,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testDeleteBundleFails() throws Exception {
+	void testDeleteBundleFails() throws Exception {
 		Bundle bundle =populateBundle();
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.empty());

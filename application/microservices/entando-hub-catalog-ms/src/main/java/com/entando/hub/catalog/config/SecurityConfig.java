@@ -2,7 +2,6 @@ package com.entando.hub.catalog.config;
 
 
 import com.entando.hub.catalog.config.filter.ApiKeyFilter;
-import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;

@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CategoryControllerTest {
+class CategoryControllerTest {
 
 	@Autowired
 	CategoryMapper categoryMapper;
@@ -50,7 +50,7 @@ public class CategoryControllerTest {
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
 	
     @Test
-	public void testGetCategories() throws Exception {
+	void testGetCategories() throws Exception {
 		Category category = getCategoryObj();
 		Mockito.when(categoryService.getCategories()).thenReturn(List.of(category));
 		
@@ -63,7 +63,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void testGetCategory() throws Exception {
+	void testGetCategory() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
@@ -77,7 +77,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void testGetCategoryFails() throws Exception {
+	void testGetCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(null)).thenReturn(Optional.of(category));
@@ -89,7 +89,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testCreateCategory() throws Exception {
+	void testCreateCategory() throws Exception {
 		Category category = getCategoryObj(); // start from a entity...
 //		CategoryNoId categoryNoId = new CategoryNoId(category); // ..get the dto..
 //		Mockito.when(categoryService.createCategory(categoryNoId.createEntity(Optional.empty()))).thenReturn(category); // convert again to entity and mock
@@ -112,7 +112,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateCategory() throws Exception {
+	void testUpdateCategory() throws Exception {
 	Category category = getCategoryObj();
 	CategoryDto categoryNoId = categoryMapper.toDto(category);
 	String categoryId = Long.toString(category.getId());
@@ -131,7 +131,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateCategoryFails() throws Exception {
+	void testUpdateCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		CategoryDto categoryNoId = categoryMapper.toDto(category);
 		String categoryId = Long.toString(category.getId());
@@ -147,7 +147,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteCategory() throws Exception {
+	void testDeleteCategory() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
@@ -164,7 +164,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteCategoryFails() throws Exception {
+	void testDeleteCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(null)).thenReturn(Optional.of(category));

@@ -49,7 +49,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username="admin",roles={ADMIN})
-public class BundleGroupVersionControllerTest {
+class BundleGroupVersionControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -80,7 +80,7 @@ public class BundleGroupVersionControllerTest {
 	private final String GIT_REPO_ADDRESS = "Test Git Rep";
 	private final String DEPENDENCIES = "Test Dependencies";
 	@Test
-	public void testGetBundleGroupVersions() throws Exception {
+	void testGetBundleGroupVersions() throws Exception {
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersionsList.add(bundleGroupVersion);
@@ -154,7 +154,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testGetBundleGroupVersionsAndFilterThem() throws Exception{
+	void testGetBundleGroupVersionsAndFilterThem() throws Exception{
 		List<Category> categoryList = new ArrayList<>();
 		Category category = createCategory();
 		categoryList.add(category);
@@ -187,8 +187,7 @@ public class BundleGroupVersionControllerTest {
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));		//Mockito.when(bundleGroupVersionService.getBundleGroupVersions(page, pageSize, Optional.of(organisationId), categoryIds, statuses, Optional.empty())).thenReturn(pagedContent);
 		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
 		Mockito.when(bundleGroupVersionService.searchBundleGroupVersions(page, pageSize, organisationId, categoryIds, statuses, null)).thenReturn(pagedContent);
-		
-		
+
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/bundlegroupversions/filtered")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("page", inputJsonPage)
@@ -244,7 +243,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testGetBundleGroupVersion() throws Exception {
+	void testGetBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
@@ -255,7 +254,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testGetBundleGroupVersionFails() throws Exception {
+	void testGetBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(null)).thenReturn(Optional.empty());
@@ -266,7 +265,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testCreateBundleGroupVersion() throws Exception {
+	void testCreateBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
@@ -282,7 +281,7 @@ public class BundleGroupVersionControllerTest {
 	}
 
 	@Test
-	public void testGetBundleGroupVersionPrivateCatalog() throws Exception {
+	void testGetBundleGroupVersionPrivateCatalog() throws Exception {
 		//Not authenticated user require to get a private catalog
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
@@ -297,7 +296,7 @@ public class BundleGroupVersionControllerTest {
 
 
 	@Test
-	public void testGetBundleGroupVersionPrivateCatalogAdmin() throws Exception {
+	void testGetBundleGroupVersionPrivateCatalogAdmin() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
@@ -313,7 +312,7 @@ public class BundleGroupVersionControllerTest {
 
 	@Test
 	@WithMockUser(username = "MANAGER", roles = {MANAGER})
-	public void testGetBundleGroupVersionPrivateCatalogManager() throws Exception {
+	void testGetBundleGroupVersionPrivateCatalogManager() throws Exception {
 		//Not authenticated user require to get a private catalog
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(false);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
@@ -327,7 +326,7 @@ public class BundleGroupVersionControllerTest {
 				.andExpect(status().is(HttpStatus.OK.value()));
 	}
 	@Test
-	public void testCreateBundleGroupVersionFails() throws Exception {
+	void testCreateBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		BundleGroupVersionDto bundleGroupVersionView = bundleGroupVersionMapper.toViewDto(bundleGroupVersion); // new BundleGroupVersionView(bundleGroupVersion);
@@ -361,7 +360,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundleGroupVersion() throws Exception {
+	void testUpdateBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		String bundleGroupId = bundleGroup.getId().toString();
@@ -382,7 +381,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundleGroupVersionFails() throws Exception {
+	void testUpdateBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		BundleGroup bundleGroup = bundleGroupVersion.getBundleGroup();
 		String bundleGroupId = bundleGroup.getId().toString();
@@ -441,7 +440,7 @@ public class BundleGroupVersionControllerTest {
 	}
 
 	@Test
-	public void testDeleteBundleGroupVersion() throws Exception {
+	void testDeleteBundleGroupVersion() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersion.setStatus(Status.DELETE_REQ);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
@@ -452,7 +451,7 @@ public class BundleGroupVersionControllerTest {
 	}
 	
 	@Test
-	public void testDeleteBundleGroupVersionFails() throws Exception {
+	void testDeleteBundleGroupVersionFails() throws Exception {
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion(true);
 		bundleGroupVersion.setStatus(Status.DELETE_REQ);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();

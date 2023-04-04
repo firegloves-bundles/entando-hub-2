@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrganisationControllerTest {
+class OrganisationControllerTest {
 
 	@Autowired
 	private OrganizationMapper organizationMapper;
@@ -50,7 +50,7 @@ public class OrganisationControllerTest {
 	private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
 
 	@Test
-	public void testGetOrganisations() throws Exception {
+	void testGetOrganisations() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		Mockito.when(organisationService.getOrganisations()).thenReturn(List.of(organisation));
 		mockMvc.perform(MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON_VALUE))
@@ -60,7 +60,7 @@ public class OrganisationControllerTest {
 	}
 
 	@Test
-	public void testGetOrganisation() throws Exception {
+	void testGetOrganisation() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
@@ -71,7 +71,7 @@ public class OrganisationControllerTest {
 	}
 
 	@Test
-	public void testGetOrganisationFails() throws Exception {
+	void testGetOrganisationFails() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(null)).thenReturn(Optional.of(organisation));
@@ -82,7 +82,7 @@ public class OrganisationControllerTest {
 
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testCreateOrganisation() throws Exception {
+	void testCreateOrganisation() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
@@ -106,7 +106,7 @@ public class OrganisationControllerTest {
 
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateOrganisation() throws Exception {
+	void testUpdateOrganisation() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
@@ -139,7 +139,7 @@ public class OrganisationControllerTest {
 
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateOrganisationFails() throws Exception {
+	void testUpdateOrganisationFails() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
@@ -155,7 +155,7 @@ public class OrganisationControllerTest {
 
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteOrganisation() throws Exception {
+	void testDeleteOrganisation() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
@@ -168,7 +168,7 @@ public class OrganisationControllerTest {
 
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteOrganisationFails() throws Exception {
+	void testDeleteOrganisationFails() throws Exception {
 		Organisation organisation = getOrganisationObj();
 		Long organisationId = organisation.getId();
 		Mockito.when(organisationService.getOrganisation(null)).thenReturn(Optional.of(organisation));

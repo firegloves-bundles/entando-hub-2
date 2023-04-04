@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AppBuilderBundleControllerTest {
+class AppBuilderBundleControllerTest {
 
     @Autowired
     private BundleMapper bundleMapper = new BundleMapperImpl();
@@ -72,7 +72,7 @@ public class AppBuilderBundleControllerTest {
     private final String API_KEY = "api-key";
 
     @Test
-    public void getBundlesTest() throws Exception {
+    void getBundlesTest() throws Exception {
         Integer page = 0;
         Integer pageSize = 89;
         BundleGroup bundleGroup = getBundleGroupObj();

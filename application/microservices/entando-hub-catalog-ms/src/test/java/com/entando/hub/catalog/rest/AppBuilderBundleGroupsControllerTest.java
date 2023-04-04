@@ -66,7 +66,7 @@ class AppBuilderBundleGroupsControllerTest {
 	private final String API_KEY = "api-key";
 
 	@Test
-	public void getBundleGroupVersionsTest() throws Exception {
+	void getBundleGroupVersionsTest() throws Exception {
 
 		List<BundleGroupVersion> bundleGroupVersionsList = new ArrayList<>();
 		BundleGroupVersion bundleGroupVersion = createBundleGroupVersion();

@@ -1,5 +1,9 @@
 package com.entando.hub.catalog.rest;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -9,36 +13,26 @@ import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
 import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapper;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleEntityMapperImpl;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(AppBuilderBundleController.class)
-@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class,
-		BundleEntityMapper.class, BundleEntityMapperImpl.class, BundleMapper.class, BundleMapperImpl.class})
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AppBuilderBundleControllerTest {
 
 	@Autowired
@@ -50,9 +44,6 @@ public class AppBuilderBundleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-	@InjectMocks
-	AppBuilderBundleController appBuilderBundleController;
-
 	@MockBean
 	BundleService bundleService;
 
@@ -60,7 +51,6 @@ public class AppBuilderBundleControllerTest {
 	BundleGroupVersionService bundleGroupVersionService;
 
     private static final String URI = "/appbuilder/api/bundles/";
-
     private static final String PAGE_PARAM = "page";
     private static final String PAGE_SIZE_PARAM = "pageSize";
     private static final String DESCRIPTOR_VERSIONS = "descriptorVersions";
@@ -78,11 +68,6 @@ public class AppBuilderBundleControllerTest {
     private static final String BUNDLE_GIT_REPO_ADDRESS = "https://github.com/entando/TEST-portal.git";
     private static final String BUNDLE_DEPENDENCIES = "Test Dependencies";
 
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
-
     @Test
 	public void getBundlesTest() throws Exception {
 		Integer page = 0;
@@ -96,7 +81,7 @@ public class AppBuilderBundleControllerTest {
 		Bundle bundle = getBundleObj();
 		bundlesList.add(bundle);
 	
-		BundleDto bundleC = bundleMapper.toDto(bundle); // new com.entando.hub.catalog.rest.domain.Bundle(bundle);
+		BundleDto bundleC = bundleMapper.toDto(bundle);
 		List<BundleDto> bundlesCList = new ArrayList<>();
 		bundlesCList.add(bundleC);
 		

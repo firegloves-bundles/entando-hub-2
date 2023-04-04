@@ -12,6 +12,7 @@ import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CatalogService;
+import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,6 +50,8 @@ class AppBuilderBundleGroupsControllerTest {
 	@MockBean
 	BundleGroupVersionService bundleGroupVersionService;
 
+	@MockBean
+	PrivateCatalogApiKeyService privateCatalogApiKeyService;
 	@MockBean
 	CatalogService catalogService;
 
@@ -104,6 +107,7 @@ class AppBuilderBundleGroupsControllerTest {
 		Catalog catalog = new Catalog();
 		catalog.setId(userCatalogId);
 		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
+		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(true);
 		Mockito.when(bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalogId, page, pageSize)).thenReturn(pagedContent);
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
@@ -114,6 +118,19 @@ class AppBuilderBundleGroupsControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
 				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
+
+		//Case 3: when passing a invalid api-key returns Unauthorized
+		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
+		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(false);
+		Mockito.when(bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalogId, page, pageSize)).thenReturn(pagedContent);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.header("Entando-hub-api-key", API_KEY)
+						.param("page", inputJsonPage)
+						.param("pageSize", inputJsonPageSize))
+				.andExpect(status().isUnauthorized());
+
 	}
 
 	private String mapToJson(Object obj) throws JsonProcessingException {

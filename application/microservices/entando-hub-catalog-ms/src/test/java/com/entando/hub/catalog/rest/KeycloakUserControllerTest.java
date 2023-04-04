@@ -1,44 +1,44 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import com.entando.hub.catalog.rest.model.SearchKeycloackUserRequest;
 import com.entando.hub.catalog.service.KeycloakService;
 import com.entando.hub.catalog.service.model.UserRepresentation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+@SpringBootTest
+@AutoConfigureMockMvc
 @WithMockUser(username="admin",roles={ADMIN})
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(KeycloakUserController.class)
 public class KeycloakUserControllerTest {
 
 	@Autowired
     WebApplicationContext webApplicationContext;
     @Autowired
     private MockMvc mockMvc;
-    @InjectMocks
-	KeycloakUserController keyCloakUserController;
 	@MockBean
 	KeycloakService keyCloakService;
 	private static final String URI = "/api/keycloak/users/";
@@ -50,11 +50,6 @@ public class KeycloakUserControllerTest {
     private final Long CREATEDTIMESTAMP = 90019L;
     private final String EMAILVERIFIED = "admin.123@test.co.in";
     private final String ORGID = "2001";
-
-	@Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
 
 	@Test
 	public void testSearchUsers() throws Exception{

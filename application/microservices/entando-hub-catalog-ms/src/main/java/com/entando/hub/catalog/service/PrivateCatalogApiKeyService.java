@@ -10,16 +10,13 @@ import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
 import com.entando.hub.catalog.service.security.ApiKeyGeneratorHelper;
-import liquibase.util.ObjectUtil;
-import liquibase.util.StringUtils;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PrivateCatalogApiKeyService {
@@ -114,7 +111,11 @@ public class PrivateCatalogApiKeyService {
     }
 
     public boolean doesApiKeyExist(String apiKey) {
-        return this.privateCatalogApiKeyRepository.existsByApiKey(apiKey);
+        if (null!=apiKey) {
+            String apiKeySha = apiKeyGeneratorHelper.toSha(apiKey);
+            return this.privateCatalogApiKeyRepository.existsByApiKey(apiKeySha);
+        }
+        return false;
     }
 
     public static Pageable getPageable(Integer pageSize, int pageNum) {

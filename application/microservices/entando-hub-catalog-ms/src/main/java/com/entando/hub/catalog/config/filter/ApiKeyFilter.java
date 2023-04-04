@@ -1,5 +1,7 @@
 package com.entando.hub.catalog.config.filter;
 
+import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
+
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -24,7 +26,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws IOException, ServletException {
 
-        String apiKey = request.getHeader("Entando-hub-api-key");
+        String apiKey = request.getHeader(API_KEY_HEADER);
 
         if (StringUtils.isEmpty(apiKey) || service.doesApiKeyExist(apiKey)) {
             filterChain.doFilter(request, response);

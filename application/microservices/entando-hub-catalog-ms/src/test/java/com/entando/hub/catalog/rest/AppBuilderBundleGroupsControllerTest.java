@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,8 +51,6 @@ class AppBuilderBundleGroupsControllerTest {
 	PrivateCatalogApiKeyService privateCatalogApiKeyService;
 	@MockBean
 	CatalogService catalogService;
-
-	private final String API_KEY_HEADER = "Entando-hub-api-key";
 	private final Long BUNDLE_GROUP_VERSION_ID =  2001L;
 	private final Long BUNDLE_GROUPID =  2002L;
 	private final Long CATEGORY_ID =  2003L;

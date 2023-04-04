@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,8 +70,6 @@ public class AppBuilderBundleControllerTest {
     private static final String BUNDLE_DEPENDENCIES = "Test Dependencies";
 
     private final String API_KEY = "api-key";
-
-    private final String API_KEY_HEADER = "Entando-hub-api-key";
 
     @Test
     public void getBundlesTest() throws Exception {

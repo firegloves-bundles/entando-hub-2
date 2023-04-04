@@ -11,6 +11,7 @@ import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
+import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
 import com.entando.hub.catalog.service.mapper.BundleMapperImpl;
 import java.util.ArrayList;
@@ -29,26 +30,25 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AppBuilderBundleControllerTest {
 
-	@Autowired
-	private BundleMapper bundleMapper = new BundleMapperImpl();
-
-	@Autowired
-	WebApplicationContext webApplicationContext;
+    @Autowired
+    private BundleMapper bundleMapper = new BundleMapperImpl();
 
     @Autowired
     private MockMvc mockMvc;
 
-	@MockBean
-	BundleService bundleService;
+    @MockBean
+    BundleService bundleService;
 
-	@MockBean
-	BundleGroupVersionService bundleGroupVersionService;
+    @MockBean
+    BundleGroupVersionService bundleGroupVersionService;
+
+    @MockBean
+    PrivateCatalogApiKeyService privateCatalogApiKeyService;
 
     private static final String URI = "/appbuilder/api/bundles/";
     private static final String PAGE_PARAM = "page";
@@ -57,131 +57,162 @@ public class AppBuilderBundleControllerTest {
 
     private static final Long BUNDLE_GROUP_ID = 1000L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
-    
+
     private static final Long BUNDLE_GROUP_VERSION_ID = 1002L;
     private static final String BUNDLE_GROUP_VERSION_DESCRIPTION = "Test Bundle Group Version Decription";
     private static final String BUNDLE_GROUP_VERSION_VERSION = "v1.0.0";
-    
+
     private static final Long BUNDLE_ID = 1001L;
     private static final String BUNDLE_NAME = "Test Bundle Name";
     private static final String BUNDLE_DESCRIPTION = "Test Bundle Decription";
     private static final String BUNDLE_GIT_REPO_ADDRESS = "https://github.com/entando/TEST-portal.git";
     private static final String BUNDLE_DEPENDENCIES = "Test Dependencies";
 
+    private final String API_KEY = "api-key";
+
+    private final String API_KEY_HEADER = "Entando-hub-api-key";
+
     @Test
-	public void getBundlesTest() throws Exception {
-		Integer page = 0;
-		Integer pageSize = 89;
-		BundleGroup bundleGroup = getBundleGroupObj();
-		String bundleGroupId = bundleGroup.getId().toString();
+    public void getBundlesTest() throws Exception {
+        Integer page = 0;
+        Integer pageSize = 89;
+        BundleGroup bundleGroup = getBundleGroupObj();
+        String bundleGroupId = bundleGroup.getId().toString();
 
-		BundleGroupVersion bundleGroupVersion = getBundleGroupVersionObj();
-		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
-		List<Bundle> bundlesList = new ArrayList<>();
-		Bundle bundle = getBundleObj();
-		bundlesList.add(bundle);
-	
-		BundleDto bundleC = bundleMapper.toDto(bundle);
-		List<BundleDto> bundlesCList = new ArrayList<>();
-		bundlesCList.add(bundleC);
-		
-		Page<Bundle> response = new PageImpl<>(bundlesList);
+        BundleGroupVersion bundleGroupVersion = getBundleGroupVersionObj();
+        String bundleGroupVersionId = bundleGroupVersion.getId().toString();
+        List<Bundle> bundlesList = new ArrayList<>();
+        Bundle bundle = getBundleObj();
+        bundlesList.add(bundle);
 
-		Set<DescriptorVersion> versions = new HashSet<>();
-		versions.add(DescriptorVersion.V1);
+        BundleDto bundleC = bundleMapper.toDto(bundle);
+        List<BundleDto> bundlesCList = new ArrayList<>();
+        bundlesCList.add(bundleC);
 
-		//Case 1: bundleGroupId not provided, page = 0, bundle has null versions
+        Page<Bundle> response = new PageImpl<>(bundlesList);
 
-		Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
+        Set<DescriptorVersion> versions = new HashSet<>();
+        versions.add(DescriptorVersion.V1);
 
-		mockMvc.perform(MockMvcRequestBuilders.get(URI)
-				.param(PAGE_PARAM, page.toString())
-		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.payload").exists())
-				.andExpect(jsonPath("$.metadata").exists())
-				.andExpect(status().isOk());
-		
-		//Case 2: bundle has a version
-		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
-		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
-		Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
-		
-		mockMvc.perform(MockMvcRequestBuilders.get(URI)
-				.param(PAGE_PARAM, page.toString())
-		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.payload").exists())
-				.andExpect(jsonPath("$.metadata").exists())
-				.andExpect(status().isOk());
+        //BundleGroupId not provided, page = 0, bundle has null versions
+        Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions))
+                .thenReturn(response);
 
-//		//Case 3: optionalBundleGroup is empty
-		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.empty());
-		mockMvc.perform(MockMvcRequestBuilders.get(URI)
-				.param(PAGE_PARAM, page.toString())
-		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.payload").exists())
-				.andExpect(jsonPath("$.metadata").exists())
-				.andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
+                        .param(PAGE_PARAM, page.toString())
+                        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.payload").exists())
+                .andExpect(jsonPath("$.metadata").exists())
+                .andExpect(status().isOk());
 
-//		//Case 4: bundleGroupId provided, page >= 1
-		page = 1;
-		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
-		Mockito.when(bundleService.getBundles(sanitizedPageNum, pageSize, Optional.of(bundleGroupId), versions)).thenReturn(response);
+        //Bundle has a version
+        bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
+        Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+                .thenReturn(Optional.of(bundleGroupVersion));
+        Mockito.when(bundleService.getBundles(null, page, pageSize, Optional.ofNullable(null), versions))
+                .thenReturn(response);
 
-		mockMvc.perform(MockMvcRequestBuilders.get(URI)
-				.param(PAGE_PARAM, page.toString())
-		        .param(PAGE_SIZE_PARAM, pageSize.toString()))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.payload").hasJsonPath())
-				.andExpect(jsonPath("$.metadata").hasJsonPath())
-				.andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
+                        .param(PAGE_PARAM, page.toString())
+                        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.payload").exists())
+                .andExpect(jsonPath("$.metadata").exists())
+                .andExpect(status().isOk());
 
-		//Case 5: provide one more good descriptorVersion as well as a bad one (which should be excluded.
-		versions.add(DescriptorVersion.V5);
-		page = 1;
+        //OptionalBundleGroup is empty
+        Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+                .thenReturn(Optional.empty());
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
+                        .param(PAGE_PARAM, page.toString())
+                        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.payload").exists())
+                .andExpect(jsonPath("$.metadata").exists())
+                .andExpect(status().isOk());
 
-		bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
-		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));
-		Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions)).thenReturn(response);
+        //BundleGroupId provided, page >= 1
+        page = 1;
+        Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
+        Mockito.when(bundleService.getBundles(sanitizedPageNum, pageSize, Optional.of(bundleGroupId), versions))
+                .thenReturn(response);
 
-		mockMvc.perform(MockMvcRequestBuilders.get(URI)
-				.param(PAGE_PARAM, page.toString())
-				.param(PAGE_SIZE_PARAM, pageSize.toString())
-				.param(DESCRIPTOR_VERSIONS, "v1")
-				.param(DESCRIPTOR_VERSIONS, "v5")
-				.param(DESCRIPTOR_VERSIONS, "vInvalid"))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.payload").exists())
-				.andExpect(jsonPath("$.metadata").exists())
-				.andExpect(status().isOk());
-	}
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
+                        .param(PAGE_PARAM, page.toString())
+                        .param(PAGE_SIZE_PARAM, pageSize.toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.payload").hasJsonPath())
+                .andExpect(jsonPath("$.metadata").hasJsonPath())
+                .andExpect(status().isOk());
 
-    private Bundle getBundleObj() {
-    	Bundle bundle = new Bundle();
-		bundle.setId(BUNDLE_ID);
-		bundle.setName(BUNDLE_NAME);
-		bundle.setDescription(BUNDLE_DESCRIPTION);
-		bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
-		bundle.setDependencies(BUNDLE_DEPENDENCIES);
-		bundle.setBundleGroupVersions(new HashSet<>());
-		return bundle;
-	}
+		//OptionalBundleGroup is empty and passing a valid api-key
+		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(true);
+		Mockito.when(bundleService.getBundles(API_KEY, page-1, pageSize, Optional.empty(), versions)).thenReturn(response);
+		mockMvc.perform(MockMvcRequestBuilders.get(URI).
+						header(API_KEY_HEADER, API_KEY).
+						param(PAGE_PARAM, page.toString()).
+						param(PAGE_SIZE_PARAM, pageSize.toString())).
+				andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
+				andExpect(jsonPath("$.payload").exists()).
+				andExpect(jsonPath("$.metadata").exists()).
+				andExpect(status().isOk());
+
+		//When passing an invalid api-key returns Unauthorized
+		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(false);
+		mockMvc.perform(MockMvcRequestBuilders.get(URI).
+						contentType(MediaType.APPLICATION_JSON_VALUE).
+						header(API_KEY_HEADER, API_KEY).
+						param(PAGE_PARAM, page.toString()).
+						param(PAGE_SIZE_PARAM, pageSize.toString())).
+				andExpect(status().isUnauthorized());
+
+        //Provide one more good descriptorVersion as well as a bad one (which should be excluded).
+        versions.add(DescriptorVersion.V5);
+        page = 1;
+
+        bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
+        Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
+                .thenReturn(Optional.of(bundleGroupVersion));
+        Mockito.when(bundleService.getBundles(page, pageSize, Optional.ofNullable(null), versions))
+                .thenReturn(response);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
+                        .param(PAGE_PARAM, page.toString())
+                        .param(PAGE_SIZE_PARAM, pageSize.toString())
+                        .param(DESCRIPTOR_VERSIONS, "v1")
+                        .param(DESCRIPTOR_VERSIONS, "v5")
+                        .param(DESCRIPTOR_VERSIONS, "vInvalid"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.payload").exists())
+                .andExpect(jsonPath("$.metadata").exists())
+                .andExpect(status().isOk());
+    }
+
+	private Bundle getBundleObj() {
+        Bundle bundle = new Bundle();
+        bundle.setId(BUNDLE_ID);
+        bundle.setName(BUNDLE_NAME);
+        bundle.setDescription(BUNDLE_DESCRIPTION);
+        bundle.setGitRepoAddress(BUNDLE_GIT_REPO_ADDRESS);
+        bundle.setDependencies(BUNDLE_DEPENDENCIES);
+        bundle.setBundleGroupVersions(new HashSet<>());
+        return bundle;
+    }
 
     private BundleGroup getBundleGroupObj() {
-    	BundleGroup bundleGroup = new BundleGroup();
-    	bundleGroup.setId(BUNDLE_GROUP_ID);
-    	bundleGroup.setName(BUNDLE_GROUP_NAME);
-    	return bundleGroup;
+        BundleGroup bundleGroup = new BundleGroup();
+        bundleGroup.setId(BUNDLE_GROUP_ID);
+        bundleGroup.setName(BUNDLE_GROUP_NAME);
+        return bundleGroup;
     }
 
     private BundleGroupVersion getBundleGroupVersionObj() {
-    	BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
-		bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
-		bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
-		bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
-		bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
-		return bundleGroupVersion;
-	}
+        BundleGroupVersion bundleGroupVersion = new BundleGroupVersion();
+        bundleGroupVersion.setId(BUNDLE_GROUP_VERSION_ID);
+        bundleGroupVersion.setDescription(BUNDLE_GROUP_VERSION_DESCRIPTION);
+        bundleGroupVersion.setStatus(BundleGroupVersion.Status.PUBLISHED);
+        bundleGroupVersion.setVersion(BUNDLE_GROUP_VERSION_VERSION);
+        return bundleGroupVersion;
+    }
 }

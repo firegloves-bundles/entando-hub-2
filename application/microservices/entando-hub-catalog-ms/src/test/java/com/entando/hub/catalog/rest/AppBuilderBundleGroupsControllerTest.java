@@ -32,7 +32,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,9 +39,6 @@ class AppBuilderBundleGroupsControllerTest {
 
 	@Autowired
 	private BundleGroupVersionMapper bundleGroupVersionMapper;
-
-	@Autowired
-	WebApplicationContext webApplicationContext;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -55,6 +51,7 @@ class AppBuilderBundleGroupsControllerTest {
 	@MockBean
 	CatalogService catalogService;
 
+	private final String API_KEY_HEADER = "Entando-hub-api-key";
 	private final Long BUNDLE_GROUP_VERSION_ID =  2001L;
 	private final Long BUNDLE_GROUPID =  2002L;
 	private final Long CATEGORY_ID =  2003L;
@@ -112,21 +109,21 @@ class AppBuilderBundleGroupsControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.header("Entando-hub-api-key", API_KEY)
+						.header(API_KEY_HEADER, API_KEY)
 						.param("page", inputJsonPage)
 						.param("pageSize", inputJsonPageSize))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
 				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
 
-		//Case 3: when passing a invalid api-key returns Unauthorized
+		//Case 3: when passing an invalid api-key returns Unauthorized
 		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
 		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(false);
 		Mockito.when(bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalogId, page, pageSize)).thenReturn(pagedContent);
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.header("Entando-hub-api-key", API_KEY)
+						.header(API_KEY_HEADER, API_KEY)
 						.param("page", inputJsonPage)
 						.param("pageSize", inputJsonPageSize))
 				.andExpect(status().isUnauthorized());

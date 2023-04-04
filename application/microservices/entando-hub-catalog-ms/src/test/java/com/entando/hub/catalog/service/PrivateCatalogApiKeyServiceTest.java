@@ -218,10 +218,17 @@ public class PrivateCatalogApiKeyServiceTest {
     }
 
     @Test
-    void doesApiKeyNotExistsTest(){
+    void doesApiKeyExistsFalseTest(){
         Mockito.when(this.apiKeyGeneratorHelper.toSha(API_KEY)).thenReturn(API_KEY_SHA);
         Mockito.when(this.privateCatalogApiKeyRepository.existsByApiKey(API_KEY_SHA)).thenReturn(false);
         boolean apiKeyExist = this.privateCatalogApiKeyService.doesApiKeyExist(API_KEY);
+        Assert.assertFalse(apiKeyExist);
+    }
+
+    @Test
+    void doesApiKeyExistsEmptyTest(){
+        Mockito.when(this.privateCatalogApiKeyRepository.existsByApiKey(null)).thenReturn(false);
+        boolean apiKeyExist = this.privateCatalogApiKeyService.doesApiKeyExist(null);
         Assert.assertFalse(apiKeyExist);
     }
     private PrivateCatalogApiKey createPrivateCatalogApiKey1() {

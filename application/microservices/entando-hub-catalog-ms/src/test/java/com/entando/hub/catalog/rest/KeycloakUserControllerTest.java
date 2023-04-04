@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username="admin",roles={ADMIN})
-public class KeycloakUserControllerTest {
+class KeycloakUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +49,7 @@ public class KeycloakUserControllerTest {
     private final String ORGID = "2001";
 
 	@Test
-	public void testSearchUsers() throws Exception{
+	void testSearchUsers() throws Exception{
 		UserRepresentation user = populateUserRepresentation();
 		SearchKeycloackUserRequest request = populateSearchKeycloackUserRequest();
         List<UserRepresentation> userRepresentationList = new ArrayList<>();
@@ -57,7 +57,7 @@ public class KeycloakUserControllerTest {
         Map<String, String> map = new HashMap<>();
         String inputJson = mapToJson(request);
         Mockito.when(keyCloakService.searchUsers(map)).thenReturn(userRepresentationList);
-       mockMvc.perform(MockMvcRequestBuilders.get(URI)
+        mockMvc.perform(MockMvcRequestBuilders.get(URI)
         		.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(inputJson))
 				.andExpect(status().isOk())
@@ -68,7 +68,7 @@ public class KeycloakUserControllerTest {
 	}
 
 	@Test
-	public void testGetUser() throws Exception {
+	void testGetUser() throws Exception {
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
 		RestUserRepresentationDto restUserRepresentation = populateRestUserRepresentation();
@@ -80,7 +80,7 @@ public class KeycloakUserControllerTest {
 	}
 	
 	@Test
-	public void testGetUserFails() throws Exception{
+	void testGetUserFails() throws Exception{
 		UserRepresentation user = populateUserRepresentation();
 	    String username=user.getUsername();
 		Mockito.when(keyCloakService.getUser(null)).thenReturn(null);

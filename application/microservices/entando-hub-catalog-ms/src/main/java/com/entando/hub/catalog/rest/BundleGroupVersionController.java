@@ -121,7 +121,7 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, organisationId, categoryIdFilterValues, statuses, searchText);
+        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, organisationId, null, categoryIdFilterValues, statuses, searchText, true);
     }
 
     @Operation(summary = "Get all the private bundle group versions in the hub for the selected catalog, provides filter functionality", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the catalogId, the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
@@ -133,7 +133,7 @@ public class BundleGroupVersionController {
         logger.debug("REST request to get bundle group versions by catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
 
         if (!this.securityHelperService.isAdmin() && !this.securityHelperService.userCanAccessTheCatalog(catalogId)){
-            throw new ForbiddenException(String.format("Only %s users can get bundle groups for any catalog, the other ones can get bundle groups only for their catalog", ADMIN));
+            throw new AccessDeniedException(String.format("Only %s users can get bundle groups for any catalog, the other ones can get bundle groups only for their catalog", ADMIN));
         }
 
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
@@ -147,7 +147,7 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
-        return bundleGroupVersionService.searchPrivateBundleGroupVersions(sanitizedPageNum, pageSize, catalogId, categoryIds, statuses, searchText);
+        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, null, catalogId, categoryIds, statuses, searchText, null);
     }
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")

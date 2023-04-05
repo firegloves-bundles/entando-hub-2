@@ -25,5 +25,6 @@
     <include file="config/changelog/20230130000000_bundlegroupversion_uniquekey.xml" relativeToChangelogFile="false"/>
     <!-- Hub 3.0 -->
     <include file="config/changelog/20230206000000_private_catalog.xml" relativeToChangelogFile="false"/>
+    <include file="config/changelog/20230329000000_private_catalog_api_key.xml" relativeToChangelogFile="false" />
 
 </databaseChangeLog>

@@ -1,24 +1,23 @@
 package com.entando.hub.catalog.integration;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
 import com.entando.hub.catalog.testhelper.AssertionHelper;
 import com.entando.hub.catalog.testhelper.TestHelper;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
-
-import java.util.Collections;
-import java.util.List;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 class BundleGroupVersionFlowIT extends BaseFlowIT {
@@ -42,27 +41,27 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
                         bundleGroup3.getId(), bundleGroupVersion3.getId(), organisation2.getId(), bundle3.getId())
                 .setVersion(TestHelper.BUNDLE_GROUP_VERSION_2)
                 .setAllVersions(List.of(TestHelper.BUNDLE_GROUP_VERSION_2));
-        BundleGroupVersionFilteredResponseView expected4 = TestHelper.stubBundleGroupVersionFilteredResponseView(
-                        bundleGroup4.getId(), bundleGroupVersion4.getId(), organisation2.getId(), bundle4.getId())
-                .setPublicCatalog(false);
 
-        // filter by organisationId
         List<BundleGroupVersionFilteredResponseView> expectedList = List.of(expected2, expected1);
         ResultActions resultActions = executeGetFilteredRequest("&organisationId=" + organisation1.getId());
         AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
 
-//        // filter by categoryIds
-//        expectedList = List.of(expected4, expected3, expected2, expected1);
-//        resultActions = executeGetFilteredRequest("&categoryIds=" + categorySet.iterator().next().getId());
-//        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
-//
-//        // filter by searchText
-//        resultActions = executeGetFilteredRequest("&searchText=" + "Group Name");
-//        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
-//
-//        // no result expected
-//        resultActions = executeGetFilteredRequest("&searchText=" + "not existing");
-//        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
+        // filter by categoryIds
+        expectedList = List.of(expected3, expected2, expected1);
+        resultActions = executeGetFilteredRequest("&categoryIds=" + categorySet.iterator().next().getId());
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
+
+        // filter by categoryIds that doesn't match
+        resultActions = executeGetFilteredRequest("&categoryIds=99");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
+
+        // filter by searchText
+        resultActions = executeGetFilteredRequest("&searchText=" + "Group Name");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
+
+        // no result expected
+        resultActions = executeGetFilteredRequest("&searchText=" + "not existing");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
     }
 
     @Test
@@ -80,6 +79,46 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
         // filter by not existing bundle group id
         resultActions = executeGetVersionsRequest(10L, "");
         resultActions.andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
+    void shouldGetTheExpectedPrivateFilteredData() throws Exception {
+
+        // given I am an admin
+        when(securityHelperService.isUserAuthenticated()).thenReturn(true);
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        // prepare expected
+        BundleGroupVersionFilteredResponseView expected3 = TestHelper.stubBundleGroupVersionFilteredResponseView(
+                        bundleGroup3.getId(), bundleGroupVersion3.getId(), organisation2.getId(), bundle3.getId())
+                .setVersion(TestHelper.BUNDLE_GROUP_VERSION_2)
+                .setAllVersions(List.of(TestHelper.BUNDLE_GROUP_VERSION_2));
+
+        // filter by catalogId
+        List<BundleGroupVersionFilteredResponseView> expectedList = List.of(expected3);
+        ResultActions resultActions = executeGetPrivateFilteredRequest(bundleGroup3.getCatalogId(), "");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
+
+        // filter by catalogId that doesn't exist
+        resultActions = executeGetPrivateFilteredRequest(99L, "");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
+
+        // filter by categoryIds
+        resultActions = executeGetPrivateFilteredRequest(bundleGroup3.getCatalogId(), "&categoryIds=" + categorySet.iterator().next().getId());
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
+
+        // filter by categoryIds that doesn't match
+        resultActions = executeGetPrivateFilteredRequest(bundleGroup3.getCatalogId(), "&categoryIds=99");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
+
+        // filter by searchText
+        resultActions = executeGetPrivateFilteredRequest(bundleGroup3.getCatalogId(), "&searchText=" + "Group Name");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, expectedList);
+
+        // no result expected
+        resultActions = executeGetPrivateFilteredRequest(bundleGroup3.getCatalogId(), "&searchText=" + "not existing");
+        AssertionHelper.assertOnBundleGroupVersionFilteredResponseViews(resultActions, Collections.emptyList());
     }
 
     @Test
@@ -235,6 +274,10 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
 
     private ResultActions executeGetFilteredRequest(String url) throws Exception {
         return executeRequest(BASE_URL + "/filtered?page=0&pageSize=10" + url, StatusResultMatchers::isOk);
+    }
+
+    private ResultActions executeGetPrivateFilteredRequest(Long catalogId, String url) throws Exception {
+        return executeRequest(BASE_URL + "/catalog/" + catalogId + "?page=0&pageSize=10" + url, StatusResultMatchers::isOk);
     }
 
     private ResultActions executeRequest(String url, StatusMatcher statusMatcher) throws Exception {

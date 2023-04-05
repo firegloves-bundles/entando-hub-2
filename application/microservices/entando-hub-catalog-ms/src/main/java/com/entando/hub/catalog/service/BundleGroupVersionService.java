@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -381,22 +381,27 @@ public class BundleGroupVersionService {
      * @param pageNum
      * @param pageSize
      * @param organisationId
+     * @param catalogId
      * @param categoryIds
      * @param statuses
      * @param searchText
+     * @param publicCatalog
      * @return
      */
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> searchBundleGroupVersions(
-            Integer pageNum, Integer pageSize, Long organisationId, String[] categoryIds, String[] statuses,
-            String searchText) {
+            Integer pageNum, Integer pageSize, Long organisationId, Long catalogId, String[] categoryIds, String[] statuses,
+            String searchText, Boolean publicCatalog) {
 
         logger.debug(
-                "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}, searchText: {}",
-                CLASS_NAME, organisationId, categoryIds, statuses, searchText);
+                "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, catalogId: {}, categories: {}, statuses: {}, searchText: {}",
+                CLASS_NAME, organisationId, catalogId, categoryIds, statuses, searchText);
 
-        List<BundleGroup> bundleGroups = this.getBundleGroups(searchText, organisationId, categoryIds);
+        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
+        List<BundleGroup> bundleGroups = this.getBundleGroups(organisationId, catalogId, categories, publicCatalog);
+
+        bundleGroups = searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
+
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, ORDER_BY_NAME)).and(Sort.by("lastUpdated").descending());
-
         Pageable paging = this.getPaging(pageNum, pageSize, sort);
 
         Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
@@ -410,60 +415,40 @@ public class BundleGroupVersionService {
         return pagedContent;
     }
 
-    private List<BundleGroup> getBundleGroups(String searchText, Long organisationId, String[] categoryIds){
-        List<BundleGroup> bundleGroups;
-        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
+    public List<BundleGroup> getBundleGroups(Long organisationId, Long catalogId, Set<Category> categories, Boolean publicCatalog){
+        List<Specification<BundleGroup>> filters = new ArrayList<>();
 
-        if (organisationId != null && categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndCategoriesInAndPublicCatalogIsTrue(organisationId, categories);
-        } else if (organisationId != null) {
-            bundleGroups = bundleGroupRepository.findDistinctByOrganisationIdAndPublicCatalogIsTrue(organisationId);
-        } else if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCategoriesInAndPublicCatalogIsTrue(categories);
-        } else {
-            bundleGroups = bundleGroupRepository.findAll();
+        if(catalogId != null && organisationId != null){
+            throw new IllegalArgumentException("the catalogId and organisationId filters cannot coexist");
         }
 
-        return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
-    }
-
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> searchPrivateBundleGroupVersions(
-            Integer pageNum, Integer pageSize, Long catalogId, String[] categoryIds, String[] statuses,
-            String searchText) {
-
-        logger.debug(
-                "{}: getBundleGroupVersions: Get bundle group versions paginated by catalog id: {}, categories: {}, statuses: {}, searchText: {}",
-                CLASS_NAME, catalogId, categoryIds, statuses, searchText);
-
-        List<BundleGroup> bundleGroups = this.getPrivateBundleGroups(searchText, catalogId, categoryIds);
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, ORDER_BY_NAME)).and(Sort.by("lastUpdated").descending());
-
-        Pageable paging = this.getPaging(pageNum, pageSize, sort);
-
-        Page<BundleGroupVersion> page = this.getBundleGroupVersionByStatus(bundleGroups, statuses, paging);
-        Page<BundleGroupVersionEntityDto> converted = convertoToDto(page);
-        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = new PagedContent<>(
-                toResponseViewList(converted, bundleGroups), converted);
-
-        logger.debug("{}: getBundleGroupVersions: catalogId {}, number of elements: {}", CLASS_NAME,
-                catalogId, page.getNumberOfElements());
-
-        return pagedContent;
-    }
-
-    private List<BundleGroup> getPrivateBundleGroups(String searchText, Long catalogId, String[] categoryIds){
-        List<BundleGroup> bundleGroups;
-        Set<Category> categories = Arrays.stream(categoryIds).map(id -> new Category().setId(Long.valueOf(id))).collect(Collectors.toSet());
-
-        if (categoryIds.length != 0){
-            bundleGroups = bundleGroupRepository.findDistinctByCatalogIdAndCategoriesIn(catalogId, categories);
-        } else {
-            bundleGroups = bundleGroupRepository.findDistinctByCatalogId(catalogId);
+        if(catalogId != null) {
+            logger.debug("{}: adding filter by catalogId with value {}", CLASS_NAME, catalogId);
+            filters.add(BundleGroupQueryManager.hasCatalogId(catalogId));
         }
-
-        return searchText != null ? this.filterSearchText(bundleGroups, searchText): bundleGroups;
+        if(organisationId != null) {
+            logger.debug("{}: adding filter by organisationId with value {}", CLASS_NAME, organisationId);
+            filters.add(BundleGroupQueryManager.hasOrganisationId(organisationId));
+        }
+        if(categories !=null) {
+            logger.debug("{}: adding filter by categories {}", CLASS_NAME, categories);
+            filters.add(BundleGroupQueryManager.belongsToCategories(categories));
+        }
+        if(publicCatalog != null) {
+           logger.debug("{}: adding filter by publicCatalog", CLASS_NAME);
+           filters.add(BundleGroupQueryManager.isInPublicCatalog(publicCatalog));
+        }
+        return this.findAllBundleGroups(filters);
     }
 
+
+    public List<BundleGroup> findAllBundleGroups(List<Specification<BundleGroup>> filters){
+        if(!filters.isEmpty()) {
+            return bundleGroupRepository.findAll(BundleGroupQueryManager.getSpecificationFromFilters(filters));
+        }else {
+            return bundleGroupRepository.findAll();
+        }
+    }
 
     private List<BundleGroup> filterSearchText(List<BundleGroup> bundleGroups, String searchText){
         return bundleGroups.stream()
@@ -503,7 +488,6 @@ public class BundleGroupVersionService {
         }
         return PageRequest.of(pageNum, pageSize, sort);
     }
-
 
     protected Page<BundleGroupVersionEntityDto> convertoToDto(Page<BundleGroupVersion> page) {
         return new PageImpl<>(page.getContent()

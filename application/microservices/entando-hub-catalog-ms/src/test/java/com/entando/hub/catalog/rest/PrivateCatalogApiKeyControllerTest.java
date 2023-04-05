@@ -1,5 +1,12 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.rest.CategoryControllerTest.asJsonString;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.entando.hub.catalog.persistence.entity.PortalUser;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
@@ -7,46 +14,29 @@ import com.entando.hub.catalog.service.dto.apikey.AddApiKeyRequestDTO;
 import com.entando.hub.catalog.service.dto.apikey.ApiKeyResponseDTO;
 import com.entando.hub.catalog.service.dto.apikey.EditApiKeyRequestDTO;
 import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapper;
-import com.entando.hub.catalog.service.mapper.PrivateCatalogApiKeyMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static com.entando.hub.catalog.rest.CategoryControllerTest.asJsonString;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ComponentScan(basePackageClasses = {PrivateCatalogApiKeyMapper.class, PrivateCatalogApiKeyMapperImpl.class})
 class PrivateCatalogApiKeyControllerTest {
-    @Autowired
-    WebApplicationContext webApplicationContext;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private PrivateCatalogApiKeyMapper privateCatalogApiKeyMapper;
-    @InjectMocks
-    PrivateCatalogApiKeyController privateCatalogApiKeyController;
     @MockBean
     PrivateCatalogApiKeyService privateCatalogApiKeyService;
     @MockBean
@@ -63,11 +53,6 @@ class PrivateCatalogApiKeyControllerTest {
     private final String URI = "/api/private-catalog-api-key/";
     private final String ID_URI = URI + "{id}";
     private final String REGENERATE_MY_API_KEY_URI = URI + "regenerate/{id}";
-
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
 
     @Test
     @WithMockUser(username = "admin", roles = {ADMIN})

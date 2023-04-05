@@ -1,56 +1,42 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.Category;
 import com.entando.hub.catalog.rest.dto.CategoryDto;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.mapper.CategoryMapper;
-import com.entando.hub.catalog.service.mapper.CategoryMapperImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(CategoryController.class)
-@ComponentScan(basePackageClasses = {CategoryMapper.class, CategoryMapperImpl.class})
-public class CategoryControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+class CategoryControllerTest {
 
 	@Autowired
 	CategoryMapper categoryMapper;
 
-	@Autowired
-	WebApplicationContext webApplicationContext;
-
     @Autowired
     private MockMvc mockMvc;
-    
-    @InjectMocks
-	CategoryController categoryController;
-	
+
 	@MockBean
 	CategoryService categoryService;
 	
@@ -63,13 +49,8 @@ public class CategoryControllerTest {
     private static final Long BUNDLE_GROUP_ID = 1000L;
     private static final String BUNDLE_GROUP_NAME = "Test Bundle Group Name";
 	
-    @Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
-
-	@Test
-	public void testGetCategories() throws Exception {
+    @Test
+	void testGetCategories() throws Exception {
 		Category category = getCategoryObj();
 		Mockito.when(categoryService.getCategories()).thenReturn(List.of(category));
 		
@@ -82,7 +63,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void testGetCategory() throws Exception {
+	void testGetCategory() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
@@ -96,7 +77,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void testGetCategoryFails() throws Exception {
+	void testGetCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(null)).thenReturn(Optional.of(category));
@@ -108,7 +89,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testCreateCategory() throws Exception {
+	void testCreateCategory() throws Exception {
 		Category category = getCategoryObj(); // start from a entity...
 //		CategoryNoId categoryNoId = new CategoryNoId(category); // ..get the dto..
 //		Mockito.when(categoryService.createCategory(categoryNoId.createEntity(Optional.empty()))).thenReturn(category); // convert again to entity and mock
@@ -131,7 +112,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateCategory() throws Exception {
+	void testUpdateCategory() throws Exception {
 	Category category = getCategoryObj();
 	CategoryDto categoryNoId = categoryMapper.toDto(category);
 	String categoryId = Long.toString(category.getId());
@@ -150,7 +131,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testUpdateCategoryFails() throws Exception {
+	void testUpdateCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		CategoryDto categoryNoId = categoryMapper.toDto(category);
 		String categoryId = Long.toString(category.getId());
@@ -166,7 +147,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteCategory() throws Exception {
+	void testDeleteCategory() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(categoryId)).thenReturn(Optional.of(category));
@@ -183,7 +164,7 @@ public class CategoryControllerTest {
 	
 	@Test
 	@WithMockUser(roles = { ADMIN })
-	public void testDeleteCategoryFails() throws Exception {
+	void testDeleteCategoryFails() throws Exception {
 		Category category = getCategoryObj();
 		String categoryId = Long.toString(category.getId());
 		Mockito.when(categoryService.getCategory(null)).thenReturn(Optional.of(category));

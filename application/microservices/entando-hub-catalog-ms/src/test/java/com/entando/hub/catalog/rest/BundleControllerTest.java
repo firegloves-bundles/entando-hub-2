@@ -1,58 +1,49 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.validation.BundleGroupValidator;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapper;
-import com.entando.hub.catalog.service.mapper.inclusion.BundleStandardMapperImpl;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(BundleController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @WithMockUser(username="admin", roles={ADMIN})
-@ComponentScan(basePackageClasses = {BundleStandardMapper.class, BundleStandardMapperImpl.class})
-public class BundleControllerTest {
+class BundleControllerTest {
 
 	@Autowired
 	private BundleStandardMapper bundleStandardMapper;
 
 	@Autowired
-	WebApplicationContext webApplicationContext;
-	
-	@Autowired
 	private MockMvc mockMvc;
-	
-	@InjectMocks
-	BundleController bundleController;
-	
+
 	@MockBean
 	BundleService bundleService;
 
@@ -69,14 +60,9 @@ public class BundleControllerTest {
 	private final Long VERSION_ID = 5001L;
 	private final BundleGroupVersion.Status STATUS = BundleGroupVersion.Status.PUBLISHED;
 
-	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
-	
 	@Test
 	@WithMockUser(username = "admin", roles = {ADMIN})
-	public void testGetAllBundlesAdmin() throws Exception {
+	void testGetAllBundlesAdmin() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -94,7 +80,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testGetBundle() throws Exception {
+	void testGetBundle() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -107,7 +93,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testGetBundleFails() throws Exception {
+	void testGetBundleFails() throws Exception {
 		List<Bundle> bundlesList = new ArrayList<>();
 		Bundle bundle = populateBundle();
 		bundlesList.add(bundle);
@@ -119,7 +105,7 @@ public class BundleControllerTest {
 	}
 
 	@Test
-	public void testCreateBundle() throws Exception {
+	void testCreateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		//Case 1: bundleId is not null
@@ -151,7 +137,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundle() throws Exception {
+	void testUpdateBundle() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle); // new BundleDto(bundle);
@@ -168,7 +154,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testUpdateBundleFails() throws Exception {
+	void testUpdateBundleFails() throws Exception {
 		Bundle bundle = populateBundle();
 		String bundleId = bundle.getId().toString();
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle);// new BundleDto(bundle);
@@ -186,7 +172,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testDeleteBundle() throws Exception {
+	void testDeleteBundle() throws Exception {
 		Bundle bundle =populateBundle();
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
@@ -197,7 +183,7 @@ public class BundleControllerTest {
 	}
 	
 	@Test
-	public void testDeleteBundleFails() throws Exception {
+	void testDeleteBundleFails() throws Exception {
 		Bundle bundle =populateBundle();
 		String bundleId = bundle.getId().toString();
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.empty());

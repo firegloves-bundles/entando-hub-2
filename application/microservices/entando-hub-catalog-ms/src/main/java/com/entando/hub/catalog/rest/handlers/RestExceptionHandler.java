@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<ErrorResponse> customHandleRequest(Exception ex) {
-        ResponseEntity responseEntity = null;
+        ResponseEntity<ErrorResponse> responseEntity = null;
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
         errors.setError(ex.getMessage());

@@ -15,21 +15,18 @@ public class ApiKeyCatalogIdValidator {
     }
 
     public boolean validateApiKeyCatalogId(String apiKey, Long catalogId) {
-         if (StringUtils.isNotEmpty(apiKey)) {
+        if (StringUtils.isEmpty(apiKey) && null != catalogId) {
+            return false;
+        } else if (StringUtils.isNotEmpty(apiKey)) {
             if (null == catalogId) {
                 return false;
             }
             Catalog userCatalog = catalogService.getCatalogByApiKey(apiKey);
             Long userCatalogId = null;
-            if (null !=userCatalog) {
+            if (null != userCatalog) {
                 userCatalogId = userCatalog.getId();
             }
-            if (!userCatalogId.equals(catalogId)) {
-                return false;
-            }
-        }
-        if (StringUtils.isEmpty(apiKey) && null!=catalogId){
-            return false;
+            return userCatalogId == null || userCatalogId.equals(catalogId);
         }
         return true;
     }

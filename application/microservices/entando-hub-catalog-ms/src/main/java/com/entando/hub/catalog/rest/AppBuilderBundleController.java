@@ -10,7 +10,6 @@ import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
-import com.entando.hub.catalog.service.security.ApiKeyCatalogIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,14 +39,11 @@ public class AppBuilderBundleController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
 	private final String CLASS_NAME = this.getClass().getSimpleName();
-	private ApiKeyCatalogIdValidator appBuilderCatalogValidator;
 
-	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper,
-			ApiKeyCatalogIdValidator appBuilderCatalogValidator) {
+	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper) {
 		this.bundleService = bundleService;
 		this.bundleGroupVersionService = bundleGroupVersionService;
 		this.bundleMapper = bundleMapper;
-		this.appBuilderCatalogValidator = appBuilderCatalogValidator;
 	}
 
 	static Set<DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
@@ -82,7 +78,6 @@ public class AppBuilderBundleController {
 			@RequestParam(required = false) String bundleGroupId,
 			@RequestParam(required = false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
-		//appBuilderCatalogValidator.validateApiKeyCatalogId(apiKey,catalogId);
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(apiKey, sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);

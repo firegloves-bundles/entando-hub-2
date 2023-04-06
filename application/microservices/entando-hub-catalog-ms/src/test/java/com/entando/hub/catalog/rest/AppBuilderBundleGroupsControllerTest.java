@@ -38,6 +38,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 class AppBuilderBundleGroupsControllerTest {
 
+
 	@Autowired
 	private BundleGroupVersionMapper bundleGroupVersionMapper;
 
@@ -63,8 +64,9 @@ class AppBuilderBundleGroupsControllerTest {
 	private final String VERSION = "V1.V2";
 	private final String GIT_REPO_ADDRESS = "Test Git Rep";
 	private final String DEPENDENCIES = "Test Dependencies";
-	private final String API_KEY = "api-key";
-
+	private static final String API_KEY = "api-key";
+	private static final String CATALOG_ID_PARAM = "catalogId";
+	private static final Long CATALOG_ID = 1L;
 	@Test
 	void getBundleGroupVersionsTest() throws Exception {
 
@@ -105,10 +107,10 @@ class AppBuilderBundleGroupsControllerTest {
 		Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
 		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(true);
 		Mockito.when(bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalogId, page, pageSize)).thenReturn(pagedContent);
-
 		mockMvc.perform(MockMvcRequestBuilders.get("/appbuilder/api/bundlegroups/")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
 						.header(API_KEY_HEADER, API_KEY)
+						.param(CATALOG_ID_PARAM, String.valueOf(CATALOG_ID))
 						.param("page", inputJsonPage)
 						.param("pageSize", inputJsonPageSize))
 				.andExpect(status().isOk())

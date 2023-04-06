@@ -10,6 +10,7 @@ import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +38,15 @@ public class AppBuilderBundleGroupsController {
     @GetMapping(value = "/", produces = {"application/json"})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize) {
-
+    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(
+            @RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
+            @RequestParam(required = false) Long catalogId,
+            @RequestParam Integer page,
+            @RequestParam Integer pageSize) {
         logger.debug("REST request to get bundle group versions");
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         Catalog userCatalog;
-        if (null != apiKey) {
+        if (StringUtils.isNotEmpty(apiKey)) {
             userCatalog = catalogService.getCatalogByApiKey(apiKey);
             return bundleGroupVersionService.getPrivateCatalogPublishedBundleGroupVersions(userCatalog.getId(), sanitizedPageNum, pageSize);
         }

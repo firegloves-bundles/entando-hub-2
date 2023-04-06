@@ -10,6 +10,7 @@ import com.entando.hub.catalog.rest.dto.BundleEntityDto;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.BundleService;
 import com.entando.hub.catalog.service.mapper.BundleMapper;
+import com.entando.hub.catalog.service.security.ApiKeyCatalogIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,11 +40,14 @@ public class AppBuilderBundleController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppBuilderBundleController.class);
 	private final String CLASS_NAME = this.getClass().getSimpleName();
+	private ApiKeyCatalogIdValidator appBuilderCatalogValidator;
 
-	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper) {
+	public AppBuilderBundleController(BundleService bundleService, BundleGroupVersionService bundleGroupVersionService, BundleMapper bundleMapper,
+			ApiKeyCatalogIdValidator appBuilderCatalogValidator) {
 		this.bundleService = bundleService;
 		this.bundleGroupVersionService = bundleGroupVersionService;
 		this.bundleMapper = bundleMapper;
+		this.appBuilderCatalogValidator = appBuilderCatalogValidator;
 	}
 
 	static Set<DescriptorVersion> descriptorVersionsToSet(String[] descriptorVersions) {
@@ -70,13 +74,19 @@ public class AppBuilderBundleController {
 	@GetMapping(value = "/", produces = {"application/json"})
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
 	@ApiResponse(responseCode = "200", description = "OK")
-	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions){
+	public PagedContent<BundleDto, BundleEntityDto> getBundles(
+			@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
+			@RequestParam Integer page,
+			@RequestParam Integer pageSize,
+			@RequestParam(required = false) Long catalogId,
+			@RequestParam(required = false) String bundleGroupId,
+			@RequestParam(required = false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
-
+		//appBuilderCatalogValidator.validateApiKeyCatalogId(apiKey,catalogId);
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(apiKey, sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
-		Page<BundleEntityDto> converted = convertoToDto(bundlesPage);
+		Page<BundleEntityDto> converted = convertToDto(bundlesPage);
 
 		return new PagedContent<>(bundlesPage.getContent().stream()
 				.map(bundleMapper::toDto)
@@ -95,7 +105,7 @@ public class AppBuilderBundleController {
 				.collect(Collectors.toList()), converted);
 	}
 
-	protected Page<BundleEntityDto> convertoToDto(Page<Bundle> page) {
+	protected Page<BundleEntityDto> convertToDto(Page<Bundle> page) {
 		return new PageImpl<>(page.getContent()
 				.stream()
 				.map(bundleMapper::toEntityDto)

@@ -157,7 +157,6 @@ class AppBuilderBundleControllerTest {
                 .andExpect(status().isOk());
 
 		//OptionalBundleGroup is empty and passing a valid api-key
-
         Mockito.when(catalogService.getCatalogByApiKey(API_KEY)).thenReturn(catalog);
 		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(true);
 		Mockito.when(bundleService.getBundles(API_KEY, page-1, pageSize, Optional.empty(), versions)).thenReturn(response);
@@ -171,7 +170,7 @@ class AppBuilderBundleControllerTest {
 				andExpect(jsonPath("$.metadata").exists()).
 				andExpect(status().isOk());
 
-        //When passing an invalid api-key returns Unauthorized
+        //When passing an invalid api-key should return return Unauthorized
 		Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(false);
 		mockMvc.perform(MockMvcRequestBuilders.get(URI).
 						contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -180,10 +179,18 @@ class AppBuilderBundleControllerTest {
 						param(PAGE_SIZE_PARAM, pageSize.toString())).
 				andExpect(status().isUnauthorized());
 
+        //When passing a valid api-key but catalogId is null should return Unauthorized
+        Mockito.when(privateCatalogApiKeyService.doesApiKeyExist(API_KEY)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders.get(URI).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        header(API_KEY_HEADER, API_KEY).
+                        param(PAGE_PARAM, page.toString()).
+                        param(PAGE_SIZE_PARAM, pageSize.toString())).
+                andExpect(status().isUnauthorized());
+
         //Provide one more good descriptorVersion as well as a bad one (which should be excluded).
         versions.add(DescriptorVersion.V5);
         page = 1;
-
         bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
         Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))
                 .thenReturn(Optional.of(bundleGroupVersion));

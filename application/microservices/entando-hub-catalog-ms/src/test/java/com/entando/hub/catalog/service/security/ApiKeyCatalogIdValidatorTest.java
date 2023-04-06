@@ -14,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-class AppBuilderCatalogValidatorTest {
+class ApiKeyCatalogIdValidatorTest {
 
     private static final String API_KEY = "api-key";
     private static final Long CATALOG_ID = 1L;

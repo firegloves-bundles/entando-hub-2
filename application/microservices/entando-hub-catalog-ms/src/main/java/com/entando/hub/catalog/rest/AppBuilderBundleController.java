@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
+import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -74,7 +75,7 @@ public class AppBuilderBundleController {
 			@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
 			@RequestParam Integer page,
 			@RequestParam Integer pageSize,
-			@RequestParam(required = false) Long catalogId,
+			@RequestParam(name = CATALOG_ID_PARAM, required = false) Long catalogId,
 			@RequestParam(required = false) String bundleGroupId,
 			@RequestParam(required = false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );

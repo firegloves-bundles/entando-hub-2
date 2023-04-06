@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.config.filter;
 
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
+import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 import static com.entando.hub.catalog.config.ApplicationConstants.INVALID_API_KEY_MSG;
 
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
@@ -32,7 +33,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws IOException, ServletException {
         String apiKey = request.getHeader(API_KEY_HEADER);
 
-        String catalogIdParam = request.getParameter("catalogId");
+        String catalogIdParam = request.getParameter(CATALOG_ID_PARAM);
         Long catalogId = null;
         if (StringUtils.isNotEmpty(catalogIdParam)) {
             catalogId = Long.valueOf(catalogIdParam);

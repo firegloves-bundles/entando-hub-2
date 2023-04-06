@@ -40,7 +40,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         }
         if (StringUtils.isEmpty(apiKey) || privateCatalogApiKeyService.doesApiKeyExist(apiKey)) {
             boolean validateApiKeyCatalogId = appBuilderCatalogValidator.validateApiKeyCatalogId(apiKey, catalogId);
-            if (Boolean.FALSE.equals(validateApiKeyCatalogId)) {
+            if (!validateApiKeyCatalogId) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, INVALID_API_KEY_MSG);
             } else {
                 filterChain.doFilter(request, response);

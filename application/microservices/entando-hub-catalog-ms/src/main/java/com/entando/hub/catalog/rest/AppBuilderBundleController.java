@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
+import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -70,13 +71,18 @@ public class AppBuilderBundleController {
 	@GetMapping(value = "/", produces = {"application/json"})
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
 	@ApiResponse(responseCode = "200", description = "OK")
-	public PagedContent<BundleDto, BundleEntityDto> getBundles(@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String bundleGroupId, @RequestParam(required=false) String[] descriptorVersions){
+	public PagedContent<BundleDto, BundleEntityDto> getBundles(
+			@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
+			@RequestParam Integer page,
+			@RequestParam Integer pageSize,
+			@RequestParam(name = CATALOG_ID_PARAM, required = false) Long catalogId,
+			@RequestParam(required = false) String bundleGroupId,
+			@RequestParam(required = false) String[] descriptorVersions){
 		logger.debug("{}: REST request to get bundles for the current published version by bundleGroup Id: {} ",CLASS_NAME, bundleGroupId );
-
 		Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 		Set<DescriptorVersion> versions = descriptorVersionsToSet(descriptorVersions);
 		Page<Bundle> bundlesPage = bundleService.getBundles(apiKey, sanitizedPageNum, pageSize, Optional.ofNullable(bundleGroupId), versions);
-		Page<BundleEntityDto> converted = convertoToDto(bundlesPage);
+		Page<BundleEntityDto> converted = convertToDto(bundlesPage);
 
 		return new PagedContent<>(bundlesPage.getContent().stream()
 				.map(bundleMapper::toDto)
@@ -95,7 +101,7 @@ public class AppBuilderBundleController {
 				.collect(Collectors.toList()), converted);
 	}
 
-	protected Page<BundleEntityDto> convertoToDto(Page<Bundle> page) {
+	protected Page<BundleEntityDto> convertToDto(Page<Bundle> page) {
 		return new PageImpl<>(page.getContent()
 				.stream()
 				.map(bundleMapper::toEntityDto)

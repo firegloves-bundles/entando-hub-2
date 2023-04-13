@@ -94,8 +94,8 @@
     async function injectConfigIntoMfe() {
       const response = await fetch('%PUBLIC_URL%/mfe-config.json');
       const config = await response.text();
-      const mfeEl = await document.getElementsByTagName('x-eh-app')[0];
-      await mfeEl.setAttribute('config', config);
+      const mfeEl = document.getElementsByTagName('x-eh-app')[0];
+      mfeEl.setAttribute('config', config);
     }
   </script>
 </html>

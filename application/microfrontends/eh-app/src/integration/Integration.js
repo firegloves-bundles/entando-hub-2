@@ -382,12 +382,12 @@ export const createAUserForAnOrganisation = async (
   const { data, isError } = await postData(newUrl, userDataObject)
   if (type === 'update') {
     eventHandler(isError,
-      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}: ${data?.error || ''}`,
       `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.updated')}`
     )
   } else {
     eventHandler(isError,
-      `${i18n.t('toasterMessage.impossibleToCreateUser')}`,
+      `${i18n.t('toasterMessage.impossibleToCreateUser')}: ${data?.error || ''}`,
       `${i18n.t('toasterMessage.user')} ${userData ? userData : ""} ${i18n.t('toasterMessage.created')}`
     )
   }
@@ -399,7 +399,7 @@ export const createAUserForAnOrganisation = async (
 export const getAllUsers = async (apiUrl) => {
   const { data, isError } = await getData(apiUrl,urlUsers)
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}: ${data?.error || ''}`)
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -410,7 +410,7 @@ export const getAllUserForAnOrganisation = async (apiUrl,organisationId) => {
   const newUrl = `${apiUrl+urlUsers}?organisationId=${organisationId}`
   const { data, isError } = await getData(newUrl)
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadUsers')}: ${data?.error || ''}`)
 
   return checkForErrorsAndSendResponse(data, isError, "userList")
 }
@@ -421,7 +421,7 @@ export const deleteUser = async (apiUrl,username) => {
   const newUrl = `${apiUrl+urlUsers}${username}`
   const { data, isError } = await deleteData(newUrl)
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToDeleteUser')}`, `User deleted`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToDeleteUser')}: ${data?.error || ''}`, `User deleted`)
 
   return data
 }
@@ -434,9 +434,9 @@ export const removeUserFromOrganisation = async (apiUrl,organisationId, username
   const { data, isError } = await deleteData(newUrl)
   // while updating user no need to show 'user removed toaster'
   if (type === 'update') {
-    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, ``);
+    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}: ${data?.error || ''}`, ``);
   } else {
-    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}`, `${i18n.t('toasterMessage.userRemovedFromTheOrganisation')}`);
+    eventHandler(isError, `${i18n.t('toasterMessage.impossibleToRemoveUser')}: ${data?.error || ''}`, `${i18n.t('toasterMessage.userRemovedFromTheOrganisation')}`);
   }
 
   return data
@@ -560,7 +560,7 @@ export const editBundleGroupVersion = async (apiUrl,bundleGroupVersionData, bund
 
   const { data, isError } = await getData(url);
 
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadBundleGroup')}`)
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadBundleGroup')}: ${data?.error || ''}`)
 
   return checkForErrorsAndSendResponse(data, isError, "bgVersionDetails")
 }
@@ -575,7 +575,7 @@ export const createPrivateCatalog = async (apiUrl, organisationId) => {
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToCreatePrivateCatalog')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.impossibleToCreatePrivateCatalog')}: ${data?.error || ''}`,
     `${i18n.t('toasterMessage.created')} ${data.name}`,
   );
 
@@ -588,7 +588,7 @@ export const createPrivateCatalog = async (apiUrl, organisationId) => {
 export const getPrivateCatalogs = async (apiUrl) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url);
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.message || ''}`);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalogs')}: ${data?.error || ''}`);
   return {
     data,
     isError,
@@ -598,7 +598,7 @@ export const getPrivateCatalogs = async (apiUrl) => {
 export const getPrivateCatalog = async (apiUrl, id) => {
   const url = `${apiUrl}${urlCatalogs}`;
   const { data, isError } = await getData(url, id);
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.message || ''}`);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadPrivateCatalog')}: ${data?.error || ''}`);
   return {
     data,
     isError,
@@ -612,7 +612,7 @@ export const getPrivateCatalog = async (apiUrl, id) => {
 export const getCatalogApiKeys = async (apiUrl, { page = 0, pageSize = 0 } = {}) => {
   const url = `${apiUrl}${urlCatalogApiKeys}?page=${page}&pageSize=${pageSize}`;
   const { data, isError } = await getData(url);
-  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.message || ''}`);
+  eventHandler(isError, `${i18n.t('toasterMessage.impossibleToLoadApiKeys')}: ${data?.error || ''}`);
 
   return {
     data: data.payload,
@@ -626,7 +626,7 @@ export const generateCatalogApiKey = async (apiUrl, apiKeyData) => {
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToGenerateApiKey')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.impossibleToGenerateApiKey')}: ${data?.error || ''}`,
     `API Key ${i18n.t('toasterMessage.generated')}`,
   );
 
@@ -642,7 +642,7 @@ export const updateCatalogApiKey = async (apiUrl, apiKeyData, id) => {
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToUpdateApiKey')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.impossibleToUpdateApiKey')}: ${data?.error || ''}`,
     `API Key ${i18n.t('toasterMessage.updated')}`,
   );
 
@@ -658,7 +658,7 @@ export const regenerateCatalogApiKey = async (apiUrl, id) => {
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToRegenerateApiKey')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.impossibleToRegenerateApiKey')}: ${data?.error || ''}`,
     `API Key ${i18n.t('toasterMessage.regenerated')}`,
   );
 
@@ -674,7 +674,7 @@ export const deleteCatalogApiKey = async (apiUrl, id) => {
 
   eventHandler(
     isError,
-    `${i18n.t('toasterMessage.impossibleToDeleteApiKey')}: ${data?.message || ''}`,
+    `${i18n.t('toasterMessage.impossibleToDeleteApiKey')}: ${data?.error || ''}`,
     `API Key ${i18n.t('toasterMessage.deleted')}`,
   );
 

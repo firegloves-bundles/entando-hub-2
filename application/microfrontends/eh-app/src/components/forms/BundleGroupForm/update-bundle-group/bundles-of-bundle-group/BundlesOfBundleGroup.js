@@ -203,7 +203,6 @@ const BundlesOfBundleGroup = ({
             }
             let newBundleList = [...bundleList, {
                 name: setBundleNameFromRepoAddress({gitRepoAddress: gitRepo}).name,
-                description: '',
                 gitRepoAddress: gitRepo,
                 dependencies: [],
                 bundleGroups: []

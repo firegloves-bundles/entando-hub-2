@@ -127,9 +127,6 @@ public class BundleGroupController {
         }
     }
 
-    //This API is currently not in use. After data model changes for Bundle Group Version we do not allow users to directly delete Bundle Group from UI.
-    //Although it can be accessed from Swagger or Postman
-    //Should we keep this api or should delete ?
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
     @DeleteMapping(value = "/{bundleGroupId}", produces = {"application/json"})

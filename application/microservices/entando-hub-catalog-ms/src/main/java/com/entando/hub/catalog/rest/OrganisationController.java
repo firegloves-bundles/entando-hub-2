@@ -83,8 +83,6 @@ public class OrganisationController {
             logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            //com.entando.hub.catalog.persistence.entity.Organisation storedEntity = organisationOptional.get();
-//            com.entando.hub.catalog.persistence.entity.Organisation entity = organisationService.createOrganisation(organisation.createEntity(Optional.of(organisationId)), organisation);
             Organisation entity = organizationMapper.toEntity(organisation);
             entity.setId(organisationId);
             entity = organisationService.createOrganisation(entity, organisation);

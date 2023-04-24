@@ -61,12 +61,6 @@ public class PortalUserController {
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Map<String, Boolean>> addUserToOrganisation(@PathVariable String organisationId, @RequestBody UserOrganisationRequest request) {
         logger.debug("REST request to add user to organisation id: {}", organisationId);
-
-/*
-        if (!organisationId.equals(request.getOrganisationId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganisationId is not valid");
-        }
-*/
         boolean result = this.portalUserService.addUserToOrganization(request.getUsername(), organisationId);
         Map<String, Boolean> mapResult = new HashMap<>();
         mapResult.put("result", result);

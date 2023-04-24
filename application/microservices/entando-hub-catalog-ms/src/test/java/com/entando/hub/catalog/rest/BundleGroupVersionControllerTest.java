@@ -114,8 +114,8 @@ class BundleGroupVersionControllerTest {
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
-		
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
+
 		//Case 2: bundle group does not exist
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.empty());
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(page, pageSize, statuses, bundleGroup)).thenReturn(pagedContent);
@@ -136,8 +136,8 @@ class BundleGroupVersionControllerTest {
 				.param("pageSize", inputJsonPageSize))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
-		
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
+
 		//Case 4: page number >= 1
 		page = 1;
 		inputJsonPage = mapToJson(page);
@@ -150,7 +150,7 @@ class BundleGroupVersionControllerTest {
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
 	}
 	
 	@Test
@@ -209,8 +209,8 @@ class BundleGroupVersionControllerTest {
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
-		
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
+
 		//Case 3: when statuses list is null
 		statuses = Arrays.stream(com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.values()).map(Enum::toString).toArray(String[]::new);
 		Mockito.when(bundleGroupService.getBundleGroup(bundleGroupId)).thenReturn(Optional.of(bundleGroup));
@@ -223,8 +223,8 @@ class BundleGroupVersionControllerTest {
 				.param("categoryIds", categoryIds))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
-		
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
+
 		//Case 4: page number >= 1
 		page = 1;
 		inputJsonPage = mapToJson(page);
@@ -238,7 +238,7 @@ class BundleGroupVersionControllerTest {
 				.param("statuses", statuses))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.payload.[*].description").value(bundleGroupVersion.getDescription()))
-				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));;
+				.andExpect(jsonPath("$.payload.[*].version").value(bundleGroupVersion.getVersion()));
 	}
 	
 	@Test

@@ -184,8 +184,8 @@ public class BundleGroupVersionServiceTest {
 		bundleGroupVersionsList.add(bundleGroupVersion);
 		
 		String organisationId = organisation.getId().toString();
-		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);;
-		
+		Page<BundleGroupVersion> response = new PageImpl<>(bundleGroupVersionsList);
+
 		Mockito.when(environment.getProperty("HUB_GROUP_DETAIL_BASE_URL")).thenReturn("http://hubdev.okd-entando.org/entando-de-app/en/test.page#/");
 		
 		//Case 1: organisation is present

@@ -56,7 +56,7 @@ public class KeycloakService {
     }
     
     public UserRepresentation getUser(String username) {
-    	logger.debug("{}: getUser: Requested User found {}", username );
+    	logger.debug("getUser: Requested User found {}", username);
         if (StringUtils.isBlank(username)) {
             return null;
         }

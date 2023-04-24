@@ -159,8 +159,7 @@ public class BundleGroupVersionService {
                         .sorted(Comparator.comparing(BundleGroupVersionFilteredResponseView::getName,
                                 String::compareToIgnoreCase))
                         .collect(Collectors.toList()), converted);
-        logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, organisationId,
-                page.getNumberOfElements());
+        logger.debug("{}: getBundleGroupVersions: Number of elements: {}", CLASS_NAME, page.getNumberOfElements());
         return pagedContent;
     }
 

@@ -93,8 +93,4 @@ public interface BundleGroupVersionStandardMapper extends BaseMapperMethods {
     return id != null? id.toString() : null;
   }
 
-  default BundleGroupVersionEntityDto stika(BundleGroupVersion entity) {
-    return null;
-  }
-
 }

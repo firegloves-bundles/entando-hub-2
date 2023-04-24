@@ -149,12 +149,7 @@ public class BundleService {
 
     public void deleteBundle(Bundle toDelete) {
         logger.debug("{}: deleteBundle: Delete a Bundle: {}", CLASS_NAME, toDelete);
-        deleteFromBundleGroupVersion(toDelete);
         bundleRepository.delete(toDelete);
-    }
-
-    public void deleteFromBundleGroupVersion(Bundle bundle) {
-
     }
 
     /**

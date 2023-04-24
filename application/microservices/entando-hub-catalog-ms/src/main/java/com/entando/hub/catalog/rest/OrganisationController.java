@@ -49,7 +49,7 @@ public class OrganisationController {
         logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
         if (organisationOptional.isPresent()) {
-            return new ResponseEntity<>(organisationOptional.map(OrganisationDto::new).get(), HttpStatus.OK);
+            return ResponseEntity.ok(new OrganisationDto(organisationOptional.get()));
         } else {
             logger.warn("Requested organisation '{}' does not exist", organisationId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

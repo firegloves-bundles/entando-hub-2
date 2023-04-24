@@ -51,7 +51,7 @@ public class CategoryController {
         logger.debug("REST request to get CategoryDto Id: {}", categoryId);
         Optional<com.entando.hub.catalog.persistence.entity.Category> categoryOptional = categoryService.getCategory(categoryId);
         if (categoryOptional.isPresent()) {
-            return new ResponseEntity<>(categoryOptional.map(categoryMapper::toDto).get(), HttpStatus.OK);
+            return new ResponseEntity<>(categoryMapper.toDto(categoryOptional.get()), HttpStatus.OK);
         } else {
             logger.warn("Requested category '{}' does not exist", categoryId);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

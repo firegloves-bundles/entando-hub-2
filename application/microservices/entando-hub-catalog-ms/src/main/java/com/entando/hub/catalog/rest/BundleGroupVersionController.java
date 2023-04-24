@@ -10,7 +10,6 @@ import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import com.entando.hub.catalog.service.exception.ConflictException;
-import com.entando.hub.catalog.service.exception.ForbiddenException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;

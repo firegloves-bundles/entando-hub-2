@@ -95,7 +95,7 @@ public class BundleGroupVersionService {
 
                 Set<Bundle> bundleSet = bundleGroupVersionView.getChildren().stream().map((bundleChildId) -> {
                     com.entando.hub.catalog.persistence.entity.Bundle bundle = bundleRepository.findById(
-                            Long.valueOf(bundleChildId)).get();
+                            bundleChildId).get();
                     bundle.getBundleGroupVersions().add(entity);
                     bundleRepository.save(bundle);
                     return bundle;

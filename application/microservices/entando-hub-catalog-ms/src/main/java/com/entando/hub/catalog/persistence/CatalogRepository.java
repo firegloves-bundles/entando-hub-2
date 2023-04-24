@@ -14,14 +14,10 @@ public interface CatalogRepository extends JpaRepository<Catalog, Long> {
             "where portalUsers.username = :username")
     List<Catalog> findByUsername(@Param("username") String username);
 
-
     Optional<Catalog> findByOrganisation_PortalUsers_UsernameAndId(String username, Long id);
-
-    List<Catalog> findAll();
 
     boolean existsByOrganisationId(Long organisationId);
 
     Catalog findByOrganisationId(Long organisationId);
-
 
 }

@@ -14,7 +14,7 @@ export const ModalDeleteCategory = ({
 }) => {
     const apiUrl = useApiUrl();
 
-    const bundleGroupsLengthOfActiveCategory = categories.find(item => item.id === categoryObj.categoryId).bundleGroups.length;
+    const bundleGroupsLengthOfActiveCategory = categories.find(({ id }) => id === categoryObj.categoryId)?.bundleGroups?.length ?? 0;
 
     const onRequestClose = (e) => {
         onCloseModal()

@@ -61,7 +61,7 @@ public class BundleService {
             descriptorVersions = new HashSet<>();
             Collections.addAll(descriptorVersions, DescriptorVersion.values());
         }
-        Page<Bundle> response = new PageImpl<>(new ArrayList<>());
+        Page<Bundle> response;
         Catalog userCatalog = null;
         if (null != apiKey) {
             userCatalog = catalogService.getCatalogByApiKey(apiKey);

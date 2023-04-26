@@ -122,8 +122,7 @@ public class BundleGroupVersionService {
     }
 
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(
-            Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses,
-            Optional<String> searchText) {
+            Integer pageNum, Integer pageSize, Optional<String> organisationId, String[] categoryIds, String[] statuses) {
         logger.debug(
                 "{}: getBundleGroupVersions: Get bundle group versions paginated by organisation id: {}, categories: {}, statuses: {}",
                 CLASS_NAME, organisationId, categoryIds, statuses);
@@ -227,7 +226,7 @@ public class BundleGroupVersionService {
                 /**
                  * Delete the parent bundle group if it does not have any other version.
                  */
-                if (parentBundleGroup.getVersion().size() == 0) {
+                if (parentBundleGroup.getVersion().isEmpty()) {
                     /**
                      * First remove the bundle group from categories.
                      */
@@ -280,10 +279,7 @@ public class BundleGroupVersionService {
     public boolean isBundleGroupEditable(BundleGroup bundleGroup) {
         logger.debug("{}: isBundleGroupEditable: Check if the bundle group {} is editable or not", CLASS_NAME,
                 bundleGroup.getId());
-        if (bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1) {
-            return true;
-        }
-        return false;
+        return bundleGroupVersionRepository.countByBundleGroup(bundleGroup) <= 1;
     }
 
     /**
@@ -320,7 +316,7 @@ public class BundleGroupVersionService {
                 .collect(Collectors.toMap(BundleGroup::getId, bundleGroup -> bundleGroup));
 
         List<BundleGroupVersionFilteredResponseView> list = new ArrayList<>();
-        page.getContent().forEach((entity) -> {
+        page.getContent().forEach(entity -> {
             BundleGroupVersionFilteredResponseView viewObj = new BundleGroupVersionFilteredResponseView();
             viewObj.setBundleGroupVersionId(entity.getId());
             viewObj.setDescription(entity.getDescription());
@@ -361,7 +357,7 @@ public class BundleGroupVersionService {
                 }
                 if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
                     viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
-                            .map(version -> version.getVersion().toString()).collect(Collectors.toList()));
+                            .map(version -> version.getVersion()).collect(Collectors.toList()));
                 }
             }
             list.add(viewObj);

@@ -197,12 +197,11 @@ public class BundleGroupVersionController {
         Optional<BundleGroup> bundleGroupOptional = bundleGroupService.getBundleGroup(bundleGroupId);
         if (bundleGroupOptional.isPresent()) {
             pagedContent = bundleGroupVersionService.getBundleGroupVersions(sanitizedPageNum, pageSize, statuses, bundleGroupOptional.get());
-            return pagedContent;
         } else {
             // TODO check the impact on the FE if we return a non null object
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
-            return pagedContent;
         }
+        return pagedContent;
     }
 
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")

@@ -3,6 +3,7 @@ package com.entando.hub.catalog.rest;
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
 import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
@@ -38,8 +39,8 @@ public class AppBuilderBundleGroupsController {
 
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required.")
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(
             @RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
             @RequestParam(name = CATALOG_ID_PARAM, required = false) Long catalogId,

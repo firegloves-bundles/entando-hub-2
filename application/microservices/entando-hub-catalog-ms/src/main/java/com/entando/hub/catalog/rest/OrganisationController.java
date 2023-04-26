@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.Organisation;
 import com.entando.hub.catalog.rest.dto.OrganisationDto;
 import com.entando.hub.catalog.service.OrganisationService;
@@ -43,9 +44,9 @@ public class OrganisationController {
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
     @GetMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, description = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<OrganisationDto> getOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to get organisation by id: {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
@@ -60,9 +61,9 @@ public class OrganisationController {
     @Operation(summary = "Create a new organisation", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
     @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<OrganisationDto> createOrganisation(@RequestBody OrganisationDto organisation) {
         logger.debug("REST request to create new organisation: {}", organisation);
         Organisation entity = organisationService.createOrganisation(organizationMapper.toEntity(organisation), organisation);
@@ -73,10 +74,10 @@ public class OrganisationController {
     @Operation(summary = "Update an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
     @PostMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, description = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<OrganisationDto> updateOrganisation(@PathVariable Long organisationId, @RequestBody OrganisationDto organisation) {
         logger.debug("REST request to update organisation {}: {}", organisationId, organisation);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);
@@ -94,10 +95,10 @@ public class OrganisationController {
     @Operation(summary = "Delete an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
     @DeleteMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, description = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<OrganisationDto> deleteOrganisation(@PathVariable Long organisationId) {
         logger.debug("REST request to delete organisation {}", organisationId);
         Optional<com.entando.hub.catalog.persistence.entity.Organisation> organisationOptional = organisationService.getOrganisation(organisationId);

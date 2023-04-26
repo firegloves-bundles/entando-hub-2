@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import com.entando.hub.catalog.service.PrivateCatalogApiKeyService;
 import com.entando.hub.catalog.service.dto.apikey.AddApiKeyRequestDTO;
@@ -37,8 +38,8 @@ public class PrivateCatalogApiKeyController {
     @Operation(summary = "Get private catalog api keys", description = "Get the api keys of the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content)
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
     public PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeys(@RequestParam Integer page, @RequestParam Integer pageSize) {
         PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys;
         String username = this.securityHelperService.getContextAuthenticationUsername();
@@ -49,10 +50,10 @@ public class PrivateCatalogApiKeyController {
     @Operation(summary = "Add new private catalog api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content)
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
     public ResponseEntity<ApiKeyResponseDTO> addApiKey(@Valid @RequestBody AddApiKeyRequestDTO request) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         ApiKeyResponseDTO apiKeyResponseDTO = this.privateCatalogApiKeyService.addApiKey(username, request.getLabel());
@@ -62,10 +63,10 @@ public class PrivateCatalogApiKeyController {
     @Operation(summary = "Edit api key label for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content)
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
     public ResponseEntity<Void> editMyLabel(@PathVariable @NotNull Long id, @Valid @RequestBody EditApiKeyRequestDTO request) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         this.privateCatalogApiKeyService.editLabel(id, username, request.getLabel());
@@ -75,10 +76,10 @@ public class PrivateCatalogApiKeyController {
     @Operation(summary = "Delete an api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content)
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
     public ResponseEntity<Void> deleteMyApiKey(@PathVariable @NotNull Long id) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         this.privateCatalogApiKeyService.deleteApiKey(id, username);
@@ -88,10 +89,10 @@ public class PrivateCatalogApiKeyController {
     @Operation(summary = "Regenerate an api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
     @PostMapping(value = "/regenerate/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content)
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
     public ResponseEntity<ApiKeyResponseDTO> regenerateMyApiKey(@PathVariable @NotNull long id) {
         String username = this.securityHelperService.getContextAuthenticationUsername();
         ApiKeyResponseDTO apiKeyResponseDTO = this.privateCatalogApiKeyService.regenerateApiKey(id, username);

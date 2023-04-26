@@ -32,7 +32,7 @@ public class KeycloakSpringBootProperties extends AdapterConfig {
     /* this is a dummy property to avoid re-rebinding problem with property keycloak.config.resolver
        when using spring cloud - see KEYCLOAK-2977 */
     @JsonIgnore
-    private Map config = new HashMap();
+    private final Map config = new HashMap();
 
     /**
      * Allow enabling of Keycloak Spring Boot adapter by configuration.

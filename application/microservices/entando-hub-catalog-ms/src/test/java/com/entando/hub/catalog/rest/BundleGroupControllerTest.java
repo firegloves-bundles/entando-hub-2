@@ -58,7 +58,6 @@ class BundleGroupControllerTest {
     void shouldGetBundleGroupListByOrganisationId() {
         long organisationId = 1L;
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        List<BundleGroup> listBundleGroup = Arrays.asList(bundleGroup.createEntity(Optional.of(1L)));
         bundleGroup.setBundleGroupId("1"); // FIXME shouldn't be necessary
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
         List<BundleGroup> listBundleGroup = Arrays.asList(entity);
@@ -75,7 +74,6 @@ class BundleGroupControllerTest {
     void shouldGetBundleGroupById(){
         Long bundleGroupId = 1L;
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
         bundleGroup.setBundleGroupId(bundleGroupId.toString());
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
         BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
@@ -93,7 +91,6 @@ class BundleGroupControllerTest {
     void shouldReturnNotFoundWhenBundleGroupNotExists(){
         Long bundleGroupId = 1L;
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.of(bundleGroupId));
         bundleGroup.setBundleGroupId(bundleGroupId.toString());
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
         BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
@@ -109,7 +106,6 @@ class BundleGroupControllerTest {
     @Test
     void shouldCreateBundleGroup() {
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         bundleGroup.setBundleGroupId("1");
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
         BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
@@ -160,7 +156,6 @@ class BundleGroupControllerTest {
     void shouldUpdateBundleGroup() {
         Long bundleGroupId = 1L;
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         bundleGroup.setBundleGroupId(bundleGroupId.toString());
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
         BundleGroupDto expectedBundleGroupDTO = stubBundleGroupDTO(entity);
@@ -198,7 +193,6 @@ class BundleGroupControllerTest {
     void shouldThrowConflictExceptionWhenUpdateBundleGroupNotEditable() {
         Long bundleGroupId = 1L;
         BundleGroupDto bundleGroup = stubBundleGroupCreate("test group", 1L, true);
-//        BundleGroup entity = bundleGroup.createEntity(Optional.of(1L));
         bundleGroup.setBundleGroupId(bundleGroupId.toString());
         BundleGroup entity = bundleGroupMapper.toEntity(bundleGroup);
 

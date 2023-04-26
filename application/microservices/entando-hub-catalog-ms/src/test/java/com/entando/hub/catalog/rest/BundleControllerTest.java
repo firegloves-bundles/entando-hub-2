@@ -143,7 +143,6 @@ class BundleControllerTest {
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle); // new BundleDto(bundle);
 		bundleDto.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(bundleId)).thenReturn(Optional.of(bundle));
-//		Mockito.when(bundleService.createBundle(bundleDto.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
 		Mockito.when(bundleService.createBundle(bundleStandardMapper.toEntity(bundleDto))).thenReturn(bundle);
 		String inputJson = mapToJson(bundleDto);
 		
@@ -160,7 +159,6 @@ class BundleControllerTest {
 		BundleDto bundleDto = bundleStandardMapper.toDto(bundle);// new BundleDto(bundle);
 		bundleDto.setBundleId(bundleId);
 		Mockito.when(bundleService.getBundle(null)).thenReturn(Optional.of(bundle));
-//		Mockito.when(bundleService.createBundle(bundleDto.createEntity(Optional.of(bundleId)))).thenReturn(bundle);
 		Mockito.when(bundleService.createBundle(bundleStandardMapper.toEntity(bundleDto))).thenReturn(bundle);
 		String inputJson = mapToJson(bundleDto);
 		

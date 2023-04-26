@@ -170,17 +170,6 @@ class BundleGroupVersionFlowIT extends BaseFlowIT {
         // with a bundleGroupVersionId that does belong to the user but public bundle and no catalogId
         resultActions = executeOkGetBundleGroupVersionsRequest(bundleGroupVersion3.getId(), null);
         AssertionHelper.assertOnBundleGroupVersion(resultActions, bundleGroupVersionView3);
-
-//
-//        // filter by bundleGroupVersionId will not return anything if no public bundles are available
-//        resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
-//        AssertionHelper.assertOnBundles(resultActions, Collections.emptyList());
-//
-//        // filter by CatalogId
-//        expectedList = List.of(TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
-//                TestHelper.stubBundleDto(bundle2.getId(), List.of(bundleGroupVersion2)));
-//        resultActions = executeOkGetBundlesRequest(null, catalog1.getId());
-//        AssertionHelper.assertOnBundles(resultActions, expectedList);
     }
 
     @Test

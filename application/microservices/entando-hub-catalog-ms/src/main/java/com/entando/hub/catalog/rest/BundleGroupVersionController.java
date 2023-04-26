@@ -52,7 +52,7 @@ public class BundleGroupVersionController {
     private final CategoryService categoryService;
 
     private final SecurityHelperService securityHelperService;
-    private BundleGroupValidator bundleGroupValidator;
+    private final BundleGroupValidator bundleGroupValidator;
 
     private final BundleGroupVersionMapper bundleGroupVersionMapper;
 

@@ -90,14 +90,6 @@ class BundleFlowIT extends BaseFlowIT {
         // filter by bundleGroupVersionId will return anything if no public bundles are available
         executeGetBundlesRequest(bundleGroupVersion4.getId(), null, StatusResultMatchers::isNotFound);
 
-/*
-        // filter by bundleGroupVersionId will not return anything if no public bundles are available
-        expectedList = List.of(TestHelper.stubBundleDto(bundle4.getId(), List.of(bundleGroupVersion4)));
-        resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
-        AssertionHelper.assertOnBundles(resultActions, expectedList);
-*/
-
-
         // filter by CatalogId
         expectedList = List.of(TestHelper.stubBundleDto(bundle1.getId(), List.of(bundleGroupVersion1)),
                 TestHelper.stubBundleDto(bundle2.getId(), List.of(bundleGroupVersion2)));
@@ -149,10 +141,6 @@ class BundleFlowIT extends BaseFlowIT {
         // filter by bundleGroupVersionId and CatalogId
         executeGetBundlesRequest(bundleGroupVersion1.getId(), catalog1.getId(), StatusResultMatchers::isForbidden);
 
-        // filter by bundleGroupVersionId and only private bundle group
-/*        ResultActions resultActions = executeOkGetBundlesRequest(bundleGroupVersion4.getId(), null);
-        AssertionHelper.assertOnBundles(resultActions, Collections.emptyList());
-*/
         executeGetBundlesRequest(bundleGroupVersion4.getId(), null,StatusResultMatchers::isNotFound);
         // filter by CatalogId
         executeGetBundlesRequest(null, catalog2.getId(), StatusResultMatchers::isForbidden);

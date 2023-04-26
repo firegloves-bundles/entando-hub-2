@@ -29,8 +29,8 @@ public class KeycloakService {
 
     private final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
 
-    private OpenIDConnectService oidcService;
-    private KeycloakSpringBootProperties configuration;
+    private final OpenIDConnectService oidcService;
+    private final KeycloakSpringBootProperties configuration;
 
     private String token;
 

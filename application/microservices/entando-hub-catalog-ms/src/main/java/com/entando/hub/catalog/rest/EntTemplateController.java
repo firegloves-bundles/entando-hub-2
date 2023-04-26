@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/ent/api/templates")
 public class EntTemplateController {
-    private BundleGroupVersionRepository bundleGroupVersionRepository;
+    private final BundleGroupVersionRepository bundleGroupVersionRepository;
     private final Logger logger = LoggerFactory.getLogger(EntTemplateController.class);
 
     public EntTemplateController(BundleGroupVersionRepository bundleGroupVersionRepository) {

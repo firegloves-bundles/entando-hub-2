@@ -102,7 +102,7 @@ public class BundleGroupVersionService {
                 }).collect(Collectors.toSet());
                 entity.setBundles(bundleSet);
 
-//			Remove orphan bundles from database
+                // Remove orphan bundles from database
                 mappedBundleIds.forEach((bundleId) -> {
                     Optional<Bundle> optBundle = bundleRepository.findById(bundleId);
                     optBundle.ifPresent((bundle) -> {
@@ -357,7 +357,7 @@ public class BundleGroupVersionService {
                 }
                 if (!CollectionUtils.isEmpty(entity.getBundleGroup().getVersion())) {
                     viewObj.setAllVersions(entity.getBundleGroup().getVersion().stream()
-                            .map(version -> version.getVersion()).collect(Collectors.toList()));
+                            .map(BundleGroupVersion::getVersion).collect(Collectors.toList()));
                 }
             }
             list.add(viewObj);

@@ -45,7 +45,7 @@ class PrivateCatalogApiKeyControllerTest {
     private final Long ID = 1001L;
     private final String ADMIN_USERNAME = "Admin";
     private final String LABEL = "Test label";
-    private final Long ADMIN_API_KEY_ID = 2000l;
+    private final Long ADMIN_API_KEY_ID = 2000L;
     private final String API_KEY = "api-key";
     private final String ADMIN_API_KEY = "admin-api-key";
     private final Integer PAGE = 1;

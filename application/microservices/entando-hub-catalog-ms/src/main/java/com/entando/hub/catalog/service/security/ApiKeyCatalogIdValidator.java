@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiKeyCatalogIdValidator {
 
-    private CatalogService catalogService;
+    private final CatalogService catalogService;
 
     public ApiKeyCatalogIdValidator(CatalogService catalogService) {
         this.catalogService = catalogService;

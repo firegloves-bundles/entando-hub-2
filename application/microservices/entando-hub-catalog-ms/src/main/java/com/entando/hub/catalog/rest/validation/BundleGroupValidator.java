@@ -30,7 +30,7 @@ public class BundleGroupValidator {
 
     final
     CatalogService catalogService;
-    private PortalUserService portalUserService;
+    private final PortalUserService portalUserService;
 
     public BundleGroupValidator(BundleGroupService bundleGroupService, BundleGroupVersionService bundleGroupVersionService,
                                 SecurityHelperService securityHelperService, CatalogService catalogService, PortalUserService portalUserService) {

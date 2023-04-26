@@ -86,8 +86,6 @@ class OrganisationControllerTest {
 		Organisation organisation = getOrganisationObj();
 		BundleGroup bundleGroup = getBundleGroupObj();
 		organisation.setBundleGroups(Set.of(bundleGroup));
-//		OrganisationNoId organisationNoId = new OrganisationNoId(organisation.getName(), organisation.getDescription());
-//		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.empty()),organisationNoId)).thenReturn(organisation);
 		OrganisationDto organisationNoId = new OrganisationDto();
 		organisationNoId.setName(organisationNoId.getName());
 		organisationNoId.setDescription(organisationNoId.getDescription());
@@ -117,13 +115,7 @@ class OrganisationControllerTest {
 		// we have the organization id!
 		organisationNoId.setOrganisationId(organisationId.toString());
 
-
-//		OrganisationDto organisationNoId = new OrganisationDto();
-//		organisationNoId.setName(organisationNoId.getName());
-//		organisationNoId.setDescription(organisationNoId.getDescription());
-
 		Mockito.when(organisationService.getOrganisation(organisationId)).thenReturn(Optional.of(organisation));
-//		Mockito.when(organisationService.createOrganisation(organisationNoId.createEntity(Optional.of(organisationId)),organisationNoId)).thenReturn(organisation);
 
 		Organisation entity = organizationMapper.toEntity(organisationNoId);
 		assertNotNull(entity.getId());

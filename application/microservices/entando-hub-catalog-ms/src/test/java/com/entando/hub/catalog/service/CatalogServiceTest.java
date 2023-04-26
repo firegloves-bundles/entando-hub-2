@@ -99,7 +99,7 @@ class CatalogServiceTest {
 
 
     @Test
-    void shouldCreateCatalog() throws Exception {
+    void shouldCreateCatalog() {
         Organisation organisation = stubOrganisation();
         Long organisationId = organisation.getId();
 
@@ -150,7 +150,7 @@ class CatalogServiceTest {
     }
 
     @Test
-    void shouldDeleteCatalog() throws Exception {
+    void shouldDeleteCatalog() {
         Catalog expectedCatalog = stubCatalog();
         Long catalogId = expectedCatalog.getId();
 

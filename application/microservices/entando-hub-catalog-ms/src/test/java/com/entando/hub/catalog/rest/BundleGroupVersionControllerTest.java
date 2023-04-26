@@ -335,8 +335,6 @@ class BundleGroupVersionControllerTest {
 		//Case 1: bundle group does not exist
 		Mockito.when(bundleGroupService.getBundleGroup(null)).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(new ArrayList<BundleGroupVersion>());
-
-//		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 		BundleGroupVersion entity = bundleGroupVersionMapper.toEntity(bundleGroupVersionViewIn, bundleGroup);
 		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(entity, bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 
@@ -349,7 +347,6 @@ class BundleGroupVersionControllerTest {
 		//Case 2: when there already exists a version
 		Mockito.when(bundleGroupService.getBundleGroup(Long.parseLong(bundleGroupVersionView.getBundleGroupId()))).thenReturn(Optional.of(bundleGroup));
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersions(bundleGroup, bundleGroupVersionView.getVersion())).thenReturn(List.of(bundleGroupVersion));
-//		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(bundleGroupVersionView.createEntity(Optional.empty(), bundleGroup), bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 		Mockito.when(bundleGroupVersionService.createBundleGroupVersion(entity, bundleGroupVersionView)).thenReturn(bundleGroupVersion);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/bundlegroupversions/")
@@ -366,7 +363,6 @@ class BundleGroupVersionControllerTest {
 		bundleGroupVersion.setBundleGroup(bundleGroup);
 		String bundleGroupVersionId = bundleGroupVersion.getId().toString();
 		BundleGroupVersionDto bundleGroupVersionView = generateBundleGroupVersionView(bundleGroupVersion, bundleGroupId);
-		// new BundleGroupVersionView(bundleGroupId, bundleGroupVersion.getDescription(), bundleGroupVersion.getDescriptionImage(), bundleGroupVersion.getVersion());
 		String inputJson = mapToJson(bundleGroupVersionView);
 		Mockito.when(securityHelperService.hasRoles(Set.of(ADMIN))).thenReturn(true);
 		Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId)).thenReturn(Optional.of(bundleGroupVersion));		

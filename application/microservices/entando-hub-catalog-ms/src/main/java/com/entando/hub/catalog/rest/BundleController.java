@@ -33,7 +33,7 @@ public class BundleController {
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
 
     final private BundleService bundleService;
-    private BundleGroupValidator bundleGroupValidator;
+    private final BundleGroupValidator bundleGroupValidator;
     private final SecurityHelperService securityHelperService;
 
     private final BundleStandardMapper bundleStandardMapper;

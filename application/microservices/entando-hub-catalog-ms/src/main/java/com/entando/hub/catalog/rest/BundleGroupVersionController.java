@@ -67,7 +67,7 @@ public class BundleGroupVersionController {
 
 	@Operation(summary = "Create a new Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/", produces = {"application/json"})
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
@@ -102,7 +102,7 @@ public class BundleGroupVersionController {
 
 	//PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub, provides filter functionality", description = "Public api, no authentication required. You can provide the organisationId the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @GetMapping(value = "/filtered", produces = {"application/json"})
+    @GetMapping(value = "/filtered", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) Long organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
@@ -151,7 +151,7 @@ public class BundleGroupVersionController {
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @PostMapping(value = "/{bundleGroupVersionId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
@@ -184,7 +184,7 @@ public class BundleGroupVersionController {
 
     //PUBLIC
     @Operation(summary = "Get all the bundle group versions in the hub filtered by bundleGroupId and statuses", description = "Public api, no authentication required. You can provide the bundleGroupId, the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
-    @GetMapping(value = "/versions/{bundleGroupId}", produces = {"application/json"})
+    @GetMapping(value = "/versions/{bundleGroupId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@PathVariable Long bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
@@ -206,7 +206,7 @@ public class BundleGroupVersionController {
 
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
     @RolesAllowed({ADMIN, MANAGER})
-    @DeleteMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @DeleteMapping(value = "/{bundleGroupVersionId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
@@ -229,7 +229,7 @@ public class BundleGroupVersionController {
 
     // PUBLIC
     @Operation(summary = "Get the BundleGroupVersion details by id", description = "Public api, no authentication required. You have to provide the bundleGroupVersionId")
-    @GetMapping(value = "/{bundleGroupVersionId}", produces = {"application/json"})
+    @GetMapping(value = "/{bundleGroupVersionId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupVersionDto> getBundleGroupVersion(@PathVariable String bundleGroupVersionId, @RequestParam(required = false) Long catalogId) {

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the templates for the bundle that are in the hub", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundles", produces = {"application/json"})
+    @GetMapping(value = "/bundles", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleTemplateDto> getBundleTemplates() {
@@ -47,7 +48,7 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the bundle groups having templates in them, they can be filtered by name part", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundlegroups", produces = {"application/json"})
+    @GetMapping(value = "/bundlegroups", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleGroupTemplate> getBundleGroupsWithTemplates(@RequestParam(required = false) String name) {
@@ -65,7 +66,7 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get the templates for the bundle given the bundlegroup id", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundlegroups/{id}", produces = {"application/json"})
+    @GetMapping(value = "/bundlegroups/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public List<BundleTemplateDto> getBundleTemplateByBundleGroupId(@PathVariable Long id) {

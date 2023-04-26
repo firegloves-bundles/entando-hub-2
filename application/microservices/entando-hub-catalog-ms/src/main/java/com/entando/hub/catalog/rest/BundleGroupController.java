@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get all the bundle groups in the hub", description = "Public api, no authentication required. You can provide the organisationId.")
-    @GetMapping(value = "/", produces = {"application/json"})
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<BundleGroupDto>> getBundleGroupsByOrganisationId(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get BundleGroups by organisation Id: {}", organisationId);
         List<BundleGroupDto> bundleGroupList = bundleGroupService.getBundleGroups(Optional.ofNullable(organisationId))
@@ -61,7 +62,7 @@ public class BundleGroupController {
 
     //PUBLIC
     @Operation(summary = "Get the bundleGroup details", description = "Public api, no authentication required. You have to provide the bundleGroupId")
-    @GetMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @GetMapping(value = "/{bundleGroupId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<BundleGroupDto> getBundleGroup(@PathVariable Long bundleGroupId) {
@@ -74,7 +75,7 @@ public class BundleGroupController {
 
     @Operation(summary = "Create a new bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/", produces = {"application/json"})
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
@@ -101,7 +102,7 @@ public class BundleGroupController {
 
     @Operation(summary = "Update a bundleGroup", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupId identifying the bundleGroup")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @PostMapping(value = "/{bundleGroupId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
@@ -129,7 +130,7 @@ public class BundleGroupController {
 
     @Operation(summary = "Delete a bundleGroup", description = "Protected api, only eh-admin and eh-manager can access it. A bundleGroup can be deleted only if it is in DELETE_REQ status  You have to provide the bundlegroupId identifying the category")
     @RolesAllowed({ADMIN, MANAGER})
-    @DeleteMapping(value = "/{bundleGroupId}", produces = {"application/json"})
+    @DeleteMapping(value = "/{bundleGroupId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)

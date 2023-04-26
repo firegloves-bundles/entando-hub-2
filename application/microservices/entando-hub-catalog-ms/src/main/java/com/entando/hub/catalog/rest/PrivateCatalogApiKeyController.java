@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class PrivateCatalogApiKeyController {
 
     @Operation(summary = "Get private catalog api keys", description = "Get the api keys of the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @GetMapping(value = "/", produces = "application/json")
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "200", description = "OK", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     public PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeys(@RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -47,7 +48,7 @@ public class PrivateCatalogApiKeyController {
 
     @Operation(summary = "Add new private catalog api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/", produces = "application/json")
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "200", description = "OK", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
@@ -60,7 +61,7 @@ public class PrivateCatalogApiKeyController {
 
     @Operation(summary = "Edit api key label for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PutMapping(value = "/{id}", produces = "application/json")
+    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "200", description = "OK", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
@@ -73,7 +74,7 @@ public class PrivateCatalogApiKeyController {
 
     @Operation(summary = "Delete an api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @DeleteMapping(value = "/{id}", produces = "application/json")
+    @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "200", description = "OK", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
@@ -86,7 +87,7 @@ public class PrivateCatalogApiKeyController {
 
     @Operation(summary = "Regenerate an api key for the logged user")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/regenerate/{id}", produces = "application/json")
+    @PostMapping(value = "/regenerate/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "200", description = "OK", content = @Content)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)

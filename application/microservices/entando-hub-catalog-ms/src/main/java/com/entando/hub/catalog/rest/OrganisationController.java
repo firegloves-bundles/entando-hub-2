@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,14 +35,14 @@ public class OrganisationController {
     }
 
     @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
-    @GetMapping(value = "/", produces = "application/json")
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<OrganisationDto> getOrganisations() {
         logger.debug("REST request to get organisations");
         return organisationService.getOrganisations().stream().map(OrganisationDto::new).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")
-    @GetMapping(value = "/{organisationId}", produces = {"application/json"})
+    @GetMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
@@ -58,7 +59,7 @@ public class OrganisationController {
 
     @Operation(summary = "Create a new organisation", description = "Protected api, only eh-admin can access it.")
     @RolesAllowed({ADMIN})
-    @PostMapping(value = "/", produces = "application/json")
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
@@ -71,7 +72,7 @@ public class OrganisationController {
 
     @Operation(summary = "Update an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @PostMapping(value = "/{organisationId}", produces = {"application/json"})
+    @PostMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
@@ -92,7 +93,7 @@ public class OrganisationController {
 
     @Operation(summary = "Delete an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId identifying the organisation")
     @RolesAllowed({ADMIN})
-    @DeleteMapping(value = "/{organisationId}", produces = {"application/json"})
+    @DeleteMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)

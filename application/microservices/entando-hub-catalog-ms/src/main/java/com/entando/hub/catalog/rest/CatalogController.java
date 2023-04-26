@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping(value = "/", produces = {"application/json"})
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<CatalogDto>> getCatalogs() {
         logger.debug("REST request to get Catalogs");
 
@@ -61,7 +62,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping(value = "/{catalogId}", produces = {"application/json"})
+    @GetMapping(value = "/{catalogId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CatalogDto> getCatalog(@PathVariable Long catalogId) {
         logger.debug("REST request to get Catalog by id");
         boolean userIsAdmin = this.securityHelperService.isAdmin();
@@ -82,7 +83,7 @@ public class CatalogController {
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
     @ApiResponse(responseCode = "200", description = "OK")
-    @PostMapping(value = "/{organisationId}", produces = {"application/json"})
+    @PostMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CatalogDto> createCatalog(@PathVariable Long organisationId) {
         logger.debug("REST request to create Catalog for organisation: {}", organisationId);
         try {
@@ -97,7 +98,7 @@ public class CatalogController {
 
     @Operation(summary = "Delete a Catalog by Id", description = "Protected api, only eh-admin can access it. You have to provide the catalogId identifying the catalog")
     @RolesAllowed({ADMIN})
-    @DeleteMapping(value = "/{catalogId}", produces = {"application/json"})
+    @DeleteMapping(value = "/{catalogId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)

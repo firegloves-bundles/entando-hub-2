@@ -1,6 +1,11 @@
 package com.entando.hub.catalog.rest.handlers;
 
 import com.entando.hub.catalog.service.exception.BadRequestException;
+import com.entando.hub.catalog.service.exception.ConflictException;
+import com.entando.hub.catalog.service.exception.ForbiddenException;
+import com.entando.hub.catalog.service.exception.InvalidCredentialsException;
+import com.entando.hub.catalog.service.exception.NotFoundException;
+import com.entando.hub.catalog.service.exception.OidcException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -10,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,18 +24,36 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler({BadRequestException.class})
-    public ResponseEntity<ErrorResponse> customHandleRequest(Exception ex) {
+
+    @ExceptionHandler({BadRequestException.class,
+            NotFoundException.class,
+            AccessDeniedException.class,
+            IllegalArgumentException.class,
+            ConflictException.class,
+            ForbiddenException.class,
+            InvalidCredentialsException.class,
+            OidcException.class
+    })
+
+    public ResponseEntity<ErrorResponse> customHandleRequest(Exception exception) {
         ResponseEntity<ErrorResponse> responseEntity = null;
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (ex instanceof BadRequestException) {
-            httpStatus = HttpStatus.BAD_REQUEST;
+        errors.setError(exception.getMessage());
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (exception instanceof BadRequestException) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof AccessDeniedException) {
+            status = HttpStatus.FORBIDDEN;
+        } else if (exception instanceof NotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (exception instanceof IllegalArgumentException) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof ConflictException){
+            status = HttpStatus.CONFLICT;
         }
-        errors.setStatus(httpStatus.value());
-        responseEntity = new ResponseEntity<>(errors, httpStatus);
+        errors.setStatus(status.value());
+        responseEntity = new ResponseEntity<>(errors, status);
         return responseEntity;
     }
 

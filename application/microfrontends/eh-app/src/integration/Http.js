@@ -20,6 +20,9 @@ export const getData = async (url, id) => {
       return res.data
     })
     .catch((e) => {
+      if (e.response) {
+        return e.response.data
+      }
       return e
     })
 
@@ -36,6 +39,9 @@ export const postData = async (url, payload, id) => {
       return res.data
     })
     .catch((e) => {
+      if (e.response) {
+        return e.response.data
+      }
       return e
     })
 
@@ -51,6 +57,9 @@ export const deleteData = async (url, id) => {
       return res.data
     })
     .catch((e) => {
+      if (e.response) {
+        return e.response.data
+      }
       return e
     })
 
@@ -66,6 +75,9 @@ export const putData = async (url, payload, id) => {
       return res.data
     })
     .catch((e) => {
+      if (e.response) {
+        return e.response.data
+      }
       return e
     })
 
@@ -85,7 +97,7 @@ const mergeUrl = (url, id) => {
 const errorCheck = (data) => {
   let isError = false
 
-  if (data.hasOwnProperty("toJSON") && data.toJSON().name === "Error") {
+  if ((data.hasOwnProperty("toJSON") && data.toJSON().name === "Error") || data.error) {
     isError = true
   }
 

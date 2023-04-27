@@ -2,7 +2,7 @@
 version: '3.7'
 services:
   keycloak:
-    image: entando/entando-keycloak:7.0.1
+    image: entando/entando-keycloak:7.2.0-ENGPM-540-rc1
     restart: always
     command: [
         '-b',

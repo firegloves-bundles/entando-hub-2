@@ -37,6 +37,7 @@ import { useApiUrl } from '../../contexts/ConfigContext';
 import DeleteApiKeyModal from './DeleteApiKeyModal';
 import EditApiKeyModal from './EditApiKeyModal';
 import RegenerateApiKeyModal from './RegenerateApiKeyModal';
+import { copyToClipboard } from '../../helpers/clipboard';
 
 const headers = [
   {
@@ -190,12 +191,13 @@ const ApiKeyManagementPage = () => {
 
   // selects the apiKey text and copies the apiKey to the clipboard
   const handleApiKeyClick = (apiKey, id) => {
+    copyToClipboard(apiKey);
+
     let range = document.createRange();
     range.selectNodeContents(apiKeyTextRefs[id].current);
     let sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-    navigator.clipboard.writeText(apiKey);
   };
 
   const handleApiKeyToastClose = () => {

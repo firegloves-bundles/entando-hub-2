@@ -17,7 +17,7 @@ public class RestExceptionHandlerTest {
     private static final String ERROR_MSG = "Error message";
 
     @Test
-    public void badRequestErrorTest() {
+    void badRequestErrorTest() {
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
                 new BadRequestException(ERROR_MSG));
@@ -27,7 +27,7 @@ public class RestExceptionHandlerTest {
     }
 
     @Test
-    public void notFoundErrorTest() {
+    void notFoundErrorTest() {
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
                 new NotFoundException(ERROR_MSG));
@@ -37,7 +37,7 @@ public class RestExceptionHandlerTest {
     }
 
     @Test
-    public void accessDeniedErrorTest() {
+    void accessDeniedErrorTest() {
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
                 new AccessDeniedException(ERROR_MSG));
@@ -47,7 +47,7 @@ public class RestExceptionHandlerTest {
     }
 
     @Test
-    public void illegalArgumentErrorTest() {
+    void illegalArgumentErrorTest() {
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
                 new IllegalArgumentException(ERROR_MSG));
@@ -55,8 +55,9 @@ public class RestExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, error.getStatusCode());
         assertEquals(ERROR_MSG, error.getBody().getError());
     }
+
     @Test
-    public void conflictErrorTest() {
+    void conflictErrorTest() {
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
                 new ConflictException(ERROR_MSG));
@@ -64,4 +65,15 @@ public class RestExceptionHandlerTest {
         assertEquals(HttpStatus.CONFLICT, error.getStatusCode());
         assertEquals(ERROR_MSG, error.getBody().getError());
     }
+
+    @Test
+    void internalServerErrorTest() {
+        RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
+        ResponseEntity<ErrorResponse> error = restExceptionHandler.customHandleRequest(
+                new Exception(ERROR_MSG));
+        assertThat(error.getBody(), instanceOf(ErrorResponse.class));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
+        assertEquals(ERROR_MSG, error.getBody().getError());
+    }
+
 }

@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 
-public class RestExceptionHandlerTest {
+class RestExceptionHandlerTest {
 
     private static final String ERROR_MSG = "Error message";
 

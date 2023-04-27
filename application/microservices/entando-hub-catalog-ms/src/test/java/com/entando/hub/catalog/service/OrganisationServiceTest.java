@@ -57,7 +57,7 @@ public class OrganisationServiceTest {
 		bundleGroup.setOrganisation(null); //this is the mappedBy field
 	    bundleGroupRepository.save(bundleGroup);
 	    Set<com.entando.hub.catalog.persistence.entity.BundleGroup> newBundleGroups = new HashSet<>();
-		Mockito.when(bundleGroupRepository.findById(Long.valueOf(bundleGroup.getId()))).thenReturn(Optional.of(bundleGroup));
+		Mockito.when(bundleGroupRepository.findById(bundleGroup.getId())).thenReturn(Optional.of(bundleGroup));
 		bundleGroup.setOrganisation(organisation);
 		bundleGroupRepository.save(bundleGroup);
 		organisation.setBundleGroups(newBundleGroups);

@@ -85,8 +85,4 @@ public class CatalogService {
         }
     }
 
-    public Boolean existCatalogById(Long catalogId) {
-        return this.catalogRepository.existsById(catalogId);
-    }
-
 }

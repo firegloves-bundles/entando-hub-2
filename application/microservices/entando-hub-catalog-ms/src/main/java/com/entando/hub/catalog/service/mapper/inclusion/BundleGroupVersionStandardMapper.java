@@ -5,7 +5,6 @@ import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.rest.dto.BundleGroupVersionDto;
-import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -91,10 +90,6 @@ public interface BundleGroupVersionStandardMapper extends BaseMapperMethods {
   @Named("toBundleGroupVersionId")
   default String toBundleGroupVersionId(Long id) {
     return id != null? id.toString() : null;
-  }
-
-  default BundleGroupVersionEntityDto stika(BundleGroupVersion entity) {
-    return null;
   }
 
 }

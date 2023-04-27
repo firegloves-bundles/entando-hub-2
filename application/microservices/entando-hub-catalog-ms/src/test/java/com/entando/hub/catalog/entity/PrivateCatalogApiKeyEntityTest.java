@@ -3,7 +3,6 @@ package com.entando.hub.catalog.entity;
 import com.entando.hub.catalog.persistence.entity.PrivateCatalogApiKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.entando.hub.catalog.service.PrivateCatalogApiKeyGeneratorHelper.generatePrivateCatalogApiKeyEntity;
 

@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.rest.dto.BundleDto;
 import com.entando.hub.catalog.rest.dto.BundleEntityDto;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class BundleController {
     private final Logger logger = LoggerFactory.getLogger(BundleController.class);
 
     final private BundleService bundleService;
-    private BundleGroupValidator bundleGroupValidator;
+    private final BundleGroupValidator bundleGroupValidator;
     private final SecurityHelperService securityHelperService;
 
     private final BundleStandardMapper bundleStandardMapper;
@@ -46,7 +48,7 @@ public class BundleController {
     }
 
     @Operation(summary = "Get all the bundles of a bundle group version", description = "Public api, no authentication required. You can provide a bundleGroupVersionId to get all the bundles in that")
-    @GetMapping(value = "/", produces = {"application/json"})
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<BundleDto>> getBundles(@RequestParam(required = false) String bundleGroupVersionId, @RequestParam(required = false) Long catalogId) {
         // If not Authenticated that request a private catalog
         boolean isUserAuthenticated = securityHelperService.isUserAuthenticated();
@@ -69,9 +71,9 @@ public class BundleController {
     }
 
     @Operation(summary = "Get the bundle details", description = "Public api, no authentication required. You have to provide the bundleId")
-    @GetMapping(value = "/{bundleId}", produces = {"application/json"})
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping(value = "/{bundleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, description = SwaggerConstants.NOT_FOUND_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<BundleDto> getBundle(@PathVariable() String bundleId) {
         Optional<com.entando.hub.catalog.persistence.entity.Bundle> bundleOptional = bundleService.getBundle(bundleId);
         if (bundleOptional.isPresent()) {
@@ -84,10 +86,10 @@ public class BundleController {
 
     @Operation(summary = "Create a new bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
-    @PostMapping(value = "/", produces = {"application/json"})
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BundleDto> createBundle(@RequestBody BundleDto bundleDto) {
         logger.debug("REST request to create new Bundle: {}", bundleDto);
 
@@ -99,11 +101,11 @@ public class BundleController {
 
     @Operation(summary = "Update a bundle", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleId identifying the bundle")
     @RolesAllowed({ADMIN, AUTHOR, MANAGER})
-    @PostMapping(value = "/{bundleId}", produces = {"application/json"})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @PostMapping(value = "/{bundleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.NOT_FOUND_RESPONSE_CODE, description = SwaggerConstants.NOT_FOUND_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<BundleDto> updateBundle(@PathVariable String bundleId, @RequestBody BundleDto bundleDto) {
         Optional<Bundle> bundleOptional = bundleService.getBundle(bundleId);
 
@@ -120,10 +122,10 @@ public class BundleController {
 
     @Operation(summary = "Delete a bundle", description = "Protected api, only eh-admin can access it. You have to provide the bundleId")
     @RolesAllowed({ADMIN})
-    @DeleteMapping(value = "/{bundleId}", produces = {"application/json"})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @DeleteMapping(value = "/{bundleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     @Transactional
     public ResponseEntity<BundleEntityDto> deleteBundle(@PathVariable String bundleId) {
         Optional<Bundle> bundleOptional = bundleService.getBundle(bundleId);

@@ -86,7 +86,7 @@ class CatalogControllerTest {
 
 
     @Test
-    void shouldCreateCatalog() throws Exception {
+    void shouldCreateCatalog() {
         CatalogDto expectedCatalogDTO = stubCatalogDTO();
         Long organisationId = expectedCatalogDTO.getOrganisationId();
 
@@ -100,7 +100,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void shouldReturnConflictWithCreateCatalogWhenAlreadyExists() throws Exception {
+    void shouldReturnConflictWithCreateCatalogWhenAlreadyExists() {
         Long organisationId = 1L;
 
         when(catalogService.createCatalog(organisationId)).thenThrow(ConflictException.class);
@@ -112,7 +112,7 @@ class CatalogControllerTest {
 
 
     @Test
-    void shouldReturnNotFoundWithCreateCatalogWhenOrganisationNotExists() throws Exception {
+    void shouldReturnNotFoundWithCreateCatalogWhenOrganisationNotExists() {
         Long organisationId = 1L;
 
         when(catalogService.createCatalog(organisationId)).thenThrow(NotFoundException.class);
@@ -125,7 +125,7 @@ class CatalogControllerTest {
 
 
     @Test
-    void shouldDeleteCatalog() throws Exception {
+    void shouldDeleteCatalog() {
         Catalog catalog = stubCatalog();
         CatalogDto expectedCatalogDTO = stubCatalogDTO();
         Long catalogId = expectedCatalogDTO.getId();
@@ -141,7 +141,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenDeleteCatalog() throws Exception {
+    void shouldReturnNotFoundWhenDeleteCatalog() {
         Long catalogId = 1L;
 
         when(catalogService.deleteCatalog(catalogId)).thenThrow(NotFoundException.class);

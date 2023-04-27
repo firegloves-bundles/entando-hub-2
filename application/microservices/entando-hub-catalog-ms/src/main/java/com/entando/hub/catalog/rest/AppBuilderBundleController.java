@@ -3,6 +3,7 @@ package com.entando.hub.catalog.rest;
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
 import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.Bundle;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
 import com.entando.hub.catalog.persistence.entity.DescriptorVersion;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,9 +70,9 @@ public class AppBuilderBundleController {
 	}
 
 	@Operation(summary = "Get all the bundles in the hub", description = "Public api, no authentication required. You can provide a bundleGroupId to get all the bundles. The descriptorVersions parameter is required in order to return docker-based bundles with Entando 7.1 and up.")
-	@GetMapping(value = "/", produces = {"application/json"})
-	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-	@ApiResponse(responseCode = "200", description = "OK")
+	@GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+	@ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
 	public PagedContent<BundleDto, BundleEntityDto> getBundles(
 			@RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
 			@RequestParam Integer page,

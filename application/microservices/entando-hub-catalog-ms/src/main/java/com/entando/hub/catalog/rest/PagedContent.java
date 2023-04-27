@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public class PagedContent <T,P> {
-    private List<T> payload;
-    private Metadata<P> metadata;
+    private final List<T> payload;
+    private final Metadata<P> metadata;
 
     public PagedContent(List<T> payload, Page<P> pageObj ){
         this.payload=payload;
@@ -22,10 +22,10 @@ public class PagedContent <T,P> {
     }
 
     public static class Metadata<P>{
-        private int page;
-        private int pageSize;
-        private int lastPage;
-        private long totalItems;
+        private final int page;
+        private final int pageSize;
+        private final int lastPage;
+        private final long totalItems;
 
         public Metadata(Page<P> pageObj) {
             this.lastPage = pageObj.getTotalPages();

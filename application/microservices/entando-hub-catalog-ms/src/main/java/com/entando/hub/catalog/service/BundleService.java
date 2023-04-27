@@ -61,7 +61,7 @@ public class BundleService {
             descriptorVersions = new HashSet<>();
             Collections.addAll(descriptorVersions, DescriptorVersion.values());
         }
-        Page<Bundle> response = new PageImpl<>(new ArrayList<>());
+        Page<Bundle> response;
         Catalog userCatalog = null;
         if (null != apiKey) {
             userCatalog = catalogService.getCatalogByApiKey(apiKey);
@@ -149,12 +149,7 @@ public class BundleService {
 
     public void deleteBundle(Bundle toDelete) {
         logger.debug("{}: deleteBundle: Delete a Bundle: {}", CLASS_NAME, toDelete);
-        deleteFromBundleGroupVersion(toDelete);
         bundleRepository.delete(toDelete);
-    }
-
-    public void deleteFromBundleGroupVersion(Bundle bundle) {
-
     }
 
     /**

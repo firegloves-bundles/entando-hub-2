@@ -35,7 +35,7 @@ public interface BundleStandardMapper extends BaseMapper<Bundle, BundleDto> {
   }
 
   default List<String> fromDependencies(String value) {
-    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : Arrays.asList("") ; // EHUB-296 - retain behaviour
+    return StringUtils.isNotBlank(value) ? Arrays.asList(value.split(",")) : List.of(""); // EHUB-296 - retain behaviour
   }
 
   default DescriptorVersion toDescriptorVersion(String value) {
@@ -72,7 +72,7 @@ public interface BundleStandardMapper extends BaseMapper<Bundle, BundleDto> {
             bundleGroupVersions
                     .stream()
                     .map(bundleGroupVersion -> bundleGroupVersion.getId().toString())
-                    .collect(Collectors.toList()) : Arrays.asList(); // EHUB-296 - retain behaviour
+                    .collect(Collectors.toList()) : List.of(); // EHUB-296 - retain behaviour
   }
 
 }

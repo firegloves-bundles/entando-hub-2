@@ -19,8 +19,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    private PrivateCatalogApiKeyService privateCatalogApiKeyService;
-    private ApiKeyCatalogIdValidator appBuilderCatalogValidator;
+    private final PrivateCatalogApiKeyService privateCatalogApiKeyService;
+    private final ApiKeyCatalogIdValidator appBuilderCatalogValidator;
 
     public ApiKeyFilter(PrivateCatalogApiKeyService service,
             ApiKeyCatalogIdValidator appBuilderCatalogValidator) {

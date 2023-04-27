@@ -33,7 +33,6 @@ public interface BundleGroupVersionRepository extends JpaRepository<BundleGroupV
 	List<BundleGroupVersion> findByBundleGroupAndVersion(BundleGroup bundleGroup, String version);
 
 	int countByBundleGroup(BundleGroup bundleGroup);
-	int countByBundleGroupId(Long bundleGroupId);
 	
 	@Query(value = "SELECT * FROM BUNDLE_GROUP_version bgv " +
 			"where bgv.bundle_group_id = :bundleGroupId " +

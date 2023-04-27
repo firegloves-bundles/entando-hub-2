@@ -1,5 +1,6 @@
 package com.entando.hub.catalog.rest;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.rest.dto.RestUserRepresentationDto;
 import com.entando.hub.catalog.rest.model.PortalUserResponseView;
 import com.entando.hub.catalog.rest.model.UserOrganisationRequest;
@@ -41,9 +42,9 @@ public class PortalUserController {
     @Operation(summary = "Get all the portal users", description = "Protected api, only eh-admin can access it. You can provide the organisationId to filter the results")
     @RolesAllowed({ADMIN})
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<List<RestUserRepresentationDto>> getUsers(@RequestParam(required = false) String organisationId) {
         logger.debug("REST request to get users by organisation id: {}", organisationId);
         List<UserRepresentation> users;
@@ -56,17 +57,11 @@ public class PortalUserController {
     @Operation(summary = "Add a Keycloak user to an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId")
     @RolesAllowed({ADMIN})
     @PostMapping(value = "/{organisationId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<Map<String, Boolean>> addUserToOrganisation(@PathVariable String organisationId, @RequestBody UserOrganisationRequest request) {
         logger.debug("REST request to add user to organisation id: {}", organisationId);
-
-/*
-        if (!organisationId.equals(request.getOrganisationId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganisationId is not valid");
-        }
-*/
         boolean result = this.portalUserService.addUserToOrganization(request.getUsername(), organisationId);
         Map<String, Boolean> mapResult = new HashMap<>();
         mapResult.put("result", result);
@@ -76,9 +71,9 @@ public class PortalUserController {
     @Operation(summary = "Remove a Keycloak user from an organisation", description = "Protected api, only eh-admin can access it. You have to provide the organisationId and the username")
     @RolesAllowed({ADMIN})
     @DeleteMapping(value = "/{organisationId}/user/{username}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<Map<String, Boolean>> deleteUserFromOrganisation(@PathVariable String organisationId, @PathVariable String username) {
         logger.debug("REST request to delete user from organisation id: {}", organisationId);
         boolean result = this.portalUserService.removeUserFromOrganization(username, organisationId);
@@ -90,9 +85,9 @@ public class PortalUserController {
     @Operation(summary = "Delete a Portal User", description = "Protected api, only eh-admin can access it. You have to provide the username")
     @RolesAllowed({ADMIN})
     @DeleteMapping(value = "/{username}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable String username) {
         logger.debug("REST request to delete user: {}", username);
         boolean result = this.portalUserService.removeUser(username);
@@ -108,9 +103,9 @@ public class PortalUserController {
     @Operation(summary = "Get a user details by username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it.")
     @RolesAllowed({ ADMIN, AUTHOR, MANAGER })
     @GetMapping(value = "/details", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = SwaggerConstants.FORBIDDEN_RESPONSE_CODE, description = SwaggerConstants.FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
 	public ResponseEntity<PortalUserResponseView> getPortalUserByUsername() {
         logger.debug("REST request to get a user by username, retrieving username from token");
         String username = this.securityHelperService.getContextAuthenticationUsername();

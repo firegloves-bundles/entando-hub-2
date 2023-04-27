@@ -1,6 +1,7 @@
 package com.entando.hub.catalog.rest;
 
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.BundleGroupVersionRepository;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/ent/api/templates")
 public class EntTemplateController {
-    private BundleGroupVersionRepository bundleGroupVersionRepository;
+    private final BundleGroupVersionRepository bundleGroupVersionRepository;
     private final Logger logger = LoggerFactory.getLogger(EntTemplateController.class);
 
     public EntTemplateController(BundleGroupVersionRepository bundleGroupVersionRepository) {
@@ -28,9 +30,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the templates for the bundle that are in the hub", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundles", produces = {"application/json"})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping(value = "/bundles", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public List<BundleTemplateDto> getBundleTemplates() {
         List<BundleGroupVersion> bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInIt();
 
@@ -47,9 +49,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get all the bundle groups having templates in them, they can be filtered by name part", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundlegroups", produces = {"application/json"})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping(value = "/bundlegroups", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public List<BundleGroupTemplate> getBundleGroupsWithTemplates(@RequestParam(required = false) String name) {
         List<BundleGroupVersion> bundleGroupVersionList;
         if (name != null) {
@@ -65,9 +67,9 @@ public class EntTemplateController {
     }
 
     @Operation(summary = "Get the templates for the bundle given the bundlegroup id", description = "Public api, no authentication required.")
-    @GetMapping(value = "/bundlegroups/{id}", produces = {"application/json"})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping(value = "/bundlegroups/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public List<BundleTemplateDto> getBundleTemplateByBundleGroupId(@PathVariable Long id) {
         List<BundleGroupVersion> bundleGroupVersionList;
         bundleGroupVersionList = bundleGroupVersionRepository.getByTemplateInItAndId(id);

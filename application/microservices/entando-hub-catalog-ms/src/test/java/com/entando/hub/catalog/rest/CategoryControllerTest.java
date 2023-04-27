@@ -91,8 +91,6 @@ class CategoryControllerTest {
 	@WithMockUser(roles = { ADMIN })
 	void testCreateCategory() throws Exception {
 		Category category = getCategoryObj(); // start from a entity...
-//		CategoryNoId categoryNoId = new CategoryNoId(category); // ..get the dto..
-//		Mockito.when(categoryService.createCategory(categoryNoId.createEntity(Optional.empty()))).thenReturn(category); // convert again to entity and mock
 
 		CategoryDto dto = categoryMapper.toDto(category); // ..get the dto..
 		dto.setCategoryId(null);

@@ -53,7 +53,7 @@ public class PortalUserServiceTest {
     private static final String LAST_NAME = "HUB";
     private static final String USER_EMAIL = "usertest@mail.com";
     
-    private static final Long PORTAL_USER_ID = 1001l;
+    private static final Long PORTAL_USER_ID = 1001L;
     private static final String PORTAL_USER_NAME = "Portal User Admin";
     
     private static final Long ORG_ID = 2000L;

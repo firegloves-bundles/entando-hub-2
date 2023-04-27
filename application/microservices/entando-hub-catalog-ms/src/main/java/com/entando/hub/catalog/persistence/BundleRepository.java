@@ -21,8 +21,6 @@ public interface BundleRepository extends JpaRepository<Bundle, Long> {
             List<BundleGroupVersion> bundleGroupVersions, Collection<DescriptorVersion> descriptorVersion, Pageable pageable);
     List<Bundle> findByBundleGroupVersions(BundleGroupVersion bundleGroupVersion, Sort sort);
 
-    List<Bundle> findByBundleGroupVersionsIdAndBundleGroupVersionsBundleGroupPublicCatalogTrue(Long id, Sort sort);
-
     List<Bundle> findByBundleGroupVersionsBundleGroupCatalogId(Long catalogId);
 
     List<Bundle> findByBundleGroupVersionsBundleGroupCatalogIdAndBundleGroupVersionsId(Long catalogId, Long id);

@@ -3,6 +3,7 @@ package com.entando.hub.catalog.rest;
 import static com.entando.hub.catalog.config.ApplicationConstants.API_KEY_HEADER;
 import static com.entando.hub.catalog.config.ApplicationConstants.CATALOG_ID_PARAM;
 
+import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.Catalog;
 import com.entando.hub.catalog.response.BundleGroupVersionFilteredResponseView;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +38,9 @@ public class AppBuilderBundleGroupsController {
     }
 
     @Operation(summary = "Get all the bundleGroups in the hub", description = "Public api, no authentication required.")
-    @GetMapping(value = "/", produces = {"application/json"})
-    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
-    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
     public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(
             @RequestHeader(name = API_KEY_HEADER, required = false) String apiKey,
             @RequestParam(name = CATALOG_ID_PARAM, required = false) Long catalogId,

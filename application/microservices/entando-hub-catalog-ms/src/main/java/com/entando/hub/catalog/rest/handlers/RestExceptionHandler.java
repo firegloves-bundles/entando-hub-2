@@ -2,10 +2,7 @@ package com.entando.hub.catalog.rest.handlers;
 
 import com.entando.hub.catalog.service.exception.BadRequestException;
 import com.entando.hub.catalog.service.exception.ConflictException;
-import com.entando.hub.catalog.service.exception.ForbiddenException;
-import com.entando.hub.catalog.service.exception.InvalidCredentialsException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
-import com.entando.hub.catalog.service.exception.OidcException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -25,21 +22,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({BadRequestException.class,
-            NotFoundException.class,
-            AccessDeniedException.class,
-            IllegalArgumentException.class,
-            ConflictException.class,
-            ForbiddenException.class,
-            InvalidCredentialsException.class,
-            OidcException.class
-    })
+    @ExceptionHandler({Exception.class})
 
     public ResponseEntity<ErrorResponse> customHandleRequest(Exception exception) {
         ResponseEntity<ErrorResponse> responseEntity = null;
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
-        errors.setError(exception.getMessage());
+        errors.setMessage(exception.getMessage());
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (exception instanceof BadRequestException) {
             status = HttpStatus.BAD_REQUEST;

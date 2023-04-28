@@ -23,7 +23,7 @@ class RestExceptionHandlerTest {
                 new BadRequestException(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.BAD_REQUEST, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
     @Test
@@ -33,7 +33,7 @@ class RestExceptionHandlerTest {
                 new NotFoundException(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.NOT_FOUND, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
     @Test
@@ -43,7 +43,7 @@ class RestExceptionHandlerTest {
                 new AccessDeniedException(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.FORBIDDEN, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
     @Test
@@ -53,7 +53,7 @@ class RestExceptionHandlerTest {
                 new IllegalArgumentException(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.BAD_REQUEST, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
     @Test
@@ -63,7 +63,7 @@ class RestExceptionHandlerTest {
                 new ConflictException(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.CONFLICT, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
     @Test
@@ -73,7 +73,7 @@ class RestExceptionHandlerTest {
                 new Exception(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getError());
+        assertEquals(ERROR_MSG, error.getBody().getMessage());
     }
 
 }

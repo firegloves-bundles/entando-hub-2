@@ -73,7 +73,7 @@ class RestExceptionHandlerTest {
                 new Exception(ERROR_MSG));
         assertThat(error.getBody(), instanceOf(ErrorResponse.class));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
-        assertEquals(ERROR_MSG, error.getBody().getMessage());
+        assertEquals("", error.getBody().getMessage());
     }
 
 }

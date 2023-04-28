@@ -29,7 +29,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
         errors.setMessage(exception.getMessage());
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status;
+        errors.setMessage(exception.getMessage());
         if (exception instanceof BadRequestException) {
             status = HttpStatus.BAD_REQUEST;
         } else if (exception instanceof AccessDeniedException) {
@@ -40,7 +41,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.BAD_REQUEST;
         } else if (exception instanceof ConflictException){
             status = HttpStatus.CONFLICT;
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            errors.setMessage("");
         }
+        errors.setError(status.getReasonPhrase());
         errors.setStatus(status.value());
         responseEntity = new ResponseEntity<>(errors, status);
         return responseEntity;

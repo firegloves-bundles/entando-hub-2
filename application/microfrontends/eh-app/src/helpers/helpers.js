@@ -21,12 +21,6 @@ export const isAuthenticated = props => {
     return keycloak.initialized && keycloak.authenticated
 }
 
-export const authenticationChanged = (props, prevProps) => {
-    const authenticated = isAuthenticated(props)
-    const changedAuth = prevProps.keycloak.authenticated !== authenticated
-    return authenticated && changedAuth
-}
-
 export const isHubAdmin = () => {
     return hasKeycloakClientRole(ADMIN)
 }

@@ -30,15 +30,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         errors.setTimestamp(LocalDateTime.now());
         errors.setMessage(exception.getMessage());
         HttpStatus status;
-        errors.setMessage(exception.getMessage());
-        if (exception instanceof BadRequestException) {
+        if ((exception instanceof BadRequestException) ||
+            (exception instanceof IllegalArgumentException)) {
             status = HttpStatus.BAD_REQUEST;
         } else if (exception instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
         } else if (exception instanceof NotFoundException) {
             status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof IllegalArgumentException) {
-            status = HttpStatus.BAD_REQUEST;
         } else if (exception instanceof ConflictException){
             status = HttpStatus.CONFLICT;
         } else {

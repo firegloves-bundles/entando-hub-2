@@ -40,11 +40,11 @@ public class PrivateCatalogApiKeyController {
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
-    public PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> getApiKeys(@RequestParam Integer page, @RequestParam Integer pageSize) {
+    public ResponseEntity<PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey>> getApiKeys(@RequestParam Integer page, @RequestParam Integer pageSize) {
         PagedContent<ApiKeyResponseDTO, PrivateCatalogApiKey> apiKeys;
         String username = this.securityHelperService.getContextAuthenticationUsername();
         apiKeys = this.privateCatalogApiKeyService.getApiKeysByUsername(username, page, pageSize);
-        return apiKeys;
+        return new ResponseEntity<>(apiKeys, HttpStatus.OK);
     }
 
     @Operation(summary = "Add new private catalog api key for the logged user")

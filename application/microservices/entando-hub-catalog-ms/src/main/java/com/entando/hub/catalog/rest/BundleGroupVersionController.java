@@ -1,5 +1,10 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED;
+
 import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -10,13 +15,18 @@ import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
-import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +34,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
-import static com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * Controller for Bundle Group Version operations
@@ -274,22 +281,6 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
-    @ExceptionHandler({ NotFoundException.class, AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
-    public ResponseEntity<String> handleException(Exception exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-        } else if (exception instanceof NotFoundException) {
-            status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof IllegalArgumentException) {
-            status = HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof  ConflictException){
-            status = HttpStatus.CONFLICT;
-        }
-        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
-    }
-
 
     public static final String REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST = "Requested bundleGroupVersion '{}' does not exist";
 }

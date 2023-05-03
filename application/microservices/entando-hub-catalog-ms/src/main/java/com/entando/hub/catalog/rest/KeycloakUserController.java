@@ -46,10 +46,12 @@ public class KeycloakUserController {
     @ApiResponse(responseCode = SwaggerConstants.UNAUTHORIZED_RESPONSE_CODE, description = SwaggerConstants.UNAUTHORIZED_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
-    public List<RestUserRepresentationDto> searchUsers(@ParameterObject SearchKeycloackUserRequest request) {
+    public ResponseEntity<List<RestUserRepresentationDto>> searchUsers(@ParameterObject SearchKeycloackUserRequest request) {
         logger.debug("REST request to get users by filters: {}", request);
         Map<String, String> map = (null != request) ? request.getParams() : new HashMap<>();
-        return this.keycloakService.searchUsers(map).stream().map(RestUserRepresentationDto::new).collect(Collectors.toList());
+        List<RestUserRepresentationDto> dto = this.keycloakService.searchUsers(map).stream()
+                .map(RestUserRepresentationDto::new).collect(Collectors.toList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Search on keycloak for specific user having provided username", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the username")

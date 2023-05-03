@@ -38,11 +38,12 @@ public class CategoryController {
 
     @Operation(summary = "Get all the categories", description = "Public api, no authentication required.")
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<CategoryDto> getCategories() {
+    public ResponseEntity<List<CategoryDto>> getCategories() {
         logger.debug("REST request to get Categories");
-        return categoryService.getCategories().stream()
+        List<CategoryDto> dto = categoryService.getCategories().stream()
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Get the category details", description = "Public api, no authentication required. You have to provide the categoryId")

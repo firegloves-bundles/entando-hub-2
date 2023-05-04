@@ -37,9 +37,11 @@ public class OrganisationController {
 
     @Operation(summary = "Get all the organisations", description = "Public api, no authentication required.")
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<OrganisationDto> getOrganisations() {
+    public ResponseEntity<List<OrganisationDto>> getOrganisations() {
         logger.debug("REST request to get organisations");
-        return organisationService.getOrganisations().stream().map(OrganisationDto::new).collect(Collectors.toList());
+        List<OrganisationDto> dto = organisationService.getOrganisations().stream().map(OrganisationDto::new)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Get the organisation details", description = "Public api, no authentication required. You have to provide the organisationId")

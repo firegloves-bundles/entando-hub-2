@@ -1,5 +1,10 @@
 package com.entando.hub.catalog.rest;
 
+import static com.entando.hub.catalog.config.AuthoritiesConstants.ADMIN;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.AUTHOR;
+import static com.entando.hub.catalog.config.AuthoritiesConstants.MANAGER;
+import static com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED;
+
 import com.entando.hub.catalog.config.SwaggerConstants;
 import com.entando.hub.catalog.persistence.entity.BundleGroup;
 import com.entando.hub.catalog.persistence.entity.BundleGroupVersion;
@@ -10,13 +15,18 @@ import com.entando.hub.catalog.service.BundleGroupService;
 import com.entando.hub.catalog.service.BundleGroupVersionService;
 import com.entando.hub.catalog.service.CategoryService;
 import com.entando.hub.catalog.service.dto.BundleGroupVersionEntityDto;
-import com.entando.hub.catalog.service.exception.ConflictException;
 import com.entando.hub.catalog.service.exception.NotFoundException;
 import com.entando.hub.catalog.service.mapper.BundleGroupVersionMapper;
 import com.entando.hub.catalog.service.security.SecurityHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +34,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static com.entando.hub.catalog.config.AuthoritiesConstants.*;
-import static com.entando.hub.catalog.persistence.entity.BundleGroupVersion.Status.PUBLISHED;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * Controller for Bundle Group Version operations
@@ -107,7 +114,7 @@ public class BundleGroupVersionController {
     @GetMapping(value = "/filtered", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) Long organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+    public ResponseEntity<PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto>> getBundleGroupsAndFilterThem(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) Long organisationId, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
     	logger.debug("REST request to get bundle group versions by organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
 
@@ -122,7 +129,9 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Organisation Id: {}, categoryIds {}, statuses {}", organisationId, categoryIds, statuses);
-        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, organisationId, null, categoryIdFilterValues, statuses, searchText, true);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> dto = bundleGroupVersionService.searchBundleGroupVersions(
+                sanitizedPageNum, pageSize, organisationId, null, categoryIdFilterValues, statuses, searchText, true);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Get all the private bundle group versions in the hub for the selected catalog, provides filter functionality", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You can provide the catalogId, the categoryIds and the statuses [NOT_PUBLISHED, PUBLISHED, PUBLISH_REQ, DELETE_REQ, DELETED]")
@@ -130,7 +139,7 @@ public class BundleGroupVersionController {
     @GetMapping(value = "catalog/{catalogId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getPrivateBundleGroupsAndFilterThem(@PathVariable Long catalogId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
+    public ResponseEntity<PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto>> getPrivateBundleGroupsAndFilterThem(@PathVariable Long catalogId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] categoryIds, @RequestParam(required = false) String[] statuses, @RequestParam(required = false) String searchText) {
         logger.debug("REST request to get bundle group versions by catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
 
         if (!this.securityHelperService.isAdmin() && !this.securityHelperService.userCanAccessTheCatalog(catalogId)){
@@ -148,7 +157,9 @@ public class BundleGroupVersionController {
         }
 
         logger.debug("Catalog Id: {}, categoryIds {}, statuses {}", catalogId, categoryIds, statuses);
-        return bundleGroupVersionService.searchBundleGroupVersions(sanitizedPageNum, pageSize, null, catalogId, categoryIds, statuses, searchText, null);
+        PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> dto = bundleGroupVersionService.searchBundleGroupVersions(
+                sanitizedPageNum, pageSize, null, catalogId, categoryIds, statuses, searchText, null);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Update a Bundle Group Version", description = "Protected api, only eh-admin, eh-author or eh-manager can access it. You have to provide the bundleGroupVersionId identifying the bundleGroupVersion")
@@ -189,7 +200,7 @@ public class BundleGroupVersionController {
     @GetMapping(value = "/versions/{bundleGroupId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiResponse(responseCode = SwaggerConstants.BAD_REQUEST_RESPONSE_CODE, description = SwaggerConstants.BAD_REQUEST_DESCRIPTION, content = @Content)
     @ApiResponse(responseCode = SwaggerConstants.OK_RESPONSE_CODE, description = SwaggerConstants.OK_DESCRIPTION)
-    public PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> getBundleGroupVersions(@PathVariable Long bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
+    public ResponseEntity<PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto>> getBundleGroupVersions(@PathVariable Long bundleGroupId, @RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String[] statuses) {
         Integer sanitizedPageNum = page >= 1 ? page - 1 : 0;
         String[] statusFilterValues = statuses;
         PagedContent<BundleGroupVersionFilteredResponseView, BundleGroupVersionEntityDto> pagedContent = null;
@@ -203,7 +214,7 @@ public class BundleGroupVersionController {
             // TODO check the impact on the FE if we return a non null object
             logger.warn("Requested bundleGroup '{}' does not exist", bundleGroupId);
         }
-        return pagedContent;
+        return new ResponseEntity<>(pagedContent, HttpStatus.OK);
     }
 
     @Operation(summary = "Delete a Bundle Group Version  by id", description = "Protected api, only eh-admin and eh-manager can access it. A Bundle Group Version can be deleted only if it is in DELETE_REQ status, you have to provide the bundlegroupVersionId")
@@ -270,22 +281,6 @@ public class BundleGroupVersionController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
-    @ExceptionHandler({ NotFoundException.class, AccessDeniedException.class, IllegalArgumentException.class, ConflictException.class })
-    public ResponseEntity<String> handleException(Exception exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-        } else if (exception instanceof NotFoundException) {
-            status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof IllegalArgumentException) {
-            status = HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof  ConflictException){
-            status = HttpStatus.CONFLICT;
-        }
-        return ResponseEntity.status(status).body(String.format("{\"message\": \"%s\"}", exception.getMessage()));
-    }
-
 
     public static final String REQUESTED_BUNDLE_GROUP_VERSION_DOES_NOT_EXIST = "Requested bundleGroupVersion '{}' does not exist";
 }

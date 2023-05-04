@@ -7,7 +7,7 @@ export const bundleListSchema = Yup.array().of(
     Yup.object().shape({
         bundleGroups: Yup.array().of(Yup.string()),
         dependencies: Yup.array().of(Yup.string()),
-        description: Yup.string(),
+        description: Yup.string().nullable(),
         gitRepoAddress: Yup.string().trim(),
         gitSrcRepoAddress: gitSrcRepoAddressRule,
         name: Yup.string().required()

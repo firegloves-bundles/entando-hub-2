@@ -19,7 +19,7 @@ public class BundleEntityDto {
     private String gitRepoAddress;
     private String gitSrcRepoAddress;
     private String dependencies;
-    private DescriptorVersion descriptorVersion = DescriptorVersion.V1;
+    private DescriptorVersion descriptorVersion = DescriptorVersion.V5;
     private Set<BundleGroupVersion> bundleGroupVersions;
 
 }

@@ -54,7 +54,7 @@ public class AppBuilderBundleController {
 
 		//Default to V1 for best compatibility
 		if (ArrayUtils.isEmpty(descriptorVersions)) {
-			versions.add(DescriptorVersion.V1);
+			versions.add(DescriptorVersion.V5);
 		}
 		//Otherwise map to the DescriptorVersion
 		else {

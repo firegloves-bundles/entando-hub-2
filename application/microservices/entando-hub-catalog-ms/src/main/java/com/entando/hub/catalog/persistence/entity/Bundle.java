@@ -29,7 +29,7 @@ public class Bundle implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private DescriptorVersion descriptorVersion = DescriptorVersion.V1;
+    private DescriptorVersion descriptorVersion = DescriptorVersion.V5;
 
 	@ManyToMany(mappedBy = "bundles",fetch = FetchType.EAGER)
 	private Set<BundleGroupVersion> bundleGroupVersions;

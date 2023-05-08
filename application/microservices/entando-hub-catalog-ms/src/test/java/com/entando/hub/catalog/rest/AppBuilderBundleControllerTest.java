@@ -99,7 +99,7 @@ class AppBuilderBundleControllerTest {
         Page<Bundle> response = new PageImpl<>(bundlesList);
 
         Set<DescriptorVersion> versions = new HashSet<>();
-        versions.add(DescriptorVersion.V1);
+        versions.add(DescriptorVersion.V5);
 
         Catalog catalog = new Catalog();
         catalog.setId(CATALOG_ID);
@@ -189,7 +189,7 @@ class AppBuilderBundleControllerTest {
                 andExpect(status().isUnauthorized());
 
         //Provide one more good descriptorVersion as well as a bad one (which should be excluded).
-        versions.add(DescriptorVersion.V5);
+        versions.add(DescriptorVersion.V1);
         page = 1;
         bundle.setBundleGroupVersions(Set.of(bundleGroupVersion));
         Mockito.when(bundleGroupVersionService.getBundleGroupVersion(bundleGroupVersionId))

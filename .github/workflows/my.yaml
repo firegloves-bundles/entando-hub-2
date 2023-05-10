@@ -21,4 +21,10 @@ jobs:
           DOCKER_ORG: lcorsettientando
         run: |
           ent bundle build --all --stdout --fail-fast
+          rc=$?
+          if [[ "$rc" -ne 0 ]] ; then
+            echo 'TESTS FAILING'; exit $rc
+          else
+            echo 'TESTS OK'; exit $rc
+          fi
         working-directory: ./application

@@ -1,0 +1,24 @@
+name: My work
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: entando/ent:v7.1.5
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Pack the application
+        id: packkk
+        env:
+          DOCKER_ORG: lcorsettientando
+        run: |
+          ent bundle build
+        working-directory: ./application

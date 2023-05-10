@@ -86,7 +86,7 @@ class BundleGroupFlowIT {
                 .andExpect(jsonPath("$.[0].bundleGroupId").value(1L))
                 .andExpect(jsonPath("$.[1].bundleGroupId").value(2L))
                 .andExpect(jsonPath("$.[0].name").value(BUNDLE_GROUP_NAME))
-                .andExpect(jsonPath("$.[1].name").value(BUNDLE_GROUP_NAME));
+                .andExpect(jsonPath("$.[1].name").value("CIAONE"));
 
         //Case 2: testing with specific organisation
         mockMvc.perform(MockMvcRequestBuilders.get(URI + "?organisationId=" + organisationSaved.getId())

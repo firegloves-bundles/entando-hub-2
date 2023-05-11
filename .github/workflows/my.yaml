@@ -22,6 +22,7 @@ jobs:
         run: |
           ent bundle build --all --stdout --fail-fast
           rc=$?
+          echo "RC $rc"
           if [[ "$rc" -ne 0 ]] ; then
             echo 'TESTS FAILING'; exit $rc
           else

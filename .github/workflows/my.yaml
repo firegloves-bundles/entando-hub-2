@@ -20,7 +20,7 @@ jobs:
         env:
           DOCKER_ORG: lcorsettientando
         run: |
-          ent bundle build --all --stdout --fail-fast
+          ent bundle build entando-hub-catalog-ms
           rc=$?
           echo "RC $rc"
           if [[ "$rc" -ne 0 ]] ; then

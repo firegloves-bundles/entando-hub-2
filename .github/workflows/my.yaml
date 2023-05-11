@@ -20,6 +20,7 @@ jobs:
         env:
           DOCKER_ORG: lcorsettientando
         run: |
+          set +e
           ent bundle build entando-hub-catalog-ms
           rc=$?
           echo "RC $rc"

@@ -9,7 +9,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     container:
-      image: entando/ent:v7.1.5
+      image: entando/ent:v7.1.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
@@ -20,5 +20,13 @@ jobs:
         env:
           DOCKER_ORG: lcorsettientando
         run: |
-          ent bundle build
+          set +e
+          ent bundle build entando-hub-catalog-ms
+          rc=$?
+          echo "RC $rc"
+          if [[ "$rc" -ne 0 ]] ; then
+            echo 'TESTS FAILING'; exit $rc
+          else
+            echo 'TESTS OK'; exit $rc
+          fi
         working-directory: ./application
